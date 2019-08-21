@@ -24,7 +24,7 @@ docker run --rm \
 
 UBYTE height[256][256];
 UBYTE fastPlane[DEPTH][PLANEWIDTH*HEIGHT];
-
+UBYTE *test = height;
 
 ULONG kolory[] = { 0x00100000,
 	0x00000000, 0x00000000, 0x00000000,
@@ -119,9 +119,10 @@ void DrawTerrain(struct BitMap *bm,struct RastPort *rp)
 		{
 			pixelsChecked++;
 			rayHeight = flightHeight + rayCastY[sy][tz];
-			tx = xPos + rayCastX[sx][tz] ;//screen x offest on terrain - perspective change with depth
+			tx = xPos + rayCastX[sx][tz];//screen x offest on terrain - perspective change with depth
 			ty = yPos + tz;
-			th = height[tx][ty];
+			//th = height[tx][ty];
+			th = test[(tx << 8) | ty];
 			//height to look for at a given x,y terrain coordinate accounting for z depth
 			//************************************************************8
 			if(th>rayHeight)
