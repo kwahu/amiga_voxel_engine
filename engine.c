@@ -30,7 +30,7 @@ UWORD s_uwOsInitialDma;
 //typedef struct Custom tCustom;
 //tCustom FAR REGPTR g_pCustom = (tCustom REGPTR)CUSTOM_BASE;
 
-//m68k-amigaos-gcc -s -O2 -noixemul -m68020 -o engine2 engine2.c
+//m68k-amigaos-gcc -s -O2 -noixemul -m68020 -o engine engine.c
 
 /*
 docker run --rm \
@@ -105,58 +105,14 @@ void ReadFile(char name[])
 		fclose(file);
 	}
 }
+
 void ClearFastPlane(struct BitMap *bm)
 {
-	for(int p=0;p<DEPTH;p++)
-	for(int i=0;i<PLANEWIDTH*HEIGHT;i++)
-	{
-		*(bm->Planes[p] + i) = fastPlane[p][i];
-		fastPlane[p][i] = 0x00;
-	}
-}
-void ClearAlpha()
-{
-	for (int x = 0; x < WIDTH; x+=8)
-	{
-		for (int y = 0; y < HEIGHT; y++)
-		{
-			alpha[x][y] = 0;
-		}
-	}
-}
-void WritePlane(struct BitMap *bm, char plane, UWORD position, char bit, char color)
-{
-	UWORD value;
-	UWORD *address;
-
-	address = bm->Planes[plane] + position;
-	value = *address;
-
-	if(color) {
-		value = value | (1 << bit);
-	} else {
-		value = value & ~(1 << bit);
-	}
-	*address = value;
+    for(int p=0;p<DEPTH;p++) {
+        CopyMemQuick(fastPlane[p], bm->Planes[p], PLANEWIDTH*HEIGHT);
+    }
 }
 
-
-void SetPixel(struct BitMap *bm, int x, int y, UBYTE color)
-{
-	UWORD position = y*bm->BytesPerRow + x/8;
-
-	//calculate pixel to change in a word
-	UWORD bit =  8 - x % 8;
-	//change only selected pixel
-
-	WritePlane(bm, 0, position, bit, color & 1);
-	WritePlane(bm, 1, position, bit, (color>>1) & 1);
-	WritePlane(bm, 2, position, bit, (color>>2) & 1);
-	WritePlane(bm, 3, position, bit, (color>>3) & 1);
-	//WritePlane(bm, 4, position, bit, 1); //alpha
-
-	//	alpha[x][y] = 1;
-}
 #define TERRAINDEPTH 30
 
 WORD rayCastX[40][TERRAINDEPTH];
@@ -172,7 +128,8 @@ void CalculateTables()
 		rayCastY[16+(int)sy][(int)tz] = (WORD)(sy * tz/8);
 	}
 }
-void DrawTerrain2(struct BitMap *bm,struct RastPort *rp)
+
+void DrawTerrain(struct BitMap *bm,struct RastPort *rp)
 {
 	//currentHeight = flightHeight + height[(int)(xPos * mapScaleX)][(int)((yPos+heightAheadRange) * mapScaleY )];
 	UBYTE color;
@@ -181,8 +138,6 @@ void DrawTerrain2(struct BitMap *bm,struct RastPort *rp)
 	UBYTE tx;//screen x offest on terrain - perspective change with depth
 	UBYTE ty;
 	UBYTE th;
-
-
 
 	for(sx=0;sx<40;sx++)
 	{
@@ -220,6 +175,21 @@ void DrawTerrain2(struct BitMap *bm,struct RastPort *rp)
 				tz++;
 			}
 		}
+		//finish vertical line with 0x00
+		while(sy < TERRAINDEPTH)
+		{
+			sy++;
+			position = ((31-sy)*8)*40 + sx;
+			//******************DRAW
+			for(line=0;line<8;line++)
+			{
+				for(plane=0;plane<DEPTH;plane++)
+				{
+					fastPlane[plane][position] = 0xff;
+				}
+				position+=40;
+			}
+		}
 	}
 }
 
@@ -254,24 +224,6 @@ int main(void)
 
 		ReadFile("height.raw");
 
-		// save the state of the hardware registers (INTENA, DMA, ADKCON etc.)
-	//	s_uwOsIntEna = g_pCustom->intenar;
-		//s_uwOsDmaCon = g_pCustom->dmaconr;
-		//s_uwOsInitialDma = s_uwOsDmaCon;
-
-		// Disable interrupts (this is the actual "kill system/OS" part)
-	/*	address = INTENAR;
-		*address = 0x7FFF;
-		address  = INTREQ;
-		*address = 0x7FFF;*/
-		//address = DMACON;
-		//*address = 0x7FFF;
-
-		// Disable all DMA - only once
-		// Wait for vbl before disabling sprite DMA
-	//	while (!(g_pCustom->intreqr & INTF_VERTB)) {}
-	//	g_pCustom->dmacon = 0x07FF;
-
 		if (screen)
 		{
 			struct RastPort *rp = &screen->RastPort;
@@ -279,312 +231,20 @@ int main(void)
 			struct BitMap *bm = rp->BitMap;
 			LoadRGB32(vp, kolory);
 
-
-
 			CalculateTables();
 
 			for(int i=0;i<100;i++)
 			{
-				DrawTerrain2(bm,rp);
-
+				DrawTerrain(bm,rp);
 				ClearFastPlane(bm);
 				//flightHeight += 1;
 				yPos += 1;
 				//xPos += 10;
 			}
-
-
 			//Delay(100);
 			CloseScreen(screen);
 		}
-
 		printf("seconds=%ld pixelsDrawn=%d pixelsChecked=%d pixelsRead=%d linesDrawn=%d", 0,pixelsDrawn, pixelsChecked, pixelsRead, linesDrawn);
 
 		return 0;
 	}
-
-	//  map_height = height[(int)x % 256][(int)y % 256];
-	//    pixelsRead++;
-
-	// ********** table [height,z] -> value
-	// a - number of
-	/*   if ((-map_height + currentHeight) < 0)
-	{
-	height_on_screen = -heightDiv[(int)( -(-map_height + currentHeight) )][a] ;
-}
-else
-{
-height_on_screen = heightDiv[(int)( (-map_height + currentHeight) )][a] ;
-}*/
-
-
-//height_on_screen = horizon + -map_height + currentHeight;
-//height_on_screen = horizon + ( ( (-map_height + currentHeight) )  ) ;
-
-
-
-
-/*
-void DrawTerrain(struct BitMap *bm,struct RastPort *rp)
-{
-//  currentHeight = //(currentHeight + (flightHeight + height[(int)(xPos * mapScaleX)][(int)((yPos+heightAheadRange) * mapScaleY )])) / 2;
-currentHeight = flightHeight + height[(int)(xPos * mapScaleX)][(int)((yPos+heightAheadRange) * mapScaleY )];
-
-int height_on_screen = 0;
-int map_height = 0;
-float dx = 0;
-float dxSum;
-int z = 0;
-int pleft;
-int pright;
-
-int y;
-int x;
-
-int drawStart;
-int drawEnd;
-
-int bigestZ = 0, bigestH = 0;
-
-
-
-char color;
-for (int a = 0; a < TERRAINDEPTH; a++)
-{
-z = zLines[a];
-//linesDrawn++;
-
-pleft = -z + xPos;
-pright = z + xPos;
-dx = (float)(pright - pleft) / (float)WIDTH * 8;
-y = (-z + yPos) * mapScaleY;
-
-// ************** tablica zapisu danych na ekranie 90 stopni
-drawStart = 0;//(WIDTH - zLength[a]) / 2;
-drawEnd = WIDTH;//(WIDTH - (WIDTH - zLength[a] - 2) / 2);
-//******************
-dxSum = drawStart * dx;
-
-for (int xs = drawStart; xs < drawEnd; xs += 8)
-{
-x = tableMul[(pleft + (int)dxSum)];
-map_height = height[x][y];
-height_on_screen = heightDiv[256 + currentHeight - map_height][a];
-if (height_on_screen < HEIGHT)
-{
-//set colors for bit planes
-color = tableDiv8[map_height]+1;
-for(int ii=0;ii<DEPTH;ii++)
-if((color>>ii) & 1)
-col[ii] = 0xff;
-else
-col[ii] = 0x00;
-
-for (int b = 0; b < HEIGHT; b++)
-{
-if (height_on_screen > 0 && height_on_screen < HEIGHT)
-{
-if (alpha[xs][height_on_screen])
-b=HEIGHT; //exit if already drawn
-else
-{
-for(int a=0;a<8;a++)
-{
-position = tableBytesPerRow[height_on_screen] + tableDiv8[xs]; //1s
-alpha[xs][height_on_screen] = 1;
-for(int iii=0;iii<DEPTH;iii++)
-{
-//*(bm->Planes[iii] + position) = col[iii];
-fastPlane[iii][position] = col[iii];
-}
-height_on_screen++;
-}
-}
-}
-}
-}
-dxSum += dx;
-}
-}
-}*/
-/*
-UBYTE GetPixel(int x,int y)
-{
-return alpha[x][y];
-}
-
-void DrawVerticalLine(struct BitMap *bm, int x, int y, int pixelSize, char color)
-{
-int yy;
-int height = HEIGHT;
-pixelSize = 1; //bypass
-
-for (int a = 0; a < pixelSize; a++)
-{
-yy = y;
-for (int b = 0; b < height; b++)
-{
-//+ (int)(height * depth) + drawingHeightOffset + currentHeight - b;
-if (yy > 0)
-{
-++pixelsChecked;
-
-if (yy < height)
-{
-if (!(b % 8) && GetPixel(x + a, yy) )
-b=height; //exit if already drawn
-else
-{
-SetPixelByte(bm,x + a, yy, color);
-++pixelsDrawn;
-}
-
-}
-
-}
-yy++;
-}
-}
-}
-
-void DrawVerticalByte(struct BitMap *bm, struct RastPort *rp, int x, int y, char color)
-{
-//set colors for bit planes
-for(int i=0;i<DEPTH;i++)
-if((color>>i) & 1)
-col[i] = 0xff;
-else
-col[i] = 0x00;
-
-for (int b = 0; b < HEIGHT; b++)
-{
-if (y > 0)
-if (y < HEIGHT)
-{
-if (alpha[x][y])
-b=height; //exit if already drawn
-else
-{
-for(int a=0;a<8;a++)
-{
-position = tableBytesPerRow[y] + tableDiv8[x];
-alpha[x][y] = 1;
-for(int i=0;i<DEPTH;i++)
-{
-*(bm->Planes[i] + position) = col[i];
-}
-y++;
-}
-}
-}
-}
-}
-
-void WritePlane(struct BitMap *bm, char plane, UWORD position, char bit, char color)
-{
-UWORD value;
-UWORD *address;
-
-address = bm->Planes[plane] + position;
-value = *address;
-
-if(color) {
-value = value | (1 << bit);
-} else {
-value = value & ~(1 << bit);
-}
-*address = value;
-}
-
-char ReadPlane(struct BitMap *bm, char plane, UWORD position, char bit)
-{
-UWORD value;
-UWORD *address;
-
-address = bm->Planes[plane] + position;
-value = *address;
-
-return value & (1<<bit);
-}
-
-void SetPixel(struct BitMap *bm, int x, int y, UBYTE color)
-{
-UWORD position = y*bm->BytesPerRow + x/8;
-
-//calculate pixel to change in a word
-UWORD bit =  8 - x % 8;
-//change only selected pixel
-
-WritePlane(bm, 0, position, bit, color & 1);
-WritePlane(bm, 1, position, bit, (color>>1) & 1);
-WritePlane(bm, 2, position, bit, (color>>2) & 1);
-WritePlane(bm, 3, position, bit, (color>>3) & 1);
-//WritePlane(bm, 4, position, bit, 1); //alpha
-
-alpha[x][y] = 1;
-}
-
-void SetPixelByte(struct BitMap *bm, int x, int y, UBYTE color)
-{
-UWORD position = tableBytesPerRow[y] + tableDiv8[x];
-UBYTE col;
-UWORD *address;
-
-for(int i=0;i<DEPTH;i++)
-{
-
-if((color>>i) & 1)
-col = 0xff;
-else
-col = 0x00;
-address = bm->Planes[i];
-for(int a=0;a<8;a++)
-//*(bm->Planes[i] + position) = col;
-*address++ = col;
-}
-alpha[x][y] = 1;
-}
-*/
-void ClearScr(struct BitMap *bm)
-{
-	UWORD address;
-	/*	for(int i=0;i<bm->BytesPerRow * HEIGHT;i++)
-	{
-
-	for(int p=0;p<DEPTH;p++)
-	{
-	*(bm->Planes[p] + i) = 0x00;
-}
-}*/
-
-for(int depth=0; depth<DEPTH; depth++)
-{
-	UBYTE *displaymem = (UBYTE *)bm->Planes[depth];
-	BltClear(displaymem, (bm->BytesPerRow * bm->Rows), 1L);
-}
-}
-
-
-
-/*char GetPixel(struct BitMap *bm, int x, int y)
-{
-UWORD position = y*bm->BytesPerRow + x/8;
-
-//calculate pixel to change in a word
-UWORD bit =  8 - x % 8;
-//change only selected pixel
-
-return ReadPlane(bm, 4, position, bit);
-}*/
-
-void DrawHeightMap(struct BitMap *bm)
-{
-	for (int x = 0; x < 256; x++)
-	for (int y = 0; y < 256; y++)
-	{
-
-		SetPixel(bm,  x,  y, height[x][y]/16);
-		//SetAPen(rp, height[x][y] / 16);
-		//WritePixel(rp, x, y);
-	}
-}
