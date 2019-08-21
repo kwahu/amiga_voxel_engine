@@ -6,30 +6,6 @@
 #include <stddef.h>
 #include <hardware/custom.h>
 
-//---------------------------------------------------------------------- DEFINES
-
-// First OS interrupt is at offset 0x64 - each is 4 bytes wide
-#define SYSTEM_INT_VECTOR_FIRST (0x64/4)
-#define SYSTEM_INT_VECTOR_COUNT 7
-#define SYSTEM_INT_HANDLER_COUNT 15
-
-
-// Saved regs
-UWORD s_uwOsIntEna;
-UWORD s_uwOsDmaCon;
-UWORD s_uwAceDmaCon = 0;
-UWORD s_uwOsInitialDma;
-
-
-//#define REGPTR volatile * const
-#define CUSTOM_BASE 0xDFF000
-#define INTENAR 0xDFF09A //DFF01C //http://amiga-dev.wikidot.com/hardware:intenar
-#define INTREQ 0xDFF09C //http://amiga-dev.wikidot.com/hardware:intreqr
-#define DMACON 0xDFF096 //http://amiga-dev.wikidot.com/hardware:dmaconr
-
-//typedef struct Custom tCustom;
-//tCustom FAR REGPTR g_pCustom = (tCustom REGPTR)CUSTOM_BASE;
-
 //m68k-amigaos-gcc -s -O2 -noixemul -m68020 -o engine engine.c
 
 /*
@@ -47,8 +23,6 @@ docker run --rm \
 #define PLANEWIDTH 40
 
 UBYTE height[256][256];
-UBYTE alpha[WIDTH/8][HEIGHT/8];
-UBYTE color[WIDTH/8][HEIGHT/8];
 UBYTE fastPlane[DEPTH][PLANEWIDTH*HEIGHT];
 
 
@@ -72,7 +46,6 @@ ULONG kolory[] = { 0x00100000,
 	0x00000000
 };
 
-int divTableMaxH = 256;
 float mapScaleH;
 float mapScaleX;
 float mapScaleY;
@@ -87,7 +60,6 @@ int pixelsDrawn = 0;
 int pixelsChecked = 0;
 int pixelsRead = 0;
 int linesDrawn = 0;
-UBYTE col[DEPTH];
 UWORD *address;
 UWORD position;
 
@@ -156,13 +128,13 @@ void DrawTerrain(struct BitMap *bm,struct RastPort *rp)
 			{
 				pixelsDrawn++;
 				color = 1+th/16;
-				position = ((31-sy)*8)*40 + sx;
+				position = ((31-sy)*8)*40 + sx;//OK
 				//******************DRAW
 				for(line=0;line<8;line++)
 				{
 					for(plane=0;plane<DEPTH;plane++)
 					{
-						if((color>>plane) & 1) fastPlane[plane][position] = 0xff; else fastPlane[plane][position] = 0x00;
+						if((color>>plane) & 1) fastPlane[plane][position] = 0xff; else fastPlane[plane][position] = 0x00;//OK
 					}
 					position+=40;
 				}
@@ -179,7 +151,7 @@ void DrawTerrain(struct BitMap *bm,struct RastPort *rp)
 		while(sy < TERRAINDEPTH)
 		{
 			sy++;
-			position = ((31-sy)*8)*40 + sx;
+			position = ((31-sy)*8)*40 + sx;//OK
 			//******************DRAW
 			for(line=0;line<8;line++)
 			{
