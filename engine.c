@@ -49,13 +49,13 @@ ULONG kolory[] = { 0x00100000,
 float mapScaleH;
 float mapScaleX;
 float mapScaleY;
-float xStart, yStart;
-float xPos, yPos;
-int currentHeight;
+int xStart, yStart;
+int xPos, yPos;
+int currentHeight = 10;
 int heightAheadRange;
-float flightHeight;
+int flightHeight;
 int horizon;
-float speed = 1;
+int speed = 1;
 int pixelsDrawn = 0;
 int pixelsChecked = 0;
 int pixelsRead = 0;
@@ -72,7 +72,7 @@ void ReadFile(char name[])
 		for (int x = 0; x < 256; x++)
 		for (int y = 0; y < 256; y++)
 		{
-			height[x][y] = getc(file);
+			height[x][y] = getc(file)/2;
 		}
 		fclose(file);
 	}
@@ -80,58 +80,73 @@ void ReadFile(char name[])
 
 void ClearFastPlane(struct BitMap *bm)
 {
-    for(int p=0;p<DEPTH;p++) {
-        CopyMemQuick(fastPlane[p], bm->Planes[p], PLANEWIDTH*HEIGHT);
-    }
+	for(int p=0;p<DEPTH;p++) {
+		CopyMemQuick(fastPlane[p], bm->Planes[p], PLANEWIDTH*HEIGHT);
+	}
 }
 
-#define TERRAINDEPTH 30
+#define TERRAINDEPTH 50
+#define XSIZE 20
+#define YSIZE 60
+#define PIXELHEIGHT 2
 
-WORD rayCastX[40][TERRAINDEPTH];
-WORD rayCastY[32][TERRAINDEPTH];
+BYTE rayCastX[XSIZE*2][TERRAINDEPTH];
+BYTE rayCastY[YSIZE*2][TERRAINDEPTH];
 
 void CalculateTables()
 {
-	for(float sx=-20;sx<20;sx++)
-	for(float sy=-16;sy<16;sy++)
+	float tzz;
+	int sxx;
+	int syy;
+
 	for(float tz=1;tz<TERRAINDEPTH;tz++)
 	{
-		rayCastX[20+(int)sx][(int)tz] = (WORD)(sx * tz/8);
-		rayCastY[16+(int)sy][(int)tz] = (WORD)(sy * tz/8);
+		tzz = tz/8;
+		for(int sx=-XSIZE;sx<XSIZE;sx++)
+		{
+			sxx = sx * tzz;
+
+			for(int sy=-YSIZE;sy<YSIZE;sy++)
+			{
+				syy = sy * tzz;
+				rayCastX[XSIZE+(int)sx][(int)tz] = sxx;
+				rayCastY[YSIZE+(int)sy][(int)tz] = syy;
+			}
+		}
 	}
 }
 
 void DrawTerrain(struct BitMap *bm,struct RastPort *rp)
 {
-	//currentHeight = flightHeight + height[(int)(xPos * mapScaleX)][(int)((yPos+heightAheadRange) * mapScaleY )];
+	currentHeight = (currentHeight*9 + flightHeight + height[xPos][yPos+heightAheadRange])/10;
 	UBYTE color;
-	BYTE sx,sy,tz,line,plane;
+	UBYTE sx,sy,tz,line,plane;
 	WORD rayHeight;
 	UBYTE tx;//screen x offest on terrain - perspective change with depth
 	UBYTE ty;
 	UBYTE th;
 
-	for(sx=0;sx<40;sx++)
+	for(sx=0;sx<XSIZE*2;sx++)
 	{
 		sy = 0;
 		tz = 0;
-		while(tz < TERRAINDEPTH)
+		while(tz < TERRAINDEPTH && sy <YSIZE*2)
 		{
 			pixelsChecked++;
-			rayHeight = flightHeight + rayCastY[sy][tz];
+			rayHeight = currentHeight + rayCastY[sy][tz];
 			tx = xPos + rayCastX[sx][tz];//screen x offest on terrain - perspective change with depth
 			ty = yPos + tz;
-			//th = height[tx][ty];
-			th = test[(tx << 8) | ty];
+			th = height[tx][ty];
+			//th = test[(tx << 8) | ty];
 			//height to look for at a given x,y terrain coordinate accounting for z depth
 			//************************************************************8
 			if(th>rayHeight)
 			{
-				pixelsDrawn++;
+				//pixelsDrawn++;
 				color = 1+th/16;
-				position = ((31-sy)*8)*40 + sx;//OK
+				position = ((YSIZE*2-sy)*PIXELHEIGHT)*PLANEWIDTH + sx;//OK
 				//******************DRAW
-				for(line=0;line<8;line++)
+				for(line=0;line<PIXELHEIGHT;line++)
 				{
 					for(plane=0;plane<DEPTH;plane++)
 					{
@@ -141,7 +156,7 @@ void DrawTerrain(struct BitMap *bm,struct RastPort *rp)
 				}
 				//******************DRAW
 				sy++;
-				tz++;
+				//tz++;
 			}
 			else
 			{
@@ -149,12 +164,12 @@ void DrawTerrain(struct BitMap *bm,struct RastPort *rp)
 			}
 		}
 		//finish vertical line with 0x00
-		while(sy < TERRAINDEPTH)
+		while(sy < YSIZE*2)
 		{
 			sy++;
-			position = ((31-sy)*8)*40 + sx;//OK
+			position = ((YSIZE*2-sy)*PIXELHEIGHT)*PLANEWIDTH + sx;//OK
 			//******************DRAW
-			for(line=0;line<8;line++)
+			for(line=0;line<PIXELHEIGHT;line++)
 			{
 				for(plane=0;plane<DEPTH;plane++)
 				{
@@ -163,6 +178,7 @@ void DrawTerrain(struct BitMap *bm,struct RastPort *rp)
 				position+=40;
 			}
 		}
+
 	}
 }
 
@@ -185,15 +201,15 @@ int main(void)
 		mapScaleX = 4;
 		mapScaleY = 4;
 
-		xStart = 50;
+		xStart = 0;
 		yStart = 0;
 
 		xPos = xStart;
 		yPos = yStart;
 
-		heightAheadRange = 2;
+		heightAheadRange = 10;
 
-		flightHeight = 0;
+		flightHeight = 10;
 
 		ReadFile("height.raw");
 
@@ -206,13 +222,13 @@ int main(void)
 
 			CalculateTables();
 
-			for(int i=0;i<100;i++)
+			for(int i=0;i<200;i++)
 			{
 				DrawTerrain(bm,rp);
 				ClearFastPlane(bm);
 				//flightHeight += 1;
 				yPos += 1;
-				//xPos += 10;
+				xPos += 1;
 			}
 			//Delay(100);
 			CloseScreen(screen);
