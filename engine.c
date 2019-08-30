@@ -6,7 +6,7 @@
 #include <stddef.h>
 #include <hardware/custom.h>
 
-//m68k-amigaos-gcc -s -O2 -noixemul -m68020 -o engine engine.c
+//m68k-amigaos-gcc -s -O3 -noixemul -o engine engine.c
 
 /*
 docker run --rm \
@@ -72,7 +72,7 @@ void ReadFile(char name[])
 		for (int x = 0; x < 256; x++)
 		for (int y = 0; y < 256; y++)
 		{
-			height[x][y] = getc(file)/2;
+			height[x][y] = getc(file);
 		}
 		fclose(file);
 	}
@@ -85,13 +85,13 @@ void ClearFastPlane(struct BitMap *bm)
 	}
 }
 
-#define TERRAINDEPTH 50
+#define TERRAINDEPTH 150
 #define XSIZE 20
-#define YSIZE 60
-#define PIXELHEIGHT 2
+#define YSIZE 16
+#define PIXELHEIGHT 8
 
-BYTE rayCastX[XSIZE*2][TERRAINDEPTH];
-BYTE rayCastY[YSIZE*2][TERRAINDEPTH];
+WORD rayCastX[XSIZE*2][TERRAINDEPTH];
+WORD rayCastY[YSIZE*2][TERRAINDEPTH];
 
 void CalculateTables()
 {
@@ -195,21 +195,23 @@ int main(void)
 		TAG_DONE);
 
 
-		horizon = HEIGHT / 2;
+	//	horizon = HEIGHT / 2;
 
-		mapScaleH = 10;
-		mapScaleX = 4;
-		mapScaleY = 4;
+	//	mapScaleH = 10;
+	//	mapScaleX = 4;
+	//	mapScaleY = 4;
 
-		xStart = 0;
+		xStart = 64;
 		yStart = 0;
 
 		xPos = xStart;
 		yPos = yStart;
 
-		heightAheadRange = 10;
+		heightAheadRange = 5;
 
-		flightHeight = 10;
+		flightHeight = 0;
+
+		currentHeight = flightHeight;
 
 		ReadFile("height.raw");
 
@@ -226,9 +228,9 @@ int main(void)
 			{
 				DrawTerrain(bm,rp);
 				ClearFastPlane(bm);
-				//flightHeight += 1;
+				flightHeight += 1;
 				yPos += 1;
-				xPos += 1;
+				//xPos -= 1;
 			}
 			//Delay(100);
 			CloseScreen(screen);
