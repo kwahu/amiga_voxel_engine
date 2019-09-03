@@ -24,7 +24,6 @@ docker run --rm \
 
 UBYTE height[256][256];
 UBYTE fastPlane[DEPTH][PLANEWIDTH*HEIGHT];
-UBYTE *test = height;
 
 ULONG kolory[] = { 0x00100000,
 	0x00000000, 0x00000000, 0x00000000,
@@ -46,22 +45,13 @@ ULONG kolory[] = { 0x00100000,
 	0x00000000
 };
 
-float mapScaleH;
-float mapScaleX;
-float mapScaleY;
 int xStart, yStart;
 int xPos, yPos;
-int currentHeight = 10;
+int currentHeight;
 int heightAheadRange;
 int flightHeight;
 int horizon;
-int speed = 1;
-int pixelsDrawn = 0;
-int pixelsChecked = 0;
-int pixelsRead = 0;
-int linesDrawn = 0;
-UWORD *address;
-UWORD position;
+
 
 void ReadFile(char name[])
 {
@@ -86,31 +76,29 @@ void ClearFastPlane(struct BitMap *bm)
 }
 
 #define TERRAINDEPTH 150
-#define XSIZE 20
-#define YSIZE 16
+#define XSIZE 40
+#define YSIZE 30
 #define PIXELHEIGHT 8
 
-WORD rayCastX[XSIZE*2][TERRAINDEPTH];
-WORD rayCastY[YSIZE*2][TERRAINDEPTH];
+WORD rayCastX[XSIZE][TERRAINDEPTH];
+WORD rayCastY[YSIZE][TERRAINDEPTH];
 
 void CalculateTables()
 {
-	float tzz;
 	int sxx;
 	int syy;
 
-	for(float tz=1;tz<TERRAINDEPTH;tz++)
+	for(int tz=1;tz<TERRAINDEPTH;tz++)
 	{
-		tzz = tz/8;
-		for(int sx=-XSIZE;sx<XSIZE;sx++)
+		for(int sx=-XSIZE/2;sx<XSIZE/2;sx++)
 		{
-			sxx = sx * tzz;
+			sxx = sx * tz;
 
-			for(int sy=-YSIZE;sy<YSIZE;sy++)
+			for(int sy=-YSIZE/2;sy<YSIZE/2;sy++)
 			{
-				syy = sy * tzz;
-				rayCastX[XSIZE+(int)sx][(int)tz] = sxx;
-				rayCastY[YSIZE+(int)sy][(int)tz] = syy;
+				syy = sy * tz;
+				rayCastX[XSIZE+sx][tz] = sxx/8;
+				rayCastY[YSIZE+sy][tz] = syy/8;
 			}
 		}
 	}
@@ -125,38 +113,37 @@ void DrawTerrain(struct BitMap *bm,struct RastPort *rp)
 	UBYTE tx;//screen x offest on terrain - perspective change with depth
 	UBYTE ty;
 	UBYTE th;
+	UWORD position;
 
-	for(sx=0;sx<XSIZE*2;sx++)
+	for(sx=0;sx<XSIZE;sx++)
 	{
 		sy = 0;
 		tz = 0;
-		while(tz < TERRAINDEPTH && sy <YSIZE*2)
+		while(tz < TERRAINDEPTH && sy <YSIZE)
 		{
 			pixelsChecked++;
 			rayHeight = currentHeight + rayCastY[sy][tz];
 			tx = xPos + rayCastX[sx][tz];//screen x offest on terrain - perspective change with depth
 			ty = yPos + tz;
 			th = height[tx][ty];
-			//th = test[(tx << 8) | ty];
+
 			//height to look for at a given x,y terrain coordinate accounting for z depth
 			//************************************************************8
 			if(th>rayHeight)
 			{
-				//pixelsDrawn++;
+
 				color = 1+th/16;
-				position = ((YSIZE*2-sy)*PIXELHEIGHT)*PLANEWIDTH + sx;//OK
-				//******************DRAW
+				position = ((YSIZE-sy)*PIXELHEIGHT)*PLANEWIDTH + sx;//OK
+
 				for(line=0;line<PIXELHEIGHT;line++)
 				{
 					for(plane=0;plane<DEPTH;plane++)
 					{
 						if((color>>plane) & 1) fastPlane[plane][position] = 0xff; else fastPlane[plane][position] = 0x00;//OK
 					}
-					position+=40;
+					position+=PLANEWIDTH;
 				}
-				//******************DRAW
 				sy++;
-				//tz++;
 			}
 			else
 			{
@@ -164,18 +151,18 @@ void DrawTerrain(struct BitMap *bm,struct RastPort *rp)
 			}
 		}
 		//finish vertical line with 0x00
-		while(sy < YSIZE*2)
+		while(sy < YSIZE)
 		{
 			sy++;
-			position = ((YSIZE*2-sy)*PIXELHEIGHT)*PLANEWIDTH + sx;//OK
-			//******************DRAW
+			position = ((YSIZE-sy)*PIXELHEIGHT)*PLANEWIDTH + sx;
+
 			for(line=0;line<PIXELHEIGHT;line++)
 			{
 				for(plane=0;plane<DEPTH;plane++)
 				{
 					fastPlane[plane][position] = 0xff;
 				}
-				position+=40;
+				position+=PLANEWIDTH;
 			}
 		}
 
@@ -193,13 +180,6 @@ int main(void)
 		SA_Depth,     DEPTH,
 		SA_Quiet,     TRUE,
 		TAG_DONE);
-
-
-	//	horizon = HEIGHT / 2;
-
-	//	mapScaleH = 10;
-	//	mapScaleX = 4;
-	//	mapScaleY = 4;
 
 		xStart = 64;
 		yStart = 0;
@@ -228,14 +208,13 @@ int main(void)
 			{
 				DrawTerrain(bm,rp);
 				ClearFastPlane(bm);
-				flightHeight += 1;
+			//	flightHeight += 1;
 				yPos += 1;
 				//xPos -= 1;
 			}
-			//Delay(100);
 			CloseScreen(screen);
 		}
-		printf("seconds=%ld pixelsDrawn=%d pixelsChecked=%d pixelsRead=%d linesDrawn=%d", 0,pixelsDrawn, pixelsChecked, pixelsRead, linesDrawn);
+	//	printf("seconds=%ld pixelsDrawn=%d pixelsChecked=%d pixelsRead=%d linesDrawn=%d", 0,pixelsDrawn, pixelsChecked, pixelsRead, linesDrawn);
 
 		return 0;
 	}
