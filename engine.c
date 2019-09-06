@@ -75,13 +75,13 @@ void ClearFastPlane(struct BitMap *bm)
 	}
 }
 
-#define TERRAINDEPTH 150
+#define TERRAINDEPTH 100
 #define XSIZE 40
-#define YSIZE 30
-#define PIXELHEIGHT 8
+#define YSIZE 60
+#define PIXELHEIGHT 4
 
-WORD rayCastX[XSIZE][TERRAINDEPTH];
-WORD rayCastY[YSIZE][TERRAINDEPTH];
+BYTE rayCastX[XSIZE][TERRAINDEPTH];
+BYTE rayCastY[YSIZE][TERRAINDEPTH];
 
 void CalculateTables()
 {
@@ -97,8 +97,8 @@ void CalculateTables()
 			for(int sy=-YSIZE/2;sy<YSIZE/2;sy++)
 			{
 				syy = sy * tz;
-				rayCastX[XSIZE+sx][tz] = sxx/8;
-				rayCastY[YSIZE+sy][tz] = syy/8;
+				rayCastX[XSIZE/2+sx][tz] = sxx/16;
+				rayCastY[YSIZE/2+sy][tz] = syy/16;
 			}
 		}
 	}
@@ -106,7 +106,7 @@ void CalculateTables()
 
 void DrawTerrain(struct BitMap *bm,struct RastPort *rp)
 {
-	currentHeight = (currentHeight*9 + flightHeight + height[xPos][yPos+heightAheadRange])/10;
+	currentHeight = (currentHeight*3 + flightHeight + height[xPos][yPos+heightAheadRange])/4;
 	UBYTE color;
 	UBYTE sx,sy,tz,line,plane;
 	WORD rayHeight;
@@ -121,7 +121,6 @@ void DrawTerrain(struct BitMap *bm,struct RastPort *rp)
 		tz = 0;
 		while(tz < TERRAINDEPTH && sy <YSIZE)
 		{
-			pixelsChecked++;
 			rayHeight = currentHeight + rayCastY[sy][tz];
 			tx = xPos + rayCastX[sx][tz];//screen x offest on terrain - perspective change with depth
 			ty = yPos + tz;
@@ -132,7 +131,7 @@ void DrawTerrain(struct BitMap *bm,struct RastPort *rp)
 			if(th>rayHeight)
 			{
 
-				color = 1+th/16;
+				color = 1+th/8;
 				position = ((YSIZE-sy)*PIXELHEIGHT)*PLANEWIDTH + sx;//OK
 
 				for(line=0;line<PIXELHEIGHT;line++)
@@ -189,7 +188,7 @@ int main(void)
 
 		heightAheadRange = 5;
 
-		flightHeight = 0;
+		flightHeight = 10;
 
 		currentHeight = flightHeight;
 
@@ -204,7 +203,7 @@ int main(void)
 
 			CalculateTables();
 
-			for(int i=0;i<200;i++)
+			for(int i=0;i<100;i++)
 			{
 				DrawTerrain(bm,rp);
 				ClearFastPlane(bm);
