@@ -4,6 +4,7 @@
 CMakeFiles/engine.dir/src/engine.c.obj: src/engine.c
 CMakeFiles/engine.dir/src/engine.c.obj: src/engine.h
 CMakeFiles/engine.dir/src/engine.c.obj: deps/ace/include/ace/macros.h
+CMakeFiles/engine.dir/src/engine.c.obj: deps/ace/include/ace/managers/blit.h
 CMakeFiles/engine.dir/src/engine.c.obj: deps/ace/include/ace/managers/copper.h
 CMakeFiles/engine.dir/src/engine.c.obj: deps/ace/include/ace/managers/game.h
 CMakeFiles/engine.dir/src/engine.c.obj: deps/ace/include/ace/managers/key.h

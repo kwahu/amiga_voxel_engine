@@ -21,6 +21,8 @@ ace/managers/timer.h
 -
 ace/managers/system.h
 -
+ace/managers/blit.h
+-
 ace/utils/file.h
 -
 
@@ -28,6 +30,24 @@ ace/utils/file.h
 
 deps/ace/include/ace/macros.h
 ace/types.h
+-
+
+deps/ace/include/ace/managers/blit.h
+exec/interrupts.h
+-
+hardware/dmabits.h
+-
+hardware/intbits.h
+-
+ace/types.h
+-
+ace/managers/log.h
+-
+ace/managers/memory.h
+-
+ace/utils/custom.h
+-
+ace/utils/bitmap.h
 -
 
 deps/ace/include/ace/managers/copper.h

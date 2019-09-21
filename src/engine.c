@@ -5,6 +5,7 @@
 #include <ace/managers/game.h>
 #include <ace/managers/timer.h>
 #include <ace/managers/system.h>
+#include <ace/managers/blit.h>
 #include <ace/utils/file.h>
 
 /*
@@ -29,7 +30,7 @@ UWORD kolory[] = {
 };
 
 int xStart, yStart;
-int xPos, yPos;
+UBYTE xPos, yPos;
 int currentHeight;
 int heightAheadRange;
 int flightHeight;
@@ -52,17 +53,31 @@ static void ReadFile(const char *name)
 static void ClearFastPlane(tBitMap *bm)
 {
 	for(int p=0;p<DEPTH;p++) {
+		/*
+			tBitMap *pSrc, WORD wSrcX, WORD wSrcY,
+			tBitMap *pDst, WORD wDstX, WORD wDstY, WORD wWidth, WORD wHeight,
+			UBYTE ubMinterm, UBYTE ubMask
+			*/
+		/*blitUnsafeCopy(
+			fastPlane[p], 0, 0,
+			bm->Planes[p], 0,0, WIDTH, HEIGHT,
+			 0x00, 0xff
+		);*/
+		/*for(int i=0;i<PLANEWIDTH*HEIGHT/4;i++)
+		{
+
+		}*/
 		CopyMemQuick(fastPlane[p], bm->Planes[p], PLANEWIDTH*HEIGHT);
 	}
 }
 
-#define TERRAINDEPTH 150
+#define TERRAINDEPTH 100
 #define XSIZE 40
-#define YSIZE 30
-#define PIXELHEIGHT 8
+#define YSIZE 60
+#define PIXELHEIGHT 4
 
-WORD rayCastX[XSIZE][TERRAINDEPTH];
-WORD rayCastY[YSIZE][TERRAINDEPTH];
+BYTE rayCastX[XSIZE][TERRAINDEPTH];
+BYTE rayCastY[YSIZE][TERRAINDEPTH];
 
 static void CalculateTables()
 {
@@ -78,8 +93,8 @@ static void CalculateTables()
 			for(int sy=-YSIZE/2;sy<YSIZE/2;sy++)
 			{
 				syy = sy * tz;
-				rayCastX[XSIZE/2+sx][tz] = sxx/8;
-				rayCastY[YSIZE/2+sy][tz] = syy/8;
+				rayCastX[XSIZE/2+sx][tz] = sxx/24;
+				rayCastY[YSIZE/2+sy][tz] = syy/24;
 			}
 		}
 	}
@@ -88,63 +103,78 @@ static void CalculateTables()
 static void DrawTerrain(void) {
 	currentHeight = (currentHeight*3 + flightHeight + height[xPos][yPos+heightAheadRange])/4;
 	UBYTE color;
-	UBYTE sx,sy,tz,line,plane;
-	WORD rayHeight;
-	UBYTE tx;//screen x offest on terrain - perspective change with depth
-	UBYTE ty;
+	UBYTE sx,sy,tz,plane;
 	UBYTE th;
-	UWORD position;
+	UWORD bits;
+	UWORD position,p2,p3,p4;
+	UWORD pixelYOffset;
+	UWORD startPosition;
+
+  pixelYOffset = PIXELHEIGHT*PLANEWIDTH;
+	startPosition = YSIZE*PIXELHEIGHT*PLANEWIDTH;
 
 	for(sx=0;sx<XSIZE;sx++)
 	{
 		sy = 0;
 		tz = 0;
+		position = startPosition + sx;
+
 		while(tz < TERRAINDEPTH && sy <YSIZE)
 		{
-			rayHeight = currentHeight + rayCastY[sy][tz];
-			tx = xPos + rayCastX[sx][tz];//screen x offest on terrain - perspective change with depth
-			ty = yPos + tz;
-			th = height[tx][ty];
-
+			th = height[ xPos + rayCastX[sx][tz]*2 ][ yPos + tz ]/2;
 			//height to look for at a given x,y terrain coordinate accounting for z depth
-			//************************************************************8
-			if(th>rayHeight)
+			//************************************************************
+			if(th>currentHeight + rayCastY[sy][tz])
 			{
-
 				color = 1+th/16;
-				position = ((YSIZE-sy)*PIXELHEIGHT)*PLANEWIDTH + sx;//OK
+				p2 = position+40;
+				p3 = position+80;
+				p4 = position+120;
 
-				for(line=0;line<PIXELHEIGHT;line++)
+				for(plane=0;plane<DEPTH;plane++)
 				{
-					for(plane=0;plane<DEPTH;plane++)
+					if((color>>plane) & 1) bits = 0xff;
+					else bits = 0x00;
+
+					if(fastPlane[plane][position] != bits)
 					{
-						if((color>>plane) & 1) fastPlane[plane][position] = 0xff; else fastPlane[plane][position] = 0x00;//OK
+						fastPlane[plane][position] = bits;
+						fastPlane[plane][p2] = bits;
+						fastPlane[plane][p3] = bits;
+						fastPlane[plane][p4] = bits;
 					}
-					position+=PLANEWIDTH;
 				}
 				sy++;
+				position -= pixelYOffset;
 			}
 			else
 			{
-				tz++;
+				tz+=1+tz/8;
 			}
 		}
 		//finish vertical line with 0xff
+
+
 		while(sy < YSIZE)
 		{
 			sy++;
-			position = ((YSIZE-sy)*PIXELHEIGHT)*PLANEWIDTH + sx;
+			position -= pixelYOffset;
 
-			for(line=0;line<PIXELHEIGHT;line++)
+			p2 = position+40;
+			p3 = position+80;
+			p4 = position+120;
+
+			for(plane=0;plane<DEPTH;plane++)
 			{
-				for(plane=0;plane<DEPTH;plane++)
+				if(fastPlane[plane][position] != 0xff)
 				{
 					fastPlane[plane][position] = 0xff;
+					fastPlane[plane][p2] = 0xff;
+					fastPlane[plane][p3] = 0xff;
+					fastPlane[plane][p4] = 0xff;
 				}
-				position+=PLANEWIDTH;
 			}
 		}
-
 	}
 }
 
@@ -180,7 +210,7 @@ TAG_END);
 memcpy(s_pVPort->pPalette, kolory, 16 * sizeof(UWORD));
 //viewUpdateCLUT(s_pView);
 
-	xStart = 64;
+	xStart = 100;
 	yStart = 0;
 
 	xPos = xStart;
@@ -188,7 +218,7 @@ memcpy(s_pVPort->pPalette, kolory, 16 * sizeof(UWORD));
 
 	heightAheadRange = 5;
 
-	flightHeight = 10;
+	flightHeight = 15;
 
 	ReadFile("height.raw");
 	CalculateTables();
@@ -200,8 +230,8 @@ memcpy(s_pVPort->pPalette, kolory, 16 * sizeof(UWORD));
 }
 
 void engineGsLoop(void) {
-	static UBYTE i = 0;
-	if(++i == 200) {
+	static int i = 0;
+	if(++i == 300) {
 		gameClose();
 		return;
 	}
@@ -210,7 +240,7 @@ void engineGsLoop(void) {
 	ClearFastPlane(s_pBuffer->pBack);
 	//flightHeight += 1;
 	yPos += 1;
-	//xPos += 10;
+//	xPos += 1;
 	logAvgEnd(s_pAvgTime);
 }
 
