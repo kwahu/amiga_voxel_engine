@@ -16,18 +16,20 @@ docker run --rm \
 -it amigadev/crosstools:m68k-amigaos bash
 */
 
-#define WIDTH 320
+//#define WIDTH 320
 #define HEIGHT 256
 #define DEPTH 4
+#define COLORS 16
 #define PLANEWIDTH 40
-#define TERRAINDEPTH 100
-#define XSIZE 40
-#define YSIZE 60
-#define PIXELHEIGHT 4
+#define TERRAINDEPTH 60
+#define XSIZE PLANEWIDTH*2
+#define YSIZE 64
+//#define PIXELHEIGHT 4
 
 UBYTE height[256][256];
+UBYTE colorMap[256][256];
 UBYTE screen[XSIZE*YSIZE];
-UBYTE fastPlane[DEPTH][PLANEWIDTH*HEIGHT];
+//UBYTE fastPlane[DEPTH][PLANEWIDTH*HEIGHT];
 
 UBYTE fastPlane1[PLANEWIDTH*HEIGHT];
 UBYTE fastPlane2[PLANEWIDTH*HEIGHT];
@@ -37,10 +39,15 @@ UBYTE fastPlane4[PLANEWIDTH*HEIGHT];
 WORD rayCastX[XSIZE][TERRAINDEPTH];
 WORD rayCastY[YSIZE][TERRAINDEPTH];
 
-UWORD kolory[] = {
-	0xbfb,0x343,0x363,0x383,0x3a3,0x3c3,0x3e3,0x3f3,
+UWORD kolory[COLORS];
+/*{
+	0x040,0x242,0x363,0x383,0x3a3,0x3c3,0x3e3,0x3f3,
 	0x4f4,0x5f5,0x6f6,0x7f7,0x8f8,0x9f9,0xafa,0x99f
-};
+};*/
+
+UBYTE colorByte[COLORS][COLORS][DEPTH];
+
+
 
 int xStart, yStart;
 UBYTE xPos, yPos;
@@ -50,7 +57,7 @@ int flightHeight;
 int horizon;
 int turn;
 
-static void ReadFile(const char *name)
+static void ReadHeight(const char *name)
 {
 	tFile *file;
 	file = fileOpen(name, "r");
@@ -58,6 +65,37 @@ static void ReadFile(const char *name)
 		for (int x = 0; x < 256; x++) {
 			for (int y = 0; y < 256; y++) {
 				fileRead(file, &height[x][y], 1);
+			}
+		}
+		fileClose(file);
+	}
+}
+static void ReadPalette(const char *name)
+{
+	char r,g,b;
+	tFile *file;
+	file = fileOpen(name, "r");
+	if (file)
+	{
+		for(int i=0;i<12;i++)
+		{
+				fileRead(file, &r, 1);
+				fileRead(file, &g, 1);
+				fileRead(file, &b, 1);
+				kolory[i] = r*256 + g*16 + b;
+		}
+		fileClose(file);
+	}
+	kolory[15] = 0xaaf;
+}
+static void ReadColor(const char *name)
+{
+	tFile *file;
+	file = fileOpen(name, "r");
+	if (file) {
+		for (int x = 0; x < 256; x++) {
+			for (int y = 0; y < 256; y++) {
+				fileRead(file, &colorMap[x][y], 1);
 			}
 		}
 		fileClose(file);
@@ -109,7 +147,7 @@ static void CalculateTables()
 		}
 	}
 }
-
+/*
 static void DrawByte(UBYTE color,UWORD position,UWORD p2,UWORD p3,UWORD p4 )
 {
 	UWORD bits;
@@ -126,6 +164,16 @@ static void DrawByte(UBYTE color,UWORD position,UWORD p2,UWORD p3,UWORD p4 )
 			fastPlane[plane][p4] = bits;
 		}
 	}
+}*/
+
+static void GenerateColorBytes()
+{
+	for(int a=0;a<COLORS;a++)
+	for(int b=0;b<COLORS;b++)
+	for(int plane=0;plane<DEPTH;plane++)
+	{
+		colorByte[a][b][plane] = ((a>>plane) & 1)*240 + ((b>>plane) & 1)*15;
+	}
 }
 
 static void DrawScreen()
@@ -139,140 +187,44 @@ static void DrawScreen()
 
 	for(UWORD y=0;y<YSIZE;y++)
 	{
-		p1 = y*40*4;
-		p2 = p1+40;
-		p3 = p2+40;
-		p4 = p3+40;
+		p1 = y*PLANEWIDTH*4;
+		p2 = p1+PLANEWIDTH;
+		p3 = p2+PLANEWIDTH;
+		p4 = p3+PLANEWIDTH;
 
-		for(UWORD x=0;x<XSIZE;x++)
+		for(UWORD x=0;x<PLANEWIDTH;x++)
 		{
+			color1 = screen[sp];
+			color2 = screen[sp+1];
 
+			fastPlane1[p1] = colorByte[ color1 ][ color2 ][ 0 ];
+			fastPlane1[p2] = colorByte[ color1 ][ color2 ][ 0 ];
+			fastPlane1[p3] = colorByte[ color1 ][ color2 ][ 0 ];
+			fastPlane1[p4] = colorByte[ color1 ][ color2 ][ 0 ];
 
+			fastPlane2[p1] = colorByte[ color1 ][ color2 ][ 1 ];
+			fastPlane2[p2] = colorByte[ color1 ][ color2 ][ 1 ];
+			fastPlane2[p3] = colorByte[ color1 ][ color2 ][ 1 ];
+			fastPlane2[p4] = colorByte[ color1 ][ color2 ][ 1 ];
 
-			/*	color1 = screen[p1];
-			color2 = screen[p1+1];
-			if((color1>>0) & 1) color = 0xff00; else color = 0x0000;
-			if((color2>>0) & 1) color = color | 0x00ff; else color = color | 0x0000;
-			fastPlane1[p1/2] = color;
+			fastPlane3[p1] = colorByte[ color1 ][ color2 ][ 2 ];
+			fastPlane3[p2] = colorByte[ color1 ][ color2 ][ 2 ];
+			fastPlane3[p3] = colorByte[ color1 ][ color2 ][ 2 ];
+			fastPlane3[p4] = colorByte[ color1 ][ color2 ][ 2 ];
 
-			if((color1>>1) & 1) color = 0xff00; else color = 0x0000;
-			if((color2>>1) & 1) color = color | 0x00ff; else color = color | 0x0000;
-			fastPlane2[p1/2] = color;
+			fastPlane4[p1] = colorByte[ color1 ][ color2 ][ 3 ];
+			fastPlane4[p2] = colorByte[ color1 ][ color2 ][ 3 ];
+			fastPlane4[p3] = colorByte[ color1 ][ color2 ][ 3 ];
+			fastPlane4[p4] = colorByte[ color1 ][ color2 ][ 3 ];
 
-			if((color1>>2) & 1) color = 0xff00; else color = 0x0000;
-			if((color2>>2) & 1) color = color | 0x00ff; else color = color | 0x0000;
-			fastPlane3[p1/2] = color;
-
-			if((color1>>3) & 1) color = 0xff00; else color = 0x0000;
-			if((color2>>3) & 1) color = color | 0x00ff; else color = color | 0x0000;
-			fastPlane4[p1/2] = color;*/
-
-			color = screen[sp];
-			sp++;
-			if((color>>0) & 1)
-			{
-				if(fastPlane1[p1] != 0xff)
-				{
-					fastPlane1[p1] = 0xff;
-					fastPlane1[p2] = 0xff;
-					fastPlane1[p3] = 0xff;
-					fastPlane1[p4] = 0xff;
-				}
-
-			}
-			else
-			{
-				if(fastPlane1[p1] != 0xff)
-				{
-					fastPlane1[p1] = 0x00;
-					fastPlane1[p2] = 0x00;
-					fastPlane1[p3] = 0x00;
-					fastPlane1[p4] = 0x00;
-				}
-			}
-			if((color>>1) & 1)
-			{
-				if(fastPlane2[p1] != 0xff)
-				{
-					fastPlane2[p1] = 0xff;
-					fastPlane2[p2] = 0xff;
-					fastPlane2[p3] = 0xff;
-					fastPlane2[p4] = 0xff;
-				}
-			}
-			else
-			{
-				if(fastPlane2[p1] != 0x00)
-				{
-					fastPlane2[p1] = 0x00;
-					fastPlane2[p2] = 0x00;
-					fastPlane2[p3] = 0x00;
-					fastPlane2[p4] = 0x00;
-				}
-			}
-
-			if((color>>2) & 1)
-			{
-				if(fastPlane3[p1] != 0xff)
-				{
-					fastPlane3[p1] = 0xff;
-					fastPlane3[p2] = 0xff;
-					fastPlane3[p3] = 0xff;
-					fastPlane3[p4] = 0xff;
-				}
-			}
-			else
-			{
-				if(fastPlane3[p1] != 0x00)
-				{
-					fastPlane3[p1] = 0x00;
-					fastPlane3[p2] = 0x00;
-					fastPlane3[p3] = 0x00;
-					fastPlane3[p4] = 0x00;
-				}
-			}
-			if((color>>3) & 1)
-			{
-				if(fastPlane4[p1] != 0xff)
-				{
-					fastPlane4[p1] = 0xff;
-					fastPlane4[p2] = 0xff;
-					fastPlane4[p3] = 0xff;
-					fastPlane4[p4] = 0xff;
-				}
-			}
-			else
-			{
-				if(fastPlane4[p1] != 0x00)
-				{
-					fastPlane4[p1] = 0x00;
-					fastPlane4[p2] = 0x00;
-					fastPlane4[p3] = 0x00;
-					fastPlane4[p4] = 0x00;
-				}
-			}
 			p1++;
 			p2++;
 			p3++;
 			p4++;
 
-			/*	for(UBYTE plane=0;plane<DEPTH;plane++)
-			{
-			if((color>>plane) & 1) bits = 0xff;
-			else bits = 0x00;
-
-			//if(fastPlane[plane][p1] != bits)
-			{
-			fastPlane[plane][p1] = bits;
-
-			//fastPlane[plane][x+y*40] = bits;
-			//fastPlane[plane][x+y*40] = bits;
-			//fastPlane[plane][x+y*40] = bits;
+			sp+=2;
 		}
-	}*/
-	//p1++;
-}
-}
+	}
 }
 
 static void DrawTerrain(void) {
@@ -281,13 +233,10 @@ static void DrawTerrain(void) {
 	UBYTE sx,sy,tz;
 	UBYTE th;
 	UWORD position;
+	UBYTE mx,my;
 
-	//	UWORD position,p2,p3,p4;
-	//	UWORD pixelYOffset;
 	UWORD startPosition;
-
-	//  pixelYOffset = PIXELHEIGHT*PLANEWIDTH;
-	startPosition = (YSIZE-1)*PLANEWIDTH;
+	startPosition = (YSIZE-1)*XSIZE;
 
 	for(sx=0;sx<XSIZE;sx++)
 	{
@@ -297,19 +246,21 @@ static void DrawTerrain(void) {
 
 		while(tz < TERRAINDEPTH && sy <YSIZE)
 		{
-			th = height[ xPos + rayCastX[sx][tz] ][ yPos + tz ];
+			mx = xPos + rayCastX[sx][tz];
+			my = yPos + tz;
+			th = height[ mx ][ my ]/2;
 			//height to look for at a given x,y terrain coordinate accounting for z depth
 			//************************************************************
 			if(th>currentHeight + rayCastY[sy][tz])
 			{
-				color = 1+th/8;
+				color = colorMap[mx][my];//th % 14;
 				screen[position] = color;
 				sy++;
-				position-=40;
+				position-=XSIZE;
 			}
 			else
 			{
-				tz+=1+tz/8;
+				tz+=1;//+tz/8;
 			}
 		}
 		//finish vertical line with 0xff
@@ -317,7 +268,7 @@ static void DrawTerrain(void) {
 		{
 			sy++;
 			screen[position] = 0x0f;
-			position-=40;
+			position-=XSIZE;
 		}
 	}
 }
@@ -351,7 +302,6 @@ void engineGsCreate(void) {
 				horizon = HEIGHT / 2;
 
 
-				memcpy(s_pVPort->pPalette, kolory, 16 * sizeof(UWORD));
 				//viewUpdateCLUT(s_pView);
 
 				xStart = 50;
@@ -364,8 +314,13 @@ void engineGsCreate(void) {
 
 				flightHeight = 15;
 
-				ReadFile("height.raw");
+				ReadHeight("height.raw");
+				ReadPalette("palette.raw");
+				ReadColor("color.raw");
 				CalculateTables();
+				GenerateColorBytes();
+
+				memcpy(s_pVPort->pPalette, kolory, 16 * sizeof(UWORD));
 
 				s_pAvgTime = logAvgCreate("perf", 100);
 
@@ -380,18 +335,19 @@ void engineGsCreate(void) {
 					gameClose();
 				}
 
-				/*	if(keyCheck(KEY_ESCAPE)) {
+			/*		if(keyCheck(KEY_ESCAPE)) {
 				gameClose();
 			}
 			else
 			{
-			if(keyCheck(KEY_UP))flightHeight--;
-			if(keyCheck(KEY_DOWN))flightHeight++;
-			if(keyCheck(KEY_RIGHT))turn+=10;
-			if(keyCheck(KEY_LEFT))turn-=10;*/
+			if(keyCheck(KEY_UP))yPos++;
+			if(keyCheck(KEY_DOWN))yPos--;
+			if(keyCheck(KEY_RIGHT))turn+=20;
+			if(keyCheck(KEY_LEFT))turn-=20;
+		}
 
-			//	turn /= 2;
-			//	xPos += turn/8;
+				turn -= turn/8;
+				xPos += turn/8;*/
 
 			logAvgBegin(s_pAvgTime);
 			DrawTerrain();
