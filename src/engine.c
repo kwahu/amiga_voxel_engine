@@ -36,18 +36,30 @@ UBYTE fastPlane2[PLANEWIDTH*HEIGHT];
 UBYTE fastPlane3[PLANEWIDTH*HEIGHT];
 UBYTE fastPlane4[PLANEWIDTH*HEIGHT];
 
+UWORD fastPlane1W[PLANEWIDTH*HEIGHT];
+UWORD fastPlane2W[PLANEWIDTH*HEIGHT];
+UWORD fastPlane3W[PLANEWIDTH*HEIGHT];
+UWORD fastPlane4W[PLANEWIDTH*HEIGHT];
+
 WORD rayCastX[XSIZE][TERRAINDEPTH];
 WORD rayCastY[YSIZE][TERRAINDEPTH];
 
 UWORD kolory[COLORS];
 /*{
-	0x040,0x242,0x363,0x383,0x3a3,0x3c3,0x3e3,0x3f3,
-	0x4f4,0x5f5,0x6f6,0x7f7,0x8f8,0x9f9,0xafa,0x99f
+0x040,0x242,0x363,0x383,0x3a3,0x3c3,0x3e3,0x3f3,
+0x4f4,0x5f5,0x6f6,0x7f7,0x8f8,0x9f9,0xafa,0x99f
 };*/
 
-UBYTE colorByte[COLORS][COLORS][DEPTH];
+UBYTE colorByte2[COLORS][COLORS][DEPTH];
+UWORD colorByte4p1[COLORS][COLORS][COLORS][COLORS];
+UWORD colorByte4p2[COLORS][COLORS][COLORS][COLORS];
+UWORD colorByte4p3[COLORS][COLORS][COLORS][COLORS];
+UWORD colorByte4p4[COLORS][COLORS][COLORS][COLORS];
 
-
+UWORD colorByte4p1Flat[COLORS*COLORS*COLORS*COLORS];
+UWORD colorByte4p2Flat[COLORS*COLORS*COLORS*COLORS];
+UWORD colorByte4p3Flat[COLORS*COLORS*COLORS*COLORS];
+UWORD colorByte4p4Flat[COLORS*COLORS*COLORS*COLORS];
 
 int xStart, yStart;
 UBYTE xPos, yPos;
@@ -56,6 +68,7 @@ int heightAheadRange;
 int flightHeight;
 int horizon;
 int turn;
+int interlace;
 
 static void ReadHeight(const char *name)
 {
@@ -79,10 +92,10 @@ static void ReadPalette(const char *name)
 	{
 		for(int i=0;i<12;i++)
 		{
-				fileRead(file, &r, 1);
-				fileRead(file, &g, 1);
-				fileRead(file, &b, 1);
-				kolory[i] = r*256 + g*16 + b;
+			fileRead(file, &r, 1);
+			fileRead(file, &g, 1);
+			fileRead(file, &b, 1);
+			kolory[i] = r*256 + g*16 + b;
 		}
 		fileClose(file);
 	}
@@ -102,29 +115,19 @@ static void ReadColor(const char *name)
 	}
 }
 
-static void CopyFastToChip(tBitMap *bm)
+static void CopyFastToChipB(tBitMap *bm)
 {
-	//for(int p=0;p<DEPTH;p++)
-	//	CopyMemQuick(fastPlane[p], bm->Planes[p], PLANEWIDTH*HEIGHT);
 	CopyMemQuick(fastPlane1, bm->Planes[0], PLANEWIDTH*HEIGHT);
 	CopyMemQuick(fastPlane2, bm->Planes[1], PLANEWIDTH*HEIGHT);
 	CopyMemQuick(fastPlane3, bm->Planes[2], PLANEWIDTH*HEIGHT);
 	CopyMemQuick(fastPlane4, bm->Planes[3], PLANEWIDTH*HEIGHT);
-	/*
-	tBitMap *pSrc, WORD wSrcX, WORD wSrcY,
-	tBitMap *pDst, WORD wDstX, WORD wDstY, WORD wWidth, WORD wHeight,
-	UBYTE ubMinterm, UBYTE ubMask
-	*/
-	/*blitUnsafeCopy(
-	fastPlane[p], 0, 0,
-	bm->Planes[p], 0,0, WIDTH, HEIGHT,
-	0x00, 0xff
-);*/
-/*for(int i=0;i<PLANEWIDTH*HEIGHT/4;i++)
+}
+static void CopyFastToChipW(tBitMap *bm)
 {
-
-}*/
-
+	CopyMemQuick(fastPlane1W, bm->Planes[0], PLANEWIDTH*HEIGHT);
+	CopyMemQuick(fastPlane2W, bm->Planes[1], PLANEWIDTH*HEIGHT);
+	CopyMemQuick(fastPlane3W, bm->Planes[2], PLANEWIDTH*HEIGHT);
+	CopyMemQuick(fastPlane4W, bm->Planes[3], PLANEWIDTH*HEIGHT);
 }
 
 static void CalculateTables()
@@ -150,39 +153,102 @@ static void CalculateTables()
 /*
 static void DrawByte(UBYTE color,UWORD position,UWORD p2,UWORD p3,UWORD p4 )
 {
-	UWORD bits;
-	for(UBYTE plane=0;plane<DEPTH;plane++)
-	{
-		if((color>>plane) & 1) bits = 0xff;
-		else bits = 0x00;
+UWORD bits;
+for(UBYTE plane=0;plane<DEPTH;plane++)
+{
+if((color>>plane) & 1) bits = 0xff;
+else bits = 0x00;
 
-		if(fastPlane[plane][position] != bits)
-		{
-			fastPlane[plane][position] = bits;
-			fastPlane[plane][p2] = bits;
-			fastPlane[plane][p3] = bits;
-			fastPlane[plane][p4] = bits;
-		}
-	}
+if(fastPlane[plane][position] != bits)
+{
+fastPlane[plane][position] = bits;
+fastPlane[plane][p2] = bits;
+fastPlane[plane][p3] = bits;
+fastPlane[plane][p4] = bits;
+}
+}
 }*/
 
-static void GenerateColorBytes()
+static void GenerateColorBytes2()
 {
 	for(int a=0;a<COLORS;a++)
 	for(int b=0;b<COLORS;b++)
 	for(int plane=0;plane<DEPTH;plane++)
 	{
-		colorByte[a][b][plane] = ((a>>plane) & 1)*240 + ((b>>plane) & 1)*15;
+		colorByte2[a][b][plane] = ((a>>plane) & 1)*240 + ((b>>plane) & 1)*15;
 	}
 }
 
-static void DrawScreen()
+
+static void GenerateColorBytes4()
 {
-	UBYTE bits;
+	for(int a=0;a<COLORS;a++)
+	for(int b=0;b<COLORS;b++)
+	for(int c=0;c<COLORS;c++)
+	for(int d=0;d<COLORS;d++)
+	{
+		colorByte4p1[a][b][c][d]=
+		((a>>0) & 1)*61440 +
+		((b>>0) & 1)*3840+
+		((c>>0) & 1)*240+
+		((d>>0) & 1)*15;
+		colorByte4p2[a][b][c][d]=
+		((a>>1) & 1)*61440 +
+		((b>>1) & 1)*3840+
+		((c>>1) & 1)*240+
+		((d>>1) & 1)*15;
+		colorByte4p3[a][b][c][d]=
+		((a>>2) & 1)*61440 +
+		((b>>2) & 1)*3840+
+		((c>>2) & 1)*240+
+		((d>>2) & 1)*15;
+		colorByte4p4[a][b][c][d]=
+		((a>>3) & 1)*61440 +
+		((b>>3) & 1)*3840+
+		((c>>3) & 1)*240+
+		((d>>3) & 1)*15;
+	}
+}
+
+static void GenerateColorBytes4Flat()
+{
+	UWORD address;
+	for(int a=0;a<COLORS;a++)
+	for(int b=0;b<COLORS;b++)
+	for(int c=0;c<COLORS;c++)
+	for(int d=0;d<COLORS;d++)
+	{
+		address = (a<<12) + (b<<8) + (c<<4) + d;
+		colorByte4p1Flat[address]=
+		((a>>0) & 1)*61440 +
+		((b>>0) & 1)*3840+
+		((c>>0) & 1)*240+
+		((d>>0) & 1)*15;
+		colorByte4p2Flat[address]=
+		((a>>1) & 1)*61440 +
+		((b>>1) & 1)*3840+
+		((c>>1) & 1)*240+
+		((d>>1) & 1)*15;
+		colorByte4p3Flat[address]=
+		((a>>2) & 1)*61440 +
+		((b>>2) & 1)*3840+
+		((c>>2) & 1)*240+
+		((d>>2) & 1)*15;
+		colorByte4p4Flat[address]=
+		((a>>3) & 1)*61440 +
+		((b>>3) & 1)*3840+
+		((c>>3) & 1)*240+
+		((d>>3) & 1)*15;
+	}
+}
+
+
+static void DrawScreen2()
+{
 	UBYTE color1;
 	UBYTE color2;
-	UWORD color;
 	UWORD sp,p1,p2,p3,p4;
+	UBYTE byte;
 	sp = 0;
 
 	for(UWORD y=0;y<YSIZE;y++)
@@ -197,25 +263,29 @@ static void DrawScreen()
 			color1 = screen[sp];
 			color2 = screen[sp+1];
 
-			fastPlane1[p1] = colorByte[ color1 ][ color2 ][ 0 ];
-			fastPlane1[p2] = colorByte[ color1 ][ color2 ][ 0 ];
-			fastPlane1[p3] = colorByte[ color1 ][ color2 ][ 0 ];
-			fastPlane1[p4] = colorByte[ color1 ][ color2 ][ 0 ];
+			byte = colorByte2[ color1 ][ color2 ][ 0 ];
+			fastPlane1[p1] = byte;
+			fastPlane1[p2] = byte;
+			fastPlane1[p3] = byte;
+			fastPlane1[p4] = byte;
 
-			fastPlane2[p1] = colorByte[ color1 ][ color2 ][ 1 ];
-			fastPlane2[p2] = colorByte[ color1 ][ color2 ][ 1 ];
-			fastPlane2[p3] = colorByte[ color1 ][ color2 ][ 1 ];
-			fastPlane2[p4] = colorByte[ color1 ][ color2 ][ 1 ];
+			byte = colorByte2[ color1 ][ color2 ][ 1 ];
+			fastPlane2[p1] = byte;
+			fastPlane2[p2] = byte;
+			fastPlane2[p3] = byte;
+			fastPlane2[p4] = byte;
 
-			fastPlane3[p1] = colorByte[ color1 ][ color2 ][ 2 ];
-			fastPlane3[p2] = colorByte[ color1 ][ color2 ][ 2 ];
-			fastPlane3[p3] = colorByte[ color1 ][ color2 ][ 2 ];
-			fastPlane3[p4] = colorByte[ color1 ][ color2 ][ 2 ];
+			byte = colorByte2[ color1 ][ color2 ][ 2 ];
+			fastPlane3[p1] = byte;
+			fastPlane3[p2] = byte;
+			fastPlane3[p3] = byte;
+			fastPlane3[p4] = byte;
 
-			fastPlane4[p1] = colorByte[ color1 ][ color2 ][ 3 ];
-			fastPlane4[p2] = colorByte[ color1 ][ color2 ][ 3 ];
-			fastPlane4[p3] = colorByte[ color1 ][ color2 ][ 3 ];
-			fastPlane4[p4] = colorByte[ color1 ][ color2 ][ 3 ];
+			byte = colorByte2[ color1 ][ color2 ][ 3 ];
+			fastPlane4[p1] = byte;
+			fastPlane4[p2] = byte;
+			fastPlane4[p3] = byte;
+			fastPlane4[p4] = byte;
 
 			p1++;
 			p2++;
@@ -227,6 +297,339 @@ static void DrawScreen()
 	}
 }
 
+static void DrawScreen4()
+{
+	UBYTE color1;
+	UBYTE color2;
+	UBYTE color3;
+	UBYTE color4;
+	UWORD sp,p1,p2,p3,p4;
+	UWORD word;
+	sp = 0;
+
+	for(UWORD y=0;y<YSIZE;y++)
+	{
+		p1 = y*PLANEWIDTH*4/2;
+		p2 = p1+PLANEWIDTH/2;
+		p3 = p2+PLANEWIDTH/2;
+		p4 = p3+PLANEWIDTH/2;
+
+		for(UWORD x=0;x<PLANEWIDTH/2;x++)
+		{
+			color1 = screen[sp];
+			color2 = screen[sp+1];
+			color3 = screen[sp+2];
+			color4 = screen[sp+3];
+
+			word = colorByte4p1[ color1 ][ color2 ][ color3 ][ color4 ];
+			if(fastPlane1W[p1] != word)
+			{
+			fastPlane1W[p1] = word;
+			fastPlane1W[p2] = word;
+			fastPlane1W[p3] = word;
+			fastPlane1W[p4] = word;
+}
+
+			word = colorByte4p2[ color1 ][ color2 ][ color3 ][ color4 ];
+			if(fastPlane2W[p1] != word)
+			{
+			fastPlane2W[p1] = word;
+			fastPlane2W[p2] = word;
+			fastPlane2W[p3] = word;
+			fastPlane2W[p4] = word;
+}
+			word = colorByte4p3[ color1 ][ color2 ][ color3 ][ color4 ];
+			if(fastPlane3W[p1] != word)
+			{
+			fastPlane3W[p1] = word;
+			fastPlane3W[p2] = word;
+			fastPlane3W[p3] = word;
+			fastPlane3W[p4] = word;
+}
+			word = colorByte4p4[ color1 ][ color2 ][ color3 ][ color4 ];
+			if(fastPlane4W[p1] != word)
+			{
+			fastPlane4W[p1] = word;
+			fastPlane4W[p2] = word;
+			fastPlane4W[p3] = word;
+			fastPlane4W[p4] = word;
+		}
+
+			p1++;
+			p2++;
+			p3++;
+			p4++;
+
+			sp+=4;
+		}
+	}
+}
+
+static void DrawScreen4Flat()
+{
+	UWORD sp,p1,p2,p3,p4;
+	UWORD word;
+	UWORD address;
+	sp = 0;
+
+	for(UWORD y=0;y<YSIZE;y++)
+	{
+		p1 = y*PLANEWIDTH*4/2;
+		p2 = p1+PLANEWIDTH/2;
+		p3 = p2+PLANEWIDTH/2;
+		p4 = p3+PLANEWIDTH/2;
+
+		for(UWORD x=0;x<PLANEWIDTH/2;x++)
+		{
+			address = (screen[sp]<<12) + (screen[sp+1]<<8) + (screen[sp+2]<<4) + screen[sp+3];
+
+			word = colorByte4p1Flat[ address ];
+			if(fastPlane1W[p1]!=word)
+			{
+				fastPlane1W[p1] = word;
+				fastPlane1W[p2] = word;
+				fastPlane1W[p3] = word;
+				fastPlane1W[p4] = word;
+			}
+
+			word = colorByte4p2Flat[ address ];
+			if(fastPlane2W[p1] != word)
+			{
+				fastPlane2W[p1] = word;
+				fastPlane2W[p2] = word;
+				fastPlane2W[p3] = word;
+				fastPlane2W[p4] = word;
+			}
+
+			word = colorByte4p3Flat[ address ];
+			if(fastPlane3W[p1] != word)
+			{
+				fastPlane3W[p1] = word;
+				fastPlane3W[p2] = word;
+				fastPlane3W[p3] = word;
+				fastPlane3W[p4] = word;
+			}
+
+			word = colorByte4p4Flat[ address ];
+			if(fastPlane4W[p1] != word)
+			{
+				fastPlane4W[p1] = word;
+				fastPlane4W[p2] = word;
+				fastPlane4W[p3] = word;
+				fastPlane4W[p4] = word;
+			}
+
+			p1++;
+			p2++;
+			p3++;
+			p4++;
+
+			sp+=4;
+		}
+	}
+}
+
+static void DrawScreen4FlatMemCopy()
+{
+	UWORD sp,p1,p2,p3,p4;
+	UWORD word;
+	UWORD address;
+	sp = 0;
+
+	for(UWORD y=0;y<YSIZE;y++)
+	{
+		p1 = y*PLANEWIDTH*4/2;
+		p2 = p1+PLANEWIDTH/2;
+		p3 = p2+PLANEWIDTH/2;
+		p4 = p3+PLANEWIDTH/2;
+
+		for(UWORD x=0;x<PLANEWIDTH/2;x++)
+		{
+			address = (screen[sp]<<12) + (screen[sp+1]<<8) + (screen[sp+2]<<4) + screen[sp+3];
+
+			word = colorByte4p1Flat[ address ];
+			if(fastPlane1W[p1]!=word)
+			{
+				fastPlane1W[p1] = word;
+				//fastPlane1W[p2] = word;
+				//fastPlane1W[p3] = word;
+				//fastPlane1W[p4] = word;
+			}
+
+			word = colorByte4p2Flat[ address ];
+			if(fastPlane2W[p1] != word)
+			{
+				fastPlane2W[p1] = word;
+			//	fastPlane2W[p2] = word;
+			//	fastPlane2W[p3] = word;
+			//	fastPlane2W[p4] = word;
+			}
+
+			word = colorByte4p3Flat[ address ];
+			if(fastPlane3W[p1] != word)
+			{
+				fastPlane3W[p1] = word;
+			//	fastPlane3W[p2] = word;
+			//	fastPlane3W[p3] = word;
+			//	fastPlane3W[p4] = word;
+			}
+
+			word = colorByte4p4Flat[ address ];
+			if(fastPlane4W[p1] != word)
+			{
+				fastPlane4W[p1] = word;
+			//	fastPlane4W[p2] = word;
+				//fastPlane4W[p3] = word;
+				//fastPlane4W[p4] = word;
+			}
+
+			p1++;
+			p2++;
+			p3++;
+			p4++;
+
+			sp+=4;
+		}
+	}
+
+	for(UWORD y=0;y<YSIZE;y++)
+	{
+		p1 = y*PLANEWIDTH*4/2;
+		p2 = p1+PLANEWIDTH/2;
+		p3 = p2+PLANEWIDTH/2;
+		p4 = p3+PLANEWIDTH/2;
+
+		CopyMemQuick(&fastPlane1W[p1], &fastPlane1W[p2], PLANEWIDTH);
+		CopyMemQuick(&fastPlane1W[p1], &fastPlane1W[p3], PLANEWIDTH);
+		CopyMemQuick(&fastPlane1W[p1], &fastPlane1W[p4], PLANEWIDTH);
+
+		CopyMemQuick(&fastPlane2W[p1], &fastPlane2W[p2], PLANEWIDTH);
+		CopyMemQuick(&fastPlane2W[p1], &fastPlane2W[p3], PLANEWIDTH);
+		CopyMemQuick(&fastPlane2W[p1], &fastPlane2W[p4], PLANEWIDTH);
+
+		CopyMemQuick(&fastPlane3W[p1], &fastPlane3W[p2], PLANEWIDTH);
+		CopyMemQuick(&fastPlane3W[p1], &fastPlane3W[p3], PLANEWIDTH);
+		CopyMemQuick(&fastPlane3W[p1], &fastPlane3W[p4], PLANEWIDTH);
+
+		CopyMemQuick(&fastPlane4W[p1], &fastPlane4W[p2], PLANEWIDTH);
+		CopyMemQuick(&fastPlane4W[p1], &fastPlane4W[p3], PLANEWIDTH);
+		CopyMemQuick(&fastPlane4W[p1], &fastPlane4W[p4], PLANEWIDTH);
+	}
+}
+
+static void DrawScreen4FlatEven()
+{
+	UWORD sp,p1,p2,p3,p4;
+	UWORD word;
+	UWORD address;
+	sp = 0;
+
+	for(UWORD y=0;y<YSIZE;y++)
+	{
+		p1 = y*PLANEWIDTH*4/2;
+		p2 = p1+PLANEWIDTH/2;
+		p3 = p2+PLANEWIDTH/2;
+		p4 = p3+PLANEWIDTH/2;
+
+		for(UWORD x=0;x<PLANEWIDTH/2;x++)
+		{
+			address = (screen[sp]<<12) + (screen[sp+1]<<8) + (screen[sp+2]<<4) + screen[sp+3];
+
+			word = colorByte4p1Flat[ address ];
+			//	fastPlane1W[p1] = word;
+			fastPlane1W[p2] = word;
+			//fastPlane1W[p3] = word;
+			fastPlane1W[p4] = word;
+
+			word = colorByte4p2Flat[ address ];
+			//fastPlane2W[p1] = word;
+			fastPlane2W[p2] = word;
+			//fastPlane2W[p3] = word;
+			fastPlane2W[p4] = word;
+
+			word = colorByte4p3Flat[ address ];
+			//fastPlane3W[p1] = word;
+			fastPlane3W[p2] = word;
+			//fastPlane3W[p3] = word;
+			fastPlane3W[p4] = word;
+
+			word = colorByte4p4Flat[ address ];
+			//fastPlane4W[p1] = word;
+			fastPlane4W[p2] = word;
+			//fastPlane4W[p3] = word;
+			fastPlane4W[p4] = word;
+
+			p1++;
+			p2++;
+			p3++;
+			p4++;
+
+			sp+=4;
+		}
+	}
+}
+
+static void DrawScreen4FlatOdd()
+{
+	UWORD sp,p1,p2,p3,p4;
+	UWORD word;
+	UWORD address;
+	sp = 0;
+
+	for(UWORD y=0;y<YSIZE;y++)
+	{
+		p1 = y*PLANEWIDTH*4/2;
+		p2 = p1+PLANEWIDTH/2;
+		p3 = p2+PLANEWIDTH/2;
+		p4 = p3+PLANEWIDTH/2;
+
+		for(UWORD x=0;x<PLANEWIDTH/2;x++)
+		{
+			address = (screen[sp]<<12) + (screen[sp+1]<<8) + (screen[sp+2]<<4) + screen[sp+3];
+
+			word = colorByte4p1Flat[ address ];
+			fastPlane1W[p1] = word;
+			//fastPlane1W[p2] = word;
+			fastPlane1W[p3] = word;
+			//fastPlane1W[p4] = word;
+
+			word = colorByte4p2Flat[ address ];
+			fastPlane2W[p1] = word;
+			//fastPlane2W[p2] = word;
+			fastPlane2W[p3] = word;
+			//	fastPlane2W[p4] = word;
+
+			word = colorByte4p3Flat[ address ];
+			fastPlane3W[p1] = word;
+			//fastPlane3W[p2] = word;
+			fastPlane3W[p3] = word;
+			//	fastPlane3W[p4] = word;
+
+			word = colorByte4p4Flat[ address ];
+			fastPlane4W[p1] = word;
+			//fastPlane4W[p2] = word;
+			fastPlane4W[p3] = word;
+			//	fastPlane4W[p4] = word;
+
+			p1++;
+			p2++;
+			p3++;
+			p4++;
+
+			sp+=4;
+		}
+	}
+}
+
+/*
+1 x 1 0
+x x 0 0
+1 0 1 0
+
+4 odczyty
+3 odczyty - interpolacji
+3 zapisy
+*/
 static void DrawTerrain(void) {
 	currentHeight = (currentHeight*3 + flightHeight + height[xPos][yPos+heightAheadRange])/4;
 	UBYTE color;
@@ -260,13 +663,15 @@ static void DrawTerrain(void) {
 			}
 			else
 			{
-				tz+=1;//+tz/8;
+				tz+=1+tz/16;
 			}
 		}
 		//finish vertical line with 0xff
 		while(sy < YSIZE)
 		{
 			sy++;
+			if(screen[position] == 0x0f)
+			break;
 			screen[position] = 0x0f;
 			position-=XSIZE;
 		}
@@ -282,12 +687,7 @@ void engineGsCreate(void) {
 	s_pView = viewCreate(0,
 		TAG_VIEW_GLOBAL_CLUT, 1,
 		TAG_DONE);
-		/*	s_pVPort = vPortCreate(0,
-		TAG_VPORT_VIEW, s_pView,
-		TAG_VPORT_PALETTE_PTR, kolory,
-		TAG_VPORT_PALETTE_SIZE, 1 << DEPTH,
-		TAG_VPORT_BPP, DEPTH,
-		TAG_DONE);*/
+
 
 		s_pVPort = vPortCreate(0,
 			TAG_VPORT_VIEW, s_pView,
@@ -299,10 +699,6 @@ void engineGsCreate(void) {
 				TAG_SIMPLEBUFFER_BITMAP_FLAGS, BMF_CLEAR,
 				TAG_DONE);
 
-				horizon = HEIGHT / 2;
-
-
-				//viewUpdateCLUT(s_pView);
 
 				xStart = 50;
 				yStart = 0;
@@ -318,7 +714,9 @@ void engineGsCreate(void) {
 				ReadPalette("palette.raw");
 				ReadColor("color.raw");
 				CalculateTables();
-				GenerateColorBytes();
+				GenerateColorBytes2();
+				GenerateColorBytes4();
+				GenerateColorBytes4Flat();
 
 				memcpy(s_pVPort->pPalette, kolory, 16 * sizeof(UWORD));
 
@@ -335,40 +733,57 @@ void engineGsCreate(void) {
 					gameClose();
 				}
 
-			/*		if(keyCheck(KEY_ESCAPE)) {
+				/*		if(keyCheck(KEY_SPACE)) {
 				gameClose();
 			}
 			else
 			{
 			if(keyCheck(KEY_UP))yPos++;
 			if(keyCheck(KEY_DOWN))yPos--;
-			if(keyCheck(KEY_RIGHT))turn+=20;
-			if(keyCheck(KEY_LEFT))turn-=20;
-		}
+			if(keyCheck(KEY_RIGHT))xPos++;
+			if(keyCheck(KEY_LEFT))xPos--;
+		}*/
 
-				turn -= turn/8;
-				xPos += turn/8;*/
+		//		turn = turn/1.2;
+		//	xPos += turn;
 
-			logAvgBegin(s_pAvgTime);
-			DrawTerrain();
-			DrawScreen();
-			CopyFastToChip(s_pBuffer->pBack);
-			//flightHeight += 1;
-			yPos += 1;
-			//	xPos += 1;
-			logAvgEnd(s_pAvgTime);
-			//}
-		}
 
-		void engineGsDestroy(void) {
-			systemUse();
-			viewLoad(0);
-			viewDestroy(s_pView);
 
-			logAvgDestroy(s_pAvgTime);
-			logWrite(
-				"seconds=%ld pixelsDrawn=%d pixelsChecked=%d pixelsRead=%d linesDrawn=%d",
-				0, pixelsDrawn, pixelsChecked, pixelsRead, linesDrawn
-			);
+		logAvgBegin(s_pAvgTime);
+		DrawTerrain();
+		//DrawScreen2();
+		//DrawScreen4();
+		DrawScreen4Flat();
+		//DrawScreen4FlatMemCopy();
+		/*	if(interlace > 0)
+		{
+		DrawScreen4FlatEven();
+		interlace = -1;
+	}
+	else
+	{
+	DrawScreen4FlatOdd();
+	interlace = 1;
+}*/
 
-		}
+
+CopyFastToChipW(s_pBuffer->pBack);
+//flightHeight += 1;
+yPos += 1;
+//xPos += 1;
+logAvgEnd(s_pAvgTime);
+//}
+}
+
+void engineGsDestroy(void) {
+	systemUse();
+	viewLoad(0);
+	viewDestroy(s_pView);
+
+	logAvgDestroy(s_pAvgTime);
+	logWrite(
+		"seconds=%ld pixelsDrawn=%d pixelsChecked=%d pixelsRead=%d linesDrawn=%d",
+		0, pixelsDrawn, pixelsChecked, pixelsRead, linesDrawn
+	);
+
+}
