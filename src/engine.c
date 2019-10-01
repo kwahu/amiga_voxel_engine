@@ -36,7 +36,7 @@ UBYTE colorMap1[128][128];
 UBYTE colorMap2[64][64];
 UBYTE colorMap3[32][32];
 UBYTE colorMap4[16][16];
-UBYTE screen[XSIZE*YSIZE];
+UBYTE screenMid[XSIZE*YSIZE];
 UBYTE screenBig[XSIZE*YSIZE*4];
 //UBYTE fastPlane[DEPTH][PLANEWIDTH*HEIGHT];
 
@@ -55,8 +55,8 @@ WORD rayCastY[YSIZE][TERRAINDEPTH];
 
 UWORD kolory[COLORS] =
 {
-0x030,0x141,0x252,0x363,0x474,0x585,0x696,0x7a7,
-0x8b8,0x9c9,0xada,0xbeb,0xcfc,0xdfd,0xefe,0x99f
+	0x030,0x141,0x252,0x363,0x474,0x585,0x696,0x7a7,
+	0x8b8,0x9c9,0xada,0xbeb,0xcfc,0xdfd,0xefe,0x99f
 };
 /*
 {
@@ -81,19 +81,22 @@ UWORD colorByte4p2FlatBIG[COLORS*COLORS*COLORS*COLORS];
 UWORD colorByte4p3FlatBIG[COLORS*COLORS*COLORS*COLORS];
 UWORD colorByte4p4FlatBIG[COLORS*COLORS*COLORS*COLORS];
 
+UBYTE colorInterpolationBIG[COLORS*COLORS*COLORS*COLORS];
+
 UBYTE mipMap1[256];
 UBYTE mipMap2[256];
 UBYTE mipMap3[256];
 UBYTE mipMap4[256];
 
 int xStart, yStart;
-UBYTE xPos, yPos;
+UWORD xPos, yPos;
 int currentHeight;
 int heightAheadRange;
 int flightHeight;
 int horizon;
 int turn;
 int interlace;
+UBYTE renderingDepth = TERRAINDEPTH;
 
 static void ReadHeight(const char *name)
 {
@@ -104,7 +107,7 @@ static void ReadHeight(const char *name)
 		for (int x = 0; x < 256; x++) {
 			for (int y = 0; y < 256; y++) {
 				fileRead(file, &byte , 1);
-				heightMap0[x][y] = byte/3;
+				heightMap0[x][y] = byte/2;
 			}
 		}
 		fileClose(file);
@@ -143,91 +146,91 @@ static void ReadColor(const char *name)
 }
 static void CalculateColorMipMaps()
 {
-		UWORD value;
+	UWORD value;
 	for (int x = 0; x < 128; x++)
-		for (int y = 0; y < 128; y++)
-		{
-			value = 0;
-			for(int a = 0; a<2 ;a++)
-				for(int b = 0; b<2 ;b++)
-					value += colorMap0[x*2+a][y*2+b];
-			colorMap1[x][y] = value/4;
-		}
+	for (int y = 0; y < 128; y++)
+	{
+		value = 0;
+		for(int a = 0; a<2 ;a++)
+		for(int b = 0; b<2 ;b++)
+		value += colorMap0[x*2+a][y*2+b];
+		colorMap1[x][y] = value/4;
+	}
 	for (int x = 0; x < 64; x++)
-		for (int y = 0; y < 64; y++)
-		{
-			value = 0;
-			for(int a = 0; a<4 ;a++)
-				for(int b = 0; b<4 ;b++)
-					value += colorMap0[x*4+a][y*4+b];
-			colorMap2[x][y] = value/16;
-		}
+	for (int y = 0; y < 64; y++)
+	{
+		value = 0;
+		for(int a = 0; a<4 ;a++)
+		for(int b = 0; b<4 ;b++)
+		value += colorMap0[x*4+a][y*4+b];
+		colorMap2[x][y] = value/16;
+	}
 	for (int x = 0; x < 32; x++)
-		for (int y = 0; y < 32; y++)
-		{
-			value = 0;
-			for(int a = 0; a<8 ;a++)
-				for(int b = 0; b<8 ;b++)
-					value += colorMap0[x*8+a][y*8+b];
-			colorMap3[x][y] = value/64;
-		}
+	for (int y = 0; y < 32; y++)
+	{
+		value = 0;
+		for(int a = 0; a<8 ;a++)
+		for(int b = 0; b<8 ;b++)
+		value += colorMap0[x*8+a][y*8+b];
+		colorMap3[x][y] = value/64;
+	}
 	for (int x = 0; x < 16; x++)
-		for (int y = 0; y < 16; y++)
-		{
-			value = 0;
-			for(int a = 0; a<16 ;a++)
-				for(int b = 0; b<16 ;b++)
-					value += colorMap0[x*16+a][y*16+b];
-			colorMap4[x][y] = value/256;
-		}
+	for (int y = 0; y < 16; y++)
+	{
+		value = 0;
+		for(int a = 0; a<16 ;a++)
+		for(int b = 0; b<16 ;b++)
+		value += colorMap0[x*16+a][y*16+b];
+		colorMap4[x][y] = value/256;
+	}
 }
 static void CalculateHeightMipMaps()
 {
 	int value;
 	for (int x = 0; x < 128; x++)
-		for (int y = 0; y < 128; y++)
-		{
-			value = 0;
-			for(int a = 0; a<2 ;a++)
-				for(int b = 0; b<2 ;b++)
-					value += heightMap0[x*2+a][y*2+b];
-			heightMap1[x][y] = value/4;
-		}
+	for (int y = 0; y < 128; y++)
+	{
+		value = 0;
+		for(int a = 0; a<2 ;a++)
+		for(int b = 0; b<2 ;b++)
+		value += heightMap0[x*2+a][y*2+b];
+		heightMap1[x][y] = value/4;
+	}
 	for (int x = 0; x < 64; x++)
-		for (int y = 0; y < 64; y++)
-		{
-			value = 0;
-			for(int a = 0; a<4 ;a++)
-				for(int b = 0; b<4 ;b++)
-					value += heightMap0[x*4+a][y*4+b];
-			heightMap2[x][y] = value/16;
-		}
+	for (int y = 0; y < 64; y++)
+	{
+		value = 0;
+		for(int a = 0; a<4 ;a++)
+		for(int b = 0; b<4 ;b++)
+		value += heightMap0[x*4+a][y*4+b];
+		heightMap2[x][y] = value/16;
+	}
 	for (int x = 0; x < 32; x++)
-		for (int y = 0; y < 32; y++)
-		{
-			value = 0;
-			for(int a = 0; a<8 ;a++)
-				for(int b = 0; b<8 ;b++)
-					value += heightMap0[x*8+a][y*8+b];
-			heightMap3[x][y] = value/64;
-		}
+	for (int y = 0; y < 32; y++)
+	{
+		value = 0;
+		for(int a = 0; a<8 ;a++)
+		for(int b = 0; b<8 ;b++)
+		value += heightMap0[x*8+a][y*8+b];
+		heightMap3[x][y] = value/64;
+	}
 	for (int x = 0; x < 16; x++)
-		for (int y = 0; y < 16; y++)
-		{
-			value = 0;
-			for(int a = 0; a<16 ;a++)
-				for(int b = 0; b<16 ;b++)
-					value += heightMap0[x*16+a][y*16+b];
-			heightMap4[x][y] = value/256;
-		}
+	for (int y = 0; y < 16; y++)
+	{
+		value = 0;
+		for(int a = 0; a<16 ;a++)
+		for(int b = 0; b<16 ;b++)
+		value += heightMap0[x*16+a][y*16+b];
+		heightMap4[x][y] = value/256;
+	}
 }
 
 /*static void CopyFastToChipB(tBitMap *bm)
 {
-	CopyMemQuick(fastPlane1, bm->Planes[0], PLANEWIDTH*HEIGHT);
-	CopyMemQuick(fastPlane2, bm->Planes[1], PLANEWIDTH*HEIGHT);
-	CopyMemQuick(fastPlane3, bm->Planes[2], PLANEWIDTH*HEIGHT);
-	CopyMemQuick(fastPlane4, bm->Planes[3], PLANEWIDTH*HEIGHT);
+CopyMemQuick(fastPlane1, bm->Planes[0], PLANEWIDTH*HEIGHT);
+CopyMemQuick(fastPlane2, bm->Planes[1], PLANEWIDTH*HEIGHT);
+CopyMemQuick(fastPlane3, bm->Planes[2], PLANEWIDTH*HEIGHT);
+CopyMemQuick(fastPlane4, bm->Planes[3], PLANEWIDTH*HEIGHT);
 }*/
 static void CopyFastToChipW(tBitMap *bm)
 {
@@ -249,8 +252,8 @@ static void CalculateRayCasts()
 			for(int sy=-YSIZE/2;sy<YSIZE/2;sy++)
 			{
 				syy = sy * tz;
-				rayCastX[XSIZE/2+sx][tz] = sxx/12;
-				rayCastY[YSIZE/2+sy][tz] = syy/12;
+				rayCastX[XSIZE/2+sx][tz] = sxx/8;
+				rayCastY[YSIZE/2+sy][tz] = syy/8;
 			}
 		}
 	}
@@ -296,43 +299,43 @@ fastPlane[plane][p4] = bits;
 
 /*static void GenerateColorBytes2()
 {
-	for(int a=0;a<COLORS;a++)
-	for(int b=0;b<COLORS;b++)
-	for(int plane=0;plane<DEPTH;plane++)
-	{
-		colorByte2[a][b][plane] = ((a>>plane) & 1)*240 + ((b>>plane) & 1)*15;
-	}
+for(int a=0;a<COLORS;a++)
+for(int b=0;b<COLORS;b++)
+for(int plane=0;plane<DEPTH;plane++)
+{
+colorByte2[a][b][plane] = ((a>>plane) & 1)*240 + ((b>>plane) & 1)*15;
+}
 }*/
 
 
 /*static void GenerateColorBytes4()
 {
-	for(int a=0;a<COLORS;a++)
-	for(int b=0;b<COLORS;b++)
-	for(int c=0;c<COLORS;c++)
-	for(int d=0;d<COLORS;d++)
-	{
-		colorByte4p1[a][b][c][d]=
-		((a>>0) & 1)*61440 +
-		((b>>0) & 1)*3840+
-		((c>>0) & 1)*240+
-		((d>>0) & 1)*15;
-		colorByte4p2[a][b][c][d]=
-		((a>>1) & 1)*61440 +
-		((b>>1) & 1)*3840+
-		((c>>1) & 1)*240+
-		((d>>1) & 1)*15;
-		colorByte4p3[a][b][c][d]=
-		((a>>2) & 1)*61440 +
-		((b>>2) & 1)*3840+
-		((c>>2) & 1)*240+
-		((d>>2) & 1)*15;
-		colorByte4p4[a][b][c][d]=
-		((a>>3) & 1)*61440 +
-		((b>>3) & 1)*3840+
-		((c>>3) & 1)*240+
-		((d>>3) & 1)*15;
-	}
+for(int a=0;a<COLORS;a++)
+for(int b=0;b<COLORS;b++)
+for(int c=0;c<COLORS;c++)
+for(int d=0;d<COLORS;d++)
+{
+colorByte4p1[a][b][c][d]=
+((a>>0) & 1)*61440 +
+((b>>0) & 1)*3840+
+((c>>0) & 1)*240+
+((d>>0) & 1)*15;
+colorByte4p2[a][b][c][d]=
+((a>>1) & 1)*61440 +
+((b>>1) & 1)*3840+
+((c>>1) & 1)*240+
+((d>>1) & 1)*15;
+colorByte4p3[a][b][c][d]=
+((a>>2) & 1)*61440 +
+((b>>2) & 1)*3840+
+((c>>2) & 1)*240+
+((d>>2) & 1)*15;
+colorByte4p4[a][b][c][d]=
+((a>>3) & 1)*61440 +
+((b>>3) & 1)*3840+
+((c>>3) & 1)*240+
+((d>>3) & 1)*15;
+}
 }*/
 
 static void GenerateColorBytes4Flat()
@@ -366,7 +369,80 @@ static void GenerateColorBytes4Flat()
 		((d>>3) & 1)*15;
 	}
 }
+/*
+static void GenerateColorInterpolationsByte()
+{
+	UWORD address;
+	UBYTE a1,a2,a3,b1,b2,c1,c2,c3;
+	for(int a=0;a<COLORS;a++)
+	for(int b=0;b<COLORS;b++)
+	for(int c=0;c<COLORS;c++)
+	for(int d=0;d<COLORS;d++)
+	{
+		address = (a<<12) + (b<<8) + (c<<4) + d;
 
+		//interpolate a to b
+		if(a == 15)
+		{
+			a1 = b;
+		}
+		else if(b == 15)
+		{
+			a1 = a;
+		}
+		else
+		{
+			a1 = (a+b)/2;
+		}
+
+		//interpolate b to c
+		if(b == 15)
+		{
+			b1 = c;
+		}
+		else if(c == 15)
+		{
+			b1 = b;
+		}
+		else
+		{
+			b1 = (b*2+c)/3;
+			b2 = (b+c*2)/3;
+		}
+
+		//interpolate c to d
+		if(c == 15)
+		{
+			c1 = d;
+		}
+		else if(d == 15)
+		{
+			c1 = c;
+		}
+		else
+		{
+			c1 = (c+d)/2;
+		}
+
+		//aa12 3bb4 5cc6 78dd
+		colorInterpolationBIG[address]=
+		((a>>0) & 1) *0xC000+
+		((a1>>0) & 1)*0x2000+
+		((b>>0) & 1) *0x0600+
+		((b1>>0) & 1)*0x0100+
+		((b2>>0) & 1)*0x0080+
+		((c>>0) & 1)*0x0060+
+		((c1>>0) & 1)*0x0010+
+		((d>>0) & 1)*0x0003;
+		colorInterpolationBIG[address]=
+
+		colorInterpolationBIG[address]=
+
+		colorInterpolationBIG[address]=
+
+	}
+}
+*/
 
 static void GenerateColorBytes4FlatBIG()
 {
@@ -412,8 +488,8 @@ static void GenerateColorBytes4FlatBIG()
 		}
 		else
 		{
-			b1 = (a*2+b)/3;
-			b2 = (a+b*2)/3;
+			b1 = (b*2+c)/3;
+			b2 = (b+c*2)/3;
 		}
 
 		//interpolate c to d
@@ -436,7 +512,7 @@ static void GenerateColorBytes4FlatBIG()
 			c3 = (c+d*2)/3;
 		}
 
-//aa12 3bb4 5cc6 78dd
+		//aa12 3bb4 5cc6 78dd
 		colorByte4p1FlatBIG[address]=
 		((a>>0) & 1) *0xC000+
 		((a1>>0) & 1)*0x2000+
@@ -494,124 +570,124 @@ static void GenerateColorBytes4FlatBIG()
 
 /*static void DrawScreen2()
 {
-	UBYTE color1;
-	UBYTE color2;
-	UWORD sp,p1,p2,p3,p4;
-	UBYTE byte;
-	sp = 0;
+UBYTE color1;
+UBYTE color2;
+UWORD sp,p1,p2,p3,p4;
+UBYTE byte;
+sp = 0;
 
-	for(UWORD y=0;y<YSIZE;y++)
-	{
-		p1 = y*PLANEWIDTH*4;
-		p2 = p1+PLANEWIDTH;
-		p3 = p2+PLANEWIDTH;
-		p4 = p3+PLANEWIDTH;
+for(UWORD y=0;y<YSIZE;y++)
+{
+p1 = y*PLANEWIDTH*4;
+p2 = p1+PLANEWIDTH;
+p3 = p2+PLANEWIDTH;
+p4 = p3+PLANEWIDTH;
 
-		for(UWORD x=0;x<PLANEWIDTH;x++)
-		{
-			color1 = screen[sp];
-			color2 = screen[sp+1];
+for(UWORD x=0;x<PLANEWIDTH;x++)
+{
+color1 = screen[sp];
+color2 = screen[sp+1];
 
-			byte = colorByte2[ color1 ][ color2 ][ 0 ];
-			fastPlane1[p1] = byte;
-			fastPlane1[p2] = byte;
-			fastPlane1[p3] = byte;
-			fastPlane1[p4] = byte;
+byte = colorByte2[ color1 ][ color2 ][ 0 ];
+fastPlane1[p1] = byte;
+fastPlane1[p2] = byte;
+fastPlane1[p3] = byte;
+fastPlane1[p4] = byte;
 
-			byte = colorByte2[ color1 ][ color2 ][ 1 ];
-			fastPlane2[p1] = byte;
-			fastPlane2[p2] = byte;
-			fastPlane2[p3] = byte;
-			fastPlane2[p4] = byte;
+byte = colorByte2[ color1 ][ color2 ][ 1 ];
+fastPlane2[p1] = byte;
+fastPlane2[p2] = byte;
+fastPlane2[p3] = byte;
+fastPlane2[p4] = byte;
 
-			byte = colorByte2[ color1 ][ color2 ][ 2 ];
-			fastPlane3[p1] = byte;
-			fastPlane3[p2] = byte;
-			fastPlane3[p3] = byte;
-			fastPlane3[p4] = byte;
+byte = colorByte2[ color1 ][ color2 ][ 2 ];
+fastPlane3[p1] = byte;
+fastPlane3[p2] = byte;
+fastPlane3[p3] = byte;
+fastPlane3[p4] = byte;
 
-			byte = colorByte2[ color1 ][ color2 ][ 3 ];
-			fastPlane4[p1] = byte;
-			fastPlane4[p2] = byte;
-			fastPlane4[p3] = byte;
-			fastPlane4[p4] = byte;
+byte = colorByte2[ color1 ][ color2 ][ 3 ];
+fastPlane4[p1] = byte;
+fastPlane4[p2] = byte;
+fastPlane4[p3] = byte;
+fastPlane4[p4] = byte;
 
-			p1++;
-			p2++;
-			p3++;
-			p4++;
+p1++;
+p2++;
+p3++;
+p4++;
 
-			sp+=2;
-		}
-	}
+sp+=2;
+}
+}
 }*/
 
 /*static void DrawScreen4()
 {
-	UBYTE color1;
-	UBYTE color2;
-	UBYTE color3;
-	UBYTE color4;
-	UWORD sp,p1,p2,p3,p4;
-	UWORD word;
-	sp = 0;
+UBYTE color1;
+UBYTE color2;
+UBYTE color3;
+UBYTE color4;
+UWORD sp,p1,p2,p3,p4;
+UWORD word;
+sp = 0;
 
-	for(UWORD y=0;y<YSIZE;y++)
-	{
-		p1 = y*PLANEWIDTH*4/2;
-		p2 = p1+PLANEWIDTH/2;
-		p3 = p2+PLANEWIDTH/2;
-		p4 = p3+PLANEWIDTH/2;
+for(UWORD y=0;y<YSIZE;y++)
+{
+p1 = y*PLANEWIDTH*4/2;
+p2 = p1+PLANEWIDTH/2;
+p3 = p2+PLANEWIDTH/2;
+p4 = p3+PLANEWIDTH/2;
 
-		for(UWORD x=0;x<PLANEWIDTH/2;x++)
-		{
-			color1 = screen[sp];
-			color2 = screen[sp+1];
-			color3 = screen[sp+2];
-			color4 = screen[sp+3];
+for(UWORD x=0;x<PLANEWIDTH/2;x++)
+{
+color1 = screen[sp];
+color2 = screen[sp+1];
+color3 = screen[sp+2];
+color4 = screen[sp+3];
 
-			word = colorByte4p1[ color1 ][ color2 ][ color3 ][ color4 ];
-			if(fastPlane1W[p1] != word)
-			{
-			fastPlane1W[p1] = word;
-			fastPlane1W[p2] = word;
-			fastPlane1W[p3] = word;
-			fastPlane1W[p4] = word;
+word = colorByte4p1[ color1 ][ color2 ][ color3 ][ color4 ];
+if(fastPlane1W[p1] != word)
+{
+fastPlane1W[p1] = word;
+fastPlane1W[p2] = word;
+fastPlane1W[p3] = word;
+fastPlane1W[p4] = word;
 }
 
-			word = colorByte4p2[ color1 ][ color2 ][ color3 ][ color4 ];
-			if(fastPlane2W[p1] != word)
-			{
-			fastPlane2W[p1] = word;
-			fastPlane2W[p2] = word;
-			fastPlane2W[p3] = word;
-			fastPlane2W[p4] = word;
+word = colorByte4p2[ color1 ][ color2 ][ color3 ][ color4 ];
+if(fastPlane2W[p1] != word)
+{
+fastPlane2W[p1] = word;
+fastPlane2W[p2] = word;
+fastPlane2W[p3] = word;
+fastPlane2W[p4] = word;
 }
-			word = colorByte4p3[ color1 ][ color2 ][ color3 ][ color4 ];
-			if(fastPlane3W[p1] != word)
-			{
-			fastPlane3W[p1] = word;
-			fastPlane3W[p2] = word;
-			fastPlane3W[p3] = word;
-			fastPlane3W[p4] = word;
+word = colorByte4p3[ color1 ][ color2 ][ color3 ][ color4 ];
+if(fastPlane3W[p1] != word)
+{
+fastPlane3W[p1] = word;
+fastPlane3W[p2] = word;
+fastPlane3W[p3] = word;
+fastPlane3W[p4] = word;
 }
-			word = colorByte4p4[ color1 ][ color2 ][ color3 ][ color4 ];
-			if(fastPlane4W[p1] != word)
-			{
-			fastPlane4W[p1] = word;
-			fastPlane4W[p2] = word;
-			fastPlane4W[p3] = word;
-			fastPlane4W[p4] = word;
-		}
+word = colorByte4p4[ color1 ][ color2 ][ color3 ][ color4 ];
+if(fastPlane4W[p1] != word)
+{
+fastPlane4W[p1] = word;
+fastPlane4W[p2] = word;
+fastPlane4W[p3] = word;
+fastPlane4W[p4] = word;
+}
 
-			p1++;
-			p2++;
-			p3++;
-			p4++;
+p1++;
+p2++;
+p3++;
+p4++;
 
-			sp+=4;
-		}
-	}
+sp+=4;
+}
+}
 }*/
 
 static void DrawScreen4Flat()
@@ -630,7 +706,7 @@ static void DrawScreen4Flat()
 
 		for(UWORD x=0;x<XSIZE/4;x++)
 		{
-			address = (screen[sp]<<12) + (screen[sp+1]<<8) + (screen[sp+2]<<4) + screen[sp+3];
+			address = (screenMid[sp]<<12) + (screenMid[sp+1]<<8) + (screenMid[sp+2]<<4) + screenMid[sp+3];
 
 			word = colorByte4p1Flat[ address ];
 			if(fastPlane1W[p1]!=word)
@@ -694,7 +770,7 @@ static void DrawScreen4FlatBIG()
 
 		for(UWORD x=0;x<XSIZE/4;x++)
 		{
-			address = (screen[sp]<<12) + (screen[sp+1]<<8) + (screen[sp+2]<<4) + screen[sp+3];
+			address = (screenMid[sp]<<12) + (screenMid[sp+1]<<8) + (screenMid[sp+2]<<4) + screenMid[sp+3];
 
 			word = colorByte4p1FlatBIG[ address ];
 			if(fastPlane1W[p1]!=word)
@@ -742,7 +818,7 @@ static void DrawScreen4FlatBIG()
 	}
 }
 
-static void DrawScreen4FlatBIGEven()
+static void DrawScreenMediumEven()
 {
 	UWORD sp,p1,p2,p3,p4;
 	UWORD word;
@@ -758,10 +834,10 @@ static void DrawScreen4FlatBIGEven()
 
 		for(UWORD x=0;x<XSIZE/4;x++)
 		{
-			address = (screen[sp]<<12) + (screen[sp+1]<<8) + (screen[sp+2]<<4) + screen[sp+3];
+			address = (screenMid[sp]<<12) + (screenMid[sp+1]<<8) + (screenMid[sp+2]<<4) + screenMid[sp+3];
 
 			word = colorByte4p1FlatBIG[ address ];
-		//	if(fastPlane1W[p1]!=word)
+			//	if(fastPlane1W[p1]!=word)
 			{
 				//fastPlane1W[p1] = word;
 				fastPlane1W[p2] = word;
@@ -779,18 +855,18 @@ static void DrawScreen4FlatBIGEven()
 			}
 
 			word = colorByte4p3FlatBIG[ address ];
-		//	if(fastPlane3W[p1] != word)
+			//	if(fastPlane3W[p1] != word)
 			{
 				//fastPlane3W[p1] = word;
 				fastPlane3W[p2] = word;
-			//	fastPlane3W[p3] = word;
+				//	fastPlane3W[p3] = word;
 				fastPlane3W[p4] = word;
 			}
 
 			word = colorByte4p4FlatBIG[ address ];
-		//	if(fastPlane4W[p1] != word)
+			//	if(fastPlane4W[p1] != word)
 			{
-			//	fastPlane4W[p1] = word;
+				//	fastPlane4W[p1] = word;
 				fastPlane4W[p2] = word;
 				//fastPlane4W[p3] = word;
 				fastPlane4W[p4] = word;
@@ -806,7 +882,7 @@ static void DrawScreen4FlatBIGEven()
 	}
 }
 
-static void DrawScreen4FlatBIGOdd()
+static void DrawScreenMediumOdd()
 {
 	UWORD sp,p1,p2,p3,p4;
 	UWORD word;
@@ -823,42 +899,42 @@ static void DrawScreen4FlatBIGOdd()
 
 		for(UWORD x=0;x<XSIZE/4;x++)
 		{
-			address = (screen[sp]<<12) + (screen[sp+1]<<8) + (screen[sp+2]<<4) + screen[sp+3];
+			address = (screenMid[sp]<<12) + (screenMid[sp+1]<<8) + (screenMid[sp+2]<<4) + screenMid[sp+3];
 
 			word = colorByte4p1FlatBIG[ address ];
-		//	if(fastPlane1W[p1]!=word)
+			//	if(fastPlane1W[p1]!=word)
 			{
 				fastPlane1W[p1] = word;
-			//	fastPlane1W[p2] = word;
+				//	fastPlane1W[p2] = word;
 				fastPlane1W[p3] = word;
-			//	fastPlane1W[p4] = word;
+				//	fastPlane1W[p4] = word;
 			}
 
 			word = colorByte4p2FlatBIG[ address ];
 			//if(fastPlane2W[p1] != word)
 			{
 				fastPlane2W[p1] = word;
-			//	fastPlane2W[p2] = word;
+				//	fastPlane2W[p2] = word;
 				fastPlane2W[p3] = word;
-			//	fastPlane2W[p4] = word;
+				//	fastPlane2W[p4] = word;
 			}
 
 			word = colorByte4p3FlatBIG[ address ];
-		//	if(fastPlane3W[p1] != word)
+			//	if(fastPlane3W[p1] != word)
 			{
 				fastPlane3W[p1] = word;
-			//	fastPlane3W[p2] = word;
+				//	fastPlane3W[p2] = word;
 				fastPlane3W[p3] = word;
-			//	fastPlane3W[p4] = word;
+				//	fastPlane3W[p4] = word;
 			}
 
 			word = colorByte4p4FlatBIG[ address ];
-	//		if(fastPlane4W[p1] != word)
+			//		if(fastPlane4W[p1] != word)
 			{
 				fastPlane4W[p1] = word;
-			//	fastPlane4W[p2] = word;
+				//	fastPlane4W[p2] = word;
 				fastPlane4W[p3] = word;
-			//	fastPlane4W[p4] = word;
+				//	fastPlane4W[p4] = word;
 			}
 
 			p1++;
@@ -873,90 +949,90 @@ static void DrawScreen4FlatBIGOdd()
 
 /*static void DrawScreen4FlatMemCopy()
 {
-	UWORD sp,p1,p2,p3,p4;
-	UWORD word;
-	UWORD address;
-	sp = 0;
+UWORD sp,p1,p2,p3,p4;
+UWORD word;
+UWORD address;
+sp = 0;
 
-	for(UWORD y=0;y<YSIZE;y++)
-	{
-		p1 = y*PLANEWIDTH*4/2;
-		p2 = p1+PLANEWIDTH/2;
-		p3 = p2+PLANEWIDTH/2;
-		p4 = p3+PLANEWIDTH/2;
+for(UWORD y=0;y<YSIZE;y++)
+{
+p1 = y*PLANEWIDTH*4/2;
+p2 = p1+PLANEWIDTH/2;
+p3 = p2+PLANEWIDTH/2;
+p4 = p3+PLANEWIDTH/2;
 
-		for(UWORD x=0;x<PLANEWIDTH/2;x++)
-		{
-			address = (screen[sp]<<12) + (screen[sp+1]<<8) + (screen[sp+2]<<4) + screen[sp+3];
+for(UWORD x=0;x<PLANEWIDTH/2;x++)
+{
+address = (screen[sp]<<12) + (screen[sp+1]<<8) + (screen[sp+2]<<4) + screen[sp+3];
 
-			word = colorByte4p1Flat[ address ];
-			if(fastPlane1W[p1]!=word)
-			{
-				fastPlane1W[p1] = word;
-				//fastPlane1W[p2] = word;
-				//fastPlane1W[p3] = word;
-				//fastPlane1W[p4] = word;
-			}
+word = colorByte4p1Flat[ address ];
+if(fastPlane1W[p1]!=word)
+{
+fastPlane1W[p1] = word;
+//fastPlane1W[p2] = word;
+//fastPlane1W[p3] = word;
+//fastPlane1W[p4] = word;
+}
 
-			word = colorByte4p2Flat[ address ];
-			if(fastPlane2W[p1] != word)
-			{
-				fastPlane2W[p1] = word;
-			//	fastPlane2W[p2] = word;
-			//	fastPlane2W[p3] = word;
-			//	fastPlane2W[p4] = word;
-			}
+word = colorByte4p2Flat[ address ];
+if(fastPlane2W[p1] != word)
+{
+fastPlane2W[p1] = word;
+//	fastPlane2W[p2] = word;
+//	fastPlane2W[p3] = word;
+//	fastPlane2W[p4] = word;
+}
 
-			word = colorByte4p3Flat[ address ];
-			if(fastPlane3W[p1] != word)
-			{
-				fastPlane3W[p1] = word;
-			//	fastPlane3W[p2] = word;
-			//	fastPlane3W[p3] = word;
-			//	fastPlane3W[p4] = word;
-			}
+word = colorByte4p3Flat[ address ];
+if(fastPlane3W[p1] != word)
+{
+fastPlane3W[p1] = word;
+//	fastPlane3W[p2] = word;
+//	fastPlane3W[p3] = word;
+//	fastPlane3W[p4] = word;
+}
 
-			word = colorByte4p4Flat[ address ];
-			if(fastPlane4W[p1] != word)
-			{
-				fastPlane4W[p1] = word;
-			//	fastPlane4W[p2] = word;
-				//fastPlane4W[p3] = word;
-				//fastPlane4W[p4] = word;
-			}
+word = colorByte4p4Flat[ address ];
+if(fastPlane4W[p1] != word)
+{
+fastPlane4W[p1] = word;
+//	fastPlane4W[p2] = word;
+//fastPlane4W[p3] = word;
+//fastPlane4W[p4] = word;
+}
 
-			p1++;
-			p2++;
-			p3++;
-			p4++;
+p1++;
+p2++;
+p3++;
+p4++;
 
-			sp+=4;
-		}
-	}
+sp+=4;
+}
+}
 
-	for(UWORD y=0;y<YSIZE;y++)
-	{
-		p1 = y*PLANEWIDTH*4/2;
-		p2 = p1+PLANEWIDTH/2;
-		p3 = p2+PLANEWIDTH/2;
-		p4 = p3+PLANEWIDTH/2;
+for(UWORD y=0;y<YSIZE;y++)
+{
+p1 = y*PLANEWIDTH*4/2;
+p2 = p1+PLANEWIDTH/2;
+p3 = p2+PLANEWIDTH/2;
+p4 = p3+PLANEWIDTH/2;
 
-		CopyMemQuick(&fastPlane1W[p1], &fastPlane1W[p2], PLANEWIDTH);
-		CopyMemQuick(&fastPlane1W[p1], &fastPlane1W[p3], PLANEWIDTH);
-		CopyMemQuick(&fastPlane1W[p1], &fastPlane1W[p4], PLANEWIDTH);
+CopyMemQuick(&fastPlane1W[p1], &fastPlane1W[p2], PLANEWIDTH);
+CopyMemQuick(&fastPlane1W[p1], &fastPlane1W[p3], PLANEWIDTH);
+CopyMemQuick(&fastPlane1W[p1], &fastPlane1W[p4], PLANEWIDTH);
 
-		CopyMemQuick(&fastPlane2W[p1], &fastPlane2W[p2], PLANEWIDTH);
-		CopyMemQuick(&fastPlane2W[p1], &fastPlane2W[p3], PLANEWIDTH);
-		CopyMemQuick(&fastPlane2W[p1], &fastPlane2W[p4], PLANEWIDTH);
+CopyMemQuick(&fastPlane2W[p1], &fastPlane2W[p2], PLANEWIDTH);
+CopyMemQuick(&fastPlane2W[p1], &fastPlane2W[p3], PLANEWIDTH);
+CopyMemQuick(&fastPlane2W[p1], &fastPlane2W[p4], PLANEWIDTH);
 
-		CopyMemQuick(&fastPlane3W[p1], &fastPlane3W[p2], PLANEWIDTH);
-		CopyMemQuick(&fastPlane3W[p1], &fastPlane3W[p3], PLANEWIDTH);
-		CopyMemQuick(&fastPlane3W[p1], &fastPlane3W[p4], PLANEWIDTH);
+CopyMemQuick(&fastPlane3W[p1], &fastPlane3W[p2], PLANEWIDTH);
+CopyMemQuick(&fastPlane3W[p1], &fastPlane3W[p3], PLANEWIDTH);
+CopyMemQuick(&fastPlane3W[p1], &fastPlane3W[p4], PLANEWIDTH);
 
-		CopyMemQuick(&fastPlane4W[p1], &fastPlane4W[p2], PLANEWIDTH);
-		CopyMemQuick(&fastPlane4W[p1], &fastPlane4W[p3], PLANEWIDTH);
-		CopyMemQuick(&fastPlane4W[p1], &fastPlane4W[p4], PLANEWIDTH);
-	}
+CopyMemQuick(&fastPlane4W[p1], &fastPlane4W[p2], PLANEWIDTH);
+CopyMemQuick(&fastPlane4W[p1], &fastPlane4W[p3], PLANEWIDTH);
+CopyMemQuick(&fastPlane4W[p1], &fastPlane4W[p4], PLANEWIDTH);
+}
 }*/
 
 static void DrawScreen4FlatEven()
@@ -975,7 +1051,7 @@ static void DrawScreen4FlatEven()
 
 		for(UWORD x=0;x<XSIZE/4;x++)
 		{
-			address = (screen[sp]<<12) + (screen[sp+1]<<8) + (screen[sp+2]<<4) + screen[sp+3];
+			address = (screenMid[sp]<<12) + (screenMid[sp+1]<<8) + (screenMid[sp+2]<<4) + screenMid[sp+3];
 
 			word = colorByte4p1Flat[ address ];
 			//	fastPlane1W[p1] = word;
@@ -1027,7 +1103,7 @@ static void DrawScreen4FlatOdd()
 
 		for(UWORD x=0;x<XSIZE/4;x++)
 		{
-			address = (screen[sp]<<12) + (screen[sp+1]<<8) + (screen[sp+2]<<4) + screen[sp+3];
+			address = (screenMid[sp]<<12) + (screenMid[sp+1]<<8) + (screenMid[sp+2]<<4) + screenMid[sp+3];
 
 			word = colorByte4p1Flat[ address ];
 			fastPlane1W[p1] = word;
@@ -1063,19 +1139,8 @@ static void DrawScreen4FlatOdd()
 	}
 }
 
-/*
-1 x 1 0
-x x 0 0
-1 0 1 0
-
-4 odczyty
-3 odczyty - interpolacji
-3 zapisy
-*/
-
-static void DrawTerrain(void) {
-
-//	UBYTE color;
+static void DrawTerrain(void)
+{
 	UBYTE sx,sy,tz;
 	UBYTE th;
 	UWORD position;
@@ -1083,96 +1148,102 @@ static void DrawTerrain(void) {
 	UBYTE mipLevel;
 
 	UWORD startPosition;
-	startPosition = (YSIZE-1)*XSIZE;
+
+	startPosition = (YSIZE-1)*XSIZE; //set the start position (left bottom pixel) on the destination screen
 
 	for(sx=0;sx<XSIZE;sx++)
 	{
+		//********* INITIALIZE INTERLACED CALCUTATIONS
 		if(interlace > 0)
 		{
 			sy = 0;
 			position = startPosition+sx;
 		}
-
 		else
 		{
 			sy = 1;
 			position = startPosition+sx-XSIZE;
 		}
+		//********* INITIALIZE INTERLACED CALCUTATIONS
 
-
+		//starting depth to look for height colission
 		tz = 1;
 
 
-		while(tz < TERRAINDEPTH && sy <YSIZE)
+		while(tz < renderingDepth && sy <YSIZE)
 		{
-			mipLevel = tz/8;
+			//***** set mipmap level
+			mipLevel = tz/32;
 
-			mx = xPos + rayCastX[sx][tz];
-			my = yPos + tz;
+			// set x,y pooositions on source maps
+			mx = (xPos + rayCastX[sx][tz])/2;
+			my = (yPos + tz)/2;
 
-if(mipLevel == 0)
-{
-	th = heightMap0[ mx ][ my ];
-}
-if(mipLevel == 1)
-{
-	th = heightMap1[ mx/2 ][ my/2 ];
-}
-else if(mipLevel == 2)
-{
-	th = heightMap2[ mx/4 ][ my/4 ];
-}
-else if(mipLevel == 3)
-{
-	th = heightMap3[ mx/8 ][ my/8 ];
-}
-else if(mipLevel > 3)
-{
-	th = heightMap4[ mx/16 ][ my/16 ];
-}
+			//*********** HEIGHT MIPMAP
+			if(mipLevel == 0)
+			{
+				th = heightMap0[ mx ][ my ];
+			}
+			if(mipLevel == 1)
+			{
+				th = heightMap1[ mx/2 ][ my/2 ];
+			}
+			else if(mipLevel == 2)
+			{
+				th = heightMap2[ mx/4 ][ my/4 ];
+			}
+			else if(mipLevel == 3)
+			{
+				th = heightMap3[ mx/8 ][ my/8 ];
+			}
+			else if(mipLevel > 3)
+			{
+				th = heightMap4[ mx/16 ][ my/16 ];
+			}
+			//*********** HEIGHT MIPMAP
 
-			//th = ;
 			//height to look for at a given x,y terrain coordinate accounting for z depth
 			//************************************************************
 			if(th>currentHeight + rayCastY[sy][tz])
 			{
-				//color = ;//th % 14;
+				//*************** COLOR MIPMAP
 				if(mipLevel == 0)
 				{
-					screen[position] = colorMap0[ mx ][ my ];
+					screenMid[position] = colorMap0[ mx ][ my ];
 				}
 				if(mipLevel == 1)
 				{
-					screen[position] = colorMap1[ mx/2 ][ my/2 ];
+					screenMid[position] = colorMap1[ mx/2 ][ my/2 ];
 				}
 				else if(mipLevel == 2)
 				{
-					screen[position] = colorMap2[ mx/4 ][ my/4 ];
+					screenMid[position] = colorMap2[ mx/4 ][ my/4 ];
 				}
 				else if(mipLevel == 3)
 				{
-					screen[position] = colorMap3[ mx/8 ][ my/8 ];
+					screenMid[position] = colorMap3[ mx/8 ][ my/8 ];
 				}
 				else if(mipLevel > 3)
 				{
-					screen[position] = colorMap4[ mx/16 ][ my/16 ];
+					screenMid[position] = colorMap4[ mx/16 ][ my/16 ];
 				}
-				//screen[position] = colorMap[mx][my];
-				sy+=2;
-				position-=XSIZE*2;
+				//*************** COLOR MIPMAP
+
+				sy+=2; //move 2 pixels to the top in calculations
+				position-=XSIZE*2; //move 2 pixels to the top on the destination screen
 			}
 			else
 			{
-				tz+=1+tz/16;
+				tz+=1+tz/16; //move a variable step in depth to look for next height colision
 			}
 		}
-		//finish vertical line with 0xff
+		//finish vertical line with SKY
 		while(sy < YSIZE)
 		{
 			sy++;
-			if(screen[position] == 0x0f)
+			if(screenMid[position] == 0x0f)
 			break;
-			screen[position] = 0x0f;
+			screenMid[position] = 0x0f;
 			position-=XSIZE;
 		}
 	}
@@ -1183,108 +1254,116 @@ static tVPort *s_pVPort;
 static tSimpleBufferManager *s_pBuffer;
 static tAvg *s_pAvgTime;
 
-void engineGsCreate(void) {
+void engineGsCreate(void)
+{
 	s_pView = viewCreate(0,
 		TAG_VIEW_GLOBAL_CLUT, 1,
-		TAG_DONE);
+		TAG_DONE
+	);
 
 
-		s_pVPort = vPortCreate(0,
-			TAG_VPORT_VIEW, s_pView,
-			TAG_VPORT_BPP, DEPTH,
-			TAG_END);
+	s_pVPort = vPortCreate(0,
+		TAG_VPORT_VIEW, s_pView,
+		TAG_VPORT_BPP, DEPTH,
+		TAG_END
+	);
 
-			s_pBuffer = simpleBufferCreate(0,
-				TAG_SIMPLEBUFFER_VPORT, s_pVPort,
-				TAG_SIMPLEBUFFER_BITMAP_FLAGS, BMF_CLEAR,
-				TAG_DONE);
+	s_pBuffer = simpleBufferCreate(0,
+		TAG_SIMPLEBUFFER_VPORT, s_pVPort,
+		TAG_SIMPLEBUFFER_BITMAP_FLAGS, BMF_CLEAR,
+		TAG_DONE
+	);
 
 
-				xStart = 50;
-				yStart = 0;
+	xStart = 50;
+	yStart = 0;
 
-				xPos = xStart;
-				yPos = yStart;
+	xPos = xStart;
+	yPos = yStart;
 
-				heightAheadRange = 5;
+	heightAheadRange = 5;
 
-				flightHeight = 20;
+	flightHeight = 20;
 
-				ReadHeight("height.raw");
-			//	ReadPalette("palette.raw");
-				ReadColor("color.raw");
-				CalculateRayCasts();
-				//GenerateColorBytes2();
-				//GenerateColorBytes4();
-				GenerateColorBytes4Flat();
-				GenerateColorBytes4FlatBIG();
-				CalculateMipMap();
-				CalculateColorMipMaps();
-				CalculateHeightMipMaps();
+	ReadHeight("height.raw");
+	//	ReadPalette("palette.raw");
+	ReadColor("color.raw");
+	CalculateRayCasts();
+	//GenerateColorBytes2();
+	//GenerateColorBytes4();
+	GenerateColorBytes4Flat();
+	GenerateColorBytes4FlatBIG();
+	CalculateMipMap();
+	CalculateColorMipMaps();
+	CalculateHeightMipMaps();
 
-				memcpy(s_pVPort->pPalette, kolory, 16 * sizeof(UWORD));
+	memcpy(s_pVPort->pPalette, kolory, 16 * sizeof(UWORD));
 
-				s_pAvgTime = logAvgCreate("perf", 100);
+	s_pAvgTime = logAvgCreate("perf", 100);
 
-				viewLoad(s_pView);
-				keyCreate();
-				systemUnuse();
-			}
+	viewLoad(s_pView);
+	keyCreate();
+	systemUnuse();
+}
 
-			void engineGsLoop(void) {
-			/*	if(yPos == 250)
-				{
-					gameClose();
-				}
+void engineGsLoop(void) {
+	/*	if(yPos == 250)
+	{
+	gameClose();
+}
+yPos += 1;
+xPos += 1;*/
 
-				//flightHeight += 1;
-				yPos += 1;
-				xPos += 1;*/
+if(keyCheck(KEY_SPACE)) {
+	gameClose();
+}
+else
+{
+	if(keyCheck(KEY_UP))yPos++;
+	if(keyCheck(KEY_DOWN))yPos--;
+	if(keyCheck(KEY_RIGHT))xPos++;
+	if(keyCheck(KEY_LEFT))xPos--;
+	if(keyCheck(KEY_A))flightHeight++;
+	if(keyCheck(KEY_Z))flightHeight--;
+	if(keyCheck(KEY_S))renderingDepth++;
+	if(keyCheck(KEY_X))renderingDepth--;
 
-						if(keyCheck(KEY_SPACE)) {
-				gameClose();
-			}
-			else
-			{
-			if(keyCheck(KEY_UP))yPos++;
-			if(keyCheck(KEY_DOWN))yPos--;
-			if(keyCheck(KEY_RIGHT))xPos++;
-			if(keyCheck(KEY_LEFT))xPos--;
-			if(keyCheck(KEY_A))flightHeight++;
-			if(keyCheck(KEY_Z))flightHeight--;
-		}
-		//		turn = turn/1.2;
-		//	xPos += turn;
-		if(flightHeight<10) flightHeight = 10;
-		currentHeight = flightHeight;
+}
+//		turn = turn/1.2;
+//	xPos += turn;
+if(renderingDepth<10) renderingDepth = 10;
+else if(renderingDepth>TERRAINDEPTH) renderingDepth = TERRAINDEPTH;
+
+if(flightHeight<10) flightHeight = 10;
+currentHeight = flightHeight;
 //currentHeight = (currentHeight*3 + flightHeight + height[xPos][yPos+heightAheadRange])/4;
 
 
-		logAvgBegin(s_pAvgTime);
-		if(interlace > 0)
-		{
-		//
-		DrawTerrain();
-		//DrawScreen4FlatEven();
-		//DrawScreen4FlatBIG();
-		DrawScreen4FlatBIGEven();
-		interlace = -1;
-	}
-	else
-	{
+logAvgBegin(s_pAvgTime);
+if(interlace > 0)
+{
+	//
+	DrawTerrain();
+	//DrawScreen4FlatEven();
+	//DrawScreen4FlatBIG();
+	DrawScreenMediumEven();
+	interlace = -1;
+}
+else
+{
 	//
 	DrawTerrain();
 	//DrawScreen4FlatBIG();
 	//DrawScreen4FlatOdd();
-	DrawScreen4FlatBIGOdd();
+	DrawScreenMediumOdd();
 	interlace = 1;
 }
 
-		//DrawScreen2();
-		//DrawScreen4();
-		//DrawScreen4Flat();
-		//DrawScreen4FlatBIG();
-		//DrawScreen4FlatMemCopy();
+//DrawScreen2();
+//DrawScreen4();
+//DrawScreen4Flat();
+//DrawScreen4FlatBIG();
+//DrawScreen4FlatMemCopy();
 
 
 
