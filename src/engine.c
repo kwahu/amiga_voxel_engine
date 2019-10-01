@@ -19,10 +19,10 @@ docker run --rm \
 //#define WIDTH 320
 #define HEIGHT 256
 #define DEPTH 4
-#define COLORS 16
+#define COLORS 32
 #define PLANEWIDTH 40
-#define TERRAINDEPTH 100
-#define XSIZE 64
+#define TERRAINDEPTH 150
+#define XSIZE 80
 #define YSIZE 64
 //#define PIXELHEIGHT 4
 
@@ -53,6 +53,7 @@ UWORD fastPlane4W[PLANEWIDTH*HEIGHT];
 WORD rayCastX[XSIZE][TERRAINDEPTH];
 WORD rayCastY[YSIZE][TERRAINDEPTH];
 
+
 UWORD kolory[COLORS] =
 {
 	0x030,0x141,0x252,0x363,0x474,0x585,0x696,0x7a7,
@@ -71,6 +72,7 @@ UWORD colorByte4p2[COLORS][COLORS][COLORS][COLORS];
 UWORD colorByte4p3[COLORS][COLORS][COLORS][COLORS];
 UWORD colorByte4p4[COLORS][COLORS][COLORS][COLORS];
 */
+/*
 UWORD colorByte4p1Flat[COLORS*COLORS*COLORS*COLORS];
 UWORD colorByte4p2Flat[COLORS*COLORS*COLORS*COLORS];
 UWORD colorByte4p3Flat[COLORS*COLORS*COLORS*COLORS];
@@ -80,13 +82,16 @@ UWORD colorByte4p1FlatBIG[COLORS*COLORS*COLORS*COLORS];
 UWORD colorByte4p2FlatBIG[COLORS*COLORS*COLORS*COLORS];
 UWORD colorByte4p3FlatBIG[COLORS*COLORS*COLORS*COLORS];
 UWORD colorByte4p4FlatBIG[COLORS*COLORS*COLORS*COLORS];
+*/
+UBYTE colorByteDitherP1Even[COLORS*COLORS];
+UBYTE colorByteDitherP2Even[COLORS*COLORS];
+UBYTE colorByteDitherP3Even[COLORS*COLORS];
+UBYTE colorByteDitherP4Even[COLORS*COLORS];
 
-UBYTE colorInterpolationBIG[COLORS*COLORS*COLORS*COLORS];
-
-UBYTE mipMap1[256];
-UBYTE mipMap2[256];
-UBYTE mipMap3[256];
-UBYTE mipMap4[256];
+UBYTE colorByteDitherP1Odd[COLORS*COLORS];
+UBYTE colorByteDitherP2Odd[COLORS*COLORS];
+UBYTE colorByteDitherP3Odd[COLORS*COLORS];
+UBYTE colorByteDitherP4Odd[COLORS*COLORS];
 
 int xStart, yStart;
 UWORD xPos, yPos;
@@ -107,7 +112,7 @@ static void ReadHeight(const char *name)
 		for (int x = 0; x < 256; x++) {
 			for (int y = 0; y < 256; y++) {
 				fileRead(file, &byte , 1);
-				heightMap0[x][y] = byte/2;
+				heightMap0[x][y] = byte;
 			}
 		}
 		fileClose(file);
@@ -225,13 +230,6 @@ static void CalculateHeightMipMaps()
 	}
 }
 
-/*static void CopyFastToChipB(tBitMap *bm)
-{
-CopyMemQuick(fastPlane1, bm->Planes[0], PLANEWIDTH*HEIGHT);
-CopyMemQuick(fastPlane2, bm->Planes[1], PLANEWIDTH*HEIGHT);
-CopyMemQuick(fastPlane3, bm->Planes[2], PLANEWIDTH*HEIGHT);
-CopyMemQuick(fastPlane4, bm->Planes[3], PLANEWIDTH*HEIGHT);
-}*/
 static void CopyFastToChipW(tBitMap *bm)
 {
 	CopyMemQuick(fastPlane1W, bm->Planes[0], PLANEWIDTH*HEIGHT);
@@ -259,25 +257,7 @@ static void CalculateRayCasts()
 	}
 }
 
-static void CalculateMipMap()
-{
-	UBYTE m1 = 0;
-	UBYTE m2 = 0;
-	UBYTE m3 = 0;
-	UBYTE m4 = 0;
-	for(int i=0;i<256;i++)
-	{
-		if(i % 2 == 0) m1 += 2;
-		if(i % 4 == 0) m2 += 4;
-		if(i % 8 == 0) m3 += 8;
-		if(i % 16 == 0) m4 += 16;
-		//mipMap0[i] = i;
-		mipMap1[i] = m1;
-		mipMap2[i] = m2;
-		mipMap3[i] = m3;
-		mipMap4[i] = m4;
-	}
-}
+
 /*
 static void DrawByte(UBYTE color,UWORD position,UWORD p2,UWORD p3,UWORD p4 )
 {
@@ -337,7 +317,7 @@ colorByte4p4[a][b][c][d]=
 ((d>>3) & 1)*15;
 }
 }*/
-
+/*
 static void GenerateColorBytes4Flat()
 {
 	UWORD address;
@@ -368,7 +348,7 @@ static void GenerateColorBytes4Flat()
 		((c>>3) & 1)*240+
 		((d>>3) & 1)*15;
 	}
-}
+}*/
 /*
 static void GenerateColorInterpolationsByte()
 {
@@ -443,7 +423,7 @@ static void GenerateColorInterpolationsByte()
 	}
 }
 */
-
+/*
 static void GenerateColorBytes4FlatBIG()
 {
 	UWORD address;
@@ -568,6 +548,119 @@ static void GenerateColorBytes4FlatBIG()
 	}
 }
 
+*/
+
+static void GenerateColorBytesDither()
+{
+	UWORD address;
+	UBYTE a1,a2,a3,a4,b1,b2,b3,b4;
+	for(int a=0;a<COLORS;a++)
+	for(int b=0;b<COLORS;b++)
+	{
+		address = (a<<5) + b;
+
+		if(a % 2)
+		{
+			a1 = a/2;
+			a2 = a/2+1;
+		}
+		else
+		{
+			a1 = a/2;
+			a2 = a/2;
+		}
+		if(b % 2)
+		{
+			b1 = b/2;
+			b2 = b/2+1;
+		}
+		else
+		{
+			b1 = b/2;
+			b2 = b/2;
+		}
+		colorByteDitherP1Even[address]=
+		((a1>>0) & 1) *0b10000000+
+		((a2>>0) & 1) *0b01000000+
+		((a1>>0) & 1) *0b00100000+
+		((a2>>0) & 1) *0b00010000+
+		((b1>>0) & 1) *0b00001000+
+		((b2>>0) & 1) *0b00000100+
+		((b1>>0) & 1) *0b00000010+
+		((b2>>0) & 1) *0b00000001;
+
+		colorByteDitherP2Even[address]=
+		((a1>>1) & 1) *0b10000000+
+		((a2>>1) & 1) *0b01000000+
+		((a1>>1) & 1) *0b00100000+
+		((a2>>1) & 1) *0b00010000+
+		((b1>>1) & 1) *0b00001000+
+		((b2>>1) & 1) *0b00000100+
+		((b1>>1) & 1) *0b00000010+
+		((b2>>1) & 1) *0b00000001;
+
+		colorByteDitherP3Even[address]=
+		((a1>>2) & 1) *0b10000000+
+		((a2>>2) & 1) *0b01000000+
+		((a1>>2) & 1) *0b00100000+
+		((a2>>2) & 1) *0b00010000+
+		((b1>>2) & 1) *0b00001000+
+		((b2>>2) & 1) *0b00000100+
+		((b1>>2) & 1) *0b00000010+
+		((b2>>2) & 1) *0b00000001;
+
+		colorByteDitherP4Even[address]=
+		((a1>>3) & 1) *0b10000000+
+		((a2>>3) & 1) *0b01000000+
+		((a1>>3) & 1) *0b00100000+
+		((a2>>3) & 1) *0b00010000+
+		((b1>>3) & 1) *0b00001000+
+		((b2>>3) & 1) *0b00000100+
+		((b1>>3) & 1) *0b00000010+
+		((b2>>3) & 1) *0b00000001;
+
+		colorByteDitherP1Odd[address]=
+		((a2>>0) & 1) *0b10000000+
+		((a1>>0) & 1) *0b01000000+
+		((a2>>0) & 1) *0b00100000+
+		((a1>>0) & 1) *0b00010000+
+		((b2>>0) & 1) *0b00001000+
+		((b1>>0) & 1) *0b00000100+
+		((b2>>0) & 1) *0b00000010+
+		((b1>>0) & 1) *0b00000001;
+
+		colorByteDitherP2Odd[address]=
+		((a2>>1) & 1) *0b10000000+
+		((a1>>1) & 1) *0b01000000+
+		((a2>>1) & 1) *0b00100000+
+		((a1>>1) & 1) *0b00010000+
+		((b2>>1) & 1) *0b00001000+
+		((b1>>1) & 1) *0b00000100+
+		((b2>>1) & 1) *0b00000010+
+		((b1>>1) & 1) *0b00000001;
+
+		colorByteDitherP3Odd[address]=
+		((a2>>2) & 1) *0b10000000+
+		((a1>>2) & 1) *0b01000000+
+		((a2>>2) & 1) *0b00100000+
+		((a1>>2) & 1) *0b00010000+
+		((b2>>2) & 1) *0b00001000+
+		((b1>>2) & 1) *0b00000100+
+		((b2>>2) & 1) *0b00000010+
+		((b1>>2) & 1) *0b00000001;
+
+		colorByteDitherP4Odd[address]=
+		((a2>>3) & 1) *0b10000000+
+		((a1>>3) & 1) *0b01000000+
+		((a2>>3) & 1) *0b00100000+
+		((a1>>3) & 1) *0b00010000+
+		((b2>>3) & 1) *0b00001000+
+		((b1>>3) & 1) *0b00000100+
+		((b2>>3) & 1) *0b00000010+
+		((b1>>3) & 1) *0b00000001;
+
+	}
+}
 /*static void DrawScreen2()
 {
 UBYTE color1;
@@ -689,7 +782,7 @@ sp+=4;
 }
 }
 }*/
-
+/*
 static void DrawScreen4Flat()
 {
 	UWORD sp,p1,p2,p3,p4;
@@ -753,7 +846,8 @@ static void DrawScreen4Flat()
 		}
 	}
 }
-
+*/
+/*
 static void DrawScreen4FlatBIG()
 {
 	UWORD sp,p1,p2,p3,p4;
@@ -817,7 +911,8 @@ static void DrawScreen4FlatBIG()
 		}
 	}
 }
-
+*/
+/*
 static void DrawScreenMediumEven()
 {
 	UWORD sp,p1,p2,p3,p4;
@@ -946,6 +1041,137 @@ static void DrawScreenMediumOdd()
 		}
 	}
 }
+*/
+static void DrawScreenMediumDitherEven()
+{
+	UWORD sp,p1,p2,p3,p4;
+	UWORD word;
+	UWORD address1, address2;
+	sp = 0;
+
+	for(UWORD y=0;y<YSIZE;y++)
+	{
+		p1 = y*PLANEWIDTH*4/2;
+		p2 = p1+PLANEWIDTH/2;
+		p3 = p2+PLANEWIDTH/2;
+		p4 = p3+PLANEWIDTH/2;
+
+		for(UWORD x=0;x<XSIZE/4;x++)
+		{
+			address1 = (screenMid[sp]<<5) + (screenMid[sp+1]);
+			address2 = (screenMid[sp+2]<<5) + screenMid[sp+3];
+
+			word = (colorByteDitherP1Even[ address1 ]<<8) + colorByteDitherP1Even[ address2 ];
+			//	if(fastPlane1W[p1]!=word)
+			{
+				//fastPlane1W[p1] = word;
+				fastPlane1W[p2] = word;
+				//fastPlane1W[p3] = word;
+				fastPlane1W[p4] = word;
+			}
+
+			word = (colorByteDitherP2Even[ address1 ]<<8) + colorByteDitherP2Even[ address2 ];
+			//if(fastPlane2W[p1] != word)
+			{
+				//fastPlane2W[p1] = word;
+				fastPlane2W[p2] = word;
+				//fastPlane2W[p3] = word;
+				fastPlane2W[p4] = word;
+			}
+
+			word = (colorByteDitherP3Even[ address1 ]<<8) + colorByteDitherP3Even[ address2 ];
+			//	if(fastPlane3W[p1] != word)
+			{
+				//fastPlane3W[p1] = word;
+				fastPlane3W[p2] = word;
+				//	fastPlane3W[p3] = word;
+				fastPlane3W[p4] = word;
+			}
+
+			word = (colorByteDitherP4Even[ address1 ]<<8) + colorByteDitherP4Even[ address2 ];
+			//	if(fastPlane4W[p1] != word)
+			{
+				//	fastPlane4W[p1] = word;
+				fastPlane4W[p2] = word;
+				//fastPlane4W[p3] = word;
+				fastPlane4W[p4] = word;
+			}
+
+			p1++;
+			p2++;
+			p3++;
+			p4++;
+
+			sp+=4;
+		}
+	}
+}
+
+static void DrawScreenMediumDitherOdd()
+{
+	UWORD sp,p1,p2,p3,p4;
+	UWORD word;
+	UWORD address1,address2;
+	sp = 0;
+
+	for(UWORD y=0;y<YSIZE;y++)
+	{
+		p1 = y*PLANEWIDTH*4/2;
+		p2 = p1+PLANEWIDTH/2;
+		p3 = p2+PLANEWIDTH/2;
+		p4 = p3+PLANEWIDTH/2;
+		//sp = y;
+
+		for(UWORD x=0;x<XSIZE/4;x++)
+		{
+			address1 = (screenMid[sp]<<5) + (screenMid[sp+1]);
+			address2 = (screenMid[sp+2]<<5) + screenMid[sp+3];
+
+			word = (colorByteDitherP1Odd[ address1 ]<<8) + colorByteDitherP1Odd[ address2 ];
+			//	if(fastPlane1W[p1]!=word)
+			{
+				fastPlane1W[p1] = word;
+				//fastPlane1W[p2] = word;
+				fastPlane1W[p3] = word;
+				//fastPlane1W[p4] = word;
+			}
+
+			word = (colorByteDitherP2Odd[ address1 ]<<8) + colorByteDitherP2Odd[ address2 ];
+			//if(fastPlane2W[p1] != word)
+			{
+				fastPlane2W[p1] = word;
+				//fastPlane2W[p2] = word;
+				fastPlane2W[p3] = word;
+				//fastPlane2W[p4] = word;
+			}
+
+			word = (colorByteDitherP3Odd[ address1 ]<<8) + colorByteDitherP3Odd[ address2 ];
+			//	if(fastPlane3W[p1] != word)
+			{
+				fastPlane3W[p1] = word;
+				//fastPlane3W[p2] = word;
+				fastPlane3W[p3] = word;
+				//fastPlane3W[p4] = word;
+			}
+
+			word = (colorByteDitherP4Odd[ address1 ]<<8) + colorByteDitherP4Odd[ address2 ];
+			//	if(fastPlane4W[p1] != word)
+			{
+				fastPlane4W[p1] = word;
+				//fastPlane4W[p2] = word;
+				fastPlane4W[p3] = word;
+				//fastPlane4W[p4] = word;
+			}
+
+			p1++;
+			p2++;
+			p3++;
+			p4++;
+
+			sp+=4;
+		}
+	}
+}
 
 /*static void DrawScreen4FlatMemCopy()
 {
@@ -1034,7 +1260,7 @@ CopyMemQuick(&fastPlane4W[p1], &fastPlane4W[p3], PLANEWIDTH);
 CopyMemQuick(&fastPlane4W[p1], &fastPlane4W[p4], PLANEWIDTH);
 }
 }*/
-
+/*
 static void DrawScreen4FlatEven()
 {
 	UWORD sp,p1,p2,p3,p4;
@@ -1138,7 +1364,7 @@ static void DrawScreen4FlatOdd()
 		}
 	}
 }
-
+*/
 static void DrawTerrain(void)
 {
 	UBYTE sx,sy,tz;
@@ -1176,15 +1402,16 @@ static void DrawTerrain(void)
 			mipLevel = tz/32;
 
 			// set x,y pooositions on source maps
-			mx = (xPos + rayCastX[sx][tz])/2;
-			my = (yPos + tz)/2;
+			mx = (xPos + rayCastX[sx][tz])/4;
+			my = (yPos + tz)/4;
 
+			//th = heightMap0[ mx ][ my ];
 			//*********** HEIGHT MIPMAP
 			if(mipLevel == 0)
 			{
 				th = heightMap0[ mx ][ my ];
 			}
-			if(mipLevel == 1)
+			else if(mipLevel == 1)
 			{
 				th = heightMap1[ mx/2 ][ my/2 ];
 			}
@@ -1211,7 +1438,7 @@ static void DrawTerrain(void)
 				{
 					screenMid[position] = colorMap0[ mx ][ my ];
 				}
-				if(mipLevel == 1)
+				else if(mipLevel == 1)
 				{
 					screenMid[position] = colorMap1[ mx/2 ][ my/2 ];
 				}
@@ -1229,21 +1456,23 @@ static void DrawTerrain(void)
 				}
 				//*************** COLOR MIPMAP
 
+				screenMid[position] = th/4;
+
 				sy+=2; //move 2 pixels to the top in calculations
 				position-=XSIZE*2; //move 2 pixels to the top on the destination screen
 			}
 			else
 			{
-				tz+=1+tz/16; //move a variable step in depth to look for next height colision
+				tz+=1+tz/8; //move a variable step in depth to look for next height colision
 			}
 		}
 		//finish vertical line with SKY
 		while(sy < YSIZE)
 		{
 			sy++;
-			if(screenMid[position] == 0x0f)
-			break;
-			screenMid[position] = 0x0f;
+			//if(screenMid[position] == 0x0f)
+			//break;
+			screenMid[position] = 0x1f;
 			position-=XSIZE;
 		}
 	}
@@ -1286,16 +1515,19 @@ void engineGsCreate(void)
 	flightHeight = 20;
 
 	ReadHeight("height.raw");
-	//	ReadPalette("palette.raw");
+		//ReadPalette("palette.raw");
 	ReadColor("color.raw");
 	CalculateRayCasts();
 	//GenerateColorBytes2();
 	//GenerateColorBytes4();
-	GenerateColorBytes4Flat();
-	GenerateColorBytes4FlatBIG();
-	CalculateMipMap();
+//	GenerateColorBytes4Flat();
+//	GenerateColorBytes4FlatBIG();
+GenerateColorBytesDither();
+	//CalculateMipMap();
 	CalculateColorMipMaps();
 	CalculateHeightMipMaps();
+
+	renderingDepth = 50;
 
 	memcpy(s_pVPort->pPalette, kolory, 16 * sizeof(UWORD));
 
@@ -1307,7 +1539,7 @@ void engineGsCreate(void)
 }
 
 void engineGsLoop(void) {
-	/*	if(yPos == 250)
+/*	if(yPos == 250)
 	{
 	gameClose();
 }
@@ -1321,10 +1553,10 @@ else
 {
 	if(keyCheck(KEY_UP))yPos++;
 	if(keyCheck(KEY_DOWN))yPos--;
-	if(keyCheck(KEY_RIGHT))xPos++;
-	if(keyCheck(KEY_LEFT))xPos--;
-	if(keyCheck(KEY_A))flightHeight++;
-	if(keyCheck(KEY_Z))flightHeight--;
+	if(keyCheck(KEY_RIGHT))xPos+=3;
+	if(keyCheck(KEY_LEFT))xPos-=3;
+	if(keyCheck(KEY_A))flightHeight+=2;
+	if(keyCheck(KEY_Z))flightHeight-=2;
 	if(keyCheck(KEY_S))renderingDepth++;
 	if(keyCheck(KEY_X))renderingDepth--;
 
@@ -1346,7 +1578,7 @@ if(interlace > 0)
 	DrawTerrain();
 	//DrawScreen4FlatEven();
 	//DrawScreen4FlatBIG();
-	DrawScreenMediumEven();
+	DrawScreenMediumDitherEven();
 	interlace = -1;
 }
 else
@@ -1355,7 +1587,7 @@ else
 	DrawTerrain();
 	//DrawScreen4FlatBIG();
 	//DrawScreen4FlatOdd();
-	DrawScreenMediumOdd();
+	DrawScreenMediumDitherOdd();
 	interlace = 1;
 }
 
