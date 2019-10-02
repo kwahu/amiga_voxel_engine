@@ -21,9 +21,10 @@ docker run --rm \
 #define DEPTH 4
 #define COLORS 32
 #define PLANEWIDTH 40
-#define TERRAINDEPTH 150
+#define TERRAINDEPTH 100
 #define XSIZE 80
-#define YSIZE 64
+#define YSIZE 128
+#define YSTEPSCREEN XSIZE*4
 //#define PIXELHEIGHT 4
 
 UBYTE heightMap0[256][256];
@@ -562,22 +563,22 @@ static void GenerateColorBytesDither()
 		if(a % 2)
 		{
 			a1 = a/2;
-			a2 = a/2+1;
+			a2 = a/2;
 		}
 		else
 		{
 			a1 = a/2;
-			a2 = a/2;
+			a2 = a/2+1;
 		}
 		if(b % 2)
 		{
 			b1 = b/2;
-			b2 = b/2+1;
+			b2 = b/2;
 		}
 		else
 		{
 			b1 = b/2;
-			b2 = b/2;
+			b2 = b/2+1;
 		}
 		colorByteDitherP1Even[address]=
 		((a1>>0) & 1) *0b10000000+
@@ -1173,6 +1174,98 @@ static void DrawScreenMediumDitherOdd()
 	}
 }
 
+static void ClearSky()
+{
+	UWORD position = 0;
+	UWORD word;
+
+	for(UWORD y=0;y<(YSIZE*PLANEWIDTH)/2;y++)
+	{
+				fastPlane1W[position] = 0b11111111;
+				fastPlane2W[position] = 0b11111111;
+				fastPlane3W[position] = 0b11111111;
+				fastPlane4W[position] = 0b11111111;
+				position++;
+	}
+}
+static void DrawScreenMediumDitherEven2()
+{
+	UWORD sp,p1,p2,p3,p4;
+	UWORD word;
+	UWORD address1, address2;
+	sp = 0;
+
+//ClearSky();
+
+	for(UWORD y=0;y<YSIZE;y++)
+	{
+		p2 = y*PLANEWIDTH*2/2+PLANEWIDTH/2;
+
+		for(UWORD x=0;x<XSIZE/4;x++)
+		{
+			address1 = (screenMid[sp]<<5) + (screenMid[sp+1]);
+			address2 = (screenMid[sp+2]<<5) + screenMid[sp+3];
+
+			//if(address1 != 0b11111111 && address2 != 0b11111111)
+			{
+			word = (colorByteDitherP1Even[ address1 ]<<8) + colorByteDitherP1Even[ address2 ];
+				fastPlane1W[p2] = word;
+
+			word = (colorByteDitherP2Even[ address1 ]<<8) + colorByteDitherP2Even[ address2 ];
+				fastPlane2W[p2] = word;
+
+			word = (colorByteDitherP3Even[ address1 ]<<8) + colorByteDitherP3Even[ address2 ];
+				fastPlane3W[p2] = word;
+
+			word = (colorByteDitherP4Even[ address1 ]<<8) + colorByteDitherP4Even[ address2 ];
+				fastPlane4W[p2] = word;
+			}
+
+			p2++;
+
+			sp+=4;
+		}
+	}
+}
+
+static void DrawScreenMediumDitherOdd2()
+{
+	UWORD sp,p1,p2,p3,p4;
+	UWORD word;
+	UWORD address1,address2;
+	sp = 0;
+
+//	ClearSky();
+
+	for(UWORD y=0;y<YSIZE;y++)
+	{
+		p1 = y*PLANEWIDTH*2/2;
+		for(UWORD x=0;x<XSIZE/4;x++)
+		{
+			address1 = (screenMid[sp]<<5) + (screenMid[sp+1]);
+			address2 = (screenMid[sp+2]<<5) + screenMid[sp+3];
+
+			//if(address1 != 0b11111111 && address2 != 0b11111111)
+			{
+
+			word = (colorByteDitherP1Odd[ address1 ]<<8) + colorByteDitherP1Odd[ address2 ];
+				fastPlane1W[p1] = word;
+
+			word = (colorByteDitherP2Odd[ address1 ]<<8) + colorByteDitherP2Odd[ address2 ];
+				fastPlane2W[p1] = word;
+
+			word = (colorByteDitherP3Odd[ address1 ]<<8) + colorByteDitherP3Odd[ address2 ];
+				fastPlane3W[p1] = word;
+
+			word = (colorByteDitherP4Odd[ address1 ]<<8) + colorByteDitherP4Odd[ address2 ];
+				fastPlane4W[p1] = word;
+			}
+			p1++;
+			sp+=4;
+		}
+	}
+}
+
 /*static void DrawScreen4FlatMemCopy()
 {
 UWORD sp,p1,p2,p3,p4;
@@ -1373,6 +1466,8 @@ static void DrawTerrain(void)
 	UBYTE mx,my;
 	UBYTE mipLevel;
 
+
+
 	UWORD startPosition;
 
 	startPosition = (YSIZE-1)*XSIZE; //set the start position (left bottom pixel) on the destination screen
@@ -1380,16 +1475,12 @@ static void DrawTerrain(void)
 	for(sx=0;sx<XSIZE;sx++)
 	{
 		//********* INITIALIZE INTERLACED CALCUTATIONS
-		if(interlace > 0)
-		{
-			sy = 0;
-			position = startPosition+sx;
-		}
-		else
-		{
-			sy = 1;
-			position = startPosition+sx-XSIZE;
-		}
+
+
+			sy = interlace % 4 + sx % 2;
+			position = startPosition+sx-(XSIZE*sy);
+
+
 		//********* INITIALIZE INTERLACED CALCUTATIONS
 
 		//starting depth to look for height colission
@@ -1399,15 +1490,15 @@ static void DrawTerrain(void)
 		while(tz < renderingDepth && sy <YSIZE)
 		{
 			//***** set mipmap level
-			mipLevel = tz/32;
+			//mipLevel = tz/32;
 
 			// set x,y pooositions on source maps
-			mx = (xPos + rayCastX[sx][tz])/4;
-			my = (yPos + tz)/4;
+			mx = (xPos + rayCastX[sx][tz])/2;
+			my = (yPos + tz)/2;
 
-			//th = heightMap0[ mx ][ my ];
+			th = heightMap0[ mx ][ my ];
 			//*********** HEIGHT MIPMAP
-			if(mipLevel == 0)
+		/*	if(mipLevel == 0)
 			{
 				th = heightMap0[ mx ][ my ];
 			}
@@ -1426,15 +1517,16 @@ static void DrawTerrain(void)
 			else if(mipLevel > 3)
 			{
 				th = heightMap4[ mx/16 ][ my/16 ];
-			}
+			}*/
 			//*********** HEIGHT MIPMAP
 
 			//height to look for at a given x,y terrain coordinate accounting for z depth
 			//************************************************************
 			if(th>currentHeight + rayCastY[sy][tz])
 			{
+				screenMid[position] = colorMap0[ mx ][ my ];
 				//*************** COLOR MIPMAP
-				if(mipLevel == 0)
+			/*	if(mipLevel == 0)
 				{
 					screenMid[position] = colorMap0[ mx ][ my ];
 				}
@@ -1453,17 +1545,17 @@ static void DrawTerrain(void)
 				else if(mipLevel > 3)
 				{
 					screenMid[position] = colorMap4[ mx/16 ][ my/16 ];
-				}
+				}*/
 				//*************** COLOR MIPMAP
 
-				screenMid[position] = th/4;
+				//screenMid[position] = th/4;
 
-				sy+=2; //move 2 pixels to the top in calculations
-				position-=XSIZE*2; //move 2 pixels to the top on the destination screen
+				sy+=4; //move 2 pixels to the top in calculations
+				position-=YSTEPSCREEN; //move 2 pixels to the top on the destination screen
 			}
 			else
 			{
-				tz+=1+tz/8; //move a variable step in depth to look for next height colision
+				tz+=1+tz/16; //move a variable step in depth to look for next height colision
 			}
 		}
 		//finish vertical line with SKY
@@ -1515,7 +1607,7 @@ void engineGsCreate(void)
 	flightHeight = 20;
 
 	ReadHeight("height.raw");
-		//ReadPalette("palette.raw");
+	//ReadPalette("palette.raw");
 	ReadColor("color.raw");
 	CalculateRayCasts();
 	//GenerateColorBytes2();
@@ -1572,14 +1664,13 @@ currentHeight = flightHeight;
 
 
 logAvgBegin(s_pAvgTime);
-if(interlace > 0)
+if(interlace % 2)
 {
 	//
 	DrawTerrain();
 	//DrawScreen4FlatEven();
 	//DrawScreen4FlatBIG();
-	DrawScreenMediumDitherEven();
-	interlace = -1;
+	DrawScreenMediumDitherEven2();
 }
 else
 {
@@ -1587,10 +1678,9 @@ else
 	DrawTerrain();
 	//DrawScreen4FlatBIG();
 	//DrawScreen4FlatOdd();
-	DrawScreenMediumDitherOdd();
-	interlace = 1;
+	DrawScreenMediumDitherOdd2();
 }
-
+interlace++;
 //DrawScreen2();
 //DrawScreen4();
 //DrawScreen4Flat();
