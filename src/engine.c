@@ -27,27 +27,27 @@ docker run --rm \
 #define LINEHEIGHT 4
 #define YSTEPSCREEN XSIZE*4
 
-UBYTE heightMap0[256][256];
-UBYTE heightMap1[128][128];
-UBYTE heightMap2[64][64];
-UBYTE heightMap3[32][32];
+UBYTE heightMap0[256][256];//64k
+UBYTE heightMap1[128][128];//16k
+UBYTE heightMap2[64][64];//4k
+UBYTE heightMap3[32][32];//1k
 UBYTE heightMap4[16][16];
-UBYTE colorMap0[256][256];
-UBYTE colorMap1[128][128];
-UBYTE colorMap2[64][64];
-UBYTE colorMap3[32][32];
+UBYTE colorMap0[256][256];//64
+UBYTE colorMap1[128][128];//16
+UBYTE colorMap2[64][64];//4
+UBYTE colorMap3[32][32];//1
 UBYTE colorMap4[16][16];
-UBYTE screenP2[XSIZE*YSIZE];
-UBYTE screenP1[XSIZE*YSIZE];
+UBYTE screenP2[XSIZE*YSIZE];//3,6k
+UBYTE screenP1[XSIZE*YSIZE];//3,6k
 
 
-UWORD fastPlane1W[PLANEWIDTH*HEIGHT];
-UWORD fastPlane2W[PLANEWIDTH*HEIGHT];
-UWORD fastPlane3W[PLANEWIDTH*HEIGHT];
-UWORD fastPlane4W[PLANEWIDTH*HEIGHT];
+UWORD fastPlane1W[PLANEWIDTH*HEIGHT];//20k
+UWORD fastPlane2W[PLANEWIDTH*HEIGHT];//20k
+UWORD fastPlane3W[PLANEWIDTH*HEIGHT];//20k
+UWORD fastPlane4W[PLANEWIDTH*HEIGHT];//20k
 
-WORD rayCastX[XSIZE][TERRAINDEPTH];
-WORD rayCastY[YSIZE][TERRAINDEPTH];
+WORD rayCastX[XSIZE][TERRAINDEPTH];//3,6k
+WORD rayCastY[YSIZE][TERRAINDEPTH];//3,6k
 
 UBYTE modulo2[XSIZE];
 
@@ -63,15 +63,15 @@ UWORD kolory[COLORS] =
 };
 */
 
-UBYTE colorByteDitherP1EvenHigh[COLORS*COLORS*COLORS];
-UBYTE colorByteDitherP2EvenHigh[COLORS*COLORS*COLORS];
-UBYTE colorByteDitherP3EvenHigh[COLORS*COLORS*COLORS];
-UBYTE colorByteDitherP4EvenHigh[COLORS*COLORS*COLORS];
+UBYTE colorByteDitherP1EvenHigh[COLORS*COLORS*COLORS];//32k
+UBYTE colorByteDitherP2EvenHigh[COLORS*COLORS*COLORS];//32k
+UBYTE colorByteDitherP3EvenHigh[COLORS*COLORS*COLORS];//32k
+UBYTE colorByteDitherP4EvenHigh[COLORS*COLORS*COLORS];//32k
 
-UBYTE colorByteDitherP1OddHigh[COLORS*COLORS*COLORS];
-UBYTE colorByteDitherP2OddHigh[COLORS*COLORS*COLORS];
-UBYTE colorByteDitherP3OddHigh[COLORS*COLORS*COLORS];
-UBYTE colorByteDitherP4OddHigh[COLORS*COLORS*COLORS];
+UBYTE colorByteDitherP1OddHigh[COLORS*COLORS*COLORS];//32k
+UBYTE colorByteDitherP2OddHigh[COLORS*COLORS*COLORS];//32k
+UBYTE colorByteDitherP3OddHigh[COLORS*COLORS*COLORS];//32k
+UBYTE colorByteDitherP4OddHigh[COLORS*COLORS*COLORS];//32k
 
 
 UWORD p1x,p1y,p1h,p2x,p2y,p2h;
@@ -991,12 +991,12 @@ void engineGsCreate(void)
 }
 
 void engineGsLoop(void) {
-/*	if(yPos == 250)
+	if(p1y == 250)
 	{
 	gameClose();
 }
-yPos += 1;*/
-//xPos += 1;
+p1y += 1;
+p2y += 1;
 
 if(keyCheck(KEY_SPACE)) {
 	gameClose();
