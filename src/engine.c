@@ -52,17 +52,12 @@ WORD rayCastY[YSIZE][TERRAINDEPTH];//3,6k
 
 UBYTE modulo2[XSIZE];
 
+//sand dunes theme
 UWORD kolory[COLORS] =
 {
 	0x101,0x212,0x323,0x424,0x523,0x633,0x743,0x854,
 	0xa65,0xb75,0xc85,0xd96,0xeb8,0xfdb,0xbcc,0x8be
 };
-/*
-{
-0x040,0x242,0x363,0x383,0x3a3,0x3c3,0x3e3,0x3f3,
-0x4f4,0x5f5,0x6f6,0x7f7,0x8f8,0x9f9,0xafa,0x99f
-};
-*/
 
 UBYTE colorByteDitherP1EvenHigh[COLORS*COLORS*COLORS];//32k
 UBYTE colorByteDitherP2EvenHigh[COLORS*COLORS*COLORS];//32k
@@ -182,7 +177,7 @@ static void CalculateHeightMipMaps()
 		for(int b = 0; b<2 ;b++)
 		value += heightMap0[x*2+a][y*2+b];
 		value /= 4;
-		value -= 5;
+		value -= 5; //gradually lower the height so that it better blends with the horizon
 		if(value < 0) value = 0;
 		heightMap1[x][y] = value;
 	}
@@ -194,7 +189,7 @@ static void CalculateHeightMipMaps()
 		for(int b = 0; b<4 ;b++)
 		value += heightMap0[x*4+a][y*4+b];
 		value /= 16;
-		value -= 15;
+		value -= 15;//gradually lower the height so that it better blends with the horizon
 		if(value < 0) value = 0;
 		heightMap2[x][y] = value;
 	}
@@ -206,7 +201,7 @@ static void CalculateHeightMipMaps()
 		for(int b = 0; b<8 ;b++)
 		value += heightMap0[x*8+a][y*8+b];
 		value /= 64;
-		value -= 30;
+		value -= 30;//gradually lower the height so that it better blends with the horizon
 		if(value < 0) value = 0;
 		heightMap3[x][y] = value;
 	}
@@ -218,11 +213,13 @@ static void CalculateHeightMipMaps()
 		for(int b = 0; b<16 ;b++)
 		value += heightMap0[x*16+a][y*16+b];
 		value /= 256;
-		value -= 50;
+		value -= 50;//gradually lower the height so that it better blends with the horizon
 		if(value < 0) value = 0;
 		heightMap4[x][y] = value;
 	}
 }
+
+//smooth the map so that there are less "spike" artifacts from the coarse rendering
 static void SmoothHeightMap()
 {
 	int value;
@@ -238,6 +235,7 @@ static void SmoothHeightMap()
 	}
 }
 
+//smooth color map so that there are gradients between contrasting colours
 static void SmoothColorMap()
 {
 	int value;
@@ -253,6 +251,7 @@ static void SmoothColorMap()
 	}
 }
 
+//add more light to higher ground
 static void AddHeightToColorMap()
 {
 	int value;
@@ -265,6 +264,7 @@ static void AddHeightToColorMap()
 		colorMap0[x][y] = (UBYTE)(value);
 	}
 }
+//add light and shadow contrast on the left and right sides of the terrain
 static void AddBumpToColorMap()
 {
 	int value;
@@ -282,6 +282,7 @@ static void AddBumpToColorMap()
 		}
 
 }
+
 static void CopyFastToChipW(tBitMap *bm)
 {
 	CopyMemQuick(fastPlane1W, bm->Planes[0], PLANEWIDTH*HEIGHT);
@@ -290,29 +291,33 @@ static void CopyFastToChipW(tBitMap *bm)
 	CopyMemQuick(fastPlane4W, bm->Planes[3], PLANEWIDTH*HEIGHT);
 }
 
+//calculate paths for raycasts going from the camera
 static void CalculateRayCasts()
 {
 	int sxx;
 	int syy;
-	int tzz;
+	int tzz; //depth step value
+	int fov = 8; //this changes the field of view
 
 	tzz = 1;
 	for(int tz=1;tz<TERRAINDEPTH;tz++)
 	{
-		tzz += (1+tz/4);
+		tzz += 1+tz/4; //increase step with the distance from camera, less quality but better performance
 		for(int sx=-XSIZE/2;sx<XSIZE/2;sx++)
 		{
-			sxx = sx * tzz/2;
+			sxx = sx * tzz/2; //make smaller steps
 			for(int sy=-YSIZE/2;sy<YSIZE/2;sy++)
 			{
-				syy = sy * tzz/2;
-				rayCastX[XSIZE/2+sx][tz] = sxx/8;
-				rayCastY[YSIZE/2+sy][tz] = syy/8;
+				syy = sy * tzz/2;//make smaller steps
+				rayCastX[XSIZE/2+sx][tz] = sxx/fov;
+				rayCastY[YSIZE/2+sy][tz] = syy/fov;
 			}
 		}
 	}
 }
 
+//calculate bits configurations for any set of 3 colours for each plane
+// aaab bccc
 static void GenerateColorBytesDitherHigh()
 {
 	UWORD address;
@@ -435,42 +440,9 @@ static void GenerateColorBytesDitherHigh()
 
 	}
 }
-/*
-static void DrawScreenHighDither(UBYTE player)
-{
-	UWORD sp,p1,p2,p3,p4;
-	UWORD word;
-	UWORD address1, address2;
-
-	sp = 0;
-
-
-	for(UWORD y=0;y<YSIZE;y++)
-	{
-		p1 = y*32+y*8;
-		p2 = p1+20;
-
-		for(UWORD x=0;x<XSIZE/6;x++)
-		{
-			address1 = (screenMid[sp]<<10) + (screenMid[sp+1]<<5) + (screenMid[sp+2]);
-			address2 = (screenMid[sp+3]<<10) + (screenMid[sp+4]<<5) + (screenMid[sp+5]);
-
-			fastPlane1W[p2] = (colorByteDitherP1EvenHigh[ address1 ]<<8) + colorByteDitherP1EvenHigh[ address2 ];
-			fastPlane2W[p2] = (colorByteDitherP2EvenHigh[ address1 ]<<8) + colorByteDitherP2EvenHigh[ address2 ];
-			fastPlane3W[p2] = (colorByteDitherP3EvenHigh[ address1 ]<<8) + colorByteDitherP3EvenHigh[ address2 ];
-			fastPlane4W[p2] = (colorByteDitherP4EvenHigh[ address1 ]<<8) + colorByteDitherP4EvenHigh[ address2 ];
-
-			fastPlane1W[p1] = (colorByteDitherP1EvenHigh[ address1 ]<<8) + colorByteDitherP1EvenHigh[ address2 ];
-			fastPlane2W[p1] = (colorByteDitherP2EvenHigh[ address1 ]<<8) + colorByteDitherP2EvenHigh[ address2 ];
-			fastPlane3W[p1] = (colorByteDitherP3EvenHigh[ address1 ]<<8) + colorByteDitherP3EvenHigh[ address2 ];
-			fastPlane4W[p1] = (colorByteDitherP4EvenHigh[ address1 ]<<8) + colorByteDitherP4EvenHigh[ address2 ];
-
-			p2++;
-			p1++;
-			sp+=6;
-		}
-	}
-}*/
+//translates calculated view from chunky to planar
+//writes a WORD made up of 2 BYTEs each made up of 3 pixels
+//translates 32 colors into 16 dithered using precalculated bit sets
 static void DrawPlayerScreen(UBYTE player, UBYTE depth, UBYTE even)
 {
 	UWORD sp,p1,p2,p3,p4;
@@ -564,6 +536,8 @@ static void CalculateModulo2()
 		modulo2[sx] = sx % 2;
 	}
 }
+//draws a map of the terrain straight to planes
+//reads 16 pixels and writes them in 1 WORD
 static void DrawColorMap(UBYTE player)
 {
 	UWORD p1,p2,p3,p4;
@@ -680,6 +654,8 @@ static void DrawColorMap(UBYTE player)
 	position+=PLANEWIDTH/2-4;
 }
 }
+//draws a height map of the terrain straight to planes
+//reads 16 pixels and writes them in 1 WORD
 static void DrawHeightMap(UBYTE player)
 {
 	UWORD p1,p2,p3,p4;
@@ -797,7 +773,8 @@ static void DrawHeightMap(UBYTE player)
 	position+=PLANEWIDTH/2-4;
 }
 }
-static void DrawTerrain(UBYTE player)
+
+static void ProcessRayCasts(UBYTE player)
 {
 	UBYTE sx,sy,tz;
 	UWORD px,py,ph; //player
@@ -1011,12 +988,12 @@ void engineGsCreate(void)
 }
 
 void engineGsLoop(void) {
-/*	if(p1y == 250)
+	if(p1y == 250)
 	{
 	gameClose();
 }
 p1y += 1;
-p2y += 1;*/
+p2y += 1;
 
 if(keyCheck(KEY_SPACE)) {
 	gameClose();
@@ -1059,42 +1036,42 @@ logAvgBegin(s_pAvgTime);
 
 if(interlace == 0)
 {
-	DrawTerrain(1);
+	ProcessRayCasts(1);
 	DrawPlayerScreen(1,1,0);
 }
 if(interlace == 1)
 {
-	DrawTerrain(2);
+	ProcessRayCasts(2);
 	DrawPlayerScreen(2,0,0);
 }
 if(interlace == 2)
 {
-	DrawTerrain(1);
+	ProcessRayCasts(1);
 	DrawPlayerScreen(1,1,1);
 }
 if(interlace == 3)
 {
-	DrawTerrain(2);
+	ProcessRayCasts(2);
 	DrawPlayerScreen(2,0,1);
 }
 if(interlace == 4)
 {
-	DrawTerrain(1);
+	ProcessRayCasts(1);
 	DrawPlayerScreen(1,1,0);
 }
 if(interlace == 5)
 {
-	DrawTerrain(2);
+	ProcessRayCasts(2);
 	DrawPlayerScreen(2,0,0);
 }
 if(interlace == 6)
 {
-	DrawTerrain(1);
+	ProcessRayCasts(1);
 	DrawPlayerScreen(1,1,1);
 }
 if(interlace == 7)
 {
-	DrawTerrain(2);
+	ProcessRayCasts(2);
 	DrawPlayerScreen(2,0,1);
 }
 
