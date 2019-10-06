@@ -31,7 +31,7 @@ add_subdirectory(deps/ace ace)
 include_directories(deps/ace/include)
 
 # Linux/other UNIX get a lower-case binary name
-set(TARGET_NAME ${PROJECT_NAME_LOWER})
+set(TARGET_NAME ${PROJECT_NAME_LOWER}.exe)
 
 add_executable(${TARGET_NAME} ${SOURCES} ${HEADERS})
 target_link_libraries(${TARGET_NAME} ace)

@@ -157,17 +157,17 @@ depend:
 .PHONY : depend
 
 #=============================================================================
-# Target rules for targets named engine
+# Target rules for targets named engine.exe
 
 # Build rule for target.
-engine: cmake_check_build_system
-	$(MAKE) -f CMakeFiles/Makefile2 engine
-.PHONY : engine
+engine.exe: cmake_check_build_system
+	$(MAKE) -f CMakeFiles/Makefile2 engine.exe
+.PHONY : engine.exe
 
 # fast build rule for target.
-engine/fast:
-	$(MAKE) -f CMakeFiles/engine.dir/build.make CMakeFiles/engine.dir/build
-.PHONY : engine/fast
+engine.exe/fast:
+	$(MAKE) -f CMakeFiles/engine.exe.dir/build.make CMakeFiles/engine.exe.dir/build
+.PHONY : engine.exe/fast
 
 #=============================================================================
 # Target rules for targets named ace
@@ -188,7 +188,7 @@ src/engine.obj: src/engine.c.obj
 
 # target to build an object file
 src/engine.c.obj:
-	$(MAKE) -f CMakeFiles/engine.dir/build.make CMakeFiles/engine.dir/src/engine.c.obj
+	$(MAKE) -f CMakeFiles/engine.exe.dir/build.make CMakeFiles/engine.exe.dir/src/engine.c.obj
 .PHONY : src/engine.c.obj
 
 src/engine.i: src/engine.c.i
@@ -197,7 +197,7 @@ src/engine.i: src/engine.c.i
 
 # target to preprocess a source file
 src/engine.c.i:
-	$(MAKE) -f CMakeFiles/engine.dir/build.make CMakeFiles/engine.dir/src/engine.c.i
+	$(MAKE) -f CMakeFiles/engine.exe.dir/build.make CMakeFiles/engine.exe.dir/src/engine.c.i
 .PHONY : src/engine.c.i
 
 src/engine.s: src/engine.c.s
@@ -206,8 +206,35 @@ src/engine.s: src/engine.c.s
 
 # target to generate assembly for a file
 src/engine.c.s:
-	$(MAKE) -f CMakeFiles/engine.dir/build.make CMakeFiles/engine.dir/src/engine.c.s
+	$(MAKE) -f CMakeFiles/engine.exe.dir/build.make CMakeFiles/engine.exe.dir/src/engine.c.s
 .PHONY : src/engine.c.s
+
+src/engine_temp.obj: src/engine_temp.c.obj
+
+.PHONY : src/engine_temp.obj
+
+# target to build an object file
+src/engine_temp.c.obj:
+	$(MAKE) -f CMakeFiles/engine.exe.dir/build.make CMakeFiles/engine.exe.dir/src/engine_temp.c.obj
+.PHONY : src/engine_temp.c.obj
+
+src/engine_temp.i: src/engine_temp.c.i
+
+.PHONY : src/engine_temp.i
+
+# target to preprocess a source file
+src/engine_temp.c.i:
+	$(MAKE) -f CMakeFiles/engine.exe.dir/build.make CMakeFiles/engine.exe.dir/src/engine_temp.c.i
+.PHONY : src/engine_temp.c.i
+
+src/engine_temp.s: src/engine_temp.c.s
+
+.PHONY : src/engine_temp.s
+
+# target to generate assembly for a file
+src/engine_temp.c.s:
+	$(MAKE) -f CMakeFiles/engine.exe.dir/build.make CMakeFiles/engine.exe.dir/src/engine_temp.c.s
+.PHONY : src/engine_temp.c.s
 
 src/main.obj: src/main.c.obj
 
@@ -215,7 +242,7 @@ src/main.obj: src/main.c.obj
 
 # target to build an object file
 src/main.c.obj:
-	$(MAKE) -f CMakeFiles/engine.dir/build.make CMakeFiles/engine.dir/src/main.c.obj
+	$(MAKE) -f CMakeFiles/engine.exe.dir/build.make CMakeFiles/engine.exe.dir/src/main.c.obj
 .PHONY : src/main.c.obj
 
 src/main.i: src/main.c.i
@@ -224,7 +251,7 @@ src/main.i: src/main.c.i
 
 # target to preprocess a source file
 src/main.c.i:
-	$(MAKE) -f CMakeFiles/engine.dir/build.make CMakeFiles/engine.dir/src/main.c.i
+	$(MAKE) -f CMakeFiles/engine.exe.dir/build.make CMakeFiles/engine.exe.dir/src/main.c.i
 .PHONY : src/main.c.i
 
 src/main.s: src/main.c.s
@@ -233,7 +260,7 @@ src/main.s: src/main.c.s
 
 # target to generate assembly for a file
 src/main.c.s:
-	$(MAKE) -f CMakeFiles/engine.dir/build.make CMakeFiles/engine.dir/src/main.c.s
+	$(MAKE) -f CMakeFiles/engine.exe.dir/build.make CMakeFiles/engine.exe.dir/src/main.c.s
 .PHONY : src/main.c.s
 
 # Help Target
@@ -245,7 +272,7 @@ help:
 	@echo "... install/strip"
 	@echo "... install/local"
 	@echo "... edit_cache"
-	@echo "... engine"
+	@echo "... engine.exe"
 	@echo "... rebuild_cache"
 	@echo "... list_install_components"
 	@echo "... install"
@@ -253,6 +280,9 @@ help:
 	@echo "... src/engine.obj"
 	@echo "... src/engine.i"
 	@echo "... src/engine.s"
+	@echo "... src/engine_temp.obj"
+	@echo "... src/engine_temp.i"
+	@echo "... src/engine_temp.s"
 	@echo "... src/main.obj"
 	@echo "... src/main.i"
 	@echo "... src/main.s"
