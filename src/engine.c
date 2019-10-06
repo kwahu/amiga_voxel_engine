@@ -37,9 +37,10 @@ UBYTE colorMap1[128][128];//16
 UBYTE colorMap2[64][64];//4
 UBYTE colorMap3[32][32];//1
 UBYTE colorMap4[16][16];
-UBYTE screenP2[XSIZE*YSIZE];//3,6k
 UBYTE screenP1[XSIZE*YSIZE];//3,6k
-
+UBYTE screenP2[XSIZE*YSIZE];//3,6k
+UBYTE screenP1depth[XSIZE*YSIZE];//3,6k
+UBYTE screenP2depth[XSIZE*YSIZE];//3,6k
 
 UWORD fastPlane1W[PLANEWIDTH*HEIGHT];//20k
 UWORD fastPlane2W[PLANEWIDTH*HEIGHT];//20k
@@ -181,7 +182,7 @@ static void CalculateHeightMipMaps()
 		for(int b = 0; b<2 ;b++)
 		value += heightMap0[x*2+a][y*2+b];
 		value /= 4;
-		value -= 10;
+		value -= 5;
 		if(value < 0) value = 0;
 		heightMap1[x][y] = value;
 	}
@@ -193,7 +194,7 @@ static void CalculateHeightMipMaps()
 		for(int b = 0; b<4 ;b++)
 		value += heightMap0[x*4+a][y*4+b];
 		value /= 16;
-		value -= 25;
+		value -= 15;
 		if(value < 0) value = 0;
 		heightMap2[x][y] = value;
 	}
@@ -205,7 +206,7 @@ static void CalculateHeightMipMaps()
 		for(int b = 0; b<8 ;b++)
 		value += heightMap0[x*8+a][y*8+b];
 		value /= 64;
-		value -= 45;
+		value -= 30;
 		if(value < 0) value = 0;
 		heightMap3[x][y] = value;
 	}
@@ -217,7 +218,7 @@ static void CalculateHeightMipMaps()
 		for(int b = 0; b<16 ;b++)
 		value += heightMap0[x*16+a][y*16+b];
 		value /= 256;
-		value -= 70;
+		value -= 50;
 		if(value < 0) value = 0;
 		heightMap4[x][y] = value;
 	}
@@ -260,7 +261,7 @@ static void AddHeightToColorMap()
 	{
 		value = colorMap0[x][y]+heightMap0[x][y]/32-5;
 		if(value < 0) value = 0;
-		if(value > 14) value = 14;
+		if(value > 28) value = 28;
 		colorMap0[x][y] = (UBYTE)(value);
 	}
 }
@@ -272,10 +273,10 @@ static void AddBumpToColorMap()
 		{
 			for (int y = 0; y < 256; y++)
 			{
-				value =  heightMap0[x][y] - heightMap0[x+1][y]  + heightMap0[x][y] - heightMap0[x][y-1];
-				value = colorMap0[x][y] + (16 + value / 2)/2;
+				value =  heightMap0[x][y] - heightMap0[x+1][y];//  + heightMap0[x][y] - heightMap0[x][y-1];
+				value = colorMap0[x][y] + 4 +  ( value /2);
 				if(value < 0) value = 0;
-				if(value > 14) value = 14;
+				if(value > 28) value = 28;
 				colorMap0[x][y] = (UBYTE)(value);
 			}
 		}
@@ -470,91 +471,92 @@ static void DrawScreenHighDither(UBYTE player)
 		}
 	}
 }*/
-static void DrawScreenHighDitherEven(UBYTE player)
+static void DrawPlayerScreen(UBYTE player, UBYTE depth, UBYTE even)
 {
 	UWORD sp,p1,p2,p3,p4;
 	UWORD word;
 	UWORD address1, address2;
 	UBYTE *screen;
 	UWORD startOffset;
+	UWORD evenOffset;
+	UBYTE *dither1, *dither2, *dither3, *dither4;
 
 	sp = 0;
 
+	//interlace init
+	if(even == 1)
+	{
+		dither1 = colorByteDitherP1EvenHigh;
+		dither2 = colorByteDitherP2EvenHigh;
+		dither3 = colorByteDitherP3EvenHigh;
+		dither4 = colorByteDitherP4EvenHigh;
+		evenOffset = 0;
+	}
+	else
+	{
+		dither1 = colorByteDitherP1OddHigh;
+		dither2 = colorByteDitherP2OddHigh;
+		dither3 = colorByteDitherP3OddHigh;
+		dither4 = colorByteDitherP4OddHigh;
+		evenOffset = 20;
+	}
+
+	//player init
 	if(player == 1)
 	{
-		screen = screenP1;
+		//color or depth map
+		if(depth == 1)
+		{
+			screen = screenP1depth;
+		}
+		else
+		{
+			screen = screenP1;
+		}
+
 		startOffset = 0;
 	}
 	else
 	{
-		screen = screenP2;
+		//color or depth map
+		if(depth == 1)
+		{
+			screen = screenP2depth;
+		}
+		else
+		{
+			screen = screenP2;
+		}
 		startOffset = 10;
 	}
 
 
-
+	//for each line
 	for(UWORD y=0;y<YSIZE;y++)
 	{
-		p2 = y*32+y*8+20 + startOffset;
+		p2 = y*32 + y*8 + evenOffset + startOffset;
 
+		//draw the line with WORDs made up of 2 BYTEs each consisting 3 pixels
 		for(UWORD x=0;x<XSIZE/6;x++)
 		{
+			//calculate locations of BYTE values to fetch
 			address1 = (screen[sp]<<10) + (screen[sp+1]<<5) + (screen[sp+2]);
 			address2 = (screen[sp+3]<<10) + (screen[sp+4]<<5) + (screen[sp+5]);
 
-			fastPlane1W[p2] = (colorByteDitherP1EvenHigh[ address1 ]<<8) + colorByteDitherP1EvenHigh[ address2 ];
-			fastPlane2W[p2] = (colorByteDitherP2EvenHigh[ address1 ]<<8) + colorByteDitherP2EvenHigh[ address2 ];
-			fastPlane3W[p2] = (colorByteDitherP3EvenHigh[ address1 ]<<8) + colorByteDitherP3EvenHigh[ address2 ];
-			fastPlane4W[p2] = (colorByteDitherP4EvenHigh[ address1 ]<<8) + colorByteDitherP4EvenHigh[ address2 ];
+			//fetch propper BYTEs and write with WORDs to plane buffers
+			fastPlane1W[p2] = (dither1[ address1 ]<<8) + dither1[ address2 ];
+			fastPlane2W[p2] = (dither2[ address1 ]<<8) + dither2[ address2 ];
+			fastPlane3W[p2] = (dither3[ address1 ]<<8) + dither3[ address2 ];
+			fastPlane4W[p2] = (dither4[ address1 ]<<8) + dither4[ address2 ];
 
-			p2++;
+			p2++; //go to next WORD
 
-			sp+=6;
+			sp+=6;//move by 6 pixels
 		}
 	}
 }
 
-static void DrawScreenHighDitherOdd(UBYTE player)
-{
-	UWORD sp,p1,p2,p3,p4;
-	UWORD word;
-	UWORD address1,address2;
-	UBYTE *screen;
-	UWORD startOffset;
 
-	sp = 0;
-
-	if(player == 1)
-	{
-		screen = screenP1;
-		startOffset = 0;
-	}
-	else
-	{
-		screen = screenP2;
-		startOffset = 10;
-	}
-
-
-
-	for(UWORD y=0;y<YSIZE;y++)
-	{
-		p1 = y*32+y*8 + startOffset;
-		for(UWORD x=0;x<XSIZE/6;x++)
-		{
-			address1 = (screen[sp]<<10) + (screen[sp+1]<<5) + (screen[sp+2]);
-			address2 = (screen[sp+3]<<10) + (screen[sp+4]<<5) + (screen[sp+5]);
-
-			fastPlane1W[p1] = (colorByteDitherP1OddHigh[ address1 ]<<8) + colorByteDitherP1OddHigh[ address2 ];
-			fastPlane2W[p1] = (colorByteDitherP2OddHigh[ address1 ]<<8) + colorByteDitherP2OddHigh[ address2 ];
-			fastPlane3W[p1] = (colorByteDitherP3OddHigh[ address1 ]<<8) + colorByteDitherP3OddHigh[ address2 ];
-			fastPlane4W[p1] = (colorByteDitherP4OddHigh[ address1 ]<<8) + colorByteDitherP4OddHigh[ address2 ];
-
-			p1++;
-			sp+=6;
-		}
-	}
-}
 static void CalculateModulo2()
 {
 	for(UBYTE sx=0;sx<XSIZE;sx++)
@@ -798,13 +800,15 @@ static void DrawHeightMap(UBYTE player)
 static void DrawTerrain(UBYTE player)
 {
 	UBYTE sx,sy,tz;
-	UWORD px,py,ph;
+	UWORD px,py,ph; //player
 	UBYTE th;
 	UWORD position;
 	UBYTE mx,my;
 	UBYTE mipLevel;
 	UWORD startPosition;
 	UBYTE *screen;
+	UBYTE *screenDepth;
+	UWORD ex,ey,eh; //enemy
 
 	//initialize player data
 	if(player == 1)
@@ -812,14 +816,22 @@ static void DrawTerrain(UBYTE player)
 		ph = p1h;
 		px = p1x;
 		py = p1y;
+		ex = p2x;
+		ey = p2y;
+		eh = p2h;
 		screen = screenP1;
+		screenDepth = screenP1depth;
 	}
 	else
 	{
 		ph = p2h;
 		px = p2x;
 		py = p2y;
+		ex = p1x;
+		ey = p1y;
+		eh = p1h;
 		screen = screenP2;
+		screenDepth = screenP2depth;
 	}
 
 	startPosition = (YSIZE-1)*XSIZE; //set the start position (left bottom pixel) on the destination screen
@@ -829,7 +841,7 @@ static void DrawTerrain(UBYTE player)
 		//********* INITIALIZE INTERLACED CALCUTATIONS
 
 
-			sy = interlace + modulo2[sx];
+			sy = interlace/2 + modulo2[sx];
 			position = startPosition+sx-(XSIZE*sy);
 
 
@@ -874,8 +886,11 @@ static void DrawTerrain(UBYTE player)
 
 			//height to look for at a given x,y terrain coordinate accounting for z depth
 			//************************************************************
+
+
 			if(th>ph + rayCastY[sy][tz])
 			{
+				screenDepth[position] = tz;
 				//screenMid[position] = th/16 + sy/8;
 				//screenMid[position] = colorMap0[ mx ][ my ];
 				//screenMid[position] = colorMap0[ mx ][ my ];
@@ -886,19 +901,19 @@ static void DrawTerrain(UBYTE player)
 				}
 				else if(mipLevel == 1)
 				{
-					screen[position] = colorMap1[ mx/2 ][ my/2 ] + 2;
+					screen[position] = colorMap1[ mx/2 ][ my/2 ] + 1;
 				}
 				else if(mipLevel == 2)
 				{
-					screen[position] = colorMap2[ mx/4 ][ my/4 ] + 3;
+					screen[position] = colorMap2[ mx/4 ][ my/4 ] + 2;
 				}
 				else if(mipLevel == 3)
 				{
-					screen[position] = colorMap3[ mx/8 ][ my/8 ] + 4;
+					screen[position] = colorMap3[ mx/8 ][ my/8 ] + 3;
 				}
 				else if(mipLevel > 3)
 				{
-					screen[position] = colorMap4[ mx/16 ][ my/16 ] + 5;
+					screen[position] = colorMap4[ mx/16 ][ my/16 ] + 4;
 				}
 				//*************** COLOR MIPMAP
 
@@ -907,6 +922,10 @@ static void DrawTerrain(UBYTE player)
 			/*	if(mx < xPos+5 && mx > xPos-5 && my < yPos+5 && my > yPos-5)
 					screenMid[position] = screenMid[position]/2;*/
 
+					if( mx>ex-8 && mx<ex+8 && my>ey-4 && my<ey+4)
+					{
+						screen[position] = screen[position]/2;
+					}
 				// check shadow
 
 
@@ -924,6 +943,7 @@ static void DrawTerrain(UBYTE player)
 			sy++;
 			//if(screenMid[position] == 0x0f)
 			//break;
+			screenDepth[position] = 0x01;
 			screen[position] = sy/2;//0x1f;
 			position-=XSIZE;
 		}
@@ -991,30 +1011,37 @@ void engineGsCreate(void)
 }
 
 void engineGsLoop(void) {
-	if(p1y == 250)
+/*	if(p1y == 250)
 	{
 	gameClose();
 }
 p1y += 1;
-p2y += 1;
+p2y += 1;*/
 
 if(keyCheck(KEY_SPACE)) {
 	gameClose();
 }
 else
 {
-	if(keyCheck(KEY_UP))p1y++;
-	if(keyCheck(KEY_DOWN))p1y--;
-	if(keyCheck(KEY_RIGHT))p1x+=2;
-	if(keyCheck(KEY_LEFT))p1x-=2;
-	if(keyCheck(KEY_F))p1h+=3;
-	if(keyCheck(KEY_V))p1h-=3;
+	if(interlace % 2)
+	{
+		if(keyCheck(KEY_UP))p1y++;
+		if(keyCheck(KEY_DOWN))p1y--;
+		if(keyCheck(KEY_RIGHT))p1x+=2;
+		if(keyCheck(KEY_LEFT))p1x-=2;
+		if(keyCheck(KEY_F))p1h+=3;
+		if(keyCheck(KEY_V))p1h-=3;
+	}
+
+	if(interlace % 2 == 0)
+	{
 	if(keyCheck(KEY_W))p2y++;
 	if(keyCheck(KEY_S))p2y--;
 	if(keyCheck(KEY_D))p2x+=2;
 	if(keyCheck(KEY_A))p2x-=2;
 	if(keyCheck(KEY_G))p2h+=3;
 	if(keyCheck(KEY_B))p2h-=3;
+}
 	if(keyCheck(KEY_H))renderingDepth++;
 	if(keyCheck(KEY_N))renderingDepth--;
 
@@ -1024,32 +1051,51 @@ else
 if(renderingDepth<10) renderingDepth = 10;
 else if(renderingDepth>TERRAINDEPTH) renderingDepth = TERRAINDEPTH;
 
-/*
-if(flightHeight<10) flightHeight = 10;
-currentHeight = flightHeight;*/
+
+if(p1h<1) p1h = 1;
+if(p2h<1) p2h = 1;
 
 logAvgBegin(s_pAvgTime);
 
-if(interlace % 2)
+if(interlace == 0)
 {
 	DrawTerrain(1);
-	DrawScreenHighDitherEven(1);
+	DrawPlayerScreen(1,1,0);
 }
-else
+if(interlace == 1)
+{
+	DrawTerrain(2);
+	DrawPlayerScreen(2,0,0);
+}
+if(interlace == 2)
 {
 	DrawTerrain(1);
-	DrawScreenHighDitherOdd(1);
+	DrawPlayerScreen(1,1,1);
 }
-
-if(interlace % 2)
+if(interlace == 3)
 {
 	DrawTerrain(2);
-	DrawScreenHighDitherEven(2);
+	DrawPlayerScreen(2,0,1);
 }
-else
+if(interlace == 4)
+{
+	DrawTerrain(1);
+	DrawPlayerScreen(1,1,0);
+}
+if(interlace == 5)
 {
 	DrawTerrain(2);
-	DrawScreenHighDitherOdd(2);
+	DrawPlayerScreen(2,0,0);
+}
+if(interlace == 6)
+{
+	DrawTerrain(1);
+	DrawPlayerScreen(1,1,1);
+}
+if(interlace == 7)
+{
+	DrawTerrain(2);
+	DrawPlayerScreen(2,0,1);
 }
 
 if(interlace == 0) DrawColorMap(1);
@@ -1060,7 +1106,7 @@ if(interlace == 3) DrawHeightMap(2);
 //DrawScreenHighDither();
 
 interlace++;
-if(interlace == 4) interlace = 0;
+if(interlace == 8) interlace = 0;
 
 CopyFastToChipW(s_pBuffer->pBack);
 
