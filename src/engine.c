@@ -251,6 +251,20 @@ static void SmoothColorMap()
 	}
 }
 
+static void GenerateColorMap()
+{
+	int value;
+	for (int x = 0; x < 256; x++)
+	for (int y = 0; y < 256; y++)
+	{
+		value = 4;
+		value += heightMap0[x][y]/16;
+		value += heightMap0[x][y] - heightMap0[x+1][y];//  + heightMap0[x][y] - heightMap0[x][y-1];
+		if(value < 1) value = 1;
+		if(value > 28) value = 28;
+		colorMap0[x][y] = (UBYTE)(value);
+	}
+}
 //add more light to higher ground
 static void AddHeightToColorMap()
 {
@@ -259,7 +273,7 @@ static void AddHeightToColorMap()
 	for (int y = 0; y < 256; y++)
 	{
 		value = colorMap0[x][y]+heightMap0[x][y]/32-5;
-		if(value < 0) value = 0;
+		if(value < 1) value = 1;
 		if(value > 28) value = 28;
 		colorMap0[x][y] = (UBYTE)(value);
 	}
@@ -275,7 +289,7 @@ static void AddBumpToColorMap()
 			{
 				value =  heightMap0[x][y] - heightMap0[x+1][y];//  + heightMap0[x][y] - heightMap0[x][y-1];
 				value = colorMap0[x][y] + 4 +  ( value /2);
-				if(value < 0) value = 0;
+				if(value < 1) value = 1;
 				if(value > 28) value = 28;
 				colorMap0[x][y] = (UBYTE)(value);
 			}
@@ -663,16 +677,19 @@ static void DrawHeightMap(UBYTE player)
 	UBYTE b1,b2,b3,b4,b5,b6,b7,b8,b9,b10,b11,b12,b13,b14,b15,b16;
 	UBYTE xx,yy;
 	UBYTE offsetx,offsety;
+	UBYTE xposition;
 	UWORD startOffset;
 
 	if(player == 1)
 	{
 		offsety = p1y/4;
+		offsetx = p1x/4;
 		startOffset = 0;
 	}
 	else
 	{
 		offsety = p2y/4;
+		offsetx = p2x/4;
 		startOffset = 10;
 	}
 
@@ -704,6 +721,31 @@ static void DrawHeightMap(UBYTE player)
 		b14 = heightMap2[(UBYTE)(xx+13)][yy]/16;
 		b15 = heightMap2[(UBYTE)(xx+14)][yy]/16;
 		b16 = heightMap2[(UBYTE)(xx+15)][yy]/16;
+
+		if(offsety == yy && x == offsetx/16)
+		{
+			xposition = offsetx % 16;
+			switch(xposition)
+			{
+				case 0: b1 = 0x1f;break;
+				case 1: b2 = 0x1f;break;
+				case 2: b3 = 0x1f;break;
+				case 3: b4 = 0x1f;break;
+				case 4: b5 = 0x1f;break;
+				case 5: b6 = 0x1f;break;
+				case 6: b7 = 0x1f;break;
+				case 7: b8 = 0x1f;break;
+				case 8: b9 = 0x1f;break;
+				case 9: b10 = 0x1f;break;
+				case 10: b11 = 0x1f;break;
+				case 11: b12 = 0x1f;break;
+				case 12: b13 = 0x1f;break;
+				case 13: b14 = 0x1f;break;
+				case 14: b15 = 0x1f;break;
+				case 15: b16 = 0x1f;break;
+			}
+		}
+
 		fastPlane1W[position] = ((b1>>0) & 1) *0b1000000000000000+
 		((b2>>0) & 1) *0b0100000000000000+
 		((b3>>0) & 1) *0b0010000000000000+
@@ -963,14 +1005,27 @@ void engineGsCreate(void)
 
 	ReadHeight("height.raw");
 //	ReadPalette("palette.raw");
-	ReadColor("color.raw");
+//	ReadColor("color.raw");
 	CalculateRayCasts();
 
-	SmoothHeightMap();
-	SmoothColorMap();
-	AddHeightToColorMap();
-	AddBumpToColorMap();
 
+	SmoothHeightMap();
+	SmoothHeightMap();
+	SmoothHeightMap();
+	SmoothHeightMap();
+	SmoothHeightMap();
+	SmoothHeightMap();
+	SmoothHeightMap();
+	SmoothHeightMap();
+
+	GenerateColorMap();
+
+	//AddHeightToColorMap();
+	//AddBumpToColorMap();
+	SmoothColorMap();
+	SmoothColorMap();
+	SmoothColorMap();
+	SmoothColorMap();
 
 	GenerateColorBytesDitherHigh();
 	CalculateColorMipMaps();
@@ -988,12 +1043,12 @@ void engineGsCreate(void)
 }
 
 void engineGsLoop(void) {
-	if(p1y == 250)
+/*	if(p1y == 250)
 	{
 	gameClose();
 }
 p1y += 1;
-p2y += 1;
+p2y += 1;*/
 
 if(keyCheck(KEY_SPACE)) {
 	gameClose();
@@ -1002,22 +1057,22 @@ else
 {
 	if(interlace % 2)
 	{
-		if(keyCheck(KEY_UP))p1y++;
-		if(keyCheck(KEY_DOWN))p1y--;
-		if(keyCheck(KEY_RIGHT))p1x+=2;
-		if(keyCheck(KEY_LEFT))p1x-=2;
-		if(keyCheck(KEY_F))p1h+=3;
-		if(keyCheck(KEY_V))p1h-=3;
+		if(keyCheck(KEY_UP))p2y++;
+		if(keyCheck(KEY_DOWN))p2y--;
+		if(keyCheck(KEY_RIGHT))p2x+=2;
+		if(keyCheck(KEY_LEFT))p2x-=2;
+		if(keyCheck(KEY_F))p2h+=3;
+		if(keyCheck(KEY_V))p2h-=3;
 	}
 
 	if(interlace % 2 == 0)
 	{
-	if(keyCheck(KEY_W))p2y++;
-	if(keyCheck(KEY_S))p2y--;
-	if(keyCheck(KEY_D))p2x+=2;
-	if(keyCheck(KEY_A))p2x-=2;
-	if(keyCheck(KEY_G))p2h+=3;
-	if(keyCheck(KEY_B))p2h-=3;
+	if(keyCheck(KEY_W))p1y++;
+	if(keyCheck(KEY_S))p1y--;
+	if(keyCheck(KEY_D))p1x+=2;
+	if(keyCheck(KEY_A))p1x-=2;
+	if(keyCheck(KEY_G))p1h+=3;
+	if(keyCheck(KEY_B))p1h-=3;
 }
 	if(keyCheck(KEY_H))renderingDepth++;
 	if(keyCheck(KEY_N))renderingDepth--;
@@ -1029,8 +1084,8 @@ if(renderingDepth<10) renderingDepth = 10;
 else if(renderingDepth>TERRAINDEPTH) renderingDepth = TERRAINDEPTH;
 
 
-if(p1h<1) p1h = 1;
-if(p2h<1) p2h = 1;
+if(p1h<5) p1h = 5;
+if(p2h<5) p2h = 5;
 
 logAvgBegin(s_pAvgTime);
 
@@ -1089,13 +1144,13 @@ vPortWaitForEnd(s_pVPort);
 
 CopyFastToChipW(s_pBuffer->pBack);
 
-blitWait();
-blitLine(
+//blitWait();
+/*blitLine(
 	s_pBuffer->pBack,
 	0, 200,
 	320, 200,
 	0x1f, 0xAAAA, 0 // Try patterns 0xAAAA, 0xEEEE, etc.
-);
+);*/
 
 logAvgEnd(s_pAvgTime);
 }
