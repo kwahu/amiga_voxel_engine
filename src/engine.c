@@ -1085,7 +1085,17 @@ if(interlace == 3) DrawHeightMap(2);
 interlace++;
 if(interlace == 8) interlace = 0;
 
+vPortWaitForEnd(s_pVPort);
+
 CopyFastToChipW(s_pBuffer->pBack);
+
+blitWait();
+blitLine(
+	s_pBuffer->pBack,
+	0, 200,
+	320, 200,
+	0x1f, 0xAAAA, 0 // Try patterns 0xAAAA, 0xEEEE, etc.
+);
 
 logAvgEnd(s_pAvgTime);
 }
