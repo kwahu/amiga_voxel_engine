@@ -22,10 +22,10 @@ docker run --rm \
 #define COLORS 32
 #define PLANEWIDTH 40
 #define TERRAINDEPTH 30
-#define XSIZE 60
-#define YSIZE 60
+#define XSIZE 120
+#define YSIZE 128
 #define LINEHEIGHT 4
-#define YSTEPSCREEN XSIZE*4
+
 
 UBYTE heightMap0[256][256];//64k
 UBYTE heightMap1[128][128];//16k
@@ -252,6 +252,29 @@ static void SmoothColorMap()
 		colorMap0[x][y] = value/9;
 	}
 }
+static void SmoothScreen(UBYTE player)
+{
+	UBYTE *screen,*screenDepth;
+	UBYTE value = 0;
+
+	if(player == 1)
+	{
+		screen = screenP1;
+		screenDepth = screenP1depth;
+	}
+	else
+	{
+		screen = screenP1;
+		screenDepth = screenP1depth;
+	}
+
+	for (UWORD position = 0; position < XSIZE*YSIZE; position++)
+	{
+		value = (value + screen[position+1])/2;
+		screen[position] = value;
+	}
+}
+
 
 static void GenerateColorMap()
 {
@@ -318,7 +341,7 @@ static void CalculateRayCasts()
 	tzz = 1;
 	for(int tz=1;tz<TERRAINDEPTH;tz++)
 	{
-		tzz += 1+tz/4; //increase step with the distance from camera, less quality but better performance
+		tzz += 1+tz/8; //increase step with the distance from camera, less quality but better performance
 		for(int sx=-XSIZE/2;sx<XSIZE/2;sx++)
 		{
 			sxx = sx * tzz/2; //make smaller steps
@@ -917,7 +940,7 @@ static void DrawHeightMap(UBYTE player)
 }
 }
 
-static void ProcessRayCasts(UBYTE player)
+static void ProcessRayCasts(UBYTE player, UBYTE stepSize, UBYTE step)
 {
 	UBYTE sx,sy,tz;
 	UWORD px,py,ph; //player
@@ -929,6 +952,7 @@ static void ProcessRayCasts(UBYTE player)
 	UBYTE *screen;
 	UBYTE *screenDepth;
 	UWORD ex,ey,eh; //enemy
+	UWORD screenStepSize;
 
 	//initialize player data
 	if(player == 1)
@@ -956,12 +980,13 @@ static void ProcessRayCasts(UBYTE player)
 
 	startPosition = (YSIZE-1)*XSIZE; //set the start position (left bottom pixel) on the destination screen
 
+	screenStepSize = stepSize*XSIZE;
 	for(sx=0;sx<XSIZE;sx++)
 	{
 		//********* INITIALIZE INTERLACED CALCUTATIONS
 
-
-			sy = interlace/2 + modulo2[sx];
+			//sy = interlace/2 + modulo2[sx];
+			sy = step;// + modulo2[sx];
 			position = startPosition+sx-(XSIZE*sy);
 
 
@@ -980,7 +1005,7 @@ static void ProcessRayCasts(UBYTE player)
 			mx = (px + rayCastX[sx][tz]);
 			my = (py + tz);
 
-			//th = heightMap0[ mx ][ my ];
+		//	th = heightMap0[ mx ][ my ];
 			//*********** HEIGHT MIPMAP
 			if(mipLevel < 2)
 			{
@@ -1012,7 +1037,7 @@ static void ProcessRayCasts(UBYTE player)
 			{
 				screenDepth[position] = tz;
 				//screenMid[position] = th/16 + sy/8;
-				//screenMid[position] = colorMap0[ mx ][ my ];
+			//	screen[position] = colorMap0[ mx ][ my ];
 				//screenMid[position] = colorMap0[ mx ][ my ];
 				//*************** COLOR MIPMAP
 				if(mipLevel == 0)
@@ -1042,15 +1067,15 @@ static void ProcessRayCasts(UBYTE player)
 			/*	if(mx < xPos+5 && mx > xPos-5 && my < yPos+5 && my > yPos-5)
 					screenMid[position] = screenMid[position]/2;*/
 
-					if( mx>ex-8 && mx<ex+8 && my>ey-4 && my<ey+4)
+				/*	if( mx>ex-8 && mx<ex+8 && my>ey-4 && my<ey+4)
 					{
 						screen[position] = screen[position]/2;
-					}
+					}*/
 				// check shadow
 
 
-				sy+=4; //move X pixels to the top in calculations
-				position-=YSTEPSCREEN; //move X pixels to the top on the destination screen
+				sy+=stepSize; //move X pixels to the top in calculations
+				position-=screenStepSize; //move X pixels to the top on the destination screen
 			}
 			else
 			{
@@ -1064,7 +1089,7 @@ static void ProcessRayCasts(UBYTE player)
 			//if(screenMid[position] == 0x0f)
 			//break;
 			screenDepth[position] = 0x01;
-			screen[position] = sy/2;//0x1f;
+			screen[position] = sy/4;//2
 			position-=XSIZE;
 		}
 	}
@@ -1159,7 +1184,7 @@ if(keyCheck(KEY_SPACE)) {
 }
 else
 {
-	if(interlace % 2)
+//	if(interlace % 2)
 	{
 		if(keyCheck(KEY_UP))p2y++;
 		if(keyCheck(KEY_DOWN))p2y--;
@@ -1169,12 +1194,12 @@ else
 		if(keyCheck(KEY_V))p2h-=3;
 	}
 
-	if(interlace % 2 == 0)
+//	if(interlace % 2 == 0)
 	{
 	if(keyCheck(KEY_W))p1y++;
 	if(keyCheck(KEY_S))p1y--;
-	if(keyCheck(KEY_D))p1x+=2;
-	if(keyCheck(KEY_A))p1x-=2;
+	if(keyCheck(KEY_D))p1x+=3;
+	if(keyCheck(KEY_A))p1x-=3;
 	if(keyCheck(KEY_G))p1h+=3;
 	if(keyCheck(KEY_B))p1h-=3;
 }
@@ -1192,7 +1217,7 @@ if(p1h<5) p1h = 5;
 if(p2h<5) p2h = 5;
 
 logAvgBegin(s_pAvgTime);
-
+/*
 if(interlace == 0)
 {
 	ProcessRayCasts(1);
@@ -1232,6 +1257,34 @@ if(interlace == 7)
 {
 	ProcessRayCasts(2);
 	DrawPlayerScreen(2,0,1);
+}*/
+if(interlace == 0)
+{
+	ProcessRayCasts(1,4,1);
+	//SmoothScreen(1);
+	DrawPlayerScreen(1,0,0);
+
+}
+if(interlace == 1)
+{
+ProcessRayCasts(1,4,2);
+//	SmoothScreen(1);
+	DrawPlayerScreen(1,0,1);
+
+}
+if(interlace == 2)
+{
+	ProcessRayCasts(1,4,3);
+	//SmoothScreen(1);
+	DrawPlayerScreen(1,0,0);
+
+}
+if(interlace == 3)
+{
+	ProcessRayCasts(1,4,4);
+	//SmoothScreen(1);
+	DrawPlayerScreen(1,0,1);
+
 }
 /*
 if(interlace == 0) DrawColorMap(1);
@@ -1239,14 +1292,14 @@ if(interlace == 1) DrawHeightMap(1);
 if(interlace == 2) DrawColorMap(2);
 if(interlace == 3) DrawHeightMap(2);*/
 
-DrawPlayerShip(1);
-DrawPlayerShip(2);
+//DrawPlayerShip(1);
+//DrawPlayerShip(2);
 
 //DrawTerrain();
 //DrawScreenHighDither();
 
 interlace++;
-if(interlace == 8) interlace = 0;
+if(interlace == 4) interlace = 0;
 
 vPortWaitForEnd(s_pVPort);
 
