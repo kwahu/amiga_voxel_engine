@@ -1,1 +1,0 @@
-/opt/m68k-amigaos/bin/m68k-amigaos-gcc --sysroot=/opt/m68k-amigaos  -m68000 -msoft-float -fomit-frame-pointer -s -noixemul -DAMIGA -Wall -Wextra -fomit-frame-pointer -O3 -DNDEBUG  -noixemul -s -Xlinker --allow-multiple-definition  CMakeFiles/engine.dir/src/engine.c.obj CMakeFiles/engine.dir/src/main.c.obj  -o engine ace/libace.a 

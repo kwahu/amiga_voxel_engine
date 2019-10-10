@@ -182,6 +182,33 @@ ace/fast:
 	$(MAKE) -f ace/CMakeFiles/ace.dir/build.make ace/CMakeFiles/ace.dir/build
 .PHONY : ace/fast
 
+src/bitmap_filters.obj: src/bitmap_filters.c.obj
+
+.PHONY : src/bitmap_filters.obj
+
+# target to build an object file
+src/bitmap_filters.c.obj:
+	$(MAKE) -f CMakeFiles/engine.exe.dir/build.make CMakeFiles/engine.exe.dir/src/bitmap_filters.c.obj
+.PHONY : src/bitmap_filters.c.obj
+
+src/bitmap_filters.i: src/bitmap_filters.c.i
+
+.PHONY : src/bitmap_filters.i
+
+# target to preprocess a source file
+src/bitmap_filters.c.i:
+	$(MAKE) -f CMakeFiles/engine.exe.dir/build.make CMakeFiles/engine.exe.dir/src/bitmap_filters.c.i
+.PHONY : src/bitmap_filters.c.i
+
+src/bitmap_filters.s: src/bitmap_filters.c.s
+
+.PHONY : src/bitmap_filters.s
+
+# target to generate assembly for a file
+src/bitmap_filters.c.s:
+	$(MAKE) -f CMakeFiles/engine.exe.dir/build.make CMakeFiles/engine.exe.dir/src/bitmap_filters.c.s
+.PHONY : src/bitmap_filters.c.s
+
 src/engine.obj: src/engine.c.obj
 
 .PHONY : src/engine.obj
@@ -209,32 +236,32 @@ src/engine.c.s:
 	$(MAKE) -f CMakeFiles/engine.exe.dir/build.make CMakeFiles/engine.exe.dir/src/engine.c.s
 .PHONY : src/engine.c.s
 
-src/engine_temp.obj: src/engine_temp.c.obj
+src/file_read.obj: src/file_read.c.obj
 
-.PHONY : src/engine_temp.obj
+.PHONY : src/file_read.obj
 
 # target to build an object file
-src/engine_temp.c.obj:
-	$(MAKE) -f CMakeFiles/engine.exe.dir/build.make CMakeFiles/engine.exe.dir/src/engine_temp.c.obj
-.PHONY : src/engine_temp.c.obj
+src/file_read.c.obj:
+	$(MAKE) -f CMakeFiles/engine.exe.dir/build.make CMakeFiles/engine.exe.dir/src/file_read.c.obj
+.PHONY : src/file_read.c.obj
 
-src/engine_temp.i: src/engine_temp.c.i
+src/file_read.i: src/file_read.c.i
 
-.PHONY : src/engine_temp.i
+.PHONY : src/file_read.i
 
 # target to preprocess a source file
-src/engine_temp.c.i:
-	$(MAKE) -f CMakeFiles/engine.exe.dir/build.make CMakeFiles/engine.exe.dir/src/engine_temp.c.i
-.PHONY : src/engine_temp.c.i
+src/file_read.c.i:
+	$(MAKE) -f CMakeFiles/engine.exe.dir/build.make CMakeFiles/engine.exe.dir/src/file_read.c.i
+.PHONY : src/file_read.c.i
 
-src/engine_temp.s: src/engine_temp.c.s
+src/file_read.s: src/file_read.c.s
 
-.PHONY : src/engine_temp.s
+.PHONY : src/file_read.s
 
 # target to generate assembly for a file
-src/engine_temp.c.s:
-	$(MAKE) -f CMakeFiles/engine.exe.dir/build.make CMakeFiles/engine.exe.dir/src/engine_temp.c.s
-.PHONY : src/engine_temp.c.s
+src/file_read.c.s:
+	$(MAKE) -f CMakeFiles/engine.exe.dir/build.make CMakeFiles/engine.exe.dir/src/file_read.c.s
+.PHONY : src/file_read.c.s
 
 src/main.obj: src/main.c.obj
 
@@ -263,6 +290,33 @@ src/main.c.s:
 	$(MAKE) -f CMakeFiles/engine.exe.dir/build.make CMakeFiles/engine.exe.dir/src/main.c.s
 .PHONY : src/main.c.s
 
+src/mipmaps.obj: src/mipmaps.c.obj
+
+.PHONY : src/mipmaps.obj
+
+# target to build an object file
+src/mipmaps.c.obj:
+	$(MAKE) -f CMakeFiles/engine.exe.dir/build.make CMakeFiles/engine.exe.dir/src/mipmaps.c.obj
+.PHONY : src/mipmaps.c.obj
+
+src/mipmaps.i: src/mipmaps.c.i
+
+.PHONY : src/mipmaps.i
+
+# target to preprocess a source file
+src/mipmaps.c.i:
+	$(MAKE) -f CMakeFiles/engine.exe.dir/build.make CMakeFiles/engine.exe.dir/src/mipmaps.c.i
+.PHONY : src/mipmaps.c.i
+
+src/mipmaps.s: src/mipmaps.c.s
+
+.PHONY : src/mipmaps.s
+
+# target to generate assembly for a file
+src/mipmaps.c.s:
+	$(MAKE) -f CMakeFiles/engine.exe.dir/build.make CMakeFiles/engine.exe.dir/src/mipmaps.c.s
+.PHONY : src/mipmaps.c.s
+
 # Help Target
 help:
 	@echo "The following are some of the valid targets for this Makefile:"
@@ -277,15 +331,21 @@ help:
 	@echo "... list_install_components"
 	@echo "... install"
 	@echo "... ace"
+	@echo "... src/bitmap_filters.obj"
+	@echo "... src/bitmap_filters.i"
+	@echo "... src/bitmap_filters.s"
 	@echo "... src/engine.obj"
 	@echo "... src/engine.i"
 	@echo "... src/engine.s"
-	@echo "... src/engine_temp.obj"
-	@echo "... src/engine_temp.i"
-	@echo "... src/engine_temp.s"
+	@echo "... src/file_read.obj"
+	@echo "... src/file_read.i"
+	@echo "... src/file_read.s"
 	@echo "... src/main.obj"
 	@echo "... src/main.i"
 	@echo "... src/main.s"
+	@echo "... src/mipmaps.obj"
+	@echo "... src/mipmaps.i"
+	@echo "... src/mipmaps.s"
 .PHONY : help
 
 
