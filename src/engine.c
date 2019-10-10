@@ -179,7 +179,7 @@ static void CalculateHeightMipMaps()
 		for(int b = 0; b<2 ;b++)
 		value += heightMap0[x*2+a][y*2+b];
 		value /= 4;
-		value -= 5; //gradually lower the height so that it better blends with the horizon
+		//value -= 5; //gradually lower the height so that it better blends with the horizon
 		if(value < 0) value = 0;
 		heightMap1[x][y] = value;
 	}
@@ -191,7 +191,7 @@ static void CalculateHeightMipMaps()
 		for(int b = 0; b<4 ;b++)
 		value += heightMap0[x*4+a][y*4+b];
 		value /= 16;
-		value -= 15;//gradually lower the height so that it better blends with the horizon
+		//value -= 15;//gradually lower the height so that it better blends with the horizon
 		if(value < 0) value = 0;
 		heightMap2[x][y] = value;
 	}
@@ -203,7 +203,7 @@ static void CalculateHeightMipMaps()
 		for(int b = 0; b<8 ;b++)
 		value += heightMap0[x*8+a][y*8+b];
 		value /= 64;
-		value -= 30;//gradually lower the height so that it better blends with the horizon
+		//value -= 30;//gradually lower the height so that it better blends with the horizon
 		if(value < 0) value = 0;
 		heightMap3[x][y] = value;
 	}
@@ -215,7 +215,7 @@ static void CalculateHeightMipMaps()
 		for(int b = 0; b<16 ;b++)
 		value += heightMap0[x*16+a][y*16+b];
 		value /= 256;
-		value -= 50;//gradually lower the height so that it better blends with the horizon
+		//value -= 50;//gradually lower the height so that it better blends with the horizon
 		if(value < 0) value = 0;
 		heightMap4[x][y] = value;
 	}
@@ -308,17 +308,17 @@ static void AddBumpToColorMap()
 {
 	int value;
 
-		for (int x = 0; x < 256; x++)
+	for (int x = 0; x < 256; x++)
+	{
+		for (int y = 0; y < 256; y++)
 		{
-			for (int y = 0; y < 256; y++)
-			{
-				value =  heightMap0[x][y] - heightMap0[x+1][y];//  + heightMap0[x][y] - heightMap0[x][y-1];
-				value = colorMap0[x][y] + 4 +  ( value /2);
-				if(value < 1) value = 1;
-				if(value > 28) value = 28;
-				colorMap0[x][y] = (UBYTE)(value);
-			}
+			value =  heightMap0[x][y] - heightMap0[x+1][y];//  + heightMap0[x][y] - heightMap0[x][y-1];
+			value = colorMap0[x][y] + 4 +  ( value /2);
+			if(value < 1) value = 1;
+			if(value > 28) value = 28;
+			colorMap0[x][y] = (UBYTE)(value);
 		}
+	}
 
 }
 
@@ -702,95 +702,95 @@ static void DrawColorMap(UBYTE player)
 	{
 		yy = (y - offsety) % 64;
 
-	for (int x = 0; x < 64/16; x++)
-	{
-		xx = x*16;
-		//if(xx > 48) xx -= 48;
+		for (int x = 0; x < 64/16; x++)
+		{
+			xx = x*16;
+			//if(xx > 48) xx -= 48;
 
-		b1 = colorMap2[(UBYTE)(xx)][yy];
-		b2 = colorMap2[(UBYTE)(xx+1)][yy];
-		b3 = colorMap2[(UBYTE)(xx+2)][yy];
-		b4 = colorMap2[(UBYTE)(xx+3)][yy];
-		b5 = colorMap2[(UBYTE)(xx+4)][yy];
-		b6 = colorMap2[(UBYTE)(xx+5)][yy];
-		b7 = colorMap2[(UBYTE)(xx+6)][yy];
-		b8 = colorMap2[(UBYTE)(xx+7)][yy];
-		b9 = colorMap2[(UBYTE)(xx+8)][yy];
-		b10 = colorMap2[(UBYTE)(xx+9)][yy];
-		b11 = colorMap2[(UBYTE)(xx+10)][yy];
-		b12 = colorMap2[(UBYTE)(xx+11)][yy];
-		b13 = colorMap2[(UBYTE)(xx+12)][yy];
-		b14 = colorMap2[(UBYTE)(xx+13)][yy];
-		b15 = colorMap2[(UBYTE)(xx+14)][yy];
-		b16 = colorMap2[(UBYTE)(xx+15)][yy];
-		fastPlane1W[position] = ((b1>>0) & 1) *0b1000000000000000+
-		((b2>>0) & 1) *0b0100000000000000+
-		((b3>>0) & 1) *0b0010000000000000+
-		((b4>>0) & 1) *0b0001000000000000+
-		((b5>>0) & 1) *0b0000100000000000+
-		((b6>>0) & 1) *0b0000010000000000+
-		((b7>>0) & 1) *0b0000001000000000+
-		((b8>>0) & 1) *0b0000000100000000+
-		((b9>>0) & 1) *0b0000000010000000+
-		((b10>>0) & 1) *0b0000000001000000+
-		((b11>>0) & 1) *0b0000000000100000+
-		((b12>>0) & 1) *0b0000000000010000+
-		((b13>>0) & 1) *0b0000000000001000+
-		((b14>>0) & 1) *0b0000000000000100+
-		((b15>>0) & 1) *0b0000000000000010+
-		((b16>>0) & 1) *0b0000000000000001;
-		fastPlane2W[position] = ((b1>>1) & 1) *0b1000000000000000+
-		((b2>>1) & 1) *0b0100000000000000+
-		((b3>>1) & 1) *0b0010000000000000+
-		((b4>>1) & 1) *0b0001000000000000+
-		((b5>>1) & 1) *0b0000100000000000+
-		((b6>>1) & 1) *0b0000010000000000+
-		((b7>>1) & 1) *0b0000001000000000+
-		((b8>>1) & 1) *0b0000000100000000+
-		((b9>>1) & 1) *0b0000000010000000+
-		((b10>>1) & 1) *0b0000000001000000+
-		((b11>>1) & 1) *0b0000000000100000+
-		((b12>>1) & 1) *0b0000000000010000+
-		((b13>>1) & 1) *0b0000000000001000+
-		((b14>>1) & 1) *0b0000000000000100+
-		((b15>>1) & 1) *0b0000000000000010+
-		((b16>>1) & 1) *0b0000000000000001;
-		fastPlane3W[position] = ((b1>>2) & 1) *0b1000000000000000+
-		((b2>>2) & 1) *0b0100000000000000+
-		((b3>>2) & 1) *0b0010000000000000+
-		((b4>>2) & 1) *0b0001000000000000+
-		((b5>>2) & 1) *0b0000100000000000+
-		((b6>>2) & 1) *0b0000010000000000+
-		((b7>>2) & 1) *0b0000001000000000+
-		((b8>>2) & 1) *0b0000000100000000+
-		((b9>>2) & 1) *0b0000000010000000+
-		((b10>>2) & 1) *0b0000000001000000+
-		((b11>>2) & 1) *0b0000000000100000+
-		((b12>>2) & 1) *0b0000000000010000+
-		((b13>>2) & 1) *0b0000000000001000+
-		((b14>>2) & 1) *0b0000000000000100+
-		((b15>>2) & 1) *0b0000000000000010+
-		((b16>>2) & 1) *0b0000000000000001;
-		fastPlane4W[position] = ((b1>>3) & 1) *0b1000000000000000+
-		((b2>>3) & 1) *0b0100000000000000+
-		((b3>>3) & 1) *0b0010000000000000+
-		((b4>>3) & 1) *0b0001000000000000+
-		((b5>>3) & 1) *0b0000100000000000+
-		((b6>>3) & 1) *0b0000010000000000+
-		((b7>>3) & 1) *0b0000001000000000+
-		((b8>>3) & 1) *0b0000000100000000+
-		((b9>>3) & 1) *0b0000000010000000+
-		((b10>>3) & 1) *0b0000000001000000+
-		((b11>>3) & 1) *0b0000000000100000+
-		((b12>>3) & 1) *0b0000000000010000+
-		((b13>>3) & 1) *0b0000000000001000+
-		((b14>>3) & 1) *0b0000000000000100+
-		((b15>>3) & 1) *0b0000000000000010+
-		((b16>>3) & 1) *0b0000000000000001;
-		position++;
+			b1 = colorMap2[(UBYTE)(xx)][yy];
+			b2 = colorMap2[(UBYTE)(xx+1)][yy];
+			b3 = colorMap2[(UBYTE)(xx+2)][yy];
+			b4 = colorMap2[(UBYTE)(xx+3)][yy];
+			b5 = colorMap2[(UBYTE)(xx+4)][yy];
+			b6 = colorMap2[(UBYTE)(xx+5)][yy];
+			b7 = colorMap2[(UBYTE)(xx+6)][yy];
+			b8 = colorMap2[(UBYTE)(xx+7)][yy];
+			b9 = colorMap2[(UBYTE)(xx+8)][yy];
+			b10 = colorMap2[(UBYTE)(xx+9)][yy];
+			b11 = colorMap2[(UBYTE)(xx+10)][yy];
+			b12 = colorMap2[(UBYTE)(xx+11)][yy];
+			b13 = colorMap2[(UBYTE)(xx+12)][yy];
+			b14 = colorMap2[(UBYTE)(xx+13)][yy];
+			b15 = colorMap2[(UBYTE)(xx+14)][yy];
+			b16 = colorMap2[(UBYTE)(xx+15)][yy];
+			fastPlane1W[position] = ((b1>>0) & 1) *0b1000000000000000+
+			((b2>>0) & 1) *0b0100000000000000+
+			((b3>>0) & 1) *0b0010000000000000+
+			((b4>>0) & 1) *0b0001000000000000+
+			((b5>>0) & 1) *0b0000100000000000+
+			((b6>>0) & 1) *0b0000010000000000+
+			((b7>>0) & 1) *0b0000001000000000+
+			((b8>>0) & 1) *0b0000000100000000+
+			((b9>>0) & 1) *0b0000000010000000+
+			((b10>>0) & 1) *0b0000000001000000+
+			((b11>>0) & 1) *0b0000000000100000+
+			((b12>>0) & 1) *0b0000000000010000+
+			((b13>>0) & 1) *0b0000000000001000+
+			((b14>>0) & 1) *0b0000000000000100+
+			((b15>>0) & 1) *0b0000000000000010+
+			((b16>>0) & 1) *0b0000000000000001;
+			fastPlane2W[position] = ((b1>>1) & 1) *0b1000000000000000+
+			((b2>>1) & 1) *0b0100000000000000+
+			((b3>>1) & 1) *0b0010000000000000+
+			((b4>>1) & 1) *0b0001000000000000+
+			((b5>>1) & 1) *0b0000100000000000+
+			((b6>>1) & 1) *0b0000010000000000+
+			((b7>>1) & 1) *0b0000001000000000+
+			((b8>>1) & 1) *0b0000000100000000+
+			((b9>>1) & 1) *0b0000000010000000+
+			((b10>>1) & 1) *0b0000000001000000+
+			((b11>>1) & 1) *0b0000000000100000+
+			((b12>>1) & 1) *0b0000000000010000+
+			((b13>>1) & 1) *0b0000000000001000+
+			((b14>>1) & 1) *0b0000000000000100+
+			((b15>>1) & 1) *0b0000000000000010+
+			((b16>>1) & 1) *0b0000000000000001;
+			fastPlane3W[position] = ((b1>>2) & 1) *0b1000000000000000+
+			((b2>>2) & 1) *0b0100000000000000+
+			((b3>>2) & 1) *0b0010000000000000+
+			((b4>>2) & 1) *0b0001000000000000+
+			((b5>>2) & 1) *0b0000100000000000+
+			((b6>>2) & 1) *0b0000010000000000+
+			((b7>>2) & 1) *0b0000001000000000+
+			((b8>>2) & 1) *0b0000000100000000+
+			((b9>>2) & 1) *0b0000000010000000+
+			((b10>>2) & 1) *0b0000000001000000+
+			((b11>>2) & 1) *0b0000000000100000+
+			((b12>>2) & 1) *0b0000000000010000+
+			((b13>>2) & 1) *0b0000000000001000+
+			((b14>>2) & 1) *0b0000000000000100+
+			((b15>>2) & 1) *0b0000000000000010+
+			((b16>>2) & 1) *0b0000000000000001;
+			fastPlane4W[position] = ((b1>>3) & 1) *0b1000000000000000+
+			((b2>>3) & 1) *0b0100000000000000+
+			((b3>>3) & 1) *0b0010000000000000+
+			((b4>>3) & 1) *0b0001000000000000+
+			((b5>>3) & 1) *0b0000100000000000+
+			((b6>>3) & 1) *0b0000010000000000+
+			((b7>>3) & 1) *0b0000001000000000+
+			((b8>>3) & 1) *0b0000000100000000+
+			((b9>>3) & 1) *0b0000000010000000+
+			((b10>>3) & 1) *0b0000000001000000+
+			((b11>>3) & 1) *0b0000000000100000+
+			((b12>>3) & 1) *0b0000000000010000+
+			((b13>>3) & 1) *0b0000000000001000+
+			((b14>>3) & 1) *0b0000000000000100+
+			((b15>>3) & 1) *0b0000000000000010+
+			((b16>>3) & 1) *0b0000000000000001;
+			position++;
+		}
+		position+=PLANEWIDTH/2-4;
 	}
-	position+=PLANEWIDTH/2-4;
-}
 }
 //draws a height map of the terrain straight to planes
 //reads 16 pixels and writes them in 1 WORD
@@ -824,120 +824,120 @@ static void DrawHeightMap(UBYTE player)
 	{
 		yy = (y - offsety) % 64;
 
-	for (int x = 0; x < 64/16; x++)
-	{
-		xx = x*16;
-		//if(xx > 48) xx -= 48;
-
-		b1 = heightMap2[(UBYTE)(xx)][yy]/16;
-		b2 = heightMap2[(UBYTE)(xx+1)][yy]/16;
-		b3 = heightMap2[(UBYTE)(xx+2)][yy]/16;
-		b4 = heightMap2[(UBYTE)(xx+3)][yy]/16;
-		b5 = heightMap2[(UBYTE)(xx+4)][yy]/16;
-		b6 = heightMap2[(UBYTE)(xx+5)][yy]/16;
-		b7 = heightMap2[(UBYTE)(xx+6)][yy]/16;
-		b8 = heightMap2[(UBYTE)(xx+7)][yy]/16;
-		b9 = heightMap2[(UBYTE)(xx+8)][yy]/16;
-		b10 = heightMap2[(UBYTE)(xx+9)][yy]/16;
-		b11 = heightMap2[(UBYTE)(xx+10)][yy]/16;
-		b12 = heightMap2[(UBYTE)(xx+11)][yy]/16;
-		b13 = heightMap2[(UBYTE)(xx+12)][yy]/16;
-		b14 = heightMap2[(UBYTE)(xx+13)][yy]/16;
-		b15 = heightMap2[(UBYTE)(xx+14)][yy]/16;
-		b16 = heightMap2[(UBYTE)(xx+15)][yy]/16;
-
-		if(offsety == yy && x == offsetx/16)
+		for (int x = 0; x < 64/16; x++)
 		{
-			xposition = offsetx % 16;
-			switch(xposition)
-			{
-				case 0: b1 = 0x1f;break;
-				case 1: b2 = 0x1f;break;
-				case 2: b3 = 0x1f;break;
-				case 3: b4 = 0x1f;break;
-				case 4: b5 = 0x1f;break;
-				case 5: b6 = 0x1f;break;
-				case 6: b7 = 0x1f;break;
-				case 7: b8 = 0x1f;break;
-				case 8: b9 = 0x1f;break;
-				case 9: b10 = 0x1f;break;
-				case 10: b11 = 0x1f;break;
-				case 11: b12 = 0x1f;break;
-				case 12: b13 = 0x1f;break;
-				case 13: b14 = 0x1f;break;
-				case 14: b15 = 0x1f;break;
-				case 15: b16 = 0x1f;break;
-			}
-		}
+			xx = x*16;
+			//if(xx > 48) xx -= 48;
 
-		fastPlane1W[position] = ((b1>>0) & 1) *0b1000000000000000+
-		((b2>>0) & 1) *0b0100000000000000+
-		((b3>>0) & 1) *0b0010000000000000+
-		((b4>>0) & 1) *0b0001000000000000+
-		((b5>>0) & 1) *0b0000100000000000+
-		((b6>>0) & 1) *0b0000010000000000+
-		((b7>>0) & 1) *0b0000001000000000+
-		((b8>>0) & 1) *0b0000000100000000+
-		((b9>>0) & 1) *0b0000000010000000+
-		((b10>>0) & 1) *0b0000000001000000+
-		((b11>>0) & 1) *0b0000000000100000+
-		((b12>>0) & 1) *0b0000000000010000+
-		((b13>>0) & 1) *0b0000000000001000+
-		((b14>>0) & 1) *0b0000000000000100+
-		((b15>>0) & 1) *0b0000000000000010+
-		((b16>>0) & 1) *0b0000000000000001;
-		fastPlane2W[position] = ((b1>>1) & 1) *0b1000000000000000+
-		((b2>>1) & 1) *0b0100000000000000+
-		((b3>>1) & 1) *0b0010000000000000+
-		((b4>>1) & 1) *0b0001000000000000+
-		((b5>>1) & 1) *0b0000100000000000+
-		((b6>>1) & 1) *0b0000010000000000+
-		((b7>>1) & 1) *0b0000001000000000+
-		((b8>>1) & 1) *0b0000000100000000+
-		((b9>>1) & 1) *0b0000000010000000+
-		((b10>>1) & 1) *0b0000000001000000+
-		((b11>>1) & 1) *0b0000000000100000+
-		((b12>>1) & 1) *0b0000000000010000+
-		((b13>>1) & 1) *0b0000000000001000+
-		((b14>>1) & 1) *0b0000000000000100+
-		((b15>>1) & 1) *0b0000000000000010+
-		((b16>>1) & 1) *0b0000000000000001;
-		fastPlane3W[position] = ((b1>>2) & 1) *0b1000000000000000+
-		((b2>>2) & 1) *0b0100000000000000+
-		((b3>>2) & 1) *0b0010000000000000+
-		((b4>>2) & 1) *0b0001000000000000+
-		((b5>>2) & 1) *0b0000100000000000+
-		((b6>>2) & 1) *0b0000010000000000+
-		((b7>>2) & 1) *0b0000001000000000+
-		((b8>>2) & 1) *0b0000000100000000+
-		((b9>>2) & 1) *0b0000000010000000+
-		((b10>>2) & 1) *0b0000000001000000+
-		((b11>>2) & 1) *0b0000000000100000+
-		((b12>>2) & 1) *0b0000000000010000+
-		((b13>>2) & 1) *0b0000000000001000+
-		((b14>>2) & 1) *0b0000000000000100+
-		((b15>>2) & 1) *0b0000000000000010+
-		((b16>>2) & 1) *0b0000000000000001;
-		fastPlane4W[position] = ((b1>>3) & 1) *0b1000000000000000+
-		((b2>>3) & 1) *0b0100000000000000+
-		((b3>>3) & 1) *0b0010000000000000+
-		((b4>>3) & 1) *0b0001000000000000+
-		((b5>>3) & 1) *0b0000100000000000+
-		((b6>>3) & 1) *0b0000010000000000+
-		((b7>>3) & 1) *0b0000001000000000+
-		((b8>>3) & 1) *0b0000000100000000+
-		((b9>>3) & 1) *0b0000000010000000+
-		((b10>>3) & 1) *0b0000000001000000+
-		((b11>>3) & 1) *0b0000000000100000+
-		((b12>>3) & 1) *0b0000000000010000+
-		((b13>>3) & 1) *0b0000000000001000+
-		((b14>>3) & 1) *0b0000000000000100+
-		((b15>>3) & 1) *0b0000000000000010+
-		((b16>>3) & 1) *0b0000000000000001;
-		position++;
+			b1 = heightMap2[(UBYTE)(xx)][yy]/16;
+			b2 = heightMap2[(UBYTE)(xx+1)][yy]/16;
+			b3 = heightMap2[(UBYTE)(xx+2)][yy]/16;
+			b4 = heightMap2[(UBYTE)(xx+3)][yy]/16;
+			b5 = heightMap2[(UBYTE)(xx+4)][yy]/16;
+			b6 = heightMap2[(UBYTE)(xx+5)][yy]/16;
+			b7 = heightMap2[(UBYTE)(xx+6)][yy]/16;
+			b8 = heightMap2[(UBYTE)(xx+7)][yy]/16;
+			b9 = heightMap2[(UBYTE)(xx+8)][yy]/16;
+			b10 = heightMap2[(UBYTE)(xx+9)][yy]/16;
+			b11 = heightMap2[(UBYTE)(xx+10)][yy]/16;
+			b12 = heightMap2[(UBYTE)(xx+11)][yy]/16;
+			b13 = heightMap2[(UBYTE)(xx+12)][yy]/16;
+			b14 = heightMap2[(UBYTE)(xx+13)][yy]/16;
+			b15 = heightMap2[(UBYTE)(xx+14)][yy]/16;
+			b16 = heightMap2[(UBYTE)(xx+15)][yy]/16;
+
+			if(offsety == yy && x == offsetx/16)
+			{
+				xposition = offsetx % 16;
+				switch(xposition)
+				{
+					case 0: b1 = 0x1f;break;
+					case 1: b2 = 0x1f;break;
+					case 2: b3 = 0x1f;break;
+					case 3: b4 = 0x1f;break;
+					case 4: b5 = 0x1f;break;
+					case 5: b6 = 0x1f;break;
+					case 6: b7 = 0x1f;break;
+					case 7: b8 = 0x1f;break;
+					case 8: b9 = 0x1f;break;
+					case 9: b10 = 0x1f;break;
+					case 10: b11 = 0x1f;break;
+					case 11: b12 = 0x1f;break;
+					case 12: b13 = 0x1f;break;
+					case 13: b14 = 0x1f;break;
+					case 14: b15 = 0x1f;break;
+					case 15: b16 = 0x1f;break;
+				}
+			}
+
+			fastPlane1W[position] = ((b1>>0) & 1) *0b1000000000000000+
+			((b2>>0) & 1) *0b0100000000000000+
+			((b3>>0) & 1) *0b0010000000000000+
+			((b4>>0) & 1) *0b0001000000000000+
+			((b5>>0) & 1) *0b0000100000000000+
+			((b6>>0) & 1) *0b0000010000000000+
+			((b7>>0) & 1) *0b0000001000000000+
+			((b8>>0) & 1) *0b0000000100000000+
+			((b9>>0) & 1) *0b0000000010000000+
+			((b10>>0) & 1) *0b0000000001000000+
+			((b11>>0) & 1) *0b0000000000100000+
+			((b12>>0) & 1) *0b0000000000010000+
+			((b13>>0) & 1) *0b0000000000001000+
+			((b14>>0) & 1) *0b0000000000000100+
+			((b15>>0) & 1) *0b0000000000000010+
+			((b16>>0) & 1) *0b0000000000000001;
+			fastPlane2W[position] = ((b1>>1) & 1) *0b1000000000000000+
+			((b2>>1) & 1) *0b0100000000000000+
+			((b3>>1) & 1) *0b0010000000000000+
+			((b4>>1) & 1) *0b0001000000000000+
+			((b5>>1) & 1) *0b0000100000000000+
+			((b6>>1) & 1) *0b0000010000000000+
+			((b7>>1) & 1) *0b0000001000000000+
+			((b8>>1) & 1) *0b0000000100000000+
+			((b9>>1) & 1) *0b0000000010000000+
+			((b10>>1) & 1) *0b0000000001000000+
+			((b11>>1) & 1) *0b0000000000100000+
+			((b12>>1) & 1) *0b0000000000010000+
+			((b13>>1) & 1) *0b0000000000001000+
+			((b14>>1) & 1) *0b0000000000000100+
+			((b15>>1) & 1) *0b0000000000000010+
+			((b16>>1) & 1) *0b0000000000000001;
+			fastPlane3W[position] = ((b1>>2) & 1) *0b1000000000000000+
+			((b2>>2) & 1) *0b0100000000000000+
+			((b3>>2) & 1) *0b0010000000000000+
+			((b4>>2) & 1) *0b0001000000000000+
+			((b5>>2) & 1) *0b0000100000000000+
+			((b6>>2) & 1) *0b0000010000000000+
+			((b7>>2) & 1) *0b0000001000000000+
+			((b8>>2) & 1) *0b0000000100000000+
+			((b9>>2) & 1) *0b0000000010000000+
+			((b10>>2) & 1) *0b0000000001000000+
+			((b11>>2) & 1) *0b0000000000100000+
+			((b12>>2) & 1) *0b0000000000010000+
+			((b13>>2) & 1) *0b0000000000001000+
+			((b14>>2) & 1) *0b0000000000000100+
+			((b15>>2) & 1) *0b0000000000000010+
+			((b16>>2) & 1) *0b0000000000000001;
+			fastPlane4W[position] = ((b1>>3) & 1) *0b1000000000000000+
+			((b2>>3) & 1) *0b0100000000000000+
+			((b3>>3) & 1) *0b0010000000000000+
+			((b4>>3) & 1) *0b0001000000000000+
+			((b5>>3) & 1) *0b0000100000000000+
+			((b6>>3) & 1) *0b0000010000000000+
+			((b7>>3) & 1) *0b0000001000000000+
+			((b8>>3) & 1) *0b0000000100000000+
+			((b9>>3) & 1) *0b0000000010000000+
+			((b10>>3) & 1) *0b0000000001000000+
+			((b11>>3) & 1) *0b0000000000100000+
+			((b12>>3) & 1) *0b0000000000010000+
+			((b13>>3) & 1) *0b0000000000001000+
+			((b14>>3) & 1) *0b0000000000000100+
+			((b15>>3) & 1) *0b0000000000000010+
+			((b16>>3) & 1) *0b0000000000000001;
+			position++;
+		}
+		position-=PLANEWIDTH/2-4;
 	}
-	position-=PLANEWIDTH/2-4;
-}
 }
 
 static void ProcessRayCasts(UBYTE player, UBYTE stepSize, UBYTE step)
@@ -952,7 +952,10 @@ static void ProcessRayCasts(UBYTE player, UBYTE stepSize, UBYTE step)
 	UBYTE *screen;
 	UBYTE *screenDepth;
 	UWORD ex,ey,eh; //enemy
-	UWORD screenStepSize;
+	UWORD screenYStepSize;
+	UBYTE xStep;
+	UBYTE xCycles;
+	UBYTE color;
 
 	//initialize player data
 	if(player == 1)
@@ -977,122 +980,156 @@ static void ProcessRayCasts(UBYTE player, UBYTE stepSize, UBYTE step)
 		screen = screenP2;
 		screenDepth = screenP2depth;
 	}
+	//set the start position (left bottom pixel) on the destination screen
 
-	startPosition = (YSIZE-1)*XSIZE; //set the start position (left bottom pixel) on the destination screen
-
-	screenStepSize = stepSize*XSIZE;
-	for(sx=0;sx<XSIZE;sx++)
+	startPosition = (YSIZE-1)*XSIZE;
+	screenYStepSize = stepSize*XSIZE;
+	sx = 0;
+	//FOVeated view
+	for(int i=0;i<7;i++)
 	{
-		//********* INITIALIZE INTERLACED CALCUTATIONS
+		switch(i)
+		{
+			case 0: xStep = 4;xCycles = 5;break;
+			case 1: xStep = 3;xCycles = 5;break;
+			case 2: xStep = 2;xCycles = 5;break;
+			case 3: xStep = 1;xCycles = 30;break;
+			case 4: xStep = 2;xCycles = 5;break;
+			case 5: xStep = 3;xCycles = 5;break;
+			case 6: xStep = 4;xCycles = 5;break;
+		}
+
+		for(UBYTE i=0;i<xCycles;i++)
+		{
+			//********* INITIALIZE INTERLACED CALCUTATIONS
 
 			//sy = interlace/2 + modulo2[sx];
-			sy = step;// + modulo2[sx];
+			sy = step + modulo2[sx];
 			position = startPosition+sx-(XSIZE*sy);
 
 
-		//********* INITIALIZE INTERLACED CALCUTATIONS
+			//********* INITIALIZE INTERLACED CALCUTATIONS
 
-		//starting depth to look for height colission
-		tz = 1;
+			//starting depth to look for height colission
+			tz = 1;
 
 
-		while(tz < renderingDepth && sy <YSIZE)
-		{
-			//***** set mipmap level
-			mipLevel = tz/8;
-
-			// set x,y pooositions on source maps
-			mx = (px + rayCastX[sx][tz]);
-			my = (py + tz);
-
-		//	th = heightMap0[ mx ][ my ];
-			//*********** HEIGHT MIPMAP
-			if(mipLevel < 2)
+			while(tz < renderingDepth && sy <YSIZE)
 			{
-				th = heightMap0[ mx ][ my ];
-			}
-			else if(mipLevel == 2)
-			{
-				th = heightMap1[ mx/2 ][ my/2 ];
-			}
-			else if(mipLevel == 3)
-			{
-				th = heightMap2[ mx/4 ][ my/4 ];
-			}
-			else if(mipLevel == 4)
-			{
-				th = heightMap3[ mx/8 ][ my/8 ];
-			}
-			else if(mipLevel > 4)
-			{
-				th = heightMap4[ mx/16 ][ my/16 ];
-			}
-			//*********** HEIGHT MIPMAP
+				//***** set mipmap level
+				mipLevel = tz/8;
 
-			//height to look for at a given x,y terrain coordinate accounting for z depth
-			//************************************************************
+				// set x,y pooositions on source maps
+				mx = (px + rayCastX[sx][tz]);
+				my = (py + tz);
+
+				//	th = heightMap0[ mx ][ my ];
+				//*********** HEIGHT MIPMAP
+				if(mipLevel < 2 && xStep == 1) th = heightMap0[ mx ][ my ];
+				else if(mipLevel == 2 || xStep == 2)th = heightMap1[ mx/2 ][ my/2 ];
+				else if(mipLevel == 3 || xStep == 3)th = heightMap2[ mx/4 ][ my/4 ];
+				else if(mipLevel == 4 || xStep == 4)th = heightMap3[ mx/8 ][ my/8 ];
+				else if(mipLevel > 4)th = heightMap4[ mx/16 ][ my/16 ];
+				//*********** HEIGHT MIPMAP
+
+				//height to look for at a given x,y terrain coordinate accounting for z depth
+				//************************************************************
 
 
-			if(th>ph + rayCastY[sy][tz])
-			{
-				screenDepth[position] = tz;
-				//screenMid[position] = th/16 + sy/8;
-			//	screen[position] = colorMap0[ mx ][ my ];
-				//screenMid[position] = colorMap0[ mx ][ my ];
-				//*************** COLOR MIPMAP
-				if(mipLevel == 0)
+				if(th>ph + rayCastY[sy][tz])
 				{
-					screen[position] = colorMap0[ mx ][ my ] ;
-				}
-				else if(mipLevel == 1)
-				{
-					screen[position] = colorMap1[ mx/2 ][ my/2 ] + 1;
-				}
-				else if(mipLevel == 2)
-				{
-					screen[position] = colorMap2[ mx/4 ][ my/4 ] + 2;
-				}
-				else if(mipLevel == 3)
-				{
-					screen[position] = colorMap3[ mx/8 ][ my/8 ] + 3;
-				}
-				else if(mipLevel > 3)
-				{
-					screen[position] = colorMap4[ mx/16 ][ my/16 ] + 4;
-				}
-				//*************** COLOR MIPMAP
+					screenDepth[position] = tz;
+					//screenMid[position] = th/16 + sy/8;
+					//	screen[position] = colorMap0[ mx ][ my ];
+					//screenMid[position] = colorMap0[ mx ][ my ];
+					//*************** COLOR MIPMAP
+					if(mipLevel == 0 && xStep == 1)			color = colorMap0[ mx ][ my ];
+					else if(mipLevel == 1 || xStep == 2)color = colorMap1[ mx/2 ][ my/2 ] + 1;
+					else if(mipLevel == 2 || xStep == 3)color = colorMap2[ mx/4 ][ my/4 ] + 2;
+					else if(mipLevel == 3 || xStep == 4)color = colorMap3[ mx/8 ][ my/8 ] + 3;
+					else if(mipLevel > 3)	color = colorMap4[ mx/16 ][ my/16 ] + 4;
+					//*************** COLOR MIPMAP
 
-				// check shadow
+					if(xStep == 1)
+					{
+						screen[position] = color;
+					}
+					else if(xStep == 2)
+					{
+						screen[position] = color;
+						screen[position+1] = color;
+					}
+					else if(xStep == 3)
+					{
+						screen[position] = color;
+						screen[position+1] = color;
+						screen[position+2] = color;
+					}
+					else if(xStep == 4)
+					{
+						screen[position] = color;
+						screen[position+1] = color;
+						screen[position+2] = color;
+						screen[position+3] = color;
+					}
 
-			/*	if(mx < xPos+5 && mx > xPos-5 && my < yPos+5 && my > yPos-5)
+					// check shadow
+
+					/*	if(mx < xPos+5 && mx > xPos-5 && my < yPos+5 && my > yPos-5)
 					screenMid[position] = screenMid[position]/2;*/
 
-				/*	if( mx>ex-8 && mx<ex+8 && my>ey-4 && my<ey+4)
+					/*	if( mx>ex-8 && mx<ex+8 && my>ey-4 && my<ey+4)
 					{
-						screen[position] = screen[position]/2;
-					}*/
+					screen[position] = screen[position]/2;
+				}*/
 				// check shadow
 
 
 				sy+=stepSize; //move X pixels to the top in calculations
-				position-=screenStepSize; //move X pixels to the top on the destination screen
+
+				position-=screenYStepSize; //move X pixels to the top on the destination screen
 			}
 			else
 			{
 				tz+=1;//+mipLevel; //move a variable step in depth to look for next height colision
 			}
+
 		}
 		//finish vertical line with SKY
 		while(sy < YSIZE)
 		{
 			sy++;
-			//if(screenMid[position] == 0x0f)
-			//break;
+			color = sy/4;//2
 			screenDepth[position] = 0x01;
-			screen[position] = sy/4;//2
+			if(xStep == 1)
+			{
+				screen[position] = color;
+			}
+			else if(xStep == 2)
+			{
+				screen[position] = color;
+				screen[position+1] = color;
+			}
+			else if(xStep == 3)
+			{
+				screen[position] = color;
+				screen[position+1] = color;
+				screen[position+2] = color;
+			}
+			else if(xStep == 4)
+			{
+				screen[position] = color;
+				screen[position+1] = color;
+				screen[position+2] = color;
+				screen[position+3] = color;
+			}
+
 			position-=XSIZE;
 		}
+		//go to the next vertical line
+			sx += xStep;
 	}
+}
 }
 
 static tView *s_pView;
@@ -1121,23 +1158,23 @@ void engineGsCreate(void)
 	);
 
 
-	p1x = 50;
-	p1y = 10;
-	p1h = 10;
+	p1x = 40;
+	p1y = 0;
+	p1h = 30;
 
 	p2x = 50;
-	p2y = 15;
+	p2y = 0;
 	p2h = 10;
 
 	ReadHeight("height.raw");
-//	ReadPalette("palette.raw");
+	//	ReadPalette("palette.raw");
 	ReadColor("color.raw");
 	CalculateRayCasts();
-  SmoothHeightMap();
-  SmoothColorMap();
+	SmoothHeightMap();
+	SmoothColorMap();
 
 
-/*	SmoothHeightMap();
+	/*	SmoothHeightMap();
 	SmoothHeightMap();
 	SmoothHeightMap();
 	SmoothHeightMap();
@@ -1158,7 +1195,7 @@ void engineGsCreate(void)
 	GenerateColorBytesDitherHigh();
 	CalculateColorMipMaps();
 	CalculateHeightMipMaps();
-  CalculateModulo2();
+	CalculateModulo2();
 	CalculateEnemyPlacement();
 
 
@@ -1172,7 +1209,7 @@ void engineGsCreate(void)
 }
 
 void engineGsLoop(void) {
-/*	if(p1y == 250)
+/*if(p1y == 250)
 	{
 	gameClose();
 }
@@ -1184,7 +1221,7 @@ if(keyCheck(KEY_SPACE)) {
 }
 else
 {
-//	if(interlace % 2)
+	//	if(interlace % 2)
 	{
 		if(keyCheck(KEY_UP))p2y++;
 		if(keyCheck(KEY_DOWN))p2y--;
@@ -1194,15 +1231,15 @@ else
 		if(keyCheck(KEY_V))p2h-=3;
 	}
 
-//	if(interlace % 2 == 0)
+	//	if(interlace % 2 == 0)
 	{
-	if(keyCheck(KEY_W))p1y++;
-	if(keyCheck(KEY_S))p1y--;
-	if(keyCheck(KEY_D))p1x+=3;
-	if(keyCheck(KEY_A))p1x-=3;
-	if(keyCheck(KEY_G))p1h+=3;
-	if(keyCheck(KEY_B))p1h-=3;
-}
+		if(keyCheck(KEY_W))p1y++;
+		if(keyCheck(KEY_S))p1y--;
+		if(keyCheck(KEY_D))p1x+=3;
+		if(keyCheck(KEY_A))p1x-=3;
+		if(keyCheck(KEY_G))p1h+=3;
+		if(keyCheck(KEY_B))p1h-=3;
+	}
 	if(keyCheck(KEY_H))renderingDepth++;
 	if(keyCheck(KEY_N))renderingDepth--;
 
@@ -1220,43 +1257,43 @@ logAvgBegin(s_pAvgTime);
 /*
 if(interlace == 0)
 {
-	ProcessRayCasts(1);
-	DrawPlayerScreen(1,1,0);
+ProcessRayCasts(1);
+DrawPlayerScreen(1,1,0);
 }
 if(interlace == 1)
 {
-	ProcessRayCasts(2);
-	DrawPlayerScreen(2,0,0);
+ProcessRayCasts(2);
+DrawPlayerScreen(2,0,0);
 }
 if(interlace == 2)
 {
-	ProcessRayCasts(1);
-	DrawPlayerScreen(1,1,1);
+ProcessRayCasts(1);
+DrawPlayerScreen(1,1,1);
 }
 if(interlace == 3)
 {
-	ProcessRayCasts(2);
-	DrawPlayerScreen(2,0,1);
+ProcessRayCasts(2);
+DrawPlayerScreen(2,0,1);
 }
 if(interlace == 4)
 {
-	ProcessRayCasts(1);
-	DrawPlayerScreen(1,1,0);
+ProcessRayCasts(1);
+DrawPlayerScreen(1,1,0);
 }
 if(interlace == 5)
 {
-	ProcessRayCasts(2);
-	DrawPlayerScreen(2,0,0);
+ProcessRayCasts(2);
+DrawPlayerScreen(2,0,0);
 }
 if(interlace == 6)
 {
-	ProcessRayCasts(1);
-	DrawPlayerScreen(1,1,1);
+ProcessRayCasts(1);
+DrawPlayerScreen(1,1,1);
 }
 if(interlace == 7)
 {
-	ProcessRayCasts(2);
-	DrawPlayerScreen(2,0,1);
+ProcessRayCasts(2);
+DrawPlayerScreen(2,0,1);
 }*/
 if(interlace == 0)
 {
@@ -1267,8 +1304,8 @@ if(interlace == 0)
 }
 if(interlace == 1)
 {
-ProcessRayCasts(1,4,2);
-//	SmoothScreen(1);
+	ProcessRayCasts(1,4,2);
+	//	SmoothScreen(1);
 	DrawPlayerScreen(1,0,1);
 
 }
@@ -1307,10 +1344,10 @@ CopyFastToChipW(s_pBuffer->pBack);
 
 //blitWait();
 /*blitLine(
-	s_pBuffer->pBack,
-	0, 200,
-	320, 200,
-	0x1f, 0xAAAA, 0 // Try patterns 0xAAAA, 0xEEEE, etc.
+s_pBuffer->pBack,
+0, 200,
+320, 200,
+0x1f, 0xAAAA, 0 // Try patterns 0xAAAA, 0xEEEE, etc.
 );*/
 
 logAvgEnd(s_pAvgTime);
