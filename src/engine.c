@@ -138,6 +138,345 @@ static void DrawPlayerScreen(UBYTE player, UBYTE depth, UBYTE even)
 	}
 }
 
+static void DrawPlayerScreen3x2(UBYTE player, UBYTE depth, UBYTE even, UBYTE startTable, UBYTE startScreen, UBYTE length)
+{
+	UWORD sp,p1,p2,p3,p4;
+	UWORD word;
+	UWORD address1, address2;
+	UBYTE *screen;
+	UWORD startOffset;
+	UWORD evenOffset;
+	UBYTE *dither1, *dither2, *dither3, *dither4;
+
+
+
+	//interlace init
+	if(even == 1)
+	{
+		dither1 = colorByteDitherP1EvenHigh;
+		dither2 = colorByteDitherP2EvenHigh;
+		dither3 = colorByteDitherP3EvenHigh;
+		dither4 = colorByteDitherP4EvenHigh;
+		evenOffset = 0;
+	}
+	else
+	{
+		dither1 = colorByteDitherP1OddHigh;
+		dither2 = colorByteDitherP2OddHigh;
+		dither3 = colorByteDitherP3OddHigh;
+		dither4 = colorByteDitherP4OddHigh;
+		evenOffset = 20;
+	}
+
+	//player init
+	if(player == 1)
+	{
+		//color or depth map
+		if(depth == 1)
+		{
+			screen = screenP1depth;
+		}
+		else
+		{
+			screen = screenP1;
+		}
+
+		startOffset = 0;
+	}
+	else
+	{
+		//color or depth map
+		if(depth == 1)
+		{
+			screen = screenP2depth;
+		}
+		else
+		{
+			screen = screenP2;
+		}
+		startOffset = 10;
+	}
+
+
+	//for each line
+	for(UWORD y=0;y<YSIZE;y++)
+	{
+		//2 * 20 bytes * y + even/odd + player screen offset WORDs
+		p2 = y*32 + y*8 + evenOffset + startOffset + startScreen;
+
+		//screen position
+		sp = y*XSIZE + startTable;
+
+		//draw the line with WORDs made up of 2 BYTEs each consisting 3 pixels
+		for(UWORD x=0;x<length/6;x++)
+		{
+			//calculate locations of BYTE values to fetch
+			address1 = (screen[sp]<<10) + (screen[sp+1]<<5) + (screen[sp+2]);
+			address2 = (screen[sp+3]<<10) + (screen[sp+4]<<5) + (screen[sp+5]);
+
+			//fetch propper BYTEs and write with WORDs to plane buffers
+			fastPlane1W[p2] = (dither1[ address1 ]<<8) + dither1[ address2 ];
+			fastPlane2W[p2] = (dither2[ address1 ]<<8) + dither2[ address2 ];
+			fastPlane3W[p2] = (dither3[ address1 ]<<8) + dither3[ address2 ];
+			fastPlane4W[p2] = (dither4[ address1 ]<<8) + dither4[ address2 ];
+
+			p2++; //go to next WORD
+
+			sp+=6;//move by 6 pixels
+		}
+	}
+}
+static void DrawPlayerScreen4x4(UBYTE player, UBYTE depth, UBYTE even, UBYTE startTable, UBYTE startScreen, UBYTE length)
+{
+	UWORD sp,position,blockPosition;
+	UWORD word;
+	UWORD address1, address2;
+	UBYTE *screen;
+	UWORD startOffset;
+	UWORD evenOffset;
+	UBYTE *dither1, *dither2, *dither3, *dither4;
+	UBYTE p1,p2,p3,p4;
+	UWORD yStep;
+	UBYTE pixelSize = 4;
+
+	UWORD w1,w2,w3,w4;
+
+	//player init
+	if(player == 1)
+	{
+		//color or depth map
+		if(depth == 1)
+		{
+			screen = screenP1depth;
+		}
+		else
+		{
+			screen = screenP1;
+		}
+
+		startOffset = 0;
+	}
+	else
+	{
+		//color or depth map
+		if(depth == 1)
+		{
+			screen = screenP2depth;
+		}
+		else
+		{
+			screen = screenP2;
+		}
+		startOffset = 10;
+	}
+
+	yStep = XSIZE*2;
+
+	//for each line
+	for(UWORD y=0;y<YSIZE/2;y++)
+	{
+		//40 bytes * y + even/odd + player screen offset WORDs
+		//position = y*20*pixelSize  + startScreen + debugValue;
+
+position = y*80  + startScreen;
+		//screen position
+		//sp = y*yStep + startTable  + 1*XSIZE ;
+		sp = y*240 + startTable  + 120 ;
+
+		//draw the line with WORDs made up of 2 BYTEs
+		for(UWORD x=0;x<length;x++)
+		{
+			address1 = (screen[sp]<<10) + (screen[sp+2]);
+			address2 = (screen[sp+4]<<10) + (screen[sp+6]);
+
+			w1 = (dither1[ address1 ]<<8) + dither1[ address2 ];
+			w2 = (dither2[ address1 ]<<8) + dither2[ address2 ];
+			w3 = (dither3[ address1 ]<<8) + dither3[ address2 ];
+			w4 = (dither4[ address1 ]<<8) + dither4[ address2 ];
+			//calculate locations of BYTE values to fetch
+			for(UBYTE e=0;e<pixelSize;e++)
+			{
+				blockPosition = position+e*20;
+
+				fastPlane1W[blockPosition] = w1;
+				fastPlane2W[blockPosition] = w2;
+				fastPlane3W[blockPosition] = w3;
+				fastPlane4W[blockPosition] = w4;
+			}
+
+
+			position++; //go to next WORD
+
+			sp+=8;
+		}
+	}//line
+}
+static void DrawPlayerScreen8x8(UBYTE player, UBYTE depth, UBYTE even, UBYTE startTable, UBYTE startScreen, UBYTE length)
+{
+	UWORD sp,position,blockPosition;
+	UWORD word;
+	UWORD address1, address2;
+	UBYTE *screen;
+	UWORD startOffset;
+	UWORD evenOffset;
+	UBYTE *dither1, *dither2, *dither3, *dither4;
+	UBYTE pa,pb,pc,pd,pe,pf;
+	UWORD yStep;
+		UBYTE pixelSize = 8;
+			UWORD w1,w2,w3,w4;
+
+	//player init
+	if(player == 1)
+	{
+		//color or depth map
+		if(depth == 1)
+		{
+			screen = screenP1depth;
+		}
+		else
+		{
+			screen = screenP1;
+		}
+
+		startOffset = 0;
+	}
+	else
+	{
+		//color or depth map
+		if(depth == 1)
+		{
+			screen = screenP2depth;
+		}
+		else
+		{
+			screen = screenP2;
+		}
+		startOffset = 10;
+	}
+
+	yStep = XSIZE*4;
+
+	//for each line
+	for(UWORD y=0;y<YSIZE/4;y++)
+	{
+		//40 bytes * y + even/odd + player screen offset WORDs
+		position = y*20*8  + startScreen;
+
+		//screen position
+		sp = y*yStep + startTable  + 3*XSIZE ;
+
+		//draw the line with WORDs made up of 2 BYTEs each consisting 3 pixels
+		for(UWORD x=0;x<length;x++)
+		{
+			address1 = (screen[sp]);
+			address2 = (screen[sp+4]);
+
+			w1 = (dither1[ address1 ]<<8) + dither1[ address2 ];
+			w2 = (dither2[ address1 ]<<8) + dither2[ address2 ];
+			w3 = (dither3[ address1 ]<<8) + dither3[ address2 ];
+			w4 = (dither4[ address1 ]<<8) + dither4[ address2 ];
+			//calculate locations of BYTE values to fetch
+			for(UBYTE e=0;e<pixelSize;e++)
+			{
+				blockPosition = position+e*20;
+
+				fastPlane1W[blockPosition] = w1;
+				fastPlane2W[blockPosition] = w2;
+				fastPlane3W[blockPosition] = w3;
+				fastPlane4W[blockPosition] = w4;
+			}
+
+
+			position++; //go to next WORD
+
+			sp+=8;//move by 6 pixels
+		}
+	}//line
+}
+/*
+static void DrawPlayerScreenPartialResolution(UBYTE player, UBYTE depth, UBYTE even, UBYTE start, UBYTE length)
+{
+	UWORD sp,position,blockPosition;
+	UWORD word;
+	UWORD address1, address2;
+	UBYTE *screen;
+	UWORD startOffset;
+	UWORD evenOffset;
+	UBYTE *dither1, *dither2, *dither3, *dither4;
+	UBYTE pa,pb,pc,pd,pe,pf;
+	UWORD yStep;
+
+	//player init
+	if(player == 1)
+	{
+		//color or depth map
+		if(depth == 1)
+		{
+			screen = screenP1depth;
+		}
+		else
+		{
+			screen = screenP1;
+		}
+
+		startOffset = 0;
+	}
+	else
+	{
+		//color or depth map
+		if(depth == 1)
+		{
+			screen = screenP2depth;
+		}
+		else
+		{
+			screen = screenP2;
+		}
+		startOffset = 10;
+	}
+
+	yStep = XSIZE*4;
+
+	//for each line
+	for(UWORD y=0;y<YSIZE;y++)
+	{
+		//40 bytes * y + even/odd + player screen offset WORDs
+		position = y*20*8  + start;
+
+		//screen position
+		sp = y*yStep + start + p2y*XSIZE + p2x;
+
+		//draw the line with WORDs made up of 2 BYTEs each consisting 3 pixels
+		for(UWORD x=0;x<length;x++)
+		{
+			pa = screen[sp]/4;
+			pb = screen[sp+4]/4;
+			pc = screen[sp+yStep]/4;
+			pd = screen[sp+yStep+4]/4;
+			pe = screen[sp+8]/4;
+			pf = screen[sp+yStep+8]/4;
+			//calculate locations of BYTE values to fetch
+			for(UBYTE e=0;e<8;e++)
+			{
+				blockPosition = position+e*20;
+				address1 = (e<<12) + (pa<<9) + (pb<<6) + (pc<<3) + pd;
+				address2 = (e<<12) + (pb<<9) + (pe<<6) + (pd<<3) + pf;
+
+				//fetch propper BYTEs and write with WORDs to plane buffers
+				fastPlane1W[blockPosition] = (colorByteDither8x8P1[ address1 ]<<8) + colorByteDither8x8P1[ address2 ];
+				fastPlane2W[blockPosition] = (colorByteDither8x8P2[ address1 ]<<8) + colorByteDither8x8P2[ address2 ];
+				fastPlane3W[blockPosition] = (colorByteDither8x8P3[ address1 ]<<8) + colorByteDither8x8P3[ address2 ];
+				fastPlane4W[blockPosition] = (colorByteDither8x8P4[ address1 ]<<8) + colorByteDither8x8P4[ address2 ];
+			}
+
+
+			position++; //go to next WORD
+
+			sp+=8;//move by 6 pixels
+		}
+	}//line
+}*/
+
 static void ProcessRayCasts(UBYTE player, UBYTE stepSize, UBYTE step)
 {
 	UBYTE sx,sy,tz;
@@ -154,6 +493,9 @@ static void ProcessRayCasts(UBYTE player, UBYTE stepSize, UBYTE step)
 	UBYTE xStep;
 	UBYTE xCycles;
 	UBYTE color;
+	UWORD currentTableStepSize;
+	UWORD currentScreenStepSize;
+	UWORD currentStep;
 
 	//initialize player data
 	if(player == 1)
@@ -182,27 +524,29 @@ static void ProcessRayCasts(UBYTE player, UBYTE stepSize, UBYTE step)
 
 	startPosition = (YSIZE-1)*XSIZE;
 	screenYStepSize = stepSize*XSIZE;
+
 	sx = 0;
 	//FOVeated view
-	for(int i=0;i<7;i++)
+	for(int i=0;i<5;i++)
 	{
 		switch(i)
 		{
-			case 0: xStep = 4;xCycles = 5;break;
-			case 1: xStep = 3;xCycles = 5;break;
-			case 2: xStep = 2;xCycles = 5;break;
-			case 3: xStep = 1;xCycles = 30;break;
-			case 4: xStep = 2;xCycles = 5;break;
-			case 5: xStep = 3;xCycles = 5;break;
-			case 6: xStep = 4;xCycles = 5;break;
+			case 0: sx = 0;xStep = 4;xCycles = 8;currentTableStepSize=4;currentScreenStepSize=4*XSIZE;currentStep=0;break;
+			case 1: sx = 118;xStep = 4;xCycles = 8;currentTableStepSize=4;currentScreenStepSize=4*XSIZE;currentStep=0;break;
+			case 2: sx = 32;xStep = 2;xCycles = 16;currentTableStepSize=2;currentScreenStepSize=2*XSIZE;currentStep=0;break;
+			case 3: sx = 86;xStep = 2;xCycles = 16;currentTableStepSize=2;currentScreenStepSize=2*XSIZE;currentStep=0;break;
+			case 4: sx = 64;xStep = 1;xCycles = 23;currentTableStepSize=stepSize;currentScreenStepSize=screenYStepSize;currentStep=step;break;
 		}
+//xStep = 1;xCycles = 120;currentTableStepSize=1;currentScreenStepSize=1*XSIZE;currentStep=0;
+//xStep = 2;xCycles = 60;currentTableStepSize=2;currentScreenStepSize=2*XSIZE;currentStep=0;
+//xStep = 4;xCycles = 30;currentTableStepSize=4;currentScreenStepSize=4*XSIZE;currentStep=0;
 
 		for(UBYTE i=0;i<xCycles;i++)
 		{
 			//********* INITIALIZE INTERLACED CALCUTATIONS
 
 			//sy = interlace/2 + modulo2[sx];
-			sy = step + modulo2[sx];
+			sy = currentStep;// + modulo2[sx];
 			position = startPosition+sx-(XSIZE*sy);
 
 
@@ -248,28 +592,23 @@ static void ProcessRayCasts(UBYTE player, UBYTE stepSize, UBYTE step)
 					else if(mipLevel > 3)	color = colorMap4[ mx/16 ][ my/16 ] + 4;
 					//*************** COLOR MIPMAP
 
-					if(xStep == 1)
+					screen[position] = color;
+			/*		if(xStep == 1)
 					{
 						screen[position] = color;
 					}
 					else if(xStep == 2)
 					{
 						screen[position] = color;
-						screen[position+1] = color;
-					}
-					else if(xStep == 3)
-					{
-						screen[position] = color;
-						screen[position+1] = color;
-						screen[position+2] = color;
+						//screen[position+1] = color;
 					}
 					else if(xStep == 4)
 					{
 						screen[position] = color;
-						screen[position+1] = color;
-						screen[position+2] = color;
-						screen[position+3] = color;
-					}
+						//screen[position+1] = color;
+						//screen[position+2] = color;
+						//screen[position+3] = color;
+					}*/
 
 					// check shadow
 
@@ -283,9 +622,9 @@ static void ProcessRayCasts(UBYTE player, UBYTE stepSize, UBYTE step)
 				// check shadow
 
 
-				sy+=stepSize; //move X pixels to the top in calculations
+				sy+=currentTableStepSize; //move X pixels to the top in calculations
 
-				position-=screenYStepSize; //move X pixels to the top on the destination screen
+				position-=currentScreenStepSize; //move X pixels to the top on the destination screen
 			}
 			else
 			{
@@ -296,33 +635,28 @@ static void ProcessRayCasts(UBYTE player, UBYTE stepSize, UBYTE step)
 		//finish vertical line with SKY
 		while(sy < YSIZE)
 		{
-			sy++;
+			sy+=currentTableStepSize;
 			color = sy/4;//2
 			screenDepth[position] = 0x01;
-			if(xStep == 1)
+			screen[position] = color;
+		/*	if(xStep == 1)
 			{
 				screen[position] = color;
 			}
 			else if(xStep == 2)
 			{
 				screen[position] = color;
-				screen[position+1] = color;
-			}
-			else if(xStep == 3)
-			{
-				screen[position] = color;
-				screen[position+1] = color;
-				screen[position+2] = color;
+				//screen[position+1] = color;
 			}
 			else if(xStep == 4)
 			{
 				screen[position] = color;
-				screen[position+1] = color;
-				screen[position+2] = color;
-				screen[position+3] = color;
-			}
+				//screen[position+1] = color;
+				//screen[position+2] = color;
+				//screen[position+3] = color;
+			}*/
 
-			position-=XSIZE;
+			position-=currentScreenStepSize;
 		}
 		//go to the next vertical line
 			sx += xStep;

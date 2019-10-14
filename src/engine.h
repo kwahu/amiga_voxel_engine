@@ -10,7 +10,7 @@
 #define COLORS 32
 #define PLANEWIDTH 40
 #define TERRAINDEPTH 30
-#define XSIZE 120
+#define XSIZE 150
 #define YSIZE 128
 #define LINEHEIGHT 4
 
@@ -42,6 +42,8 @@ UBYTE enemyPlacementPerspective[XSIZE/2][128];
 
 UBYTE modulo2[XSIZE];
 
+UBYTE debugValue;
+
 //sand dunes theme
 UWORD kolory[COLORS] =
 {
@@ -58,6 +60,11 @@ UBYTE colorByteDitherP1OddHigh[COLORS*COLORS*COLORS];//32k
 UBYTE colorByteDitherP2OddHigh[COLORS*COLORS*COLORS];//32k
 UBYTE colorByteDitherP3OddHigh[COLORS*COLORS*COLORS];//32k
 UBYTE colorByteDitherP4OddHigh[COLORS*COLORS*COLORS];//32k
+
+UBYTE colorByteDither8x8P1[8*8*8*8*8];//32k
+UBYTE colorByteDither8x8P2[8*8*8*8*8];//32k
+UBYTE colorByteDither8x8P3[8*8*8*8*8];//32k
+UBYTE colorByteDither8x8P4[8*8*8*8*8];//32k
 
 UWORD p1x,p1y,p1h,p2x,p2y,p2h;
 int interlace;

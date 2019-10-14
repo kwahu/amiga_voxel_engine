@@ -7,6 +7,8 @@
 #include <ace/managers/blit.h>
 #include <ace/utils/file.h>
 
+ULONG startTime,endTime;
+
 void genericCreate(void) {
 	gamePushState(engineGsCreate, engineGsLoop, engineGsDestroy);
 }
@@ -49,16 +51,16 @@ void engineGsCreate(void)
 	p1y = 0;
 	p1h = 30;
 
-	p2x = 50;
+	p2x = 0;
 	p2y = 0;
 	p2h = 10;
 
 	ReadHeight("height.raw");
 	//	ReadPalette("palette.raw");
-	ReadColor("color.raw");
+	//ReadColor("color.raw");
 	CalculateRayCasts();
-	SmoothHeightMap();
-	SmoothColorMap();
+	//SmoothHeightMap();
+	//SmoothColorMap();
 
 
 	/*	SmoothHeightMap();
@@ -80,10 +82,12 @@ void engineGsCreate(void)
 	SmoothColorMap();*/
 
 	GenerateColorBytesDitherHigh();
+	//GenerateColorBytes8x8();
+
 	CalculateColorMipMaps();
 	CalculateHeightMipMaps();
 	CalculateModulo2();
-	CalculateEnemyPlacement();
+	//CalculateEnemyPlacement();
 
 
 	memcpy(s_pVPort->pPalette, kolory, 16 * sizeof(UWORD));
@@ -96,6 +100,7 @@ void engineGsCreate(void)
 }
 
 void engineGsLoop(void) {
+
 /*if(p1y == 250)
 	{
 	gameClose();
@@ -112,8 +117,8 @@ else
 	{
 		if(keyCheck(KEY_UP))p2y++;
 		if(keyCheck(KEY_DOWN))p2y--;
-		if(keyCheck(KEY_RIGHT))p2x+=2;
-		if(keyCheck(KEY_LEFT))p2x-=2;
+		if(keyCheck(KEY_RIGHT))p2x++;
+		if(keyCheck(KEY_LEFT))p2x--;
 		if(keyCheck(KEY_F))p2h+=3;
 		if(keyCheck(KEY_V))p2h-=3;
 	}
@@ -130,6 +135,16 @@ else
 	if(keyCheck(KEY_H))renderingDepth++;
 	if(keyCheck(KEY_N))renderingDepth--;
 
+	if(keyCheck(KEY_0))debugValue=0;
+	if(keyCheck(KEY_1))debugValue=1;
+	if(keyCheck(KEY_2))debugValue=2;
+	if(keyCheck(KEY_3))debugValue=3;
+	if(keyCheck(KEY_4))debugValue=4;
+	if(keyCheck(KEY_5))debugValue=5;
+	if(keyCheck(KEY_6))debugValue=6;
+	if(keyCheck(KEY_7))debugValue=7;
+	if(keyCheck(KEY_8))debugValue=8;
+	if(keyCheck(KEY_9))debugValue=9;
 }
 //		turn = turn/1.2;
 //	xPos += turn;
@@ -141,6 +156,8 @@ if(p1h<5) p1h = 5;
 if(p2h<5) p2h = 5;
 
 logAvgBegin(s_pAvgTime);
+startTime = timerGetPrec();
+
 /*
 if(interlace == 0)
 {
@@ -182,33 +199,59 @@ if(interlace == 7)
 ProcessRayCasts(2);
 DrawPlayerScreen(2,0,1);
 }*/
+//DrawPlayerScreen(1,0,1);
+ProcessRayCasts(1,1,0);
+DrawPlayerScreen8x8(1,0,0,0,0,4);
+DrawPlayerScreen8x8(1,0,0,118,0,4);
+DrawPlayerScreen4x4(1,0,0,32,4,2);
+DrawPlayerScreen4x4(1,0,0,86,4,2);
+DrawPlayerScreen3x2(1,0,0,64,24,72);
+//DrawPlayerScreen(1,0,1);
+//DrawPlayerScreen8x8(1,0,0,0,0,20);
+//DrawPlayerScreen4x4(1,0,0,0,0,20);
 if(interlace == 0)
 {
-	ProcessRayCasts(1,4,1);
+//	ProcessRayCasts(1,4,1);
 	//SmoothScreen(1);
-	DrawPlayerScreen(1,0,0);
+//	DrawPlayerScreen(1,0,0);
 
+//	DrawPlayerScreen8x8(1,0,0,0,0,4);
+	//DrawPlayerScreen4x4(1,0,0,32,4,4);
+	//DrawPlayerScreen8x8(1,0,0,86,16,4);
+	//DrawPlayerScreen3x2(1,0,0,24,24,72);
 }
 if(interlace == 1)
 {
-	ProcessRayCasts(1,4,2);
+//	ProcessRayCasts(1,4,2);
 	//	SmoothScreen(1);
-	DrawPlayerScreen(1,0,1);
+//	DrawPlayerScreen(1,0,1);
 
+//	DrawPlayerScreen8x8(1,0,0,0,0,4);
+//	DrawPlayerScreen4x4(1,0,0,32,4,4);
+//	DrawPlayerScreen8x8(1,0,0,86,16,4);
+	//DrawPlayerScreen3x2(1,0,1,24,24,72);
 }
 if(interlace == 2)
 {
-	ProcessRayCasts(1,4,3);
+//	ProcessRayCasts(1,4,3);
 	//SmoothScreen(1);
-	DrawPlayerScreen(1,0,0);
+//	DrawPlayerScreen(1,0,0);
 
+//	DrawPlayerScreen8x8(1,0,0,0,0,4);
+//	DrawPlayerScreen4x4(1,0,0,32,4,4);
+//	DrawPlayerScreen8x8(1,0,0,86,16,4);
+	//DrawPlayerScreen3x2(1,0,0,24,24,72);
 }
 if(interlace == 3)
 {
-	ProcessRayCasts(1,4,4);
+//	ProcessRayCasts(1,4,4);
 	//SmoothScreen(1);
-	DrawPlayerScreen(1,0,1);
+//	DrawPlayerScreen(1,0,1);
 
+//	DrawPlayerScreen8x8(1,0,0,0,0,4);
+//	DrawPlayerScreen4x4(1,0,0,32,4,4);
+//	DrawPlayerScreen8x8(1,0,0,86,16,4);
+	//DrawPlayerScreen3x2(1,0,1,24,24,72);
 }
 /*
 if(interlace == 0) DrawColorMap(1);
@@ -225,7 +268,7 @@ if(interlace == 3) DrawHeightMap(2);*/
 interlace++;
 if(interlace == 4) interlace = 0;
 
-vPortWaitForEnd(s_pVPort);
+//vPortWaitForEnd(s_pVPort);
 
 CopyFastToChipW(s_pBuffer->pBack);
 
@@ -238,6 +281,30 @@ s_pBuffer->pBack,
 );*/
 
 logAvgEnd(s_pAvgTime);
+endTime = timerGetPrec();
+}
+
+void logAvgWriteKwahu(tAvg *pAvg) {
+	ULONG ulAvg = 0;
+	char szAvg[15];
+	char szMin[15];
+	char szMax[15];
+
+	if(!pAvg->uwUsedCount) {
+		printf("Avg %s: No measures taken!\n", pAvg->szName);
+		return;
+	}
+	// Calculate average time
+	for(UWORD i = pAvg->uwUsedCount; i--;) {
+		ulAvg += pAvg->pDeltas[i];
+	}
+	ulAvg /= pAvg->uwUsedCount;
+
+	// Display info
+	timerFormatPrec(szAvg, ulAvg);
+	timerFormatPrec(szMin, pAvg->ulMin);
+	timerFormatPrec(szMax, pAvg->ulMax);
+	printf("Avg %s: %s, min: %s, max: %s\n", pAvg->szName, szAvg, szMin, szMax);
 }
 
 void engineGsDestroy(void)
@@ -246,9 +313,17 @@ void engineGsDestroy(void)
 	viewLoad(0);
 	viewDestroy(s_pView);
 
+
+	char szAvg[15];
+	//timerFormatPrec(szAvg, s_pAvgTime->uwCurrDelta);
+	timerFormatPrec(szAvg, endTime - startTime);
+
+	printf("%s", szAvg );
+
 	logAvgDestroy(s_pAvgTime);
-	logWrite(
-		"seconds=%ld pixelsDrawn=%d pixelsChecked=%d pixelsRead=%d linesDrawn=%d",
-		0, pixelsDrawn, pixelsChecked, pixelsRead, linesDrawn
-	);
+
+
+
+
+
 }
