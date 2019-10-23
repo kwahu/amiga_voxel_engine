@@ -1,13 +1,13 @@
 #include "engine.h"
 //locate enemy on screen
-static void CalculateEnemyPlacement()
+void CalculateEnemyPlacement()
 {
-	int sxx;
-	int syy;
-	int tzz; //depth step value
-	int fov = 8; //this changes the field of view
+	int sxx = 0;
+//	int syy;
+//	int tzz; //depth step value
+//	int fov = 8; //this changes the field of view
 
-	tzz = 1;
+//	tzz = 1;
 	for(int tz=1;tz<128;tz++)
 	{
 		//tzz += 1; //increase step with the distance from camera, less quality but better performance
@@ -17,7 +17,7 @@ static void CalculateEnemyPlacement()
 		}
 	}
 }
-static void DrawPlayerShip(UBYTE player)
+void DrawPlayerShip(UBYTE player)
 {
 	UWORD px,py,pz,ex,ey,ez;
 	UWORD position;
@@ -67,15 +67,15 @@ static void DrawPlayerShip(UBYTE player)
 		position = startOffset + 5 + (60*20) + (offsety*20) + (offsetx/2);
 
 		word = 0x0;
-		if(offsetz>8)       word = 0x0000000100000000;
-		else if(offsetz==8) word = 0x0000000110000000;
-		else if(offsetz==7) word = 0x0000001111000000;
-		else if(offsetz==6) word = 0x0000011111100000;
-		else if(offsetz==5) word = 0x0000111111110000;
-		else if(offsetz==4) word = 0x0001111111111000;
-		else if(offsetz==3) word = 0x0011111111111100;
-		else if(offsetz==2) word = 0x0111111111111110;
-		else if(offsetz==1) word = 0x1111111111111111;
+		if(offsetz>8)       word = 0b0000000100000000;
+		else if(offsetz==8) word = 0b0000000110000000;
+		else if(offsetz==7) word = 0b0000001111000000;
+		else if(offsetz==6) word = 0b0000011111100000;
+		else if(offsetz==5) word = 0b0000111111110000;
+		else if(offsetz==4) word = 0b0001111111111000;
+		else if(offsetz==3) word = 0b0011111111111100;
+		else if(offsetz==2) word = 0b0111111111111110;
+		else if(offsetz==1) word = 0b1111111111111111;
 
 
 		if(offsetz>8)       shipHeight = 1;

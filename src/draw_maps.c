@@ -1,12 +1,11 @@
 //draws a map of the terrain straight to planes
 //reads 16 pixels and writes them in 1 WORD
-static void DrawColorMap(UBYTE player)
+void DrawColorMap(UBYTE player)
 {
-	UWORD p1,p2,p3,p4;
 	UWORD position;
 	UBYTE b1,b2,b3,b4,b5,b6,b7,b8,b9,b10,b11,b12,b13,b14,b15,b16;
 	UBYTE xx,yy;
-	UBYTE offsetx,offsety;
+	UBYTE offsety;
 	UWORD startOffset;
 
 	if(player == 1)
@@ -118,9 +117,8 @@ static void DrawColorMap(UBYTE player)
 }
 //draws a height map of the terrain straight to planes
 //reads 16 pixels and writes them in 1 WORD
-static void DrawHeightMap(UBYTE player)
+void DrawHeightMap(UBYTE player)
 {
-	UWORD p1,p2,p3,p4;
 	UWORD position;
 	UBYTE b1,b2,b3,b4,b5,b6,b7,b8,b9,b10,b11,b12,b13,b14,b15,b16;
 	UBYTE xx,yy;

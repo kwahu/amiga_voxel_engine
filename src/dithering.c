@@ -1,6 +1,6 @@
 //calculate bits configurations for any set of 3 colours for each plane
 // aaab bccc
-static void GenerateColorBytesDitherHigh()
+void GenerateColorBytesDitherHigh()
 {
 	UWORD address;
 	UBYTE a1,a2,b1,b2,c1,c2;
@@ -123,7 +123,109 @@ static void GenerateColorBytesDitherHigh()
 	}
 }
 
-static void GenerateColorBytes8x8()
+void GenerateColorBytesDither8x8()
+{
+	UWORD address;
+	UBYTE a1,a2;
+	for(int a=0;a<COLORS;a++)
+	{
+		address = a;
+
+		if(a % 2)
+		{
+			a1 = a/2;
+			a2 = a/2;
+		}
+		else
+		{
+			a1 = a/2;
+			a2 = a/2-1;
+		}
+
+		colorByteDither8x8EvenP1[address]=
+		((a1>>0) & 1) *0b10000000+
+		((a2>>0) & 1) *0b01000000+
+		((a1>>0) & 1) *0b00100000+
+		((a2>>0) & 1) *0b00010000+
+		((a1>>0) & 1) *0b00001000+
+		((a2>>0) & 1) *0b00000100+
+		((a1>>0) & 1) *0b00000010+
+		((a2>>0) & 1) *0b00000001;
+
+		colorByteDither8x8EvenP2[address]=
+		((a1>>1) & 1) *0b10000000+
+		((a2>>1) & 1) *0b01000000+
+		((a1>>1) & 1) *0b00100000+
+		((a2>>1) & 1) *0b00010000+
+		((a1>>1) & 1) *0b00001000+
+		((a2>>1) & 1) *0b00000100+
+		((a1>>1) & 1) *0b00000010+
+		((a2>>1) & 1) *0b00000001;
+
+		colorByteDither8x8EvenP3[address]=
+		((a1>>2) & 1) *0b10000000+
+		((a2>>2) & 1) *0b01000000+
+		((a1>>2) & 1) *0b00100000+
+		((a2>>2) & 1) *0b00010000+
+		((a1>>2) & 1) *0b00001000+
+		((a2>>2) & 1) *0b00000100+
+		((a1>>2) & 1) *0b00000010+
+		((a2>>2) & 1) *0b00000001;
+
+		colorByteDither8x8EvenP4[address]=
+		((a1>>3) & 1) *0b10000000+
+		((a2>>3) & 1) *0b01000000+
+		((a1>>3) & 1) *0b00100000+
+		((a2>>3) & 1) *0b00010000+
+		((a1>>3) & 1) *0b00001000+
+		((a2>>3) & 1) *0b00000100+
+		((a1>>3) & 1) *0b00000010+
+		((a2>>3) & 1) *0b00000001;
+
+		colorByteDither8x8OddP1[address]=
+		((a2>>0) & 1) *0b10000000+
+		((a1>>0) & 1) *0b01000000+
+		((a2>>0) & 1) *0b00100000+
+		((a1>>0) & 1) *0b00010000+
+		((a2>>0) & 1) *0b00001000+
+		((a1>>0) & 1) *0b00000100+
+		((a2>>0) & 1) *0b00000010+
+		((a1>>0) & 1) *0b00000001;
+
+		colorByteDither8x8OddP2[address]=
+		((a2>>1) & 1) *0b10000000+
+		((a1>>1) & 1) *0b01000000+
+		((a2>>1) & 1) *0b00100000+
+		((a1>>1) & 1) *0b00010000+
+		((a2>>1) & 1) *0b00001000+
+		((a1>>1) & 1) *0b00000100+
+		((a2>>1) & 1) *0b00000010+
+		((a1>>1) & 1) *0b00000001;
+
+		colorByteDither8x8OddP3[address]=
+		((a2>>2) & 1) *0b10000000+
+		((a1>>2) & 1) *0b01000000+
+		((a2>>2) & 1) *0b00100000+
+		((a1>>2) & 1) *0b00010000+
+		((a2>>2) & 1) *0b00001000+
+		((a1>>2) & 1) *0b00000100+
+		((a2>>2) & 1) *0b00000010+
+		((a1>>2) & 1) *0b00000001;
+
+		colorByteDither8x8OddP4[address]=
+		((a2>>3) & 1) *0b10000000+
+		((a1>>3) & 1) *0b01000000+
+		((a2>>3) & 1) *0b00100000+
+		((a1>>3) & 1) *0b00010000+
+		((a2>>3) & 1) *0b00001000+
+		((a1>>3) & 1) *0b00000100+
+		((a2>>3) & 1) *0b00000010+
+		((a1>>3) & 1) *0b00000001;
+
+	}
+}
+
+void GenerateColorBytes8x8()
 {
 	UWORD address;
 	UBYTE b1,b2,b3,b4,b5,b6,b7,b8;

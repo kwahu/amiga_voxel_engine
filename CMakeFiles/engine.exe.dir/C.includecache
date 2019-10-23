@@ -21,18 +21,6 @@ engine.h
 /work/src/engine.c
 engine.h
 /work/src/engine.h
-file_read.c
-/work/src/file_read.c
-mipmaps.c
-/work/src/mipmaps.c
-bitmap_filters.c
-/work/src/bitmap_filters.c
-dithering.c
-/work/src/dithering.c
-draw_ships.c
-/work/src/draw_ships.c
-draw_maps.c
-/work/src/draw_maps.c
 
 /work/src/engine.h
 stdlib.h
@@ -57,6 +45,18 @@ engine.h
 /work/src/engine.h
 engine.c
 /work/src/engine.c
+mipmaps.c
+/work/src/mipmaps.c
+file_read.c
+/work/src/file_read.c
+bitmap_filters.c
+/work/src/bitmap_filters.c
+dithering.c
+/work/src/dithering.c
+draw_ships.c
+/work/src/draw_ships.c
+draw_maps.c
+/work/src/draw_maps.c
 ace/managers/game.h
 -
 ace/managers/timer.h

@@ -10,7 +10,7 @@
 #define COLORS 32
 #define PLANEWIDTH 40
 #define TERRAINDEPTH 30
-#define XSIZE 150
+#define XSIZE 120
 #define YSIZE 128
 #define LINEHEIGHT 4
 
@@ -29,6 +29,15 @@ UBYTE screenP1[XSIZE*YSIZE];//3,6k
 UBYTE screenP2[XSIZE*YSIZE];//3,6k
 UBYTE screenP1depth[XSIZE*YSIZE];//3,6k
 UBYTE screenP2depth[XSIZE*YSIZE];//3,6k
+
+UBYTE screen8x8a[8*32];
+UBYTE screen8x8b[8*32];
+UBYTE screen8x8c[8*32];
+UBYTE screen8x8d[8*32];
+UBYTE screen8x8e[8*32];
+UBYTE screen4x4leftP1[16*64];
+UBYTE screen4x4rightP1[16*64];
+UBYTE screen3x2P1[24*128];
 
 UWORD fastPlane1W[PLANEWIDTH*HEIGHT];//20k
 UWORD fastPlane2W[PLANEWIDTH*HEIGHT];//20k
@@ -66,6 +75,15 @@ UBYTE colorByteDither8x8P2[8*8*8*8*8];//32k
 UBYTE colorByteDither8x8P3[8*8*8*8*8];//32k
 UBYTE colorByteDither8x8P4[8*8*8*8*8];//32k
 
+UBYTE colorByteDither8x8EvenP1[32];
+UBYTE colorByteDither8x8EvenP2[32];
+UBYTE colorByteDither8x8EvenP3[32];
+UBYTE colorByteDither8x8EvenP4[32];
+UBYTE colorByteDither8x8OddP1[32];
+UBYTE colorByteDither8x8OddP2[32];
+UBYTE colorByteDither8x8OddP3[32];
+UBYTE colorByteDither8x8OddP4[32];
+
 UWORD p1x,p1y,p1h,p2x,p2y,p2h;
 int interlace;
 UBYTE renderingDepth = TERRAINDEPTH;
@@ -75,5 +93,12 @@ void engineGsCreate(void);
 void engineGsLoop(void);
 
 void engineGsDestroy(void);
+
+
+void DrawPlayerScreen(UBYTE player, UBYTE depth, UBYTE even);
+
+void DrawPlayerScreen3x2(UBYTE player, UBYTE depth, UBYTE even, UBYTE startTable, UBYTE startScreen, UBYTE length);
+
+void CopyFastToChipW(tBitMap *bm);
 
 #endif // _ENGINE_H_

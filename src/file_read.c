@@ -2,7 +2,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <ace/utils/file.h>
-static void ReadHeight(const char *name)
+void ReadHeight(const char *name)
 {
 	UBYTE byte;
 	tFile *file;
@@ -17,7 +17,8 @@ static void ReadHeight(const char *name)
 		fileClose(file);
 	}
 }
-static void ReadPalette(const char *name)
+
+void ReadPalette(const char *name)
 {
 	char r,g,b;
 	tFile *file;
@@ -35,7 +36,7 @@ static void ReadPalette(const char *name)
 	}
 	kolory[15] = 0xaaf;
 }
-static void ReadColor(const char *name)
+void ReadColor(const char *name)
 {
 	tFile *file;
 	file = fileOpen(name, "r");

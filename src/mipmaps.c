@@ -1,5 +1,5 @@
 #include "engine.h"
-static void CalculateColorMipMaps()
+void CalculateColorMipMaps()
 {
 	UWORD value;
 	for (int x = 0; x < 128; x++)
@@ -39,7 +39,7 @@ static void CalculateColorMipMaps()
 		colorMap4[x][y] = value/256;
 	}
 }
-static void CalculateHeightMipMaps()
+void CalculateHeightMipMaps()
 {
 	int value;
 	for (int x = 0; x < 128; x++)

@@ -17,14 +17,8 @@ CMakeFiles/engine.exe.dir/src/bitmap_filters.c.obj: deps/ace/include/ace/utils/e
 CMakeFiles/engine.exe.dir/src/bitmap_filters.c.obj: deps/ace/include/ace/utils/file.h
 CMakeFiles/engine.exe.dir/src/bitmap_filters.c.obj: deps/ace/include/ace/utils/tag.h
 
-CMakeFiles/engine.exe.dir/src/engine.c.obj: src/bitmap_filters.c
-CMakeFiles/engine.exe.dir/src/engine.c.obj: src/dithering.c
-CMakeFiles/engine.exe.dir/src/engine.c.obj: src/draw_maps.c
-CMakeFiles/engine.exe.dir/src/engine.c.obj: src/draw_ships.c
 CMakeFiles/engine.exe.dir/src/engine.c.obj: src/engine.c
 CMakeFiles/engine.exe.dir/src/engine.c.obj: src/engine.h
-CMakeFiles/engine.exe.dir/src/engine.c.obj: src/file_read.c
-CMakeFiles/engine.exe.dir/src/engine.c.obj: src/mipmaps.c
 CMakeFiles/engine.exe.dir/src/engine.c.obj: deps/ace/include/ace/macros.h
 CMakeFiles/engine.exe.dir/src/engine.c.obj: deps/ace/include/ace/managers/copper.h
 CMakeFiles/engine.exe.dir/src/engine.c.obj: deps/ace/include/ace/managers/log.h

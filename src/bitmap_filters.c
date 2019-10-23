@@ -1,6 +1,6 @@
 #include "engine.h"
 //smooth the map so that there are less "spike" artifacts from the coarse rendering
-static void SmoothHeightMap()
+void SmoothHeightMap()
 {
 	int value;
 	for (int x = 0; x < 256; x++)
@@ -16,7 +16,7 @@ static void SmoothHeightMap()
 }
 
 //smooth color map so that there are gradients between contrasting colours
-static void SmoothColorMap()
+void SmoothColorMap()
 {
 	int value;
 	for (int x = 0; x < 256; x++)
@@ -30,20 +30,19 @@ static void SmoothColorMap()
 		colorMap0[x][y] = value/9;
 	}
 }
-static void SmoothScreen(UBYTE player)
+
+void SmoothScreen(UBYTE player)
 {
-	UBYTE *screen,*screenDepth;
+	UBYTE *screen;//,*screenDepth;
 	UBYTE value = 0;
 
 	if(player == 1)
 	{
 		screen = screenP1;
-		screenDepth = screenP1depth;
 	}
 	else
 	{
 		screen = screenP1;
-		screenDepth = screenP1depth;
 	}
 
 	for (UWORD position = 0; position < XSIZE*YSIZE; position++)
@@ -52,9 +51,7 @@ static void SmoothScreen(UBYTE player)
 		screen[position] = value;
 	}
 }
-
-
-static void GenerateColorMap()
+void GenerateColorMap()
 {
 	int value;
 	for (int x = 0; x < 256; x++)
@@ -69,7 +66,7 @@ static void GenerateColorMap()
 	}
 }
 //add more light to higher ground
-static void AddHeightToColorMap()
+void AddHeightToColorMap()
 {
 	int value;
 	for (int x = 0; x < 256; x++)
@@ -82,7 +79,7 @@ static void AddHeightToColorMap()
 	}
 }
 //add light and shadow contrast on the left and right sides of the terrain
-static void AddBumpToColorMap()
+void AddBumpToColorMap()
 {
 	int value;
 

@@ -18,14 +18,8 @@ CMakeFiles/engine.exe.dir/src/bitmap_filters.c.obj
  deps/ace/include/ace/utils/file.h
  deps/ace/include/ace/utils/tag.h
 CMakeFiles/engine.exe.dir/src/engine.c.obj
- /work/src/bitmap_filters.c
- /work/src/dithering.c
- /work/src/draw_maps.c
- /work/src/draw_ships.c
  /work/src/engine.c
  /work/src/engine.h
- /work/src/file_read.c
- /work/src/mipmaps.c
  deps/ace/include/ace/macros.h
  deps/ace/include/ace/managers/copper.h
  deps/ace/include/ace/managers/log.h

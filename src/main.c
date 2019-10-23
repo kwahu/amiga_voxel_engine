@@ -1,6 +1,12 @@
 #include <ace/generic/main.h>
 #include "engine.h"
 #include "engine.c"
+#include "mipmaps.c"
+#include "file_read.c"
+#include "bitmap_filters.c"
+#include "dithering.c"
+#include "draw_ships.c"
+#include "draw_maps.c"
 #include <ace/managers/game.h>
 #include <ace/managers/timer.h>
 #include <ace/managers/system.h>
@@ -57,7 +63,7 @@ void engineGsCreate(void)
 
 	ReadHeight("height.raw");
 	//	ReadPalette("palette.raw");
-	//ReadColor("color.raw");
+	ReadColor("color.raw");
 	CalculateRayCasts();
 	//SmoothHeightMap();
 	//SmoothColorMap();
@@ -81,6 +87,7 @@ void engineGsCreate(void)
 	SmoothColorMap();
 	SmoothColorMap();*/
 
+	GenerateColorBytesDither8x8();
 	GenerateColorBytesDitherHigh();
 	//GenerateColorBytes8x8();
 
@@ -200,12 +207,35 @@ ProcessRayCasts(2);
 DrawPlayerScreen(2,0,1);
 }*/
 //DrawPlayerScreen(1,0,1);
-ProcessRayCasts(1,1,0);
-DrawPlayerScreen8x8(1,0,0,0,0,4);
-DrawPlayerScreen8x8(1,0,0,118,0,4);
-DrawPlayerScreen4x4(1,0,0,32,4,2);
-DrawPlayerScreen4x4(1,0,0,86,4,2);
-DrawPlayerScreen3x2(1,0,0,64,24,72);
+//ProcessRayCasts(1,1,0);
+//ProcessRayCasts(*screen,   px,  py,  ph, tableXStart, tableStepSizeX, tableStepSizeY, tableStepNumber,  xCycles)
+ProcessRayCasts(screen8x8a,p1x,p1y,p1h,	0, 3, 4, 0, 8);
+ProcessRayCasts(screen8x8b,p1x,p1y,p1h,	24, 3, 4, 0, 8);
+ProcessRayCasts(screen8x8c,p1x,p1y,p1h,	48, 3, 4, 0, 8);
+ProcessRayCasts(screen8x8d,p1x,p1y,p1h,	72, 3, 4, 0, 8);
+ProcessRayCasts(screen8x8e,p1x,p1y,p1h,	96,3, 4, 0, 8);
+//DrawPlayerScreen8x8( player,  depth,  startTable,  startScreen,  length)
+DrawPlayerScreen8x8(screen8x8a,1,0,0,4);
+DrawPlayerScreen8x8(screen8x8b,1,0,4,4);
+DrawPlayerScreen8x8(screen8x8c,1,0,8,4);
+DrawPlayerScreen8x8(screen8x8d,1,0,12,4);
+DrawPlayerScreen8x8(screen8x8e,1,0,16,4);
+
+//DrawPlayerScreen4x4(1,0,0,32,4,2);
+//DrawPlayerScreen4x4(1,0,0,86,4,2);
+//DrawPlayerScreen3x2(1,0,0,64,24,72);
+
+/*
+case 0: sx = 0;xStep = 4;xCycles = 8;currentTableStepSize=4;currentScreenStepSize=4*XSIZE;currentStep=0;break;
+case 1: sx = 118;xStep = 4;xCycles = 8;currentTableStepSize=4;currentScreenStepSize=4*XSIZE;currentStep=0;break;
+case 2: sx = 32;xStep = 2;xCycles = 16;currentTableStepSize=2;currentScreenStepSize=2*XSIZE;currentStep=0;break;
+case 3: sx = 86;xStep = 2;xCycles = 16;currentTableStepSize=2;currentScreenStepSize=2*XSIZE;currentStep=0;break;
+case 4: sx = 64;xStep = 1;xCycles = 23;currentTableStepSize=stepSize;currentScreenStepSize=screenYStepSize;currentStep=stepNumber;break;
+*/
+//xStep = 1;xCycles = 120;currentTableStepSize=1;currentScreenStepSize=1*XSIZE;currentStep=0;
+//xStep = 2;xCycles = 60;currentTableStepSize=2;currentScreenStepSize=2*XSIZE;currentStep=0;
+//xStep = 4;xCycles = 30;currentTableStepSize=4;currentScreenStepSize=4*XSIZE;currentStep=0;
+
 //DrawPlayerScreen(1,0,1);
 //DrawPlayerScreen8x8(1,0,0,0,0,20);
 //DrawPlayerScreen4x4(1,0,0,0,0,20);
