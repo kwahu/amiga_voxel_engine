@@ -35,8 +35,11 @@ UBYTE screen8x8b[8*32];
 UBYTE screen8x8c[8*32];
 UBYTE screen8x8d[8*32];
 UBYTE screen8x8e[8*32];
-UBYTE screen4x4leftP1[16*64];
-UBYTE screen4x4rightP1[16*64];
+UBYTE screen4x4a[16*64];
+UBYTE screen4x4b[16*64];
+UBYTE screen4x4c[16*64];
+UBYTE screen4x4d[16*64];
+UBYTE screen4x4e[16*64];
 UBYTE screen3x2P1[24*128];
 
 UWORD fastPlane1W[PLANEWIDTH*HEIGHT];//20k
@@ -83,6 +86,15 @@ UBYTE colorByteDither8x8OddP1[32];
 UBYTE colorByteDither8x8OddP2[32];
 UBYTE colorByteDither8x8OddP3[32];
 UBYTE colorByteDither8x8OddP4[32];
+
+UBYTE colorByteDither4x4EvenP1[32*32];
+UBYTE colorByteDither4x4EvenP2[32*32];
+UBYTE colorByteDither4x4EvenP3[32*32];
+UBYTE colorByteDither4x4EvenP4[32*32];
+UBYTE colorByteDither4x4OddP1[32*32];
+UBYTE colorByteDither4x4OddP2[32*32];
+UBYTE colorByteDither4x4OddP3[32*32];
+UBYTE colorByteDither4x4OddP4[32*32];
 
 UWORD p1x,p1y,p1h,p2x,p2y,p2h;
 int interlace;

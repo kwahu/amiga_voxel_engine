@@ -88,6 +88,7 @@ void engineGsCreate(void)
 	SmoothColorMap();*/
 
 	GenerateColorBytesDither8x8();
+	GenerateColorBytesDither4x4();
 	GenerateColorBytesDitherHigh();
 	//GenerateColorBytes8x8();
 
@@ -210,15 +211,15 @@ DrawPlayerScreen(2,0,1);
 //ProcessRayCasts(1,1,0);
 //ProcessRayCasts(*screen,   px,  py,  ph, tableXStart, tableStepSizeX, tableStepSizeY, tableStepNumber,  xCycles)
 ProcessRayCasts(screen8x8a,p1x,p1y,p1h,	0, 3, 4, 0, 8);
-ProcessRayCasts(screen8x8b,p1x,p1y,p1h,	24, 3, 4, 0, 8);
-ProcessRayCasts(screen8x8c,p1x,p1y,p1h,	48, 3, 4, 0, 8);
-ProcessRayCasts(screen8x8d,p1x,p1y,p1h,	72, 3, 4, 0, 8);
+ProcessRayCasts(screen4x4b,p1x,p1y,p1h,	24, 2, 2, 0, 16);
+ProcessRayCasts(screen4x4c,p1x,p1y,p1h,	48, 2, 2, 0, 16);
+ProcessRayCasts(screen4x4d,p1x,p1y,p1h,	72, 2, 2, 0, 16);
 ProcessRayCasts(screen8x8e,p1x,p1y,p1h,	96,3, 4, 0, 8);
 //DrawPlayerScreen8x8( player,  depth,  startTable,  startScreen,  length)
 DrawPlayerScreen8x8(screen8x8a,1,0,0,4);
-DrawPlayerScreen8x8(screen8x8b,1,0,4,4);
-DrawPlayerScreen8x8(screen8x8c,1,0,8,4);
-DrawPlayerScreen8x8(screen8x8d,1,0,12,4);
+DrawPlayerScreen4x4(screen4x4b,1,0,4,4);
+DrawPlayerScreen4x4(screen4x4c,1,0,8,4);
+DrawPlayerScreen4x4(screen4x4d,1,0,12,4);
 DrawPlayerScreen8x8(screen8x8e,1,0,16,4);
 
 //DrawPlayerScreen4x4(1,0,0,32,4,2);
