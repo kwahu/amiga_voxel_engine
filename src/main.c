@@ -22,7 +22,7 @@ docker run --rm \
 -it amigadev/crosstools:m68k-amigaos bash
 */
 
-ULONG startTime,endTime;
+ULONG startTime,endTime,deltaTime,lastTime;
 
 void genericCreate(void) {
 	gamePushState(engineGsCreate, engineGsLoop, engineGsDestroy);
@@ -99,6 +99,10 @@ void engineGsCreate(void)
 }
 
 void engineGsLoop(void) {
+	logAvgBegin(s_pAvgTime);
+	startTime = timerGetPrec();
+	deltaTime = startTime - lastTime;
+	lastTime = startTime;
 
 /*if(p1y == 250)
 	{
@@ -124,12 +128,12 @@ else
 
 	//	if(interlace % 2 == 0)
 	{
-		if(keyCheck(KEY_W))p1y++;
-		if(keyCheck(KEY_S))p1y--;
-		if(keyCheck(KEY_D))p1x+=3;
-		if(keyCheck(KEY_A))p1x-=3;
-		if(keyCheck(KEY_G))p1h+=3;
-		if(keyCheck(KEY_B))p1h-=3;
+		if(keyCheck(KEY_W))p1yf+=deltaTime/10000;
+		if(keyCheck(KEY_S))p1yf-=deltaTime/10000;
+		if(keyCheck(KEY_D))p1xf+=deltaTime/10000*3;
+		if(keyCheck(KEY_A))p1xf-=deltaTime/10000*3;
+		if(keyCheck(KEY_G))p1hf+=deltaTime/10000*3;
+		if(keyCheck(KEY_B))p1hf-=deltaTime/10000*3;
 	}
 	if(keyCheck(KEY_H))renderingDepth++;
 	if(keyCheck(KEY_N))renderingDepth--;
@@ -150,12 +154,14 @@ else
 if(renderingDepth<10) renderingDepth = 10;
 else if(renderingDepth>TERRAINDEPTH) renderingDepth = TERRAINDEPTH;
 
+p1y = p1yf/15;
+p1x = p1xf/15;
+p1h = p1hf/15;
 
 if(p1h<5) p1h = 5;
 if(p2h<5) p2h = 5;
 
-logAvgBegin(s_pAvgTime);
-startTime = timerGetPrec();
+
 
 /*
 if(interlace == 0)
@@ -387,7 +393,7 @@ if(interlace == 3) DrawHeightMap(2);*/
 interlace++;
 if(interlace == 4) interlace = 0;
 
-//vPortWaitForEnd(s_pVPort);
+vPortWaitForEnd(s_pVPort);
 
 CopyFastToChipW(s_pBuffer->pBack);
 
@@ -438,6 +444,8 @@ void engineGsDestroy(void)
 	timerFormatPrec(szAvg, endTime - startTime);
 
 	printf("%s", szAvg );
+	printf("%lu", deltaTime);
+
 
 	logAvgDestroy(s_pAvgTime);
 

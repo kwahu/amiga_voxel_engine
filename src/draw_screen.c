@@ -177,18 +177,21 @@ void DrawPlayerScreen8x8(UBYTE *screen, UBYTE player, UBYTE depth, UBYTE startSc
 	UBYTE *dither1, *dither2, *dither3, *dither4;
 	UBYTE *dither5, *dither6, *dither7, *dither8;
 	UWORD w1,w2,w3,w4,w5,w6,w7,w8;
+	UBYTE lastColor;
 
-	dither1 = dither8x8EvenP1;
-	dither2 = dither8x8EvenP2;
-	dither3 = dither8x8EvenP3;
-	dither4 = dither8x8EvenP4;
+	dither1 = dither4x4EvenP1;
+	dither2 = dither4x4EvenP2;
+	dither3 = dither4x4EvenP3;
+	dither4 = dither4x4EvenP4;
 
-	dither5 = dither8x8OddP1;
-	dither6 = dither8x8OddP2;
-	dither7 = dither8x8OddP3;
-	dither8 = dither8x8OddP4;
+	dither5 = dither4x4OddP1;
+	dither6 = dither4x4OddP2;
+	dither7 = dither4x4OddP3;
+	dither8 = dither4x4OddP4;
 
 	sp = 0;//screen position
+
+
 	if(player == 1)
 	{
 
@@ -211,11 +214,13 @@ void DrawPlayerScreen8x8(UBYTE *screen, UBYTE player, UBYTE depth, UBYTE startSc
 	{
 		//40 bytes * y + even/odd + player screen offset WORDs
 		position = y*20*8  + startScreen;
+		lastColor = screen[sp];
 		//draw the line with WORDs made up of 2 BYTEs each consisting 3 pixels
 		for(UBYTE x=0;x<xCycles;x++)
 		{
-			address1 = (screen[sp]);
-			address2 = (screen[sp+1]);
+			address1 = ((lastColor)<<5) + (screen[sp]);
+			address2 = ((screen[sp])<<5) + (screen[sp+1]);
+			lastColor = screen[sp+1];
 
 			w1 = (dither1[ address1 ]<<8) + dither1[ address2 ];
 			w2 = (dither2[ address1 ]<<8) + dither2[ address2 ];
