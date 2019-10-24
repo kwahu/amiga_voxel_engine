@@ -1,5 +1,6 @@
 //draws a map of the terrain straight to planes
 //reads 16 pixels and writes them in 1 WORD
+/*
 void DrawColorMap(UBYTE player)
 {
 	UWORD position;
@@ -261,3 +262,4 @@ void DrawHeightMap(UBYTE player)
 		position-=PLANEWIDTH/2-4;
 	}
 }
+*/

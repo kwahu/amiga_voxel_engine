@@ -1,4 +1,4 @@
-#include "engine.h"
+#include "ray_casting.h"
 //smooth the map so that there are less "spike" artifacts from the coarse rendering
 void SmoothHeightMap()
 {
@@ -30,7 +30,7 @@ void SmoothColorMap()
 		colorMap0[x][y] = value/9;
 	}
 }
-
+/*
 void SmoothScreen(UBYTE player)
 {
 	UBYTE *screen;//,*screenDepth;
@@ -50,7 +50,7 @@ void SmoothScreen(UBYTE player)
 		value = (value + screen[position+1])/2;
 		screen[position] = value;
 	}
-}
+}*/
 void GenerateColorMap()
 {
 	int value;

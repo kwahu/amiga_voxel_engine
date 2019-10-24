@@ -1,6 +1,7 @@
 #include <ace/generic/main.h>
-#include "engine.h"
-#include "engine.c"
+#include "ray_casting.h"
+#include "ray_casting.c"
+#include "draw_screen.c"
 #include "mipmaps.c"
 #include "file_read.c"
 #include "bitmap_filters.c"
@@ -12,6 +13,14 @@
 #include <ace/managers/system.h>
 #include <ace/managers/blit.h>
 #include <ace/utils/file.h>
+
+/*
+docker run --rm \
+-v ${PWD}:/work \
+-v /path/to/extra/m68k-amigaos/lib:/tools/usr/lib \
+-v /path/to/extra/m68k-amigaos/include:/tools/usr/include \
+-it amigadev/crosstools:m68k-amigaos bash
+*/
 
 ULONG startTime,endTime;
 
@@ -61,40 +70,22 @@ void engineGsCreate(void)
 	p2y = 0;
 	p2h = 10;
 
+
+	debugValue = 1;
+
 	ReadHeight("height.raw");
 	//	ReadPalette("palette.raw");
 	ReadColor("color.raw");
-	CalculateRayCasts();
-	//SmoothHeightMap();
-	//SmoothColorMap();
-
-
-	/*	SmoothHeightMap();
-	SmoothHeightMap();
-	SmoothHeightMap();
-	SmoothHeightMap();
-	SmoothHeightMap();
-	SmoothHeightMap();
-	SmoothHeightMap();
-	SmoothHeightMap();
-
-	GenerateColorMap();
-
-	//AddHeightToColorMap();
-	//AddBumpToColorMap();
-	SmoothColorMap();
-	SmoothColorMap();
-	SmoothColorMap();
-	SmoothColorMap();*/
+	CalculateRayCasts(rayCastXOdd, rayCastYOdd, XSIZEODD, YSIZE);
+	CalculateRayCasts(rayCastXEven, rayCastYEven, XSIZEEVEN, YSIZE);
 
 	GenerateColorBytesDither8x8();
 	GenerateColorBytesDither4x4();
-	GenerateColorBytesDitherHigh();
-	//GenerateColorBytes8x8();
+	GenerateColorBytesDither3x2();
 
 	CalculateColorMipMaps();
 	CalculateHeightMipMaps();
-	CalculateModulo2();
+	//CalculateModulo2();
 	//CalculateEnemyPlacement();
 
 
@@ -209,22 +200,119 @@ DrawPlayerScreen(2,0,1);
 }*/
 //DrawPlayerScreen(1,0,1);
 //ProcessRayCasts(1,1,0);
-//ProcessRayCasts(*screen,   px,  py,  ph, tableXStart, tableStepSizeX, tableStepSizeY, tableStepNumber,  xCycles)
-ProcessRayCasts(screen8x8a,p1x,p1y,p1h,	0, 3, 4, 0, 8);
-ProcessRayCasts(screen4x4b,p1x,p1y,p1h,	24, 2, 2, 0, 16);
-ProcessRayCasts(screen4x4c,p1x,p1y,p1h,	48, 2, 2, 0, 16);
-ProcessRayCasts(screen4x4d,p1x,p1y,p1h,	72, 2, 2, 0, 16);
-ProcessRayCasts(screen8x8e,p1x,p1y,p1h,	96,3, 4, 0, 8);
-//DrawPlayerScreen8x8( player,  depth,  startTable,  startScreen,  length)
-DrawPlayerScreen8x8(screen8x8a,1,0,0,4);
-DrawPlayerScreen4x4(screen4x4b,1,0,4,4);
-DrawPlayerScreen4x4(screen4x4c,1,0,8,4);
-DrawPlayerScreen4x4(screen4x4d,1,0,12,4);
-DrawPlayerScreen8x8(screen8x8e,1,0,16,4);
+if(debugValue == 1)
+{
+	ProcessRayCasts(screen8x8a,rayCastXEven, rayCastYEven,p1x,p1y,p1h,	0,  4, 4, 0, 8);
+	ProcessRayCasts(screen8x8b,rayCastXEven, rayCastYEven,p1x,p1y,p1h,	32, 4, 4, 0, 8);
+	ProcessRayCasts(screen8x8c,rayCastXEven, rayCastYEven,p1x,p1y,p1h,	64, 4, 4, 0, 8);
+	ProcessRayCasts(screen8x8d,rayCastXEven, rayCastYEven,p1x,p1y,p1h,	96, 4, 4, 0, 8);
+	ProcessRayCasts(screen8x8e,rayCastXEven, rayCastYEven,p1x,p1y,p1h,	128, 4, 4, 0, 8);
 
-//DrawPlayerScreen4x4(1,0,0,32,4,2);
-//DrawPlayerScreen4x4(1,0,0,86,4,2);
-//DrawPlayerScreen3x2(1,0,0,64,24,72);
+	DrawPlayerScreen8x8(screen8x8a,1,0,0,4);
+	DrawPlayerScreen8x8(screen8x8b,1,0,4,4);
+	DrawPlayerScreen8x8(screen8x8c,1,0,8,4);
+	DrawPlayerScreen8x8(screen8x8d,1,0,12,4);
+	DrawPlayerScreen8x8(screen8x8e,1,0,16,4);
+}
+else if(debugValue == 2)
+{
+	ProcessRayCasts(screen8x8a,rayCastXEven, rayCastYEven,p1x,p1y,p1h,	0,  4, 4, 0, 8);
+	ProcessRayCasts(screen8x8b,rayCastXEven, rayCastYEven,p1x,p1y,p1h,	32, 4, 4, 0, 8);
+	ProcessRayCasts(screen4x4c,rayCastXEven, rayCastYEven,p1x,p1y,p1h,	64, 2, 2, 0, 16);
+	ProcessRayCasts(screen8x8d,rayCastXEven, rayCastYEven,p1x,p1y,p1h,	96, 4, 4, 0, 8);
+	ProcessRayCasts(screen8x8e,rayCastXEven, rayCastYEven,p1x,p1y,p1h,	128, 4, 4, 0, 8);
+
+	DrawPlayerScreen8x8(screen8x8a,1,0,0,4);
+	DrawPlayerScreen8x8(screen8x8b,1,0,4,4);
+	DrawPlayerScreen4x4(screen4x4c,1,0,8,4);
+	DrawPlayerScreen8x8(screen8x8d,1,0,12,4);
+	DrawPlayerScreen8x8(screen8x8e,1,0,16,4);
+}
+else if(debugValue == 3)
+{
+	ProcessRayCasts(screen8x8a,rayCastXEven, rayCastYEven,p1x,p1y,p1h,	0,  4, 4, 0, 8);
+	ProcessRayCasts(screen4x4b,rayCastXEven, rayCastYEven,p1x,p1y,p1h,	32, 2, 2, 0, 16);
+	ProcessRayCasts(screen4x4c,rayCastXEven, rayCastYEven,p1x,p1y,p1h,	64, 2, 2, 0, 16);
+	ProcessRayCasts(screen4x4d,rayCastXEven, rayCastYEven,p1x,p1y,p1h,	96, 2, 2, 0, 16);
+	ProcessRayCasts(screen8x8e,rayCastXEven, rayCastYEven,p1x,p1y,p1h,	128, 4, 4, 0, 8);
+
+	DrawPlayerScreen8x8(screen8x8a,1,0,0,4);
+	DrawPlayerScreen4x4(screen4x4b,1,0,4,4);
+	DrawPlayerScreen4x4(screen4x4c,1,0,8,4);
+	DrawPlayerScreen4x4(screen4x4d,1,0,12,4);
+	DrawPlayerScreen8x8(screen8x8e,1,0,16,4);
+}
+else if(debugValue == 4)
+{
+	ProcessRayCasts(screen8x8a,rayCastXEven, rayCastYEven,p1x,p1y,p1h,	0,  4, 4, 0, 8);
+	ProcessRayCasts(screen4x4b,rayCastXEven, rayCastYEven,p1x,p1y,p1h,	32, 2, 2, 0, 16);
+	ProcessRayCasts(screen3x2c,rayCastXOdd, rayCastYOdd,p1x,p1y,p1h,		48, 1, 1, 0, 24);
+	ProcessRayCasts(screen4x4d,rayCastXEven, rayCastYEven,p1x,p1y,p1h,	96, 2, 2, 0, 16);
+	ProcessRayCasts(screen8x8e,rayCastXEven, rayCastYEven,p1x,p1y,p1h,	128, 4, 4, 0, 8);
+
+	DrawPlayerScreen8x8(screen8x8a,1,0,0,4);
+	DrawPlayerScreen4x4(screen4x4b,1,0,4,4);
+	DrawPlayerScreen3x2(screen3x2c,1,0,8,4);
+	DrawPlayerScreen4x4(screen4x4d,1,0,12,4);
+	DrawPlayerScreen8x8(screen8x8e,1,0,16,4);
+}
+else if(debugValue == 5)
+{
+	ProcessRayCasts(screen4x4a,rayCastXEven, rayCastYEven,p1x,p1y,p1h,	0,  2, 2, 0, 16);
+	ProcessRayCasts(screen4x4b,rayCastXEven, rayCastYEven,p1x,p1y,p1h,	32, 2, 2, 0, 16);
+	ProcessRayCasts(screen3x2c,rayCastXOdd, rayCastYOdd,p1x,p1y,p1h,		48, 1, 1, 0, 24);
+	ProcessRayCasts(screen4x4d,rayCastXEven, rayCastYEven,p1x,p1y,p1h,	96, 2, 2, 0, 16);
+	ProcessRayCasts(screen4x4e,rayCastXEven, rayCastYEven,p1x,p1y,p1h,	128, 2, 2, 0,16);
+
+	DrawPlayerScreen4x4(screen4x4a,1,0,0,4);
+	DrawPlayerScreen4x4(screen4x4b,1,0,4,4);
+	DrawPlayerScreen3x2(screen3x2c,1,0,8,4);
+	DrawPlayerScreen4x4(screen4x4d,1,0,12,4);
+	DrawPlayerScreen4x4(screen4x4e,1,0,16,4);
+}
+else if(debugValue == 6)
+{
+	ProcessRayCasts(screen4x4a,rayCastXEven, rayCastYEven,p1x,p1y,p1h,	0,  2, 2, 0, 16);
+	ProcessRayCasts(screen3x2b,rayCastXOdd, rayCastYOdd,p1x,p1y,p1h,	24, 1, 1, 0, 24);
+	ProcessRayCasts(screen3x2c,rayCastXOdd, rayCastYOdd,p1x,p1y,p1h,	48, 1, 1, 0, 24);
+	ProcessRayCasts(screen3x2d,rayCastXOdd, rayCastYOdd,p1x,p1y,p1h,	72, 1, 1, 0, 24);
+	ProcessRayCasts(screen4x4e,rayCastXEven, rayCastYEven,p1x,p1y,p1h,	128, 2, 2, 0,16);
+
+	DrawPlayerScreen4x4(screen4x4a,1,0,0,4);
+	DrawPlayerScreen3x2(screen3x2b,1,0,4,4);
+	DrawPlayerScreen3x2(screen3x2c,1,0,8,4);
+	DrawPlayerScreen3x2(screen3x2d,1,0,12,4);
+	DrawPlayerScreen4x4(screen4x4e,1,0,16,4);
+}
+else if(debugValue == 7)
+{
+	ProcessRayCasts(screen3x2a,rayCastXOdd, rayCastXOdd,p1x,p1y,p1h,	0,  1, 1, 0, 24);
+	ProcessRayCasts(screen3x2b,rayCastXOdd, rayCastYOdd,p1x,p1y,p1h,	24, 1, 1, 0, 24);
+	ProcessRayCasts(screen3x2c,rayCastXOdd, rayCastYOdd,p1x,p1y,p1h,	48, 1, 1, 0, 24);
+	ProcessRayCasts(screen3x2d,rayCastXOdd, rayCastYOdd,p1x,p1y,p1h,	72, 1, 1, 0, 24);
+	ProcessRayCasts(screen3x2e,rayCastXOdd, rayCastXOdd,p1x,p1y,p1h,	96, 1, 1, 0, 24);
+
+	DrawPlayerScreen3x2(screen3x2a,1,0,0,4);
+	DrawPlayerScreen3x2(screen3x2b,1,0,4,4);
+	DrawPlayerScreen3x2(screen3x2c,1,0,8,4);
+	DrawPlayerScreen3x2(screen3x2d,1,0,12,4);
+	DrawPlayerScreen3x2(screen3x2e,1,0,16,4);
+}
+else
+{
+	ProcessRayCasts(screen8x8a,rayCastXEven, rayCastYEven,p1x,p1y,p1h,	0,  4, 4, 0, 8);
+	ProcessRayCasts(screen8x8b,rayCastXEven, rayCastYEven,p1x,p1y,p1h,	32, 4, 4, 0, 8);
+	ProcessRayCasts(screen8x8c,rayCastXEven, rayCastYEven,p1x,p1y,p1h,	64, 4, 4, 0, 8);
+	ProcessRayCasts(screen8x8d,rayCastXEven, rayCastYEven,p1x,p1y,p1h,	96, 4, 4, 0, 8);
+	ProcessRayCasts(screen8x8e,rayCastXEven, rayCastYEven,p1x,p1y,p1h,	128, 4, 4, 0, 8);
+
+	DrawPlayerScreen8x8(screen8x8a,1,0,0,4);
+	DrawPlayerScreen8x8(screen8x8b,1,0,4,4);
+	DrawPlayerScreen8x8(screen8x8c,1,0,8,4);
+	DrawPlayerScreen8x8(screen8x8d,1,0,12,4);
+	DrawPlayerScreen8x8(screen8x8e,1,0,16,4);
+}
+
 
 /*
 case 0: sx = 0;xStep = 4;xCycles = 8;currentTableStepSize=4;currentScreenStepSize=4*XSIZE;currentStep=0;break;

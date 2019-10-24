@@ -1,5 +1,6 @@
-#include "engine.h"
+#include "ray_casting.h"
 //locate enemy on screen
+/*
 void CalculateEnemyPlacement()
 {
 	int sxx = 0;
@@ -16,7 +17,8 @@ void CalculateEnemyPlacement()
 			enemyPlacementPerspective[sx][tz] = sxx/tz;
 		}
 	}
-}
+}*/
+/*
 void DrawPlayerShip(UBYTE player)
 {
 	UWORD px,py,pz,ex,ey,ez;
@@ -97,3 +99,4 @@ void DrawPlayerShip(UBYTE player)
 		}
 	}
 }
+*/

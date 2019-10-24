@@ -1,6 +1,8 @@
+#include "ray_casting.h"
+
 //calculate bits configurations for any set of 3 colours for each plane
 // aaab bccc
-void GenerateColorBytesDitherHigh()
+void GenerateColorBytesDither3x2()
 {
 	UWORD address;
 	UBYTE a1,a2,b1,b2,c1,c2;
@@ -40,7 +42,7 @@ void GenerateColorBytesDitherHigh()
 			c1 = c/2;
 			c2 = c/2-1;
 		}
-		colorByteDitherP1EvenHigh[address]=
+		dither3x2EvenP1[address]=
 		((a1>>0) & 1) *0b10000000+
 		((a2>>0) & 1) *0b01000000+
 		((a1>>0) & 1) *0b00100000+
@@ -50,7 +52,7 @@ void GenerateColorBytesDitherHigh()
 		((c1>>0) & 1) *0b00000010+
 		((c2>>0) & 1) *0b00000001;
 
-		colorByteDitherP2EvenHigh[address]=
+		dither3x2EvenP1[address]=
 		((a1>>1) & 1) *0b10000000+
 		((a2>>1) & 1) *0b01000000+
 		((a1>>1) & 1) *0b00100000+
@@ -60,7 +62,7 @@ void GenerateColorBytesDitherHigh()
 		((c1>>1) & 1) *0b00000010+
 		((c2>>1) & 1) *0b00000001;
 
-		colorByteDitherP3EvenHigh[address]=
+		dither3x2EvenP3[address]=
 		((a1>>2) & 1) *0b10000000+
 		((a2>>2) & 1) *0b01000000+
 		((a1>>2) & 1) *0b00100000+
@@ -70,7 +72,7 @@ void GenerateColorBytesDitherHigh()
 		((c1>>2) & 1) *0b00000010+
 		((c2>>2) & 1) *0b00000001;
 
-		colorByteDitherP4EvenHigh[address]=
+		dither3x2EvenP4[address]=
 		((a1>>3) & 1) *0b10000000+
 		((a2>>3) & 1) *0b01000000+
 		((a1>>3) & 1) *0b00100000+
@@ -80,7 +82,7 @@ void GenerateColorBytesDitherHigh()
 		((c1>>3) & 1) *0b00000010+
 		((c2>>3) & 1) *0b00000001;
 
-		colorByteDitherP1OddHigh[address]=
+		dither3x2OddP1[address]=
 		((a2>>0) & 1) *0b10000000+
 		((a1>>0) & 1) *0b01000000+
 		((b2>>0) & 1) *0b00100000+
@@ -90,7 +92,7 @@ void GenerateColorBytesDitherHigh()
 		((c2>>0) & 1) *0b00000010+
 		((c1>>0) & 1) *0b00000001;
 
-		colorByteDitherP2OddHigh[address]=
+		dither3x2OddP2[address]=
 		((a2>>1) & 1) *0b10000000+
 		((a1>>1) & 1) *0b01000000+
 		((b2>>1) & 1) *0b00100000+
@@ -100,7 +102,7 @@ void GenerateColorBytesDitherHigh()
 		((c2>>1) & 1) *0b00000010+
 		((c1>>1) & 1) *0b00000001;
 
-		colorByteDitherP3OddHigh[address]=
+		dither3x2OddP3[address]=
 		((a2>>2) & 1) *0b10000000+
 		((a1>>2) & 1) *0b01000000+
 		((b2>>2) & 1) *0b00100000+
@@ -110,7 +112,7 @@ void GenerateColorBytesDitherHigh()
 		((c2>>2) & 1) *0b00000010+
 		((c1>>2) & 1) *0b00000001;
 
-		colorByteDitherP4OddHigh[address]=
+		dither3x2OddP4[address]=
 		((a2>>3) & 1) *0b10000000+
 		((a1>>3) & 1) *0b01000000+
 		((b2>>3) & 1) *0b00100000+
@@ -125,11 +127,12 @@ void GenerateColorBytesDitherHigh()
 void GenerateColorBytesDither4x4()
 {
 	UWORD address;
-	UBYTE a1,a2,b1,b2;
+	UBYTE a1,a2,b1,b2,c1,c2,d1,d2;
+	UBYTE b,c;
 	for(int a=0;a<COLORS;a++)
-	for(int b=0;b<COLORS;b++)
+	for(int d=0;d<COLORS;d++)
 	{
-		address = (a<<5) + b;
+		address = (a<<5) + d;
 
 		if(a % 2)
 		{
@@ -141,6 +144,17 @@ void GenerateColorBytesDither4x4()
 			a1 = a/2;
 			a2 = a/2-1;
 		}
+		if(d % 2)
+		{
+			d1 = d/2;
+			d2 = d/2;
+		}
+		else
+		{
+			d1 = d/2;
+			d2 = d/2-1;
+		}
+		b = (a*2+d)/3;
 		if(b % 2)
 		{
 			b1 = b/2;
@@ -151,86 +165,97 @@ void GenerateColorBytesDither4x4()
 			b1 = b/2;
 			b2 = b/2-1;
 		}
+		c = (a+d*2)/3;
+		if(c % 2)
+		{
+			c1 = c/2;
+			c2 = c/2;
+		}
+		else
+		{
+			c1 = c/2;
+			c2 = c/2-1;
+		}
 
-		colorByteDither4x4EvenP1[address]=
+		dither4x4EvenP1[address]=
 		((a1>>0) & 1) *0b10000000+
 		((a2>>0) & 1) *0b01000000+
-		((a1>>0) & 1) *0b00100000+
-		((a2>>0) & 1) *0b00010000+
-		((b1>>0) & 1) *0b00001000+
-		((b2>>0) & 1) *0b00000100+
-		((b1>>0) & 1) *0b00000010+
-		((b2>>0) & 1) *0b00000001;
+		((b1>>0) & 1) *0b00100000+
+		((b2>>0) & 1) *0b00010000+
+		((c1>>0) & 1) *0b00001000+
+		((c2>>0) & 1) *0b00000100+
+		((d1>>0) & 1) *0b00000010+
+		((d2>>0) & 1) *0b00000001;
 
-		colorByteDither4x4EvenP2[address]=
+		dither4x4EvenP2[address]=
 		((a1>>1) & 1) *0b10000000+
 		((a2>>1) & 1) *0b01000000+
-		((a1>>1) & 1) *0b00100000+
-		((a2>>1) & 1) *0b00010000+
-		((b1>>1) & 1) *0b00001000+
-		((b2>>1) & 1) *0b00000100+
-		((b1>>1) & 1) *0b00000010+
-		((b2>>1) & 1) *0b00000001;
+		((b1>>1) & 1) *0b00100000+
+		((b2>>1) & 1) *0b00010000+
+		((c1>>1) & 1) *0b00001000+
+		((c2>>1) & 1) *0b00000100+
+		((d1>>1) & 1) *0b00000010+
+		((d2>>1) & 1) *0b00000001;
 
-		colorByteDither4x4EvenP3[address]=
+		dither4x4EvenP3[address]=
 		((a1>>2) & 1) *0b10000000+
 		((a2>>2) & 1) *0b01000000+
-		((a1>>2) & 1) *0b00100000+
-		((a2>>2) & 1) *0b00010000+
-		((b1>>2) & 1) *0b00001000+
-		((b2>>2) & 1) *0b00000100+
-		((b1>>2) & 1) *0b00000010+
-		((b2>>2) & 1) *0b00000001;
+		((b1>>2) & 1) *0b00100000+
+		((b2>>2) & 1) *0b00010000+
+		((c1>>2) & 1) *0b00001000+
+		((c2>>2) & 1) *0b00000100+
+		((d1>>2) & 1) *0b00000010+
+		((d2>>2) & 1) *0b00000001;
 
-		colorByteDither4x4EvenP4[address]=
+		dither4x4EvenP4[address]=
 		((a1>>3) & 1) *0b10000000+
 		((a2>>3) & 1) *0b01000000+
-		((a1>>3) & 1) *0b00100000+
-		((a2>>3) & 1) *0b00010000+
-		((b1>>3) & 1) *0b00001000+
-		((b2>>3) & 1) *0b00000100+
-		((b1>>3) & 1) *0b00000010+
-		((b2>>3) & 1) *0b00000001;
+		((b1>>3) & 1) *0b00100000+
+		((b2>>3) & 1) *0b00010000+
+		((c1>>3) & 1) *0b00001000+
+		((c2>>3) & 1) *0b00000100+
+		((d1>>3) & 1) *0b00000010+
+		((d2>>3) & 1) *0b00000001;
 
-		colorByteDither4x4OddP1[address]=
+		dither4x4OddP1[address]=
 		((a2>>0) & 1) *0b10000000+
 		((a1>>0) & 1) *0b01000000+
-		((a2>>0) & 1) *0b00100000+
-		((a1>>0) & 1) *0b00010000+
-		((b2>>0) & 1) *0b00001000+
-		((b1>>0) & 1) *0b00000100+
-		((b2>>0) & 1) *0b00000010+
-		((b1>>0) & 1) *0b00000001;
+		((b2>>0) & 1) *0b00100000+
+		((b1>>0) & 1) *0b00010000+
+		((c2>>0) & 1) *0b00001000+
+		((c1>>0) & 1) *0b00000100+
+		((d2>>0) & 1) *0b00000010+
+		((d1>>0) & 1) *0b00000001;
 
-		colorByteDither4x4OddP2[address]=
+		dither4x4OddP2[address]=
 		((a2>>1) & 1) *0b10000000+
 		((a1>>1) & 1) *0b01000000+
-		((a2>>1) & 1) *0b00100000+
-		((a1>>1) & 1) *0b00010000+
-		((b2>>1) & 1) *0b00001000+
-		((b1>>1) & 1) *0b00000100+
-		((b2>>1) & 1) *0b00000010+
-		((b1>>1) & 1) *0b00000001;
+		((b2>>1) & 1) *0b00100000+
+		((b1>>1) & 1) *0b00010000+
+		((c2>>1) & 1) *0b00001000+
+		((c1>>1) & 1) *0b00000100+
+		((d2>>1) & 1) *0b00000010+
+		((d1>>1) & 1) *0b00000001;
 
-		colorByteDither4x4OddP3[address]=
+		dither4x4OddP3[address]=
 		((a2>>2) & 1) *0b10000000+
 		((a1>>2) & 1) *0b01000000+
-		((a2>>2) & 1) *0b00100000+
-		((a1>>2) & 1) *0b00010000+
-		((b2>>2) & 1) *0b00001000+
-		((b1>>2) & 1) *0b00000100+
-		((b2>>2) & 1) *0b00000010+
-		((b1>>2) & 1) *0b00000001;
+		((b2>>2) & 1) *0b00100000+
+		((b1>>2) & 1) *0b00010000+
+		((c2>>2) & 1) *0b00001000+
+		((c1>>2) & 1) *0b00000100+
+		((d2>>2) & 1) *0b00000010+
+		((d1>>2) & 1) *0b00000001;
 
-		colorByteDither4x4OddP4[address]=
+		dither4x4OddP4[address]=
 		((a2>>3) & 1) *0b10000000+
 		((a1>>3) & 1) *0b01000000+
-		((a2>>3) & 1) *0b00100000+
-		((a1>>3) & 1) *0b00010000+
-		((b2>>3) & 1) *0b00001000+
-		((b1>>3) & 1) *0b00000100+
-		((b2>>3) & 1) *0b00000010+
-		((b1>>3) & 1) *0b00000001;
+		((b2>>3) & 1) *0b00100000+
+		((b1>>3) & 1) *0b00010000+
+		((c2>>3) & 1) *0b00001000+
+		((c1>>3) & 1) *0b00000100+
+		((d2>>3) & 1) *0b00000010+
+		((d1>>3) & 1) *0b00000001;
 
 	}
 }
@@ -253,7 +278,7 @@ void GenerateColorBytesDither8x8()
 			a2 = a/2-1;
 		}
 
-		colorByteDither8x8EvenP1[address]=
+		dither8x8EvenP1[address]=
 		((a1>>0) & 1) *0b10000000+
 		((a2>>0) & 1) *0b01000000+
 		((a1>>0) & 1) *0b00100000+
@@ -263,7 +288,7 @@ void GenerateColorBytesDither8x8()
 		((a1>>0) & 1) *0b00000010+
 		((a2>>0) & 1) *0b00000001;
 
-		colorByteDither8x8EvenP2[address]=
+		dither8x8EvenP2[address]=
 		((a1>>1) & 1) *0b10000000+
 		((a2>>1) & 1) *0b01000000+
 		((a1>>1) & 1) *0b00100000+
@@ -273,7 +298,7 @@ void GenerateColorBytesDither8x8()
 		((a1>>1) & 1) *0b00000010+
 		((a2>>1) & 1) *0b00000001;
 
-		colorByteDither8x8EvenP3[address]=
+		dither8x8EvenP3[address]=
 		((a1>>2) & 1) *0b10000000+
 		((a2>>2) & 1) *0b01000000+
 		((a1>>2) & 1) *0b00100000+
@@ -283,7 +308,7 @@ void GenerateColorBytesDither8x8()
 		((a1>>2) & 1) *0b00000010+
 		((a2>>2) & 1) *0b00000001;
 
-		colorByteDither8x8EvenP4[address]=
+		dither8x8EvenP4[address]=
 		((a1>>3) & 1) *0b10000000+
 		((a2>>3) & 1) *0b01000000+
 		((a1>>3) & 1) *0b00100000+
@@ -293,7 +318,7 @@ void GenerateColorBytesDither8x8()
 		((a1>>3) & 1) *0b00000010+
 		((a2>>3) & 1) *0b00000001;
 
-		colorByteDither8x8OddP1[address]=
+		dither8x8OddP1[address]=
 		((a2>>0) & 1) *0b10000000+
 		((a1>>0) & 1) *0b01000000+
 		((a2>>0) & 1) *0b00100000+
@@ -303,7 +328,7 @@ void GenerateColorBytesDither8x8()
 		((a2>>0) & 1) *0b00000010+
 		((a1>>0) & 1) *0b00000001;
 
-		colorByteDither8x8OddP2[address]=
+		dither8x8OddP2[address]=
 		((a2>>1) & 1) *0b10000000+
 		((a1>>1) & 1) *0b01000000+
 		((a2>>1) & 1) *0b00100000+
@@ -313,7 +338,7 @@ void GenerateColorBytesDither8x8()
 		((a2>>1) & 1) *0b00000010+
 		((a1>>1) & 1) *0b00000001;
 
-		colorByteDither8x8OddP3[address]=
+		dither8x8OddP3[address]=
 		((a2>>2) & 1) *0b10000000+
 		((a1>>2) & 1) *0b01000000+
 		((a2>>2) & 1) *0b00100000+
@@ -323,7 +348,7 @@ void GenerateColorBytesDither8x8()
 		((a2>>2) & 1) *0b00000010+
 		((a1>>2) & 1) *0b00000001;
 
-		colorByteDither8x8OddP4[address]=
+		dither8x8OddP4[address]=
 		((a2>>3) & 1) *0b10000000+
 		((a1>>3) & 1) *0b01000000+
 		((a2>>3) & 1) *0b00100000+
@@ -335,7 +360,7 @@ void GenerateColorBytesDither8x8()
 
 	}
 }
-
+/*
 void GenerateColorBytes8x8()
 {
 	UWORD address;
@@ -403,3 +428,4 @@ void GenerateColorBytes8x8()
 
 	}
 }
+*/

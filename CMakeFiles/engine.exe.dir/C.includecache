@@ -7,30 +7,26 @@
 #IncludeRegexTransform: 
 
 /work/src/bitmap_filters.c
-engine.h
-/work/src/engine.h
+ray_casting.h
+/work/src/ray_casting.h
 
 /work/src/dithering.c
+ray_casting.h
+/work/src/ray_casting.h
 
 /work/src/draw_maps.c
 
+/work/src/draw_screen.c
+ray_casting.h
+/work/src/ray_casting.h
+
 /work/src/draw_ships.c
-engine.h
-/work/src/engine.h
-
-/work/src/engine.c
-engine.h
-/work/src/engine.h
-
-/work/src/engine.h
-stdlib.h
--
-ace/managers/viewport/simplebuffer.h
--
+ray_casting.h
+/work/src/ray_casting.h
 
 /work/src/file_read.c
-engine.h
-/work/src/engine.h
+ray_casting.h
+/work/src/ray_casting.h
 stdio.h
 -
 stdlib.h
@@ -41,10 +37,12 @@ ace/utils/file.h
 /work/src/main.c
 ace/generic/main.h
 -
-engine.h
-/work/src/engine.h
-engine.c
-/work/src/engine.c
+ray_casting.h
+/work/src/ray_casting.h
+ray_casting.c
+/work/src/ray_casting.c
+draw_screen.c
+/work/src/draw_screen.c
 mipmaps.c
 /work/src/mipmaps.c
 file_read.c
@@ -69,8 +67,18 @@ ace/utils/file.h
 -
 
 /work/src/mipmaps.c
-engine.h
-/work/src/engine.h
+ray_casting.h
+/work/src/ray_casting.h
+
+/work/src/ray_casting.c
+ray_casting.h
+/work/src/ray_casting.h
+
+/work/src/ray_casting.h
+stdlib.h
+-
+ace/managers/viewport/simplebuffer.h
+-
 
 deps/ace/include/ace/generic/main.h
 stdlib.h

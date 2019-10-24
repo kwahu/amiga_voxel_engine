@@ -209,32 +209,113 @@ src/bitmap_filters.c.s:
 	$(MAKE) -f CMakeFiles/engine.exe.dir/build.make CMakeFiles/engine.exe.dir/src/bitmap_filters.c.s
 .PHONY : src/bitmap_filters.c.s
 
-src/engine.obj: src/engine.c.obj
+src/dithering.obj: src/dithering.c.obj
 
-.PHONY : src/engine.obj
+.PHONY : src/dithering.obj
 
 # target to build an object file
-src/engine.c.obj:
-	$(MAKE) -f CMakeFiles/engine.exe.dir/build.make CMakeFiles/engine.exe.dir/src/engine.c.obj
-.PHONY : src/engine.c.obj
+src/dithering.c.obj:
+	$(MAKE) -f CMakeFiles/engine.exe.dir/build.make CMakeFiles/engine.exe.dir/src/dithering.c.obj
+.PHONY : src/dithering.c.obj
 
-src/engine.i: src/engine.c.i
+src/dithering.i: src/dithering.c.i
 
-.PHONY : src/engine.i
+.PHONY : src/dithering.i
 
 # target to preprocess a source file
-src/engine.c.i:
-	$(MAKE) -f CMakeFiles/engine.exe.dir/build.make CMakeFiles/engine.exe.dir/src/engine.c.i
-.PHONY : src/engine.c.i
+src/dithering.c.i:
+	$(MAKE) -f CMakeFiles/engine.exe.dir/build.make CMakeFiles/engine.exe.dir/src/dithering.c.i
+.PHONY : src/dithering.c.i
 
-src/engine.s: src/engine.c.s
+src/dithering.s: src/dithering.c.s
 
-.PHONY : src/engine.s
+.PHONY : src/dithering.s
 
 # target to generate assembly for a file
-src/engine.c.s:
-	$(MAKE) -f CMakeFiles/engine.exe.dir/build.make CMakeFiles/engine.exe.dir/src/engine.c.s
-.PHONY : src/engine.c.s
+src/dithering.c.s:
+	$(MAKE) -f CMakeFiles/engine.exe.dir/build.make CMakeFiles/engine.exe.dir/src/dithering.c.s
+.PHONY : src/dithering.c.s
+
+src/draw_maps.obj: src/draw_maps.c.obj
+
+.PHONY : src/draw_maps.obj
+
+# target to build an object file
+src/draw_maps.c.obj:
+	$(MAKE) -f CMakeFiles/engine.exe.dir/build.make CMakeFiles/engine.exe.dir/src/draw_maps.c.obj
+.PHONY : src/draw_maps.c.obj
+
+src/draw_maps.i: src/draw_maps.c.i
+
+.PHONY : src/draw_maps.i
+
+# target to preprocess a source file
+src/draw_maps.c.i:
+	$(MAKE) -f CMakeFiles/engine.exe.dir/build.make CMakeFiles/engine.exe.dir/src/draw_maps.c.i
+.PHONY : src/draw_maps.c.i
+
+src/draw_maps.s: src/draw_maps.c.s
+
+.PHONY : src/draw_maps.s
+
+# target to generate assembly for a file
+src/draw_maps.c.s:
+	$(MAKE) -f CMakeFiles/engine.exe.dir/build.make CMakeFiles/engine.exe.dir/src/draw_maps.c.s
+.PHONY : src/draw_maps.c.s
+
+src/draw_screen.obj: src/draw_screen.c.obj
+
+.PHONY : src/draw_screen.obj
+
+# target to build an object file
+src/draw_screen.c.obj:
+	$(MAKE) -f CMakeFiles/engine.exe.dir/build.make CMakeFiles/engine.exe.dir/src/draw_screen.c.obj
+.PHONY : src/draw_screen.c.obj
+
+src/draw_screen.i: src/draw_screen.c.i
+
+.PHONY : src/draw_screen.i
+
+# target to preprocess a source file
+src/draw_screen.c.i:
+	$(MAKE) -f CMakeFiles/engine.exe.dir/build.make CMakeFiles/engine.exe.dir/src/draw_screen.c.i
+.PHONY : src/draw_screen.c.i
+
+src/draw_screen.s: src/draw_screen.c.s
+
+.PHONY : src/draw_screen.s
+
+# target to generate assembly for a file
+src/draw_screen.c.s:
+	$(MAKE) -f CMakeFiles/engine.exe.dir/build.make CMakeFiles/engine.exe.dir/src/draw_screen.c.s
+.PHONY : src/draw_screen.c.s
+
+src/draw_ships.obj: src/draw_ships.c.obj
+
+.PHONY : src/draw_ships.obj
+
+# target to build an object file
+src/draw_ships.c.obj:
+	$(MAKE) -f CMakeFiles/engine.exe.dir/build.make CMakeFiles/engine.exe.dir/src/draw_ships.c.obj
+.PHONY : src/draw_ships.c.obj
+
+src/draw_ships.i: src/draw_ships.c.i
+
+.PHONY : src/draw_ships.i
+
+# target to preprocess a source file
+src/draw_ships.c.i:
+	$(MAKE) -f CMakeFiles/engine.exe.dir/build.make CMakeFiles/engine.exe.dir/src/draw_ships.c.i
+.PHONY : src/draw_ships.c.i
+
+src/draw_ships.s: src/draw_ships.c.s
+
+.PHONY : src/draw_ships.s
+
+# target to generate assembly for a file
+src/draw_ships.c.s:
+	$(MAKE) -f CMakeFiles/engine.exe.dir/build.make CMakeFiles/engine.exe.dir/src/draw_ships.c.s
+.PHONY : src/draw_ships.c.s
 
 src/file_read.obj: src/file_read.c.obj
 
@@ -317,6 +398,33 @@ src/mipmaps.c.s:
 	$(MAKE) -f CMakeFiles/engine.exe.dir/build.make CMakeFiles/engine.exe.dir/src/mipmaps.c.s
 .PHONY : src/mipmaps.c.s
 
+src/ray_casting.obj: src/ray_casting.c.obj
+
+.PHONY : src/ray_casting.obj
+
+# target to build an object file
+src/ray_casting.c.obj:
+	$(MAKE) -f CMakeFiles/engine.exe.dir/build.make CMakeFiles/engine.exe.dir/src/ray_casting.c.obj
+.PHONY : src/ray_casting.c.obj
+
+src/ray_casting.i: src/ray_casting.c.i
+
+.PHONY : src/ray_casting.i
+
+# target to preprocess a source file
+src/ray_casting.c.i:
+	$(MAKE) -f CMakeFiles/engine.exe.dir/build.make CMakeFiles/engine.exe.dir/src/ray_casting.c.i
+.PHONY : src/ray_casting.c.i
+
+src/ray_casting.s: src/ray_casting.c.s
+
+.PHONY : src/ray_casting.s
+
+# target to generate assembly for a file
+src/ray_casting.c.s:
+	$(MAKE) -f CMakeFiles/engine.exe.dir/build.make CMakeFiles/engine.exe.dir/src/ray_casting.c.s
+.PHONY : src/ray_casting.c.s
+
 # Help Target
 help:
 	@echo "The following are some of the valid targets for this Makefile:"
@@ -334,9 +442,18 @@ help:
 	@echo "... src/bitmap_filters.obj"
 	@echo "... src/bitmap_filters.i"
 	@echo "... src/bitmap_filters.s"
-	@echo "... src/engine.obj"
-	@echo "... src/engine.i"
-	@echo "... src/engine.s"
+	@echo "... src/dithering.obj"
+	@echo "... src/dithering.i"
+	@echo "... src/dithering.s"
+	@echo "... src/draw_maps.obj"
+	@echo "... src/draw_maps.i"
+	@echo "... src/draw_maps.s"
+	@echo "... src/draw_screen.obj"
+	@echo "... src/draw_screen.i"
+	@echo "... src/draw_screen.s"
+	@echo "... src/draw_ships.obj"
+	@echo "... src/draw_ships.i"
+	@echo "... src/draw_ships.s"
 	@echo "... src/file_read.obj"
 	@echo "... src/file_read.i"
 	@echo "... src/file_read.s"
@@ -346,6 +463,9 @@ help:
 	@echo "... src/mipmaps.obj"
 	@echo "... src/mipmaps.i"
 	@echo "... src/mipmaps.s"
+	@echo "... src/ray_casting.obj"
+	@echo "... src/ray_casting.i"
+	@echo "... src/ray_casting.s"
 .PHONY : help
 
 

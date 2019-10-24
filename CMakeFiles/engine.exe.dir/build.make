@@ -70,22 +70,61 @@ CMakeFiles/engine.exe.dir/src/bitmap_filters.c.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling C source to assembly CMakeFiles/engine.exe.dir/src/bitmap_filters.c.s"
 	/opt/m68k-amigaos/bin/m68k-amigaos-gcc --sysroot=/opt/m68k-amigaos $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -S /work/src/bitmap_filters.c -o CMakeFiles/engine.exe.dir/src/bitmap_filters.c.s
 
-CMakeFiles/engine.exe.dir/src/engine.c.obj: CMakeFiles/engine.exe.dir/flags.make
-CMakeFiles/engine.exe.dir/src/engine.c.obj: src/engine.c
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/work/CMakeFiles --progress-num=$(CMAKE_PROGRESS_2) "Building C object CMakeFiles/engine.exe.dir/src/engine.c.obj"
-	/opt/m68k-amigaos/bin/m68k-amigaos-gcc --sysroot=/opt/m68k-amigaos $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -o CMakeFiles/engine.exe.dir/src/engine.c.obj   -c /work/src/engine.c
+CMakeFiles/engine.exe.dir/src/dithering.c.obj: CMakeFiles/engine.exe.dir/flags.make
+CMakeFiles/engine.exe.dir/src/dithering.c.obj: src/dithering.c
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/work/CMakeFiles --progress-num=$(CMAKE_PROGRESS_2) "Building C object CMakeFiles/engine.exe.dir/src/dithering.c.obj"
+	/opt/m68k-amigaos/bin/m68k-amigaos-gcc --sysroot=/opt/m68k-amigaos $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -o CMakeFiles/engine.exe.dir/src/dithering.c.obj   -c /work/src/dithering.c
 
-CMakeFiles/engine.exe.dir/src/engine.c.i: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing C source to CMakeFiles/engine.exe.dir/src/engine.c.i"
-	/opt/m68k-amigaos/bin/m68k-amigaos-gcc --sysroot=/opt/m68k-amigaos $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -E /work/src/engine.c > CMakeFiles/engine.exe.dir/src/engine.c.i
+CMakeFiles/engine.exe.dir/src/dithering.c.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing C source to CMakeFiles/engine.exe.dir/src/dithering.c.i"
+	/opt/m68k-amigaos/bin/m68k-amigaos-gcc --sysroot=/opt/m68k-amigaos $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -E /work/src/dithering.c > CMakeFiles/engine.exe.dir/src/dithering.c.i
 
-CMakeFiles/engine.exe.dir/src/engine.c.s: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling C source to assembly CMakeFiles/engine.exe.dir/src/engine.c.s"
-	/opt/m68k-amigaos/bin/m68k-amigaos-gcc --sysroot=/opt/m68k-amigaos $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -S /work/src/engine.c -o CMakeFiles/engine.exe.dir/src/engine.c.s
+CMakeFiles/engine.exe.dir/src/dithering.c.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling C source to assembly CMakeFiles/engine.exe.dir/src/dithering.c.s"
+	/opt/m68k-amigaos/bin/m68k-amigaos-gcc --sysroot=/opt/m68k-amigaos $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -S /work/src/dithering.c -o CMakeFiles/engine.exe.dir/src/dithering.c.s
+
+CMakeFiles/engine.exe.dir/src/draw_maps.c.obj: CMakeFiles/engine.exe.dir/flags.make
+CMakeFiles/engine.exe.dir/src/draw_maps.c.obj: src/draw_maps.c
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/work/CMakeFiles --progress-num=$(CMAKE_PROGRESS_3) "Building C object CMakeFiles/engine.exe.dir/src/draw_maps.c.obj"
+	/opt/m68k-amigaos/bin/m68k-amigaos-gcc --sysroot=/opt/m68k-amigaos $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -o CMakeFiles/engine.exe.dir/src/draw_maps.c.obj   -c /work/src/draw_maps.c
+
+CMakeFiles/engine.exe.dir/src/draw_maps.c.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing C source to CMakeFiles/engine.exe.dir/src/draw_maps.c.i"
+	/opt/m68k-amigaos/bin/m68k-amigaos-gcc --sysroot=/opt/m68k-amigaos $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -E /work/src/draw_maps.c > CMakeFiles/engine.exe.dir/src/draw_maps.c.i
+
+CMakeFiles/engine.exe.dir/src/draw_maps.c.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling C source to assembly CMakeFiles/engine.exe.dir/src/draw_maps.c.s"
+	/opt/m68k-amigaos/bin/m68k-amigaos-gcc --sysroot=/opt/m68k-amigaos $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -S /work/src/draw_maps.c -o CMakeFiles/engine.exe.dir/src/draw_maps.c.s
+
+CMakeFiles/engine.exe.dir/src/draw_screen.c.obj: CMakeFiles/engine.exe.dir/flags.make
+CMakeFiles/engine.exe.dir/src/draw_screen.c.obj: src/draw_screen.c
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/work/CMakeFiles --progress-num=$(CMAKE_PROGRESS_4) "Building C object CMakeFiles/engine.exe.dir/src/draw_screen.c.obj"
+	/opt/m68k-amigaos/bin/m68k-amigaos-gcc --sysroot=/opt/m68k-amigaos $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -o CMakeFiles/engine.exe.dir/src/draw_screen.c.obj   -c /work/src/draw_screen.c
+
+CMakeFiles/engine.exe.dir/src/draw_screen.c.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing C source to CMakeFiles/engine.exe.dir/src/draw_screen.c.i"
+	/opt/m68k-amigaos/bin/m68k-amigaos-gcc --sysroot=/opt/m68k-amigaos $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -E /work/src/draw_screen.c > CMakeFiles/engine.exe.dir/src/draw_screen.c.i
+
+CMakeFiles/engine.exe.dir/src/draw_screen.c.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling C source to assembly CMakeFiles/engine.exe.dir/src/draw_screen.c.s"
+	/opt/m68k-amigaos/bin/m68k-amigaos-gcc --sysroot=/opt/m68k-amigaos $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -S /work/src/draw_screen.c -o CMakeFiles/engine.exe.dir/src/draw_screen.c.s
+
+CMakeFiles/engine.exe.dir/src/draw_ships.c.obj: CMakeFiles/engine.exe.dir/flags.make
+CMakeFiles/engine.exe.dir/src/draw_ships.c.obj: src/draw_ships.c
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/work/CMakeFiles --progress-num=$(CMAKE_PROGRESS_5) "Building C object CMakeFiles/engine.exe.dir/src/draw_ships.c.obj"
+	/opt/m68k-amigaos/bin/m68k-amigaos-gcc --sysroot=/opt/m68k-amigaos $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -o CMakeFiles/engine.exe.dir/src/draw_ships.c.obj   -c /work/src/draw_ships.c
+
+CMakeFiles/engine.exe.dir/src/draw_ships.c.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing C source to CMakeFiles/engine.exe.dir/src/draw_ships.c.i"
+	/opt/m68k-amigaos/bin/m68k-amigaos-gcc --sysroot=/opt/m68k-amigaos $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -E /work/src/draw_ships.c > CMakeFiles/engine.exe.dir/src/draw_ships.c.i
+
+CMakeFiles/engine.exe.dir/src/draw_ships.c.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling C source to assembly CMakeFiles/engine.exe.dir/src/draw_ships.c.s"
+	/opt/m68k-amigaos/bin/m68k-amigaos-gcc --sysroot=/opt/m68k-amigaos $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -S /work/src/draw_ships.c -o CMakeFiles/engine.exe.dir/src/draw_ships.c.s
 
 CMakeFiles/engine.exe.dir/src/file_read.c.obj: CMakeFiles/engine.exe.dir/flags.make
 CMakeFiles/engine.exe.dir/src/file_read.c.obj: src/file_read.c
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/work/CMakeFiles --progress-num=$(CMAKE_PROGRESS_3) "Building C object CMakeFiles/engine.exe.dir/src/file_read.c.obj"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/work/CMakeFiles --progress-num=$(CMAKE_PROGRESS_6) "Building C object CMakeFiles/engine.exe.dir/src/file_read.c.obj"
 	/opt/m68k-amigaos/bin/m68k-amigaos-gcc --sysroot=/opt/m68k-amigaos $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -o CMakeFiles/engine.exe.dir/src/file_read.c.obj   -c /work/src/file_read.c
 
 CMakeFiles/engine.exe.dir/src/file_read.c.i: cmake_force
@@ -98,7 +137,7 @@ CMakeFiles/engine.exe.dir/src/file_read.c.s: cmake_force
 
 CMakeFiles/engine.exe.dir/src/main.c.obj: CMakeFiles/engine.exe.dir/flags.make
 CMakeFiles/engine.exe.dir/src/main.c.obj: src/main.c
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/work/CMakeFiles --progress-num=$(CMAKE_PROGRESS_4) "Building C object CMakeFiles/engine.exe.dir/src/main.c.obj"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/work/CMakeFiles --progress-num=$(CMAKE_PROGRESS_7) "Building C object CMakeFiles/engine.exe.dir/src/main.c.obj"
 	/opt/m68k-amigaos/bin/m68k-amigaos-gcc --sysroot=/opt/m68k-amigaos $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -o CMakeFiles/engine.exe.dir/src/main.c.obj   -c /work/src/main.c
 
 CMakeFiles/engine.exe.dir/src/main.c.i: cmake_force
@@ -111,7 +150,7 @@ CMakeFiles/engine.exe.dir/src/main.c.s: cmake_force
 
 CMakeFiles/engine.exe.dir/src/mipmaps.c.obj: CMakeFiles/engine.exe.dir/flags.make
 CMakeFiles/engine.exe.dir/src/mipmaps.c.obj: src/mipmaps.c
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/work/CMakeFiles --progress-num=$(CMAKE_PROGRESS_5) "Building C object CMakeFiles/engine.exe.dir/src/mipmaps.c.obj"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/work/CMakeFiles --progress-num=$(CMAKE_PROGRESS_8) "Building C object CMakeFiles/engine.exe.dir/src/mipmaps.c.obj"
 	/opt/m68k-amigaos/bin/m68k-amigaos-gcc --sysroot=/opt/m68k-amigaos $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -o CMakeFiles/engine.exe.dir/src/mipmaps.c.obj   -c /work/src/mipmaps.c
 
 CMakeFiles/engine.exe.dir/src/mipmaps.c.i: cmake_force
@@ -122,26 +161,47 @@ CMakeFiles/engine.exe.dir/src/mipmaps.c.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling C source to assembly CMakeFiles/engine.exe.dir/src/mipmaps.c.s"
 	/opt/m68k-amigaos/bin/m68k-amigaos-gcc --sysroot=/opt/m68k-amigaos $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -S /work/src/mipmaps.c -o CMakeFiles/engine.exe.dir/src/mipmaps.c.s
 
+CMakeFiles/engine.exe.dir/src/ray_casting.c.obj: CMakeFiles/engine.exe.dir/flags.make
+CMakeFiles/engine.exe.dir/src/ray_casting.c.obj: src/ray_casting.c
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/work/CMakeFiles --progress-num=$(CMAKE_PROGRESS_9) "Building C object CMakeFiles/engine.exe.dir/src/ray_casting.c.obj"
+	/opt/m68k-amigaos/bin/m68k-amigaos-gcc --sysroot=/opt/m68k-amigaos $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -o CMakeFiles/engine.exe.dir/src/ray_casting.c.obj   -c /work/src/ray_casting.c
+
+CMakeFiles/engine.exe.dir/src/ray_casting.c.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing C source to CMakeFiles/engine.exe.dir/src/ray_casting.c.i"
+	/opt/m68k-amigaos/bin/m68k-amigaos-gcc --sysroot=/opt/m68k-amigaos $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -E /work/src/ray_casting.c > CMakeFiles/engine.exe.dir/src/ray_casting.c.i
+
+CMakeFiles/engine.exe.dir/src/ray_casting.c.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling C source to assembly CMakeFiles/engine.exe.dir/src/ray_casting.c.s"
+	/opt/m68k-amigaos/bin/m68k-amigaos-gcc --sysroot=/opt/m68k-amigaos $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -S /work/src/ray_casting.c -o CMakeFiles/engine.exe.dir/src/ray_casting.c.s
+
 # Object files for target engine.exe
 engine_exe_OBJECTS = \
 "CMakeFiles/engine.exe.dir/src/bitmap_filters.c.obj" \
-"CMakeFiles/engine.exe.dir/src/engine.c.obj" \
+"CMakeFiles/engine.exe.dir/src/dithering.c.obj" \
+"CMakeFiles/engine.exe.dir/src/draw_maps.c.obj" \
+"CMakeFiles/engine.exe.dir/src/draw_screen.c.obj" \
+"CMakeFiles/engine.exe.dir/src/draw_ships.c.obj" \
 "CMakeFiles/engine.exe.dir/src/file_read.c.obj" \
 "CMakeFiles/engine.exe.dir/src/main.c.obj" \
-"CMakeFiles/engine.exe.dir/src/mipmaps.c.obj"
+"CMakeFiles/engine.exe.dir/src/mipmaps.c.obj" \
+"CMakeFiles/engine.exe.dir/src/ray_casting.c.obj"
 
 # External object files for target engine.exe
 engine_exe_EXTERNAL_OBJECTS =
 
 engine.exe: CMakeFiles/engine.exe.dir/src/bitmap_filters.c.obj
-engine.exe: CMakeFiles/engine.exe.dir/src/engine.c.obj
+engine.exe: CMakeFiles/engine.exe.dir/src/dithering.c.obj
+engine.exe: CMakeFiles/engine.exe.dir/src/draw_maps.c.obj
+engine.exe: CMakeFiles/engine.exe.dir/src/draw_screen.c.obj
+engine.exe: CMakeFiles/engine.exe.dir/src/draw_ships.c.obj
 engine.exe: CMakeFiles/engine.exe.dir/src/file_read.c.obj
 engine.exe: CMakeFiles/engine.exe.dir/src/main.c.obj
 engine.exe: CMakeFiles/engine.exe.dir/src/mipmaps.c.obj
+engine.exe: CMakeFiles/engine.exe.dir/src/ray_casting.c.obj
 engine.exe: CMakeFiles/engine.exe.dir/build.make
 engine.exe: ace/libace.a
 engine.exe: CMakeFiles/engine.exe.dir/link.txt
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --bold --progress-dir=/work/CMakeFiles --progress-num=$(CMAKE_PROGRESS_6) "Linking C executable engine.exe"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --bold --progress-dir=/work/CMakeFiles --progress-num=$(CMAKE_PROGRESS_10) "Linking C executable engine.exe"
 	$(CMAKE_COMMAND) -E cmake_link_script CMakeFiles/engine.exe.dir/link.txt --verbose=$(VERBOSE)
 
 # Rule to build all files generated by this target.
