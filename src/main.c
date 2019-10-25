@@ -62,16 +62,16 @@ void engineGsCreate(void)
 	);
 
 
-	p1x = 40;
-	p1y = 0;
-	p1h = 30;
+	p1xf = 40*15;
+	p1yf = 0;
+	p1hf = 30*15;
 
 	p2x = 0;
 	p2y = 0;
 	p2h = 10;
 
 
-	debugValue = 1;
+	debugValue = 0;
 
 	ReadHeight("height.raw");
 	//	ReadPalette("palette.raw");
@@ -208,25 +208,26 @@ DrawPlayerScreen(2,0,1);
 //ProcessRayCasts(1,1,0);
 if(debugValue == 1)
 {
-	ProcessRayCasts(screen8x8a,rayCastXEven, rayCastYEven,p1x,p1y,p1h,	0,  4, 4, 0, 8);
-	ProcessRayCasts(screen8x8b,rayCastXEven, rayCastYEven,p1x,p1y,p1h,	32, 4, 4, 0, 8);
-	ProcessRayCasts(screen8x8c,rayCastXEven, rayCastYEven,p1x,p1y,p1h,	64, 4, 4, 0, 8);
-	ProcessRayCasts(screen8x8d,rayCastXEven, rayCastYEven,p1x,p1y,p1h,	96, 4, 4, 0, 8);
-	ProcessRayCasts(screen8x8e,rayCastXEven, rayCastYEven,p1x,p1y,p1h,	128, 4, 4, 0, 8);
 
-	DrawPlayerScreen8x8(screen8x8a,1,0,0,4);
-	DrawPlayerScreen8x8(screen8x8b,1,0,4,4);
-	DrawPlayerScreen8x8(screen8x8c,1,0,8,4);
-	DrawPlayerScreen8x8(screen8x8d,1,0,12,4);
-	DrawPlayerScreen8x8(screen8x8e,1,0,16,4);
+	ProcessRayCastsSlow(screen8x8a,rayCastXEven, rayCastYEven,p1x,p1y,p1h,	0,  4, 4, 0, 8);
+	ProcessRayCastsSlow(screen8x8b,rayCastXEven, rayCastYEven,p1x,p1y,p1h,	32, 4, 4, 0, 8);
+	ProcessRayCastsSlow(screen8x8c,rayCastXEven, rayCastYEven,p1x,p1y,p1h,	64, 4, 4, 0, 8);
+	ProcessRayCastsSlow(screen8x8d,rayCastXEven, rayCastYEven,p1x,p1y,p1h,	96, 4, 4, 0, 8);
+	ProcessRayCastsSlow(screen8x8e,rayCastXEven, rayCastYEven,p1x,p1y,p1h,	128, 4, 4, 0, 8);
+
+	DrawPlayerScreen8x8Slow(screen8x8a,1,0,0,4);
+	DrawPlayerScreen8x8Slow(screen8x8b,1,0,4,4);
+	DrawPlayerScreen8x8Slow(screen8x8c,1,0,8,4);
+	DrawPlayerScreen8x8Slow(screen8x8d,1,0,12,4);
+	DrawPlayerScreen8x8Slow(screen8x8e,1,0,16,4);
 }
 else if(debugValue == 2)
 {
-	ProcessRayCasts(screen8x8a,rayCastXEven, rayCastYEven,p1x,p1y,p1h,	0,  4, 4, 0, 8);
-	ProcessRayCasts(screen8x8b,rayCastXEven, rayCastYEven,p1x,p1y,p1h,	32, 4, 4, 0, 8);
-	ProcessRayCasts(screen4x4c,rayCastXEven, rayCastYEven,p1x,p1y,p1h,	64, 2, 2, 0, 16);
-	ProcessRayCasts(screen8x8d,rayCastXEven, rayCastYEven,p1x,p1y,p1h,	96, 4, 4, 0, 8);
-	ProcessRayCasts(screen8x8e,rayCastXEven, rayCastYEven,p1x,p1y,p1h,	128, 4, 4, 0, 8);
+	ProcessRayCastsWithMipMaps(screen8x8a,rayCastXEven, rayCastYEven,p1x,p1y,p1h,	0,  4, 4, 0, 8);
+	ProcessRayCastsWithMipMaps(screen8x8b,rayCastXEven, rayCastYEven,p1x,p1y,p1h,	32, 4, 4, 0, 8);
+	ProcessRayCastsWithMipMaps(screen4x4c,rayCastXEven, rayCastYEven,p1x,p1y,p1h,	64, 2, 2, 0, 16);
+	ProcessRayCastsWithMipMaps(screen8x8d,rayCastXEven, rayCastYEven,p1x,p1y,p1h,	96, 4, 4, 0, 8);
+	ProcessRayCastsWithMipMaps(screen8x8e,rayCastXEven, rayCastYEven,p1x,p1y,p1h,	128, 4, 4, 0, 8);
 
 	DrawPlayerScreen8x8(screen8x8a,1,0,0,4);
 	DrawPlayerScreen8x8(screen8x8b,1,0,4,4);
@@ -236,11 +237,11 @@ else if(debugValue == 2)
 }
 else if(debugValue == 3)
 {
-	ProcessRayCasts(screen8x8a,rayCastXEven, rayCastYEven,p1x,p1y,p1h,	0,  4, 4, 0, 8);
-	ProcessRayCasts(screen4x4b,rayCastXEven, rayCastYEven,p1x,p1y,p1h,	32, 2, 2, 0, 16);
-	ProcessRayCasts(screen4x4c,rayCastXEven, rayCastYEven,p1x,p1y,p1h,	64, 2, 2, 0, 16);
-	ProcessRayCasts(screen4x4d,rayCastXEven, rayCastYEven,p1x,p1y,p1h,	96, 2, 2, 0, 16);
-	ProcessRayCasts(screen8x8e,rayCastXEven, rayCastYEven,p1x,p1y,p1h,	128, 4, 4, 0, 8);
+	ProcessRayCastsWithMipMaps(screen8x8a,rayCastXEven, rayCastYEven,p1x,p1y,p1h,	0,  4, 4, 0, 8);
+	ProcessRayCastsWithMipMaps(screen4x4b,rayCastXEven, rayCastYEven,p1x,p1y,p1h,	32, 2, 2, 0, 16);
+	ProcessRayCastsWithMipMaps(screen4x4c,rayCastXEven, rayCastYEven,p1x,p1y,p1h,	64, 2, 2, 0, 16);
+	ProcessRayCastsWithMipMaps(screen4x4d,rayCastXEven, rayCastYEven,p1x,p1y,p1h,	96, 2, 2, 0, 16);
+	ProcessRayCastsWithMipMaps(screen8x8e,rayCastXEven, rayCastYEven,p1x,p1y,p1h,	128, 4, 4, 0, 8);
 
 	DrawPlayerScreen8x8(screen8x8a,1,0,0,4);
 	DrawPlayerScreen4x4(screen4x4b,1,0,4,4);
@@ -250,11 +251,11 @@ else if(debugValue == 3)
 }
 else if(debugValue == 4)
 {
-	ProcessRayCasts(screen8x8a,rayCastXEven, rayCastYEven,p1x,p1y,p1h,	0,  4, 4, 0, 8);
-	ProcessRayCasts(screen4x4b,rayCastXEven, rayCastYEven,p1x,p1y,p1h,	32, 2, 2, 0, 16);
-	ProcessRayCasts(screen3x2c,rayCastXOdd, rayCastYOdd,p1x,p1y,p1h,		48, 1, 1, 0, 24);
-	ProcessRayCasts(screen4x4d,rayCastXEven, rayCastYEven,p1x,p1y,p1h,	96, 2, 2, 0, 16);
-	ProcessRayCasts(screen8x8e,rayCastXEven, rayCastYEven,p1x,p1y,p1h,	128, 4, 4, 0, 8);
+	ProcessRayCastsWithMipMaps(screen8x8a,rayCastXEven, rayCastYEven,p1x,p1y,p1h,	0,  4, 4, 0, 8);
+	ProcessRayCastsWithMipMaps(screen4x4b,rayCastXEven, rayCastYEven,p1x,p1y,p1h,	32, 2, 2, 0, 16);
+	ProcessRayCastsWithMipMaps(screen3x2c,rayCastXOdd, rayCastYOdd,p1x,p1y,p1h,		48, 1, 1, 0, 24);
+	ProcessRayCastsWithMipMaps(screen4x4d,rayCastXEven, rayCastYEven,p1x,p1y,p1h,	96, 2, 2, 0, 16);
+	ProcessRayCastsWithMipMaps(screen8x8e,rayCastXEven, rayCastYEven,p1x,p1y,p1h,	128, 4, 4, 0, 8);
 
 	DrawPlayerScreen8x8(screen8x8a,1,0,0,4);
 	DrawPlayerScreen4x4(screen4x4b,1,0,4,4);
@@ -264,11 +265,11 @@ else if(debugValue == 4)
 }
 else if(debugValue == 5)
 {
-	ProcessRayCasts(screen4x4a,rayCastXEven, rayCastYEven,p1x,p1y,p1h,	0,  2, 2, 0, 16);
-	ProcessRayCasts(screen4x4b,rayCastXEven, rayCastYEven,p1x,p1y,p1h,	32, 2, 2, 0, 16);
-	ProcessRayCasts(screen3x2c,rayCastXOdd, rayCastYOdd,p1x,p1y,p1h,		48, 1, 1, 0, 24);
-	ProcessRayCasts(screen4x4d,rayCastXEven, rayCastYEven,p1x,p1y,p1h,	96, 2, 2, 0, 16);
-	ProcessRayCasts(screen4x4e,rayCastXEven, rayCastYEven,p1x,p1y,p1h,	128, 2, 2, 0,16);
+	ProcessRayCastsWithMipMaps(screen4x4a,rayCastXEven, rayCastYEven,p1x,p1y,p1h,	0,  2, 2, 0, 16);
+	ProcessRayCastsWithMipMaps(screen4x4b,rayCastXEven, rayCastYEven,p1x,p1y,p1h,	32, 2, 2, 0, 16);
+	ProcessRayCastsWithMipMaps(screen3x2c,rayCastXOdd, rayCastYOdd,p1x,p1y,p1h,		48, 1, 1, 0, 24);
+	ProcessRayCastsWithMipMaps(screen4x4d,rayCastXEven, rayCastYEven,p1x,p1y,p1h,	96, 2, 2, 0, 16);
+	ProcessRayCastsWithMipMaps(screen4x4e,rayCastXEven, rayCastYEven,p1x,p1y,p1h,	128, 2, 2, 0,16);
 
 	DrawPlayerScreen4x4(screen4x4a,1,0,0,4);
 	DrawPlayerScreen4x4(screen4x4b,1,0,4,4);
@@ -278,11 +279,11 @@ else if(debugValue == 5)
 }
 else if(debugValue == 6)
 {
-	ProcessRayCasts(screen4x4a,rayCastXEven, rayCastYEven,p1x,p1y,p1h,	0,  2, 2, 0, 16);
-	ProcessRayCasts(screen3x2b,rayCastXOdd, rayCastYOdd,p1x,p1y,p1h,	24, 1, 1, 0, 24);
-	ProcessRayCasts(screen3x2c,rayCastXOdd, rayCastYOdd,p1x,p1y,p1h,	48, 1, 1, 0, 24);
-	ProcessRayCasts(screen3x2d,rayCastXOdd, rayCastYOdd,p1x,p1y,p1h,	72, 1, 1, 0, 24);
-	ProcessRayCasts(screen4x4e,rayCastXEven, rayCastYEven,p1x,p1y,p1h,	128, 2, 2, 0,16);
+	ProcessRayCastsWithMipMaps(screen4x4a,rayCastXEven, rayCastYEven,p1x,p1y,p1h,	0,  2, 2, 0, 16);
+	ProcessRayCastsWithMipMaps(screen3x2b,rayCastXOdd, rayCastYOdd,p1x,p1y,p1h,	24, 1, 1, 0, 24);
+	ProcessRayCastsWithMipMaps(screen3x2c,rayCastXOdd, rayCastYOdd,p1x,p1y,p1h,	48, 1, 1, 0, 24);
+	ProcessRayCastsWithMipMaps(screen3x2d,rayCastXOdd, rayCastYOdd,p1x,p1y,p1h,	72, 1, 1, 0, 24);
+	ProcessRayCastsWithMipMaps(screen4x4e,rayCastXEven, rayCastYEven,p1x,p1y,p1h,	128, 2, 2, 0,16);
 
 	DrawPlayerScreen4x4(screen4x4a,1,0,0,4);
 	DrawPlayerScreen3x2(screen3x2b,1,0,4,4);
@@ -292,11 +293,11 @@ else if(debugValue == 6)
 }
 else if(debugValue == 7)
 {
-	ProcessRayCasts(screen3x2a,rayCastXOdd, rayCastXOdd,p1x,p1y,p1h,	0,  1, 1, 0, 24);
-	ProcessRayCasts(screen3x2b,rayCastXOdd, rayCastYOdd,p1x,p1y,p1h,	24, 1, 1, 0, 24);
-	ProcessRayCasts(screen3x2c,rayCastXOdd, rayCastYOdd,p1x,p1y,p1h,	48, 1, 1, 0, 24);
-	ProcessRayCasts(screen3x2d,rayCastXOdd, rayCastYOdd,p1x,p1y,p1h,	72, 1, 1, 0, 24);
-	ProcessRayCasts(screen3x2e,rayCastXOdd, rayCastXOdd,p1x,p1y,p1h,	96, 1, 1, 0, 24);
+	ProcessRayCastsWithMipMaps(screen3x2a,rayCastXOdd, rayCastXOdd,p1x,p1y,p1h,	0,  1, 1, 0, 24);
+	ProcessRayCastsWithMipMaps(screen3x2b,rayCastXOdd, rayCastYOdd,p1x,p1y,p1h,	24, 1, 1, 0, 24);
+	ProcessRayCastsWithMipMaps(screen3x2c,rayCastXOdd, rayCastYOdd,p1x,p1y,p1h,	48, 1, 1, 0, 24);
+	ProcessRayCastsWithMipMaps(screen3x2d,rayCastXOdd, rayCastYOdd,p1x,p1y,p1h,	72, 1, 1, 0, 24);
+	ProcessRayCastsWithMipMaps(screen3x2e,rayCastXOdd, rayCastXOdd,p1x,p1y,p1h,	96, 1, 1, 0, 24);
 
 	DrawPlayerScreen3x2(screen3x2a,1,0,0,4);
 	DrawPlayerScreen3x2(screen3x2b,1,0,4,4);
@@ -306,17 +307,9 @@ else if(debugValue == 7)
 }
 else
 {
-	ProcessRayCasts(screen8x8a,rayCastXEven, rayCastYEven,p1x,p1y,p1h,	0,  4, 4, 0, 8);
-	ProcessRayCasts(screen8x8b,rayCastXEven, rayCastYEven,p1x,p1y,p1h,	32, 4, 4, 0, 8);
-	ProcessRayCasts(screen8x8c,rayCastXEven, rayCastYEven,p1x,p1y,p1h,	64, 4, 4, 0, 8);
-	ProcessRayCasts(screen8x8d,rayCastXEven, rayCastYEven,p1x,p1y,p1h,	96, 4, 4, 0, 8);
-	ProcessRayCasts(screen8x8e,rayCastXEven, rayCastYEven,p1x,p1y,p1h,	128, 4, 4, 0, 8);
+	ProcessRayCastsSlow(screen8x8slow,rayCastXEven, rayCastYEven,p1x,p1y,p1h,	0,  4, 4, 0, 40);
 
-	DrawPlayerScreen8x8(screen8x8a,1,0,0,4);
-	DrawPlayerScreen8x8(screen8x8b,1,0,4,4);
-	DrawPlayerScreen8x8(screen8x8c,1,0,8,4);
-	DrawPlayerScreen8x8(screen8x8d,1,0,12,4);
-	DrawPlayerScreen8x8(screen8x8e,1,0,16,4);
+	DrawPlayerScreen8x8Slow(screen8x8slow,1,0,0,20);
 }
 
 
@@ -393,7 +386,7 @@ if(interlace == 3) DrawHeightMap(2);*/
 interlace++;
 if(interlace == 4) interlace = 0;
 
-vPortWaitForEnd(s_pVPort);
+//vPortWaitForEnd(s_pVPort);
 
 CopyFastToChipW(s_pBuffer->pBack);
 
@@ -404,6 +397,7 @@ s_pBuffer->pBack,
 320, 200,
 0x1f, 0xAAAA, 0 // Try patterns 0xAAAA, 0xEEEE, etc.
 );*/
+
 
 logAvgEnd(s_pAvgTime);
 endTime = timerGetPrec();
@@ -438,7 +432,6 @@ void engineGsDestroy(void)
 	viewLoad(0);
 	viewDestroy(s_pView);
 
-
 	char szAvg[15];
 	//timerFormatPrec(szAvg, s_pAvgTime->uwCurrDelta);
 	timerFormatPrec(szAvg, endTime - startTime);
@@ -446,11 +439,5 @@ void engineGsDestroy(void)
 	printf("%s", szAvg );
 	printf("%lu", deltaTime);
 
-
 	logAvgDestroy(s_pAvgTime);
-
-
-
-
-
 }

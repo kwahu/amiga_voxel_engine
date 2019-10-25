@@ -52,7 +52,7 @@ void GenerateColorBytesDither3x2()
 		((c1>>0) & 1) *0b00000010+
 		((c2>>0) & 1) *0b00000001;
 
-		dither3x2EvenP1[address]=
+		dither3x2EvenP2[address]=
 		((a1>>1) & 1) *0b10000000+
 		((a2>>1) & 1) *0b01000000+
 		((a1>>1) & 1) *0b00100000+
