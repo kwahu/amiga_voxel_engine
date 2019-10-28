@@ -161,6 +161,72 @@ UBYTE tableStepSizeX, UBYTE tableStepSizeY, UBYTE tableStepNumber, UBYTE xCycles
 		sx += tableStepSizeX;
 	}
 }
+void ProcessRayCastsSlow2(UBYTE *screen, WORD (*rayCastX)[TERRAINDEPTH], WORD (*rayCastY)[TERRAINDEPTH],
+UBYTE px, UBYTE py, UBYTE ph, UBYTE tableXStart,
+UBYTE tableStepSizeX, UBYTE tableStepSizeY, UBYTE tableStepNumber, UBYTE xCycles)
+{
+	UBYTE sx,sy,tz;
+	UBYTE th = 0;
+	UWORD mapValue;
+	UWORD rayCast;
+	UWORD position;
+	UWORD positionX, positionY;
+	UBYTE mx,my;
+	UBYTE color = 0;
+	UWORD currentScreenYStepSize;
+	UWORD ppx;
+	UWORD sizeY = YSIZE/tableStepSizeY-1;
+
+	ppx = px/4;
+
+	sx = tableXStart;
+	currentScreenYStepSize = xCycles;
+
+	for(UBYTE i=0;i<xCycles;i++)
+	{
+		sy = 0 + tableStepNumber;
+		position = sizeY*xCycles+i;
+		positionY = 0;
+		positionX = i*TERRAINDEPTH;
+		tz = 0;
+
+		while(tz < renderingDepth && sy <YSIZE)
+		{
+			//rayCast = rayCastXX[rayPosition];
+			mx = ppx + rayCastXX[positionX] ;
+			my = (py + tz)/4;
+			mapValue = map[ mx ][ my ];//read color + height
+			th = mapValue;//take just the height
+			if(th>ph + rayCastYY[positionY])
+			{
+				screen[position] = mapValue >> 8;
+				sy+=tableStepSizeY; //move X pixels to the top in calculations
+				position-=currentScreenYStepSize; //move X pixels to the top on the destination screen
+				positionY += TERRAINDEPTH;//increment Y
+			}
+			else
+			{
+				tz+=1;//+mipLevel; //move a variable step in depth to look for next height colision
+				positionY++;//increment only Z
+				positionX++;
+			}
+		}
+		//finish vertical line with SKY
+		while(sy < YSIZE)
+		{
+			if(screen[position] == 31) sy = YSIZE;
+			else
+			{
+				screen[position] = 31;
+				sy+=tableStepSizeY;
+				position-=currentScreenYStepSize;
+			}
+
+		}
+		//go to the next vertical line
+		sx += tableStepSizeX;
+	}
+}
 
 void ProcessRayCastsWithMipMaps(UBYTE *screen, WORD (*rayCastX)[TERRAINDEPTH], WORD (*rayCastY)[TERRAINDEPTH],
 UBYTE px, UBYTE py, UBYTE ph,
@@ -257,9 +323,9 @@ void CalculateRayCasts(WORD (*rayCastX)[TERRAINDEPTH], WORD (*rayCastY)[TERRAIND
 	int fovY = 8;
 
 	tzz = 1;
-	for(int tz=1;tz<TERRAINDEPTH;tz++)
+	for(int tz=0;tz<TERRAINDEPTH;tz++)
 	{
-		tzz += 1+tz/8; //increase step with the distance from camera, less quality but better performance
+		tzz += 1+tz/16; //increase step with the distance from camera
 		for(int sx=-xSize/2;sx<xSize/2;sx++)
 		{
 			sxx = sx * tzz/2; //make smaller steps
@@ -269,6 +335,38 @@ void CalculateRayCasts(WORD (*rayCastX)[TERRAINDEPTH], WORD (*rayCastY)[TERRAIND
 				rayCastX[xSize/2+sx][tz] = sxx/fovX;
 				rayCastY[ySize/2+sy][tz] = syy/fovY;
 			}
+		}
+	}
+}
+
+void CalculateRayCastsSlow(WORD (*rayCastX)[TERRAINDEPTH], WORD (*rayCastY)[TERRAINDEPTH])
+{
+	UWORD position = 0;
+
+	for(int y=0;y<32;y++)
+	{
+		for(int tz=0;tz<TERRAINDEPTH;tz++)
+		{
+			rayCastYY[position] = rayCastY[y*4][tz];
+			position ++;
+		}
+	}
+
+	position = 0;
+	for(int x=0;x<40;x++)
+	{
+		for(int tz=0;tz<TERRAINDEPTH;tz++)
+		{
+			rayCastXX[position] = rayCastX[x*4][tz]/4;
+			position ++;
+		}
+	}
+}
+void CombineMaps(UBYTE (*height)[64], UBYTE (*color)[64], UWORD (*map)[64])
+{
+	for (int x = 0; x < 64; x++) {
+		for (int y = 0; y < 64; y++) {
+			map[x][y] = (color[x][y] << 8) + height[x][y];
 		}
 	}
 }

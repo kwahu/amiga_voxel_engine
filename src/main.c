@@ -78,13 +78,18 @@ void engineGsCreate(void)
 	ReadColor("color.raw");
 	CalculateRayCasts(rayCastXOdd, rayCastYOdd, XSIZEODD, YSIZE);
 	CalculateRayCasts(rayCastXEven, rayCastYEven, XSIZEEVEN, YSIZE);
+	CalculateRayCastsSlow(rayCastXEven, rayCastYEven);
 
-	GenerateColorBytesDither8x8();
+	//GenerateColorBytesDither8x8();
 	GenerateColorBytesDither4x4();
 	GenerateColorBytesDither3x2();
 
+	//SmoothHeightMap();
 	CalculateColorMipMaps();
 	CalculateHeightMipMaps();
+
+	CombineMaps(heightMap2, colorMap2, map);//combine into WORDs
+
 	//CalculateModulo2();
 	//CalculateEnemyPlacement();
 
@@ -307,7 +312,7 @@ else if(debugValue == 7)
 }
 else
 {
-	ProcessRayCastsSlow(screen8x8slow,rayCastXEven, rayCastYEven,p1x,p1y,p1h,	0,  4, 4, 0, 40);
+	ProcessRayCastsSlow2(screen8x8slow,rayCastXEven, rayCastYEven,p1x,p1y,p1h,	0,  4, 4, 0, 40);
 
 	DrawPlayerScreen8x8Slow(screen8x8slow,1,0,0,20);
 }
