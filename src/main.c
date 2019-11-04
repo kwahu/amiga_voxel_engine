@@ -71,24 +71,27 @@ void engineGsCreate(void)
 	p2h = 10;
 
 
-	debugValue = 0;
+	debugValue = 8;
 
 	ReadHeight("height.raw");
 	//	ReadPalette("palette.raw");
 	ReadColor("color.raw");
-	CalculateRayCasts(rayCastXOdd, rayCastYOdd, XSIZEODD, YSIZE);
-	CalculateRayCasts(rayCastXEven, rayCastYEven, XSIZEEVEN, YSIZE);
-	CalculateRayCastsSlow(rayCastXEven, rayCastYEven);
+	//CalculateRayCasts(rayCastXOdd, rayCastYOdd, XSIZEODD, YSIZE);
+	//CalculateRayCasts(rayCastXEven, rayCastYEven, XSIZEEVEN, YSIZE);
+	//CalculateRayCastsSlow(rayCastXEven, rayCastYEven);
+	CalculateRayCastsSingle(32, 32);
 
-	//GenerateColorBytesDither8x8();
-	GenerateColorBytesDither4x4();
-	GenerateColorBytesDither3x2();
+
+	GenerateWordDither8x8();
+//	GenerateColorBytesDither4x4();
+	//GenerateColorBytesDither3x2();
 
 	//SmoothHeightMap();
 	CalculateColorMipMaps();
 	CalculateHeightMipMaps();
 
 	CombineMaps(heightMap2, colorMap2, map);//combine into WORDs
+
 
 	//CalculateModulo2();
 	//CalculateEnemyPlacement();
@@ -154,6 +157,25 @@ else
 	if(keyCheck(KEY_8))debugValue=8;
 	if(keyCheck(KEY_9))debugValue=9;
 }
+/*
+if(debugValue == 9)
+{
+	 systemSetDma(DMAB_RASTER, 0);
+	 systemSetDma(DMAB_DISK, 0);
+	 systemSetDma(DMAB_SPRITE, 0);
+	 systemSetDma(DMAB_BLITTER , 0);
+	 systemSetDma(DMAB_COPPER  , 0);
+	 systemSetDma(DMAB_BLITHOG  , 0);
+}
+else
+{
+	systemSetDma(DMAB_RASTER, 1);
+	systemSetDma(DMAB_DISK, 1);
+	systemSetDma(DMAB_SPRITE, 1);
+	systemSetDma(DMAB_BLITTER , 1);
+	systemSetDma(DMAB_COPPER  , 1);
+	systemSetDma(DMAB_BLITHOG  , 1);
+}*/
 //		turn = turn/1.2;
 //	xPos += turn;
 if(renderingDepth<10) renderingDepth = 10;
@@ -218,13 +240,13 @@ if(debugValue == 1)
 	ProcessRayCastsSlow(screen8x8b,rayCastXEven, rayCastYEven,p1x,p1y,p1h,	32, 4, 4, 0, 8);
 	ProcessRayCastsSlow(screen8x8c,rayCastXEven, rayCastYEven,p1x,p1y,p1h,	64, 4, 4, 0, 8);
 	ProcessRayCastsSlow(screen8x8d,rayCastXEven, rayCastYEven,p1x,p1y,p1h,	96, 4, 4, 0, 8);
-	ProcessRayCastsSlow(screen8x8e,rayCastXEven, rayCastYEven,p1x,p1y,p1h,	128, 4, 4, 0, 8);
+	//ProcessRayCastsSlow(screen8x8e,rayCastXEven, rayCastYEven,p1x,p1y,p1h,	128, 4, 4, 0, 8);
 
 	DrawPlayerScreen8x8Slow(screen8x8a,1,0,0,4);
 	DrawPlayerScreen8x8Slow(screen8x8b,1,0,4,4);
 	DrawPlayerScreen8x8Slow(screen8x8c,1,0,8,4);
 	DrawPlayerScreen8x8Slow(screen8x8d,1,0,12,4);
-	DrawPlayerScreen8x8Slow(screen8x8e,1,0,16,4);
+	//DrawPlayerScreen8x8Slow(screen8x8e,1,0,16,4);
 }
 else if(debugValue == 2)
 {
@@ -310,13 +332,24 @@ else if(debugValue == 7)
 	DrawPlayerScreen3x2(screen3x2d,1,0,12,4);
 	DrawPlayerScreen3x2(screen3x2e,1,0,16,4);
 }
-else
+else if(debugValue == 8)
 {
-	ProcessRayCastsSlow2(screen8x8slow,rayCastXEven, rayCastYEven,p1x,p1y,p1h,	0,  4, 4, 0, 40);
-
+	//raycast 1 dimensional
+	ProcessRayCastsSlow(screen8x8slow,rayCastXEven, rayCastYEven,p1x,p1y,p1h,	0,  4, 4, 0, 32);
+	DrawPlayerScreen8x8Slow(screen8x8slow,1,0,0,16);
+}
+else if(debugValue == 9)
+{
+	//mul
+	ProcessRayCastsSlow3(screen8x8slow,rayCastXEven, rayCastYEven,p1x,p1y,p1h,	0,  4, 4, 0, 40);
 	DrawPlayerScreen8x8Slow(screen8x8slow,1,0,0,20);
 }
-
+else if(debugValue == 0)
+{
+	//custom mul
+	ProcessRayCastsSlowMul(screen8x8slow,rayCastXEven, rayCastYEven,p1x,p1y,p1h,	0,  4, 4, 0, 40);
+	DrawPlayerScreen8x8Slow(screen8x8slow,1,0,0,20);
+}
 
 /*
 case 0: sx = 0;xStep = 4;xCycles = 8;currentTableStepSize=4;currentScreenStepSize=4*XSIZE;currentStep=0;break;
@@ -443,6 +476,9 @@ void engineGsDestroy(void)
 
 	printf("%s", szAvg );
 	printf("%lu", deltaTime);
+	//printf("%d ", mul(13,7));
+	//printf("%d ", mul(-13,7));
+
 
 	logAvgDestroy(s_pAvgTime);
 }

@@ -251,21 +251,21 @@ void DrawPlayerScreen8x8Slow(UBYTE *screen, UBYTE player, UBYTE depth, UBYTE sta
 {
 	UWORD sp,position,blockPosition;
 	UWORD address1, address2;
-	UBYTE *dither1, *dither2, *dither3, *dither4;
-	UBYTE *dither5, *dither6, *dither7, *dither8;
+	UWORD *dither1, *dither2, *dither3, *dither4;
+	UWORD *dither5, *dither6, *dither7, *dither8;
 	UWORD w1,w2,w3,w4,w5,w6,w7,w8;
-	UBYTE lastColor;
-	UBYTE currentColor;
+	UBYTE a,b;
+	UBYTE lastColor, currentColor;
 
-	dither1 = dither4x4EvenP1;
-	dither2 = dither4x4EvenP2;
-	dither3 = dither4x4EvenP3;
-	dither4 = dither4x4EvenP4;
-
+	dither1 = dither8x8EvenP1;
+	dither2 = dither8x8EvenP2;
+	dither3 = dither8x8EvenP3;
+	dither4 = dither8x8EvenP4;
+/*
 	dither5 = dither4x4OddP1;
 	dither6 = dither4x4OddP2;
 	dither7 = dither4x4OddP3;
-	dither8 = dither4x4OddP4;
+	dither8 = dither4x4OddP4;*/
 
 	sp = 0;//screen position
 
@@ -292,16 +292,37 @@ void DrawPlayerScreen8x8Slow(UBYTE *screen, UBYTE player, UBYTE depth, UBYTE sta
 	{
 		//40 bytes * y + even/odd + player screen offset WORDs
 		position = y*20*8  + startScreen;
-		lastColor = screen[sp];
+		//lastColor = screen[sp];
 
 		//draw the line with WORDs made up of 2 BYTEs each consisting 3 pixels
 		for(UBYTE x=0;x<xCycles;x++)
 		{
-			currentColor = screen[sp];
-			address1 = ((lastColor)<<5) + (currentColor);
-			lastColor = screen[sp+1];
-			address2 = ((currentColor)<<5) + (lastColor);
+			address1 = (screen[sp]<<5)+screen[sp+1];
+			//address1 = ((lastColor)<<5) + (currentColor);
+			//lastColor = screen[sp+1];
+			//address2 = ((currentColor)<<5) + (lastColor);
 
+			w1 = dither1[ address1];
+			w2 = dither2[ address1];
+			w3 = dither3[ address1];
+			w4 = dither4[ address1];
+
+	/*	w1 = 0;
+		if(a & 1) w1 = 0b1111111100000000;
+		if(b & 1) w1 += 0b11111111;
+		w2 = 0;
+		if((a>>1) & 1) w2 = 0b1111111100000000;
+		if((b>>1) & 1) w2 += 0b11111111;
+		w3 = 0;
+		if((a>>2) & 1) w3 = 0b1111111100000000;
+		if((b>>2) & 1) w3 += 0b11111111;
+		w4 = 0;
+		if((a>>3) & 1) w4 = 0b1111111100000000;
+		if((b>>3) & 1) w4 += 0b11111111;*/
+//w1 = (a & 1)*0b1111111100000000 + (b & 1)*0b11111111;
+//w2 = ((a>>1) & 1)*0b1111111100000000 + ((b>>1) & 1)*0b11111111;
+//w3 = ((a>>2) & 1)*0b1111111100000000 + ((b>>2) & 1)*0b11111111;
+//w4 = ((a>>3) & 1)*0b1111111100000000 + ((b>>3) & 1)*0b11111111;
 
 		/*	w1 = ((currentColor>>0) & 1) *0xff00 +((lastColor>>0) & 1)*0x00ff;
 			w2 =  ((currentColor>>1) & 1) *0xff00 +((lastColor>>1) & 1)*0x00ff;
@@ -336,11 +357,12 @@ void DrawPlayerScreen8x8Slow(UBYTE *screen, UBYTE player, UBYTE depth, UBYTE sta
 					((screen[sp+7]>>2) & 1) *0b00000001;*/
 
 
-
+/*
 			w1 = (dither1[ address1 ]<<8) + dither1[ address2 ];
 			w2 = (dither2[ address1 ]<<8) + dither2[ address2 ];
 			w3 = (dither3[ address1 ]<<8) + dither3[ address2 ];
-			w4 = (dither4[ address1 ]<<8) + dither4[ address2 ];
+			w4 = (dither4[ address1 ]<<8) + dither4[ address2 ];*/
+
 
 			//w5 = (dither5[ address1 ]<<8) + dither5[ address2 ];
 			//w6 = (dither6[ address1 ]<<8) + dither6[ address2 ];
@@ -355,7 +377,7 @@ void DrawPlayerScreen8x8Slow(UBYTE *screen, UBYTE player, UBYTE depth, UBYTE sta
 			blockPosition=position+80;plane1W[blockPosition]=w1;plane2W[blockPosition]=w2;plane3W[blockPosition]=w3;plane4W[blockPosition]=w4;
 		//	blockPosition=position+100;plane1W[blockPosition]=w1;plane2W[blockPosition]=w2;plane3W[blockPosition]=w3;plane4W[blockPosition]=w4;
 			blockPosition=position+120;plane1W[blockPosition]=w1;plane2W[blockPosition]=w2;plane3W[blockPosition]=w3;plane4W[blockPosition]=w4;
-	//		blockPosition=position+140;plane1W[blockPosition]=w1;plane2W[blockPosition]=w2;plane3W[blockPosition]=w3;plane4W[blockPosition]=w4;
+		//	blockPosition=position+140;plane1W[blockPosition]=w1;plane2W[blockPosition]=w2;plane3W[blockPosition]=w3;plane4W[blockPosition]=w4;
 			}
 			position++; //go to next WORD
 			sp+=2; //go to the next 2 points

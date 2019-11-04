@@ -117,48 +117,59 @@ UBYTE tableStepSizeX, UBYTE tableStepSizeY, UBYTE tableStepNumber, UBYTE xCycles
 	UBYTE th = 0;
 	UWORD position;
 	UBYTE mx,my;
-	UBYTE color = 0;
-	UWORD currentScreenYStepSize;
+	//UBYTE color = 0;
+	UWORD mapValue;
+	BYTE xvalue,yvalue;
+	UWORD rayValue;
+	UWORD startPosition = ((YSIZE/tableStepSizeY)-1)*xCycles;
+
+	//UWORD currentScreenYStepSize;
 
 	sx = tableXStart;
-	currentScreenYStepSize = xCycles;
+	//currentScreenYStepSize = xCycles;
 
 	for(UBYTE i=0;i<xCycles;i++)
 	{
-		sy = 0 + tableStepNumber;
-		position = ((YSIZE/tableStepSizeY)-1)*xCycles+i;
+		sy = 0;// + tableStepNumber;
+		position = startPosition+i;
 		tz = 1;
 
 		while(tz < renderingDepth && sy <YSIZE)
 		{
-			mx = (px + rayCastX[sx][tz])/4;
-			my = (py + tz)/4;
-			th = heightMap2[ mx ][ my ];
-			if(th>ph + rayCastY[sy][tz])
+			rayValue = rayCastXY[(sx<<10)+(sy<<5)+tz];
+			xvalue = rayValue>>8;
+			yvalue = rayValue;
+
+			mx = (px + xvalue);
+			my = (py + tz);
+			mapValue = map[ mx ][ my ];//read color + height
+			th = mapValue;//take just the height
+			if(th>ph + yvalue)
 			{
-				screen[position] = colorMap2[ mx ][ my ];
-				sy+=tableStepSizeY; //move X pixels to the top in calculations
-				position-=currentScreenYStepSize; //move X pixels to the top on the destination screen
+				screen[position] = mapValue >> 8;
+				sy+=1;
+				position-=xCycles;
 			}
 			else
 			{
-				tz+=1;//+mipLevel; //move a variable step in depth to look for next height colision
+				tz+=1;
 			}
 		}
 		//finish vertical line with SKY
 		while(sy < YSIZE)
 		{
-			if(screen[position] == 31) sy = YSIZE;
+			if(screen[position] == 31)
+				sy = YSIZE;
 			else
 			{
 				screen[position] = 31;
-				sy+=tableStepSizeY;
-				position-=currentScreenYStepSize;
+				sy+=1;//tableStepSizeY;
+				position-=xCycles;
 			}
 
 		}
 		//go to the next vertical line
-		sx += tableStepSizeX;
+		sx += 1;//tableStepSizeX;
 	}
 }
 void ProcessRayCastsSlow2(UBYTE *screen, WORD (*rayCastX)[TERRAINDEPTH], WORD (*rayCastY)[TERRAINDEPTH],
@@ -227,6 +238,138 @@ UBYTE tableStepSizeX, UBYTE tableStepSizeY, UBYTE tableStepNumber, UBYTE xCycles
 		sx += tableStepSizeX;
 	}
 }
+static inline WORD mul(BYTE a, BYTE b)
+{
+	WORD c=0;
+	if(b & 0b00000001) c+=a;
+	if(b & 0b00000010) c+=a<<1;
+	if(b & 0b00000100) c+=a<<2;
+	if(b & 0b00001000) c+=a<<3;
+	if(b & 0b00010000) c+=a<<4;
+	if(b & 0b00100000) c+=a<<5;
+	return c;
+}
+void ProcessRayCastsSlow3(UBYTE *screen, WORD (*rayCastX)[TERRAINDEPTH], WORD (*rayCastY)[TERRAINDEPTH],
+UBYTE px, UBYTE py, UBYTE ph, UBYTE tableXStart,
+UBYTE tableStepSizeX, UBYTE tableStepSizeY, UBYTE tableStepNumber, UBYTE xCycles)
+{
+	UBYTE sx,sy,tz;
+	UBYTE th = 0;
+	UWORD mapValue;
+	UWORD rayCast;
+	UWORD position;
+	UWORD positionX, positionY;
+	UBYTE mx,my;
+	UBYTE color = 0;
+	UWORD currentScreenYStepSize;
+	UWORD ppx;
+	UWORD sizeY = YSIZE/tableStepSizeY-1;
+	UBYTE hDifference = 0;
+
+	ppx = px/4;
+
+	sx = tableXStart;
+	currentScreenYStepSize = xCycles;
+
+	for(UBYTE i=0;i<xCycles;i++)
+	{
+		sy = 0 + tableStepNumber;
+		position = ((YSIZE/tableStepSizeY)-1)*xCycles+i;
+		tz = 1;
+
+		while(tz < renderingDepth && sy <YSIZE)
+		{
+			mx = (px + ((sx-20)*tz)/8);
+			my = (py + tz);
+			th = heightMap0[ mx ][ my ];
+			if(th>ph +  ((sy-16)*tz)/8)
+			{
+				screen[position] = colorMap0[ mx ][ my ];
+				sy+=1; //move X pixels to the top in calculations
+				position-=currentScreenYStepSize; //move X pixels to the top on the destination screen
+			}
+			else
+			{
+				tz+=1;//+mipLevel; //move a variable step in depth to look for next height colision
+			}
+		}
+		//finish vertical line with SKY
+		while(sy < YSIZE)
+		{
+			if(screen[position] == 31) sy = YSIZE;
+			else
+			{
+				screen[position] = 31;
+				sy+=tableStepSizeY;
+				position-=currentScreenYStepSize;
+			}
+
+		}
+		//go to the next vertical line
+		sx += 1;
+	}
+}
+void ProcessRayCastsSlowMul(UBYTE *screen, WORD (*rayCastX)[TERRAINDEPTH], WORD (*rayCastY)[TERRAINDEPTH],
+UBYTE px, UBYTE py, UBYTE ph, UBYTE tableXStart,
+UBYTE tableStepSizeX, UBYTE tableStepSizeY, UBYTE tableStepNumber, UBYTE xCycles)
+{
+	UBYTE sx,sy,tz;
+	UBYTE th = 0;
+	UWORD mapValue;
+	UWORD rayCast;
+	UWORD position;
+	UWORD positionX, positionY;
+	UBYTE mx,my;
+	UBYTE color = 0;
+	UWORD currentScreenYStepSize;
+	UWORD ppx;
+	UWORD sizeY = YSIZE/tableStepSizeY-1;
+	UBYTE hDifference = 0;
+
+	ppx = px/4;
+
+	sx = tableXStart;
+	currentScreenYStepSize = xCycles;
+
+	for(UBYTE i=0;i<xCycles;i++)
+	{
+		sy = 0 + tableStepNumber;
+		position = ((YSIZE/tableStepSizeY)-1)*xCycles+i;
+		tz = 1;
+
+		while(tz < renderingDepth && sy <YSIZE)
+		{
+			mx = (px + (mul(sx-20,tz))/8);
+			my = (py + tz);
+			th = heightMap0[ mx ][ my ];
+			if(th>ph +  (mul(sy-16,tz))/8)
+			{
+				screen[position] = colorMap0[ mx ][ my ];
+				sy+=1; //move X pixels to the top in calculations
+				position-=currentScreenYStepSize; //move X pixels to the top on the destination screen
+			}
+			else
+			{
+				tz+=1;//+mipLevel; //move a variable step in depth to look for next height colision
+			}
+		}
+		//finish vertical line with SKY
+		while(sy < YSIZE)
+		{
+			if(screen[position] == 31) sy = YSIZE;
+			else
+			{
+				screen[position] = 31;
+				sy+=tableStepSizeY;
+				position-=currentScreenYStepSize;
+			}
+
+		}
+		//go to the next vertical line
+		sx += 1;
+	}
+}
+
 
 void ProcessRayCastsWithMipMaps(UBYTE *screen, WORD (*rayCastX)[TERRAINDEPTH], WORD (*rayCastY)[TERRAINDEPTH],
 UBYTE px, UBYTE py, UBYTE ph,
@@ -338,6 +481,63 @@ void CalculateRayCasts(WORD (*rayCastX)[TERRAINDEPTH], WORD (*rayCastY)[TERRAIND
 		}
 	}
 }
+void CalculateRayCastsSingle(UBYTE xSize, UBYTE ySize)
+{
+	int sxx;
+	int syy;
+	int tzz; //depth step value
+	int fovX = 8;//xSize/20; //this changes the field of view
+	int fovY = 8;
+	BYTE sxxx, syyy;
+	UBYTE xa,ya,ta;
+	UWORD address;
+
+	tzz = 1;
+	for(UBYTE tz=0;tz<TERRAINDEPTH;tz++)
+	{
+
+
+
+		tzz += 1+tz/16; //increase step with the distance from camera
+		for(int sx=-xSize/2;sx<xSize/2;sx++)
+		{
+			sxx = sx * tzz/2; //make smaller steps
+sxx = sxx/fovX;
+
+			for(int sy=-ySize/2;sy<ySize/2;sy++)
+			{
+				syy = sy * tzz/2;//make smaller steps
+
+				syy = syy/fovY;
+			//	sxxx = sxx;
+				//syyy = syy;
+
+				if(sxx<-127) sxx = -127;
+				if(sxx>127) sxx = 127;
+				//sxx += 128;
+				sxxx = sxx;
+
+				if(syy<-127) syy = -127;
+				if(syy>127) syy = 127;
+				//syy += 128;
+				syyy = syy;
+
+				//rayCastXY[xSize/2+sx][ySize/2+sy][tz] = (sxx<<8) + syy;
+
+				xa = xSize/2+sx;
+				ya = ySize/2+sy;
+				ta = tz;
+
+				address = (xa<<10) + (ya<<5) + ta;
+				rayCastXY[address] = (sxxx<<8) + syyy;
+			//	rayCastXY[xSize/2+sx][ySize/2+sy][tz][0] = sxx;//
+			//	rayCastXY[xSize/2+sx][ySize/2+sy][tz][1] = syy;
+			//	rayCastXY[xSize/2+sx][ySize/2+sy][tz] = (sxxx<<8) + syyy;
+			}
+		}
+
+	}
+}
 
 void CalculateRayCastsSlow(WORD (*rayCastX)[TERRAINDEPTH], WORD (*rayCastY)[TERRAINDEPTH])
 {
@@ -362,11 +562,11 @@ void CalculateRayCastsSlow(WORD (*rayCastX)[TERRAINDEPTH], WORD (*rayCastY)[TERR
 		}
 	}
 }
-void CombineMaps(UBYTE (*height)[64], UBYTE (*color)[64], UWORD (*map)[64])
+void CombineMaps(UBYTE (*height)[64], UBYTE (*color)[64], UWORD (*map)[256])
 {
-	for (int x = 0; x < 64; x++) {
-		for (int y = 0; y < 64; y++) {
-			map[x][y] = (color[x][y] << 8) + height[x][y];
+	for (int x = 0; x < 256; x++) {
+		for (int y = 0; y < 256; y++) {
+			map[x][y] = (color[x/4][y/4] << 8) + height[x/4][y/4];
 		}
 	}
 }
