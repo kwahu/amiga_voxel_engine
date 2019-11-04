@@ -110,6 +110,7 @@ void DrawPlayerScreen4x4(UBYTE *screen, UBYTE player, UBYTE depth, UBYTE startSc
 	UBYTE *dither1, *dither2, *dither3, *dither4;
 	UBYTE *dither5, *dither6, *dither7, *dither8;
 	UWORD w1,w2,w3,w4,w5,w6,w7,w8;
+	UBYTE val1, val2;
 
 	dither1 = dither4x4EvenP1;
 	dither2 = dither4x4EvenP2;
@@ -150,6 +151,26 @@ void DrawPlayerScreen4x4(UBYTE *screen, UBYTE player, UBYTE depth, UBYTE startSc
 			address1 = ((screen[sp])<<5) + (screen[sp+1]);
 			address2 = ((screen[sp+2])<<5) + (screen[sp+3]);
 
+	/*		val1 = dither1[ address1 ];
+			val2 = dither1[ address2 ];
+			w1 = (val1<<8) + val2;
+			w5 = ( ((val1 << 1) | (val1 >> 15))<<8 ) + ( (val2 << 1) | (val2 >> 15) );
+
+			val1 = dither2[ address1 ];
+			val2 = dither2[ address2 ];
+			w2 = (val1<<8) + val2;
+			w6 = ( ((val1 << 1) | (val1 >> 15))<<8 ) + ( (val2 << 1) | (val2 >> 15) );
+
+			val1 = dither3[ address1 ];
+			val2 = dither3[ address2 ];
+			w3 = (val1<<8) + val2;
+			w7 = ( ((val1 << 1) | (val1 >> 15))<<8 ) + ( (val2 << 1) | (val2 >> 15) );
+
+			val1 = dither4[ address1 ];
+			val2 = dither4[ address2 ];
+			w4 = (val1<<8) + val2;
+			w8 = ( ((val1 << 1) | (val1 >> 15))<<8 ) + ( (val2 << 1) | (val2 >> 15) );*/
+
 			w1 = (dither1[ address1 ]<<8) + dither1[ address2 ];
 			w2 = (dither2[ address1 ]<<8) + dither2[ address2 ];
 			w3 = (dither3[ address1 ]<<8) + dither3[ address2 ];
@@ -167,6 +188,84 @@ void DrawPlayerScreen4x4(UBYTE *screen, UBYTE player, UBYTE depth, UBYTE startSc
 
 			position++; //go to next WORD
 			sp+=4; //go to the next 2 points
+		}
+	}//line
+}
+void DrawPlayerScreen2x2(UBYTE *screen, UBYTE player, UBYTE depth, UBYTE startScreen, UBYTE xCycles)
+{
+	UWORD sp,position,blockPosition;
+	UWORD address1, address2;
+	UBYTE *dither1, *dither2, *dither3, *dither4;
+	UBYTE *dither5, *dither6, *dither7, *dither8;
+	UWORD w1,w2,w3,w4,w5,w6,w7,w8;
+	UBYTE val1, val2;
+
+	dither1 = dither2x2P1;
+	dither2 = dither2x2P2;
+	dither3 = dither2x2P3;
+	dither4 = dither2x2P4;
+
+
+	sp = 0;//screen position
+	if(player == 1)
+	{
+
+	}
+	else
+	{
+
+	}
+	if(depth == 1)
+	{
+
+	}
+	else
+	{
+
+	}
+
+	//for each line
+	for(UBYTE y=0;y<128;y++)
+	{
+		//40 bytes * y + even/odd + player screen offset WORDs
+		position = y*20*2  + startScreen;
+		//draw the line with WORDs made up of 2 BYTEs each consisting 3 pixels
+		for(UBYTE x=0;x<xCycles;x++)
+		{
+			address1 = ((screen[sp]/2)<<12) + ((screen[sp+1]/2)<<8) + ((screen[sp+2]/2)<<4) + screen[sp+3]/2;
+			address2 = ((screen[sp+4]/2)<<12) + ((screen[sp+5]/2)<<8) + ((screen[sp+6]/2)<<4) + screen[sp+7]/2;
+
+	/*		val1 = dither1[ address1 ];
+			val2 = dither1[ address2 ];
+			w1 = (val1<<8) + val2;
+			w5 = ( ((val1 << 1) | (val1 >> 15))<<8 ) + ( (val2 << 1) | (val2 >> 15) );
+
+			val1 = dither2[ address1 ];
+			val2 = dither2[ address2 ];
+			w2 = (val1<<8) + val2;
+			w6 = ( ((val1 << 1) | (val1 >> 15))<<8 ) + ( (val2 << 1) | (val2 >> 15) );
+
+			val1 = dither3[ address1 ];
+			val2 = dither3[ address2 ];
+			w3 = (val1<<8) + val2;
+			w7 = ( ((val1 << 1) | (val1 >> 15))<<8 ) + ( (val2 << 1) | (val2 >> 15) );
+
+			val1 = dither4[ address1 ];
+			val2 = dither4[ address2 ];
+			w4 = (val1<<8) + val2;
+			w8 = ( ((val1 << 1) | (val1 >> 15))<<8 ) + ( (val2 << 1) | (val2 >> 15) );*/
+
+			w1 = (dither1[ address1 ]<<8) + dither1[ address2 ];
+			w2 = (dither2[ address1 ]<<8) + dither2[ address2 ];
+			w3 = (dither3[ address1 ]<<8) + dither3[ address2 ];
+			w4 = (dither4[ address1 ]<<8) + dither4[ address2 ];
+
+
+			blockPosition=position;plane1W[blockPosition]=w1;plane2W[blockPosition]=w2;plane3W[blockPosition]=w3;plane4W[blockPosition]=w4;
+			blockPosition=position+20;plane1W[blockPosition]=w1;plane2W[blockPosition]=w2;plane3W[blockPosition]=w3;plane4W[blockPosition]=w4;
+
+			position++; //go to next WORD
+			sp+=8; //go to the next 2 points
 		}
 	}//line
 }

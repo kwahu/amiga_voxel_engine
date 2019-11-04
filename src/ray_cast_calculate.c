@@ -12,26 +12,26 @@ void CalculateRayCasts(WORD (*rayCastX)[TERRAINDEPTH], WORD (*rayCastY)[TERRAIND
 	tzz = 1;
 	for(int tz=0;tz<TERRAINDEPTH;tz++)
 	{
-		tzz += 1+tz/16; //increase step with the distance from camera
+		tzz += 10;//+tz/16; //increase step with the distance from camera
 		for(int sx=-xSize/2;sx<xSize/2;sx++)
 		{
-			sxx = sx * tzz/2; //make smaller steps
+			sxx = (sx * tzz)/30; //make smaller steps
 			for(int sy=-ySize/2;sy<ySize/2;sy++)
 			{
-				syy = sy * tzz/2;//make smaller steps
+				syy = (sy * tzz)/30;//make smaller steps
 				rayCastX[xSize/2+sx][tz] = sxx/fovX;
 				rayCastY[ySize/2+sy][tz] = syy/fovY;
 			}
 		}
 	}
 }
-void CalculateRayCastsSingle(WORD *rayCastXY, UBYTE xSize, UBYTE ySize)
+void CalculateRayCastsSingle(WORD *rayCastXY, UBYTE xSize, UBYTE ySize, UBYTE adrSize)
 {
 	int sxx;
 	int syy;
 	int tzz; //depth step value
-	int fovX = 6;//xSize/20; //this changes the field of view
-	int fovY = 6;
+	int fovX = 4;//xSize/20; //this changes the field of view
+	int fovY = 4;
 	BYTE sxxx, syyy;
 	UBYTE xa,ya,ta;
 	UWORD address;
@@ -42,7 +42,7 @@ void CalculateRayCastsSingle(WORD *rayCastXY, UBYTE xSize, UBYTE ySize)
 
 
 
-		tzz += 1+tz/16; //increase step with the distance from camera
+		tzz += 1; //increase step with the distance from camera
 		for(int sx=-xSize/2;sx<xSize/2;sx++)
 		{
 			sxx = sx * tzz/2; //make smaller steps
@@ -72,7 +72,7 @@ sxx = sxx/fovX;
 				ya = ySize/2+sy;
 				ta = tz;
 
-				address = (xa<<10) + (ya<<5) + ta;
+				address = (ta<<(2*adrSize)) + (xa<<adrSize) + ya;
 				rayCastXY[address] = (sxxx<<8) + syyy;
 			//	rayCastXY[xSize/2+sx][ySize/2+sy][tz][0] = sxx;//
 			//	rayCastXY[xSize/2+sx][ySize/2+sy][tz][1] = syy;
@@ -82,7 +82,7 @@ sxx = sxx/fovX;
 
 	}
 }
-
+/*
 void CalculateRayCastsSlow(WORD (*rayCastX)[TERRAINDEPTH], WORD (*rayCastY)[TERRAINDEPTH])
 {
 	UWORD position = 0;
@@ -106,11 +106,29 @@ void CalculateRayCastsSlow(WORD (*rayCastX)[TERRAINDEPTH], WORD (*rayCastY)[TERR
 		}
 	}
 }
-void CombineMaps(UBYTE (*height)[64], UBYTE (*color)[64], UWORD (*map)[256])
+*/
+void CombineMapsLow(UBYTE (*height)[64], UBYTE (*color)[64], UWORD (*map)[256])
 {
 	for (int x = 0; x < 256; x++) {
 		for (int y = 0; y < 256; y++) {
 			map[x][y] = (color[x/4][y/4] << 8) + height[x/4][y/4];
+		}
+	}
+}
+void CombineMapsMed(UBYTE (*height)[128], UBYTE (*color)[128], UWORD (*map)[256])
+{
+	for (int x = 0; x < 256; x++) {
+		for (int y = 0; y < 256; y++) {
+			map[x][y] = (color[x/2][y/2] << 8) + height[x/2][y/2];
+		}
+	}
+}
+
+void CombineMapsHigh(UBYTE (*height)[256], UBYTE (*color)[256], UWORD (*map)[256])
+{
+	for (int x = 0; x < 256; x++) {
+		for (int y = 0; y < 256; y++) {
+			map[x][y] = (color[x][y] << 8) + height[x][y];
 		}
 	}
 }

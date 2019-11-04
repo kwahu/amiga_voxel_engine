@@ -72,27 +72,29 @@ void engineGsCreate(void)
 	p2h = 10;
 
 
-	debugValue = 8;
+	debugValue = 3;
 
 	ReadHeight("height.raw");
 	//	ReadPalette("palette.raw");
 	ReadColor("color.raw");
 	//CalculateRayCasts(rayCastXOdd, rayCastYOdd, XSIZEODD, YSIZE);
-	//CalculateRayCasts(rayCastXEven, rayCastYEven, XSIZEEVEN, YSIZE);
+	CalculateRayCasts(rayCastXEven, rayCastYEven, XSIZEEVEN, YSIZE);
 	//CalculateRayCastsSlow(rayCastXEven, rayCastYEven);
-	CalculateRayCastsSingle(rayCastXY, 32, 32);
-
+	CalculateRayCastsSingle(rayCastXYLow, 32, 32, 5);
+	//CalculateRayCastsSingle(rayCastXYEven, XSIZEEVEN, YSIZE, 7);
 
 	GenerateWordDither8x8();
-//	GenerateColorBytesDither4x4();
+	GenerateColorBytesNoDither4x4();
+	GenerateColorBytesNoDither2x2();
 	//GenerateColorBytesDither3x2();
 
 	//SmoothHeightMap();
 	CalculateColorMipMaps();
 	CalculateHeightMipMaps();
 
-	CombineMaps(heightMap2, colorMap2, map);//combine into WORDs
-
+	CombineMapsLow(heightMap2, colorMap2, mapLow);//combine into WORDs
+	CombineMapsMed(heightMap1, colorMap1, mapMed);
+	CombineMapsHigh(heightMap0, colorMap0, mapHigh);
 
 	//CalculateModulo2();
 	//CalculateEnemyPlacement();
@@ -236,121 +238,119 @@ DrawPlayerScreen(2,0,1);
 //ProcessRayCasts(1,1,0);
 if(debugValue == 1)
 {
+	renderingDepth = TERRAINDEPTH / 2;
 
-	ProcessRayCastsSlow(screen8x8a,rayCastXEven, rayCastYEven,p1x,p1y,p1h,	0,  4, 4, 0, 8);
-	ProcessRayCastsSlow(screen8x8b,rayCastXEven, rayCastYEven,p1x,p1y,p1h,	32, 4, 4, 0, 8);
-	ProcessRayCastsSlow(screen8x8c,rayCastXEven, rayCastYEven,p1x,p1y,p1h,	64, 4, 4, 0, 8);
-	ProcessRayCastsSlow(screen8x8d,rayCastXEven, rayCastYEven,p1x,p1y,p1h,	96, 4, 4, 0, 8);
-	//ProcessRayCastsSlow(screen8x8e,rayCastXEven, rayCastYEven,p1x,p1y,p1h,	128, 4, 4, 0, 8);
-
-	DrawPlayerScreen8x8Slow(screen8x8a,1,0,0,4);
-	DrawPlayerScreen8x8Slow(screen8x8b,1,0,4,4);
-	DrawPlayerScreen8x8Slow(screen8x8c,1,0,8,4);
-	DrawPlayerScreen8x8Slow(screen8x8d,1,0,12,4);
-	//DrawPlayerScreen8x8Slow(screen8x8e,1,0,16,4);
-}
-else if(debugValue == 2)
-{
-	ProcessRayCastsWithMipMaps(screen8x8a,rayCastXEven, rayCastYEven,p1x,p1y,p1h,	0,  4, 4, 0, 8);
-	ProcessRayCastsWithMipMaps(screen8x8b,rayCastXEven, rayCastYEven,p1x,p1y,p1h,	32, 4, 4, 0, 8);
-	ProcessRayCastsWithMipMaps(screen4x4c,rayCastXEven, rayCastYEven,p1x,p1y,p1h,	64, 2, 2, 0, 16);
-	ProcessRayCastsWithMipMaps(screen8x8d,rayCastXEven, rayCastYEven,p1x,p1y,p1h,	96, 4, 4, 0, 8);
-	ProcessRayCastsWithMipMaps(screen8x8e,rayCastXEven, rayCastYEven,p1x,p1y,p1h,	128, 4, 4, 0, 8);
+	ProcessRayCastsNew(screen8x8a,rayCastXEven, rayCastYEven,mapLow,p1x,p1y,p1h,	0,  4, 4, 0, 8,1);
+	ProcessRayCastsNew(screen8x8b,rayCastXEven, rayCastYEven,mapLow,p1x,p1y,p1h,	32, 4, 4, 0, 8,1);
+	ProcessRayCastsNew(screen8x8c,rayCastXEven, rayCastYEven,mapLow,p1x,p1y,p1h,	64, 4, 4, 0, 8,1);
+	ProcessRayCastsNew(screen8x8d,rayCastXEven, rayCastYEven,mapLow,p1x,p1y,p1h,	96, 4, 4, 0, 8,1);
+	ProcessRayCastsNew(screen8x8e,rayCastXEven, rayCastYEven,mapLow,p1x,p1y,p1h,	128, 4, 4, 0, 8,1);
 
 	DrawPlayerScreen8x8(screen8x8a,1,0,0,4);
 	DrawPlayerScreen8x8(screen8x8b,1,0,4,4);
-	DrawPlayerScreen4x4(screen4x4c,1,0,8,4);
+	DrawPlayerScreen8x8(screen8x8c,1,0,8,4);
 	DrawPlayerScreen8x8(screen8x8d,1,0,12,4);
 	DrawPlayerScreen8x8(screen8x8e,1,0,16,4);
 }
-else if(debugValue == 3)
+else if(debugValue == 2)
 {
-	ProcessRayCastsWithMipMaps(screen8x8a,rayCastXEven, rayCastYEven,p1x,p1y,p1h,	0,  4, 4, 0, 8);
-	ProcessRayCastsWithMipMaps(screen4x4b,rayCastXEven, rayCastYEven,p1x,p1y,p1h,	32, 2, 2, 0, 16);
-	ProcessRayCastsWithMipMaps(screen4x4c,rayCastXEven, rayCastYEven,p1x,p1y,p1h,	64, 2, 2, 0, 16);
-	ProcessRayCastsWithMipMaps(screen4x4d,rayCastXEven, rayCastYEven,p1x,p1y,p1h,	96, 2, 2, 0, 16);
-	ProcessRayCastsWithMipMaps(screen8x8e,rayCastXEven, rayCastYEven,p1x,p1y,p1h,	128, 4, 4, 0, 8);
+	renderingDepth = TERRAINDEPTH / 2;
+	ProcessRayCastsNew(screen8x8a,rayCastXEven, rayCastYEven,mapLow,p1x,p1y,p1h,	0,  4, 4, 0, 8,1);
+	ProcessRayCastsNew(screen4x4b,rayCastXEven, rayCastYEven,mapMed,p1x,p1y,p1h,	32, 2, 2, 0, 16,1);
+	ProcessRayCastsNew(screen4x4c,rayCastXEven, rayCastYEven,mapMed,p1x,p1y,p1h,	64, 2, 2, 0, 16,1);
+	ProcessRayCastsNew(screen4x4d,rayCastXEven, rayCastYEven,mapMed,p1x,p1y,p1h,	96, 2, 2, 0, 16,1);
+	ProcessRayCastsNew(screen8x8e,rayCastXEven, rayCastYEven,mapLow,p1x,p1y,p1h,	128, 4, 4, 0, 8,1);
 
 	DrawPlayerScreen8x8(screen8x8a,1,0,0,4);
 	DrawPlayerScreen4x4(screen4x4b,1,0,4,4);
 	DrawPlayerScreen4x4(screen4x4c,1,0,8,4);
+	DrawPlayerScreen4x4(screen4x4d,1,0,12,4);
+	DrawPlayerScreen8x8(screen8x8e,1,0,16,4);
+}
+else if(debugValue == 3)
+{
+	renderingDepth = TERRAINDEPTH / 2;
+	ProcessRayCastsNew(screen8x8a,rayCastXEven, rayCastYEven,mapLow,p1x,p1y,p1h,	0,  4, 4, 0, 8,1);
+	ProcessRayCastsNew(screen4x4b,rayCastXEven, rayCastYEven,mapMed,p1x,p1y,p1h,	32, 2, 2, 0, 16,1);
+	ProcessRayCastsNew(screen2x2c,rayCastXEven, rayCastYEven,mapHigh,p1x,p1y,p1h,	64, 1, 1, 0, 32,1);
+	ProcessRayCastsNew(screen4x4d,rayCastXEven, rayCastYEven,mapMed,p1x,p1y,p1h,	96, 2, 2, 0, 16,1);
+	ProcessRayCastsNew(screen8x8e,rayCastXEven, rayCastYEven,mapLow,p1x,p1y,p1h,	128, 4, 4, 0, 8,1);
+
+	DrawPlayerScreen8x8(screen8x8a,1,0,0,4);
+	DrawPlayerScreen4x4(screen4x4b,1,0,4,4);
+	DrawPlayerScreen2x2(screen2x2c,1,0,8,4);
 	DrawPlayerScreen4x4(screen4x4d,1,0,12,4);
 	DrawPlayerScreen8x8(screen8x8e,1,0,16,4);
 }
 else if(debugValue == 4)
 {
-	ProcessRayCastsWithMipMaps(screen8x8a,rayCastXEven, rayCastYEven,p1x,p1y,p1h,	0,  4, 4, 0, 8);
-	ProcessRayCastsWithMipMaps(screen4x4b,rayCastXEven, rayCastYEven,p1x,p1y,p1h,	32, 2, 2, 0, 16);
-	ProcessRayCastsWithMipMaps(screen3x2c,rayCastXOdd, rayCastYOdd,p1x,p1y,p1h,		48, 1, 1, 0, 24);
-	ProcessRayCastsWithMipMaps(screen4x4d,rayCastXEven, rayCastYEven,p1x,p1y,p1h,	96, 2, 2, 0, 16);
-	ProcessRayCastsWithMipMaps(screen8x8e,rayCastXEven, rayCastYEven,p1x,p1y,p1h,	128, 4, 4, 0, 8);
-
-	DrawPlayerScreen8x8(screen8x8a,1,0,0,4);
-	DrawPlayerScreen4x4(screen4x4b,1,0,4,4);
-	DrawPlayerScreen3x2(screen3x2c,1,0,8,4);
-	DrawPlayerScreen4x4(screen4x4d,1,0,12,4);
-	DrawPlayerScreen8x8(screen8x8e,1,0,16,4);
-}
-else if(debugValue == 5)
-{
-	ProcessRayCastsWithMipMaps(screen4x4a,rayCastXEven, rayCastYEven,p1x,p1y,p1h,	0,  2, 2, 0, 16);
-	ProcessRayCastsWithMipMaps(screen4x4b,rayCastXEven, rayCastYEven,p1x,p1y,p1h,	32, 2, 2, 0, 16);
-	ProcessRayCastsWithMipMaps(screen3x2c,rayCastXOdd, rayCastYOdd,p1x,p1y,p1h,		48, 1, 1, 0, 24);
-	ProcessRayCastsWithMipMaps(screen4x4d,rayCastXEven, rayCastYEven,p1x,p1y,p1h,	96, 2, 2, 0, 16);
-	ProcessRayCastsWithMipMaps(screen4x4e,rayCastXEven, rayCastYEven,p1x,p1y,p1h,	128, 2, 2, 0,16);
+	renderingDepth = TERRAINDEPTH - (TERRAINDEPTH / 3);
+	ProcessRayCastsNew(screen4x4a,rayCastXEven, rayCastYEven,mapMed,p1x,p1y,p1h,	0,  2, 2, 0, 16,1);
+	ProcessRayCastsNew(screen4x4b,rayCastXEven, rayCastYEven,mapMed,p1x,p1y,p1h,	32, 2, 2, 0, 16,1);
+	ProcessRayCastsNew(screen2x2c,rayCastXEven, rayCastYEven,mapHigh,p1x,p1y,p1h,	64, 1, 1, 0, 32,1);
+	ProcessRayCastsNew(screen4x4d,rayCastXEven, rayCastYEven,mapMed,p1x,p1y,p1h,	96, 2, 2, 0, 16,1);
+	ProcessRayCastsNew(screen4x4e,rayCastXEven, rayCastYEven,mapMed,p1x,p1y,p1h,	128, 2, 2, 0, 16,1);
 
 	DrawPlayerScreen4x4(screen4x4a,1,0,0,4);
 	DrawPlayerScreen4x4(screen4x4b,1,0,4,4);
-	DrawPlayerScreen3x2(screen3x2c,1,0,8,4);
+	DrawPlayerScreen2x2(screen2x2c,1,0,8,4);
 	DrawPlayerScreen4x4(screen4x4d,1,0,12,4);
+	DrawPlayerScreen4x4(screen4x4e,1,0,16,4);
+}
+else if(debugValue == 5)
+{
+	renderingDepth = TERRAINDEPTH - (TERRAINDEPTH / 5);
+	ProcessRayCastsNew(screen4x4a,rayCastXEven, rayCastYEven,mapMed,p1x,p1y,p1h,	0,  2, 2, 0, 16,1);
+	ProcessRayCastsNew(screen2x2b,rayCastXEven, rayCastYEven,mapHigh,p1x,p1y,p1h,	32, 1, 1, 0, 32,1);
+	ProcessRayCastsNew(screen2x2c,rayCastXEven, rayCastYEven,mapHigh,p1x,p1y,p1h,	64, 1, 1, 0, 32,1);
+	ProcessRayCastsNew(screen2x2d,rayCastXEven, rayCastYEven,mapHigh,p1x,p1y,p1h,	96, 1, 1, 0, 32,1);
+	ProcessRayCastsNew(screen4x4e,rayCastXEven, rayCastYEven,mapMed,p1x,p1y,p1h,	128, 2, 2, 0, 16,1);
+
+	DrawPlayerScreen4x4(screen4x4a,1,0,0,4);
+	DrawPlayerScreen2x2(screen2x2b,1,0,4,4);
+	DrawPlayerScreen2x2(screen2x2c,1,0,8,4);
+	DrawPlayerScreen2x2(screen2x2d,1,0,12,4);
 	DrawPlayerScreen4x4(screen4x4e,1,0,16,4);
 }
 else if(debugValue == 6)
 {
-	ProcessRayCastsWithMipMaps(screen4x4a,rayCastXEven, rayCastYEven,p1x,p1y,p1h,	0,  2, 2, 0, 16);
-	ProcessRayCastsWithMipMaps(screen3x2b,rayCastXOdd, rayCastYOdd,p1x,p1y,p1h,	24, 1, 1, 0, 24);
-	ProcessRayCastsWithMipMaps(screen3x2c,rayCastXOdd, rayCastYOdd,p1x,p1y,p1h,	48, 1, 1, 0, 24);
-	ProcessRayCastsWithMipMaps(screen3x2d,rayCastXOdd, rayCastYOdd,p1x,p1y,p1h,	72, 1, 1, 0, 24);
-	ProcessRayCastsWithMipMaps(screen4x4e,rayCastXEven, rayCastYEven,p1x,p1y,p1h,	128, 2, 2, 0,16);
+	renderingDepth = TERRAINDEPTH;
+	ProcessRayCastsNew(screen2x2a,rayCastXEven, rayCastYEven,mapHigh,p1x,p1y,p1h,	0,  1, 1, 0, 32,1);
+	ProcessRayCastsNew(screen2x2b,rayCastXEven, rayCastYEven,mapHigh,p1x,p1y,p1h,	32, 1, 1, 0, 32,1);
+	ProcessRayCastsNew(screen2x2c,rayCastXEven, rayCastYEven,mapHigh,p1x,p1y,p1h,	64, 1, 1, 0, 32,1);
+	ProcessRayCastsNew(screen2x2d,rayCastXEven, rayCastYEven,mapHigh,p1x,p1y,p1h,	96, 1, 1, 0, 32,1);
+	ProcessRayCastsNew(screen2x2e,rayCastXEven, rayCastYEven,mapHigh,p1x,p1y,p1h,	128, 1, 1, 0, 32,1);
 
-	DrawPlayerScreen4x4(screen4x4a,1,0,0,4);
-	DrawPlayerScreen3x2(screen3x2b,1,0,4,4);
-	DrawPlayerScreen3x2(screen3x2c,1,0,8,4);
-	DrawPlayerScreen3x2(screen3x2d,1,0,12,4);
-	DrawPlayerScreen4x4(screen4x4e,1,0,16,4);
+	DrawPlayerScreen2x2(screen2x2a,1,0,0,4);
+	DrawPlayerScreen2x2(screen2x2b,1,0,4,4);
+	DrawPlayerScreen2x2(screen2x2c,1,0,8,4);
+	DrawPlayerScreen2x2(screen2x2d,1,0,12,4);
+	DrawPlayerScreen2x2(screen2x2e,1,0,16,4);
 }
 else if(debugValue == 7)
 {
-	ProcessRayCastsWithMipMaps(screen3x2a,rayCastXOdd, rayCastXOdd,p1x,p1y,p1h,	0,  1, 1, 0, 24);
-	ProcessRayCastsWithMipMaps(screen3x2b,rayCastXOdd, rayCastYOdd,p1x,p1y,p1h,	24, 1, 1, 0, 24);
-	ProcessRayCastsWithMipMaps(screen3x2c,rayCastXOdd, rayCastYOdd,p1x,p1y,p1h,	48, 1, 1, 0, 24);
-	ProcessRayCastsWithMipMaps(screen3x2d,rayCastXOdd, rayCastYOdd,p1x,p1y,p1h,	72, 1, 1, 0, 24);
-	ProcessRayCastsWithMipMaps(screen3x2e,rayCastXOdd, rayCastXOdd,p1x,p1y,p1h,	96, 1, 1, 0, 24);
-
-	DrawPlayerScreen3x2(screen3x2a,1,0,0,4);
-	DrawPlayerScreen3x2(screen3x2b,1,0,4,4);
-	DrawPlayerScreen3x2(screen3x2c,1,0,8,4);
-	DrawPlayerScreen3x2(screen3x2d,1,0,12,4);
-	DrawPlayerScreen3x2(screen3x2e,1,0,16,4);
+	renderingDepth = TERRAINDEPTH/2;
+	ProcessRayCastsSlow(screen8x8slow,rayCastXYLow,mapLow,p1x,p1y,p1h,	0,  4, 4, 0, 32,5,2);
+	DrawPlayerScreen8x8Slow(screen8x8slow,1,0,2,16);
 }
 else if(debugValue == 8)
 {
-	//raycast 1 dimensional
-	ProcessRayCastsSlow(screen8x8slow,rayCastXEven, rayCastYEven,p1x,p1y,p1h,	0,  4, 4, 0, 32);
+	renderingDepth = TERRAINDEPTH/2;
+	ProcessRayCastsSlow(screen8x8slow,rayCastXYLow,mapLow,p1x,p1y,p1h,	0,  4, 4, 0, 32,5,2);
 	DrawPlayerScreen8x8Slow(screen8x8slow,1,0,2,16);
 }
 else if(debugValue == 9)
 {
-	//mul
-	ProcessRayCastsSlow3(screen8x8slow,rayCastXEven, rayCastYEven,p1x,p1y,p1h,	0,  4, 4, 0, 40);
-	DrawPlayerScreen8x8Slow(screen8x8slow,1,0,0,20);
+	renderingDepth = TERRAINDEPTH/2;
+	ProcessRayCastsSlow(screen8x8slow,rayCastXYLow,mapLow,p1x,p1y,p1h,	0,  4, 4, 0, 32,5,2);
+	DrawPlayerScreen8x8Slow(screen8x8slow,1,0,2,16);
 }
 else if(debugValue == 0)
 {
-	//custom mul
-	ProcessRayCastsSlowMul(screen8x8slow,rayCastXEven, rayCastYEven,p1x,p1y,p1h,	0,  4, 4, 0, 40);
-	DrawPlayerScreen8x8Slow(screen8x8slow,1,0,0,20);
+	ProcessRayCastsSlow(screen8x8slow,rayCastXYLow,mapLow,p1x,p1y,p1h,	0,  4, 4, 0, 32,5,2);
+	DrawPlayerScreen8x8Slow(screen8x8slow,1,0,2,16);
 }
+vPortWaitForEnd(s_pVPort);
 CopyFastToChipW(s_pBuffer->pBack);
 /*
 case 0: sx = 0;xStep = 4;xCycles = 8;currentTableStepSize=4;currentScreenStepSize=4*XSIZE;currentStep=0;break;
@@ -425,7 +425,7 @@ if(interlace == 3) DrawHeightMap(2);*/
 interlace++;
 if(interlace == 4) interlace = 0;
 
-//vPortWaitForEnd(s_pVPort);
+//
 
 
 

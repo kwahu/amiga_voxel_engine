@@ -109,9 +109,68 @@ UBYTE tableStepSizeX, UBYTE tableStepSizeY, UBYTE tableStepNumber, UBYTE xCycles
 		sx += tableStepSizeX;
 	}
 }
-void ProcessRayCastsSlow(UBYTE *screen, WORD (*rayCastX)[TERRAINDEPTH], WORD (*rayCastY)[TERRAINDEPTH],
+void ProcessRayCastsNew(UBYTE *screen, WORD (*rayCastX)[TERRAINDEPTH], WORD (*rayCastY)[TERRAINDEPTH], UWORD (*map)[256],
 UBYTE px, UBYTE py, UBYTE ph, UBYTE tableXStart,
-UBYTE tableStepSizeX, UBYTE tableStepSizeY, UBYTE tableStepNumber, UBYTE xCycles)
+UBYTE tableStepSizeX, UBYTE tableStepSizeY, UBYTE tableStepNumber, UBYTE xCycles, UBYTE zStep)
+{
+	UBYTE sx,sy,tz;
+	UBYTE th = 0;
+	UWORD position;
+	UBYTE mx,my;;
+	UWORD mapValue;
+	BYTE xvalue,yvalue;
+	UWORD rayValue;
+	UWORD startPosition = ((YSIZE/tableStepSizeY)-1)*xCycles;
+
+	UWORD currentScreenYStepSize;
+
+	sx = tableXStart;
+	currentScreenYStepSize = xCycles;
+
+	for(UBYTE i=0;i<xCycles;i++)
+	{
+		sy = 0 + tableStepNumber;
+		position = startPosition+i;
+		tz = 0;
+
+		while(tz < renderingDepth)
+		{
+			mx = (px + rayCastX[sx][tz]);
+			my = (py + tz);
+			mapValue = map[ mx ][ my ];//read color + height
+			th = mapValue;//take just the height
+			if(th>ph + rayCastY[sy][tz])
+			{
+				screen[position] = mapValue >> 8;
+				sy+=tableStepSizeY;
+				position-=currentScreenYStepSize;
+				if(sy == YSIZE) tz=renderingDepth; //break
+			}
+			else
+			{
+				tz+=zStep;
+			}
+		}
+		//finish vertical line with SKY
+		while(sy < YSIZE)
+		{
+			if(screen[position] == 31)
+				sy = YSIZE;
+			else
+			{
+				screen[position] = 31;
+				sy+=tableStepSizeY;
+				position-=currentScreenYStepSize;
+			}
+
+		}
+		//go to the next vertical line
+		sx += tableStepSizeX;
+	}
+}
+void ProcessRayCastsSlow(UBYTE *screen, WORD *rayCastXY, UWORD (*map)[256],
+UBYTE px, UBYTE py, UBYTE ph, UBYTE tableXStart,
+UBYTE tableStepSizeX, UBYTE tableStepSizeY, UBYTE tableStepNumber, UBYTE xCycles, UBYTE adrSize, UBYTE zStep)
 {
 	UBYTE sy,tz;
 	UBYTE th = 0;
@@ -122,7 +181,7 @@ UBYTE tableStepSizeX, UBYTE tableStepSizeY, UBYTE tableStepNumber, UBYTE xCycles
 	BYTE xvalue,yvalue;
 	UWORD rayValue;
 	UWORD startPosition = ((YSIZE/tableStepSizeY)-1)*xCycles;
-	UWORD sxa,sya;
+	UWORD sxa,sya,tza;
 
 	//UWORD currentScreenYStepSize;
 
@@ -131,15 +190,16 @@ UBYTE tableStepSizeX, UBYTE tableStepSizeY, UBYTE tableStepNumber, UBYTE xCycles
 
 	for(UBYTE sx=0;sx<xCycles;sx++)
 	{
-		sxa = (sx<<10);
+		sxa = (sx<<adrSize);
 		sya = 0;
 		sy = 0;// + tableStepNumber;
 		position = startPosition+sx;
-		tz = 1;
+		tz = 2;
+		tza = tz<<(adrSize*2);
 
-		while(tz != renderingDepth)
+		while(tz < renderingDepth)
 		{
-			rayValue = rayCastXY[sxa+sya+tz];
+			rayValue = rayCastXY[tza+sxa+sy];
 			xvalue = rayValue>>8;
 			yvalue = rayValue;
 
@@ -152,14 +212,15 @@ UBYTE tableStepSizeX, UBYTE tableStepSizeY, UBYTE tableStepNumber, UBYTE xCycles
 			{
 				screen[position] = mapValue >> 8;
 				sy++;
-				sya = sy<<5;
+			//	sya = sy;
 				if(sy == YSIZE) tz=renderingDepth; //break
 				//sya = (sy<<5);
 				position-=xCycles;
 			}
 			else
 			{
-				tz++;
+				tz+=zStep;
+				tza = tz<<(adrSize*2);
 			}
 		}
 		//finish vertical line with SKY
@@ -180,6 +241,7 @@ UBYTE tableStepSizeX, UBYTE tableStepSizeY, UBYTE tableStepNumber, UBYTE xCycles
 		//sx ++;//tableStepSizeX;
 	}
 }
+/*
 void ProcessRayCastsSlow2(UBYTE *screen, WORD (*rayCastX)[TERRAINDEPTH], WORD (*rayCastY)[TERRAINDEPTH],
 UBYTE px, UBYTE py, UBYTE ph, UBYTE tableXStart,
 UBYTE tableStepSizeX, UBYTE tableStepSizeY, UBYTE tableStepNumber, UBYTE xCycles)
@@ -257,6 +319,8 @@ static inline WORD mul(BYTE a, BYTE b)
 	if(b & 0b00100000) c+=a<<5;
 	return c;
 }
+*/
+/*
 void ProcessRayCastsSlow3(UBYTE *screen, WORD (*rayCastX)[TERRAINDEPTH], WORD (*rayCastY)[TERRAINDEPTH],
 UBYTE px, UBYTE py, UBYTE ph, UBYTE tableXStart,
 UBYTE tableStepSizeX, UBYTE tableStepSizeY, UBYTE tableStepNumber, UBYTE xCycles)
@@ -317,6 +381,8 @@ UBYTE tableStepSizeX, UBYTE tableStepSizeY, UBYTE tableStepNumber, UBYTE xCycles
 		sx += 1;
 	}
 }
+*/
+/*
 void ProcessRayCastsSlowMul(UBYTE *screen, WORD (*rayCastX)[TERRAINDEPTH], WORD (*rayCastY)[TERRAINDEPTH],
 UBYTE px, UBYTE py, UBYTE ph, UBYTE tableXStart,
 UBYTE tableStepSizeX, UBYTE tableStepSizeY, UBYTE tableStepNumber, UBYTE xCycles)
@@ -377,7 +443,7 @@ UBYTE tableStepSizeX, UBYTE tableStepSizeY, UBYTE tableStepNumber, UBYTE xCycles
 		sx += 1;
 	}
 }
-
+*/
 
 void ProcessRayCastsWithMipMaps(UBYTE *screen, WORD (*rayCastX)[TERRAINDEPTH], WORD (*rayCastY)[TERRAINDEPTH],
 UBYTE px, UBYTE py, UBYTE ph,
