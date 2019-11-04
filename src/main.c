@@ -1,6 +1,7 @@
 #include <ace/generic/main.h>
 #include "ray_casting.h"
 #include "ray_casting.c"
+#include "ray_cast_calculate.c"
 #include "draw_screen.c"
 #include "mipmaps.c"
 #include "file_read.c"
@@ -22,7 +23,7 @@ docker run --rm \
 -it amigadev/crosstools:m68k-amigaos bash
 */
 
-ULONG startTime,endTime,deltaTime,lastTime;
+static ULONG startTime,endTime,deltaTime,lastTime;
 
 void genericCreate(void) {
 	gamePushState(engineGsCreate, engineGsLoop, engineGsDestroy);
@@ -79,7 +80,7 @@ void engineGsCreate(void)
 	//CalculateRayCasts(rayCastXOdd, rayCastYOdd, XSIZEODD, YSIZE);
 	//CalculateRayCasts(rayCastXEven, rayCastYEven, XSIZEEVEN, YSIZE);
 	//CalculateRayCastsSlow(rayCastXEven, rayCastYEven);
-	CalculateRayCastsSingle(32, 32);
+	CalculateRayCastsSingle(rayCastXY, 32, 32);
 
 
 	GenerateWordDither8x8();
@@ -336,7 +337,7 @@ else if(debugValue == 8)
 {
 	//raycast 1 dimensional
 	ProcessRayCastsSlow(screen8x8slow,rayCastXEven, rayCastYEven,p1x,p1y,p1h,	0,  4, 4, 0, 32);
-	DrawPlayerScreen8x8Slow(screen8x8slow,1,0,0,16);
+	DrawPlayerScreen8x8Slow(screen8x8slow,1,0,2,16);
 }
 else if(debugValue == 9)
 {
@@ -350,7 +351,7 @@ else if(debugValue == 0)
 	ProcessRayCastsSlowMul(screen8x8slow,rayCastXEven, rayCastYEven,p1x,p1y,p1h,	0,  4, 4, 0, 40);
 	DrawPlayerScreen8x8Slow(screen8x8slow,1,0,0,20);
 }
-
+CopyFastToChipW(s_pBuffer->pBack);
 /*
 case 0: sx = 0;xStep = 4;xCycles = 8;currentTableStepSize=4;currentScreenStepSize=4*XSIZE;currentStep=0;break;
 case 1: sx = 118;xStep = 4;xCycles = 8;currentTableStepSize=4;currentScreenStepSize=4*XSIZE;currentStep=0;break;
@@ -426,7 +427,7 @@ if(interlace == 4) interlace = 0;
 
 //vPortWaitForEnd(s_pVPort);
 
-CopyFastToChipW(s_pBuffer->pBack);
+
 
 //blitWait();
 /*blitLine(

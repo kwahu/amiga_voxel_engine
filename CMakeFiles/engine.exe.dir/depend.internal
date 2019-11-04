@@ -92,6 +92,7 @@ CMakeFiles/engine.exe.dir/src/main.c.obj
  /work/src/file_read.c
  /work/src/main.c
  /work/src/mipmaps.c
+ /work/src/ray_cast_calculate.c
  /work/src/ray_casting.c
  /work/src/ray_casting.h
  deps/ace/include/ace/generic/main.h

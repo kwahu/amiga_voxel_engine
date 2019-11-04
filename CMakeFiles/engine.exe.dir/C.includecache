@@ -41,6 +41,8 @@ ray_casting.h
 /work/src/ray_casting.h
 ray_casting.c
 /work/src/ray_casting.c
+ray_cast_calculate.c
+/work/src/ray_cast_calculate.c
 draw_screen.c
 /work/src/draw_screen.c
 mipmaps.c
@@ -67,6 +69,10 @@ ace/utils/file.h
 -
 
 /work/src/mipmaps.c
+ray_casting.h
+/work/src/ray_casting.h
+
+/work/src/ray_cast_calculate.c
 ray_casting.h
 /work/src/ray_casting.h
 
