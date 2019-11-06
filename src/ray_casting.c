@@ -1,5 +1,71 @@
 #include "ray_casting.h"
 
+void ProcessRayCastsNew(UBYTE *screen, WORD (*rayCastX)[TERRAINDEPTH], WORD (*rayCastY)[TERRAINDEPTH], UWORD (*map)[256],
+UBYTE px, UBYTE py, UBYTE ph, UBYTE tableXStart,
+UBYTE tableStepSizeX, UBYTE tableStepSizeY, UBYTE tableStepNumber, UBYTE xCycles, UBYTE zStep)
+{
+	UBYTE sx,sy,tz;
+	UBYTE th = 0;
+	UWORD position;
+	UBYTE mx,my;;
+	UWORD mapValue;
+	BYTE xvalue,yvalue;
+	UWORD rayValue;
+	UWORD startPosition = ((YSIZE/tableStepSizeY)-1)*xCycles;
+
+	UWORD currentScreenYStepSize;
+
+	sx = tableXStart;
+	currentScreenYStepSize = xCycles;
+
+	//for each vertical line
+	for(UBYTE i=0;i<xCycles;i++)
+	{
+		sy = 0 + tableStepNumber;
+		position = startPosition+i;
+		tz = 0;
+
+		//check depth step by step
+		while(tz < renderingDepth)
+		{
+			//take x from the height map based on the raycast path step
+			mx = (px + rayCastX[sx][tz]);
+			//take y from tbe height map based on the depth step
+			my = (py + tz);
+			mapValue = map[ mx ][ my ];//read color + height
+			th = mapValue;//take just the height
+
+			//check if read height is higher than what we expect from the raycast table
+			if(th>ph + rayCastY[sy][tz])
+			{
+				screen[position] = mapValue >> 8;//write pixel color
+				sy+=tableStepSizeY;//go step higher in the raycast table
+				position-=currentScreenYStepSize;//go step higher on screen
+				if(sy == YSIZE) tz=renderingDepth; //break if end of screen
+			}
+			else
+			{
+				tz+=zStep;//go step in depth if no height hit
+			}
+		}
+		//finish vertical line with SKY
+		while(sy < YSIZE)
+		{
+			if(screen[position] == 31)
+				sy = YSIZE;
+			else
+			{
+				screen[position] = 31;
+				sy+=tableStepSizeY;
+				position-=currentScreenYStepSize;
+			}
+
+		}
+
+		sx += tableStepSizeX;//go to the next vertical line
+	}
+}
+
 void ProcessRayCasts(UBYTE *screen, WORD (*rayCastX)[TERRAINDEPTH], WORD (*rayCastY)[TERRAINDEPTH],
 UBYTE px, UBYTE py, UBYTE ph, UBYTE tableXStart,
 UBYTE tableStepSizeX, UBYTE tableStepSizeY, UBYTE tableStepNumber, UBYTE xCycles)
@@ -109,65 +175,7 @@ UBYTE tableStepSizeX, UBYTE tableStepSizeY, UBYTE tableStepNumber, UBYTE xCycles
 		sx += tableStepSizeX;
 	}
 }
-void ProcessRayCastsNew(UBYTE *screen, WORD (*rayCastX)[TERRAINDEPTH], WORD (*rayCastY)[TERRAINDEPTH], UWORD (*map)[256],
-UBYTE px, UBYTE py, UBYTE ph, UBYTE tableXStart,
-UBYTE tableStepSizeX, UBYTE tableStepSizeY, UBYTE tableStepNumber, UBYTE xCycles, UBYTE zStep)
-{
-	UBYTE sx,sy,tz;
-	UBYTE th = 0;
-	UWORD position;
-	UBYTE mx,my;;
-	UWORD mapValue;
-	BYTE xvalue,yvalue;
-	UWORD rayValue;
-	UWORD startPosition = ((YSIZE/tableStepSizeY)-1)*xCycles;
 
-	UWORD currentScreenYStepSize;
-
-	sx = tableXStart;
-	currentScreenYStepSize = xCycles;
-
-	for(UBYTE i=0;i<xCycles;i++)
-	{
-		sy = 0 + tableStepNumber;
-		position = startPosition+i;
-		tz = 0;
-
-		while(tz < renderingDepth)
-		{
-			mx = (px + rayCastX[sx][tz]);
-			my = (py + tz);
-			mapValue = map[ mx ][ my ];//read color + height
-			th = mapValue;//take just the height
-			if(th>ph + rayCastY[sy][tz])
-			{
-				screen[position] = mapValue >> 8;
-				sy+=tableStepSizeY;
-				position-=currentScreenYStepSize;
-				if(sy == YSIZE) tz=renderingDepth; //break
-			}
-			else
-			{
-				tz+=zStep;
-			}
-		}
-		//finish vertical line with SKY
-		while(sy < YSIZE)
-		{
-			if(screen[position] == 31)
-				sy = YSIZE;
-			else
-			{
-				screen[position] = 31;
-				sy+=tableStepSizeY;
-				position-=currentScreenYStepSize;
-			}
-
-		}
-		//go to the next vertical line
-		sx += tableStepSizeX;
-	}
-}
 void ProcessRayCastsSlow(UBYTE *screen, WORD *rayCastXY, UWORD (*map)[256],
 UBYTE px, UBYTE py, UBYTE ph, UBYTE tableXStart,
 UBYTE tableStepSizeX, UBYTE tableStepSizeY, UBYTE tableStepNumber, UBYTE xCycles, UBYTE adrSize, UBYTE zStep)
