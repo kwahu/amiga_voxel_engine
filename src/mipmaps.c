@@ -1,5 +1,6 @@
 #include "ray_casting.h"
 
+/*
 void CalculateColorMipMaps()
 {
 	UWORD value;
@@ -91,4 +92,4 @@ void CalculateHeightMipMaps()
 		if(value < 0) value = 0;
 		heightMap4[x][y] = value;
 	}
-}
+}*/

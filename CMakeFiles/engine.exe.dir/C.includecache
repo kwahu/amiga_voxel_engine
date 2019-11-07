@@ -45,8 +45,6 @@ ray_cast_calculate.c
 /work/src/ray_cast_calculate.c
 draw_screen.c
 /work/src/draw_screen.c
-mipmaps.c
-/work/src/mipmaps.c
 file_read.c
 /work/src/file_read.c
 bitmap_filters.c
@@ -67,10 +65,6 @@ ace/managers/blit.h
 -
 ace/utils/file.h
 -
-
-/work/src/mipmaps.c
-ray_casting.h
-/work/src/ray_casting.h
 
 /work/src/ray_cast_calculate.c
 ray_casting.h

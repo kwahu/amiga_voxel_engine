@@ -1,6 +1,6 @@
 #include "ray_casting.h"
 //smooth the map so that there are less "spike" artifacts from the coarse rendering
-void SmoothHeightMap()
+void SmoothHeightMap(UBYTE (*map)[256])
 {
 	int value;
 	for (int x = 0; x < 256; x++)
@@ -9,14 +9,14 @@ void SmoothHeightMap()
 		value = 0;
 		for(int a = -1; a<2 ;a++)
 		for(int b = -1; b<2 ;b++)
-		value += heightMap0[(UBYTE)(x+a)][(UBYTE)(y+b)];
+		value += map[(UBYTE)(x+a)][(UBYTE)(y+b)];
 
-		heightMap0[x][y] = value/9;
+		map[x][y] = value/9;
 	}
 }
 
 //smooth color map so that there are gradients between contrasting colours
-void SmoothColorMap()
+void SmoothColorMap(UBYTE (*map)[256])
 {
 	int value;
 	for (int x = 0; x < 256; x++)
@@ -25,9 +25,9 @@ void SmoothColorMap()
 		value = 0;
 		for(int a = -1; a<2 ;a++)
 		for(int b = -1; b<2 ;b++)
-		value += colorMap0[(UBYTE)(x+a)][(UBYTE)(y+b)];
+		value += map[(UBYTE)(x+a)][(UBYTE)(y+b)];
 
-		colorMap0[x][y] = value/9;
+		map[x][y] = value/9;
 	}
 }
 /*
@@ -66,20 +66,20 @@ void GenerateColorMap()
 	}
 }
 //add more light to higher ground
-void AddHeightToColorMap()
+void AddHeightToColorMap(UBYTE (*mapColor)[256], UBYTE (*mapHeight)[256])
 {
 	int value;
 	for (int x = 0; x < 256; x++)
 	for (int y = 0; y < 256; y++)
 	{
-		value = colorMap0[x][y]+heightMap0[x][y]/32-5;
+		value = mapColor[x][y]+mapHeight[x][y]/32-5;
 		if(value < 1) value = 1;
 		if(value > 28) value = 28;
-		colorMap0[x][y] = (UBYTE)(value);
+		mapColor[x][y] = (UBYTE)(value);
 	}
 }
 //add light and shadow contrast on the left and right sides of the terrain
-void AddBumpToColorMap()
+void AddBumpToColorMap(UBYTE (*mapColor)[256], UBYTE (*mapHeight)[256])
 {
 	int value;
 
@@ -87,12 +87,20 @@ void AddBumpToColorMap()
 	{
 		for (int y = 0; y < 256; y++)
 		{
-			value =  heightMap0[x][y] - heightMap0[x+1][y];//  + heightMap0[x][y] - heightMap0[x][y-1];
-			value = colorMap0[x][y] + 4 +  ( value /2);
+			value =  mapHeight[x][y] - mapHeight[x+1][y];//  + heightMap0[x][y] - heightMap0[x][y-1];
+			value = mapColor[x][y] + 4 +  ( value /2);
 			if(value < 1) value = 1;
 			if(value > 28) value = 28;
-			colorMap0[x][y] = (UBYTE)(value);
+			mapColor[x][y] = (UBYTE)(value);
 		}
 	}
 
+}
+void CopyMap(UBYTE (*source)[256], UBYTE (*destination)[256])
+{
+	for (int x = 0; x < 256; x++)
+	for (int y = 0; y < 256; y++)
+	{
+		destination[x][y] = source[x][y];
+	}
 }

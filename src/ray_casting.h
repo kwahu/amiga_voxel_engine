@@ -15,17 +15,17 @@
 #define XSIZEEVEN 160
 #define YSIZE 128
 
-static UBYTE heightMap0[256][256];//64k
-static UBYTE heightMap1[128][128];//16k
-static UBYTE heightMap2[64][64];//4k
-static UBYTE heightMap3[32][32];//1k
-static UBYTE heightMap4[16][16];
+ UBYTE heightMap0[256][256];//64k
+ UBYTE heightMap1[256][256];//16k
+ UBYTE heightMap2[256][256];//4k
+ //UBYTE heightMap3[32][32];//1k
+ //UBYTE heightMap4[16][16];
 
-static UBYTE colorMap0[256][256];//64
-static UBYTE colorMap1[128][128];//16
-static UBYTE colorMap2[64][64];//4
-static UBYTE colorMap3[32][32];//1
-static UBYTE colorMap4[16][16];
+ UBYTE colorMap0[256][256];//64
+ UBYTE colorMap1[256][256];//16
+ UBYTE colorMap2[256][256];//4
+ //UBYTE colorMap3[32][32];//1
+ //UBYTE colorMap4[16][16];
 
  UWORD mapLow[256][256];
  UWORD mapMed[256][256];
@@ -45,7 +45,7 @@ static UBYTE colorMap4[16][16];
 //static WORD rayCastXX[40*TERRAINDEPTH];
 //static WORD rayCastYY[32*TERRAINDEPTH];
 
- UWORD rayCastXYLow[32*32*TERRAINDEPTH];
+ //UWORD rayCastXYLow[32*32*TERRAINDEPTH];
 
  //UWORD rayCastXYEven[128*128*TERRAINDEPTH];
 
@@ -53,7 +53,8 @@ static UBYTE colorMap4[16][16];
 
 //UBYTE modulo2[XSIZE];
 
-UBYTE debugValue;
+UBYTE debugValue,debugValue2,debugValue3,debugValue4;
+
 
 //sand dunes theme
 UWORD kolory[COLORS] =
@@ -62,7 +63,7 @@ UWORD kolory[COLORS] =
 	0xa65,0xb75,0xc85,0xd96,0xeb8,0xfdb,0xbcc,0x8be
 };
 
-static UBYTE screen8x8slow[40*32];
+// UBYTE screen8x8slow[40*32];
 
  UBYTE screen8x8a[8*32];//0,256k
  UBYTE screen8x8b[8*32];//0,256k
@@ -106,19 +107,24 @@ static UBYTE dither4x4OddP2[COLORS*COLORS];//1k
 static UBYTE dither4x4OddP3[COLORS*COLORS];//1k
 static UBYTE dither4x4OddP4[COLORS*COLORS];//1k
 
-static UBYTE dither3x2EvenP1[COLORS*COLORS*COLORS];//32k
-static UBYTE dither3x2EvenP2[COLORS*COLORS*COLORS];//32k
-static UBYTE dither3x2EvenP3[COLORS*COLORS*COLORS];//32k
-static UBYTE dither3x2EvenP4[COLORS*COLORS*COLORS];//32k
-static UBYTE dither3x2OddP1[COLORS*COLORS*COLORS];//32k
-static UBYTE dither3x2OddP2[COLORS*COLORS*COLORS];//32k
-static UBYTE dither3x2OddP3[COLORS*COLORS*COLORS];//32k
-static UBYTE dither3x2OddP4[COLORS*COLORS*COLORS];//32k
+UBYTE dither3x2EvenP1[COLORS*COLORS*COLORS];//32k
+UBYTE dither3x2EvenP2[COLORS*COLORS*COLORS];//32k
+UBYTE dither3x2EvenP3[COLORS*COLORS*COLORS];//32k
+UBYTE dither3x2EvenP4[COLORS*COLORS*COLORS];//32k
+UBYTE dither3x2OddP1[COLORS*COLORS*COLORS];//32k
+UBYTE dither3x2OddP2[COLORS*COLORS*COLORS];//32k
+UBYTE dither3x2OddP3[COLORS*COLORS*COLORS];//32k
+UBYTE dither3x2OddP4[COLORS*COLORS*COLORS];//32k
 
- UBYTE dither2x2P1[COLORS/2*COLORS/2*COLORS/2*COLORS/2];//64k
- UBYTE dither2x2P2[COLORS/2*COLORS/2*COLORS/2*COLORS/2];//64k
- UBYTE dither2x2P3[COLORS/2*COLORS/2*COLORS/2*COLORS/2];//64k
- UBYTE dither2x2P4[COLORS/2*COLORS/2*COLORS/2*COLORS/2];//64k
+// UBYTE dither2x2P1Even[COLORS*COLORS*COLORS*COLORS];//64k
+// UBYTE dither2x2P2Even[COLORS*COLORS*COLORS*COLORS];//64k
+// UBYTE dither2x2P3Even[COLORS*COLORS*COLORS*COLORS];//64k
+// UBYTE dither2x2P4Even[COLORS*COLORS*COLORS*COLORS];//64k
+/*
+ UBYTE dither2x2P1Odd[COLORS/2*COLORS*COLORS*COLORS/2];//64k
+ UBYTE dither2x2P2Odd[COLORS/2*COLORS*COLORS*COLORS/2];//64k
+ UBYTE dither2x2P3Odd[COLORS/2*COLORS*COLORS*COLORS/2];//64k
+ UBYTE dither2x2P4Odd[COLORS/2*COLORS*COLORS*COLORS/2];//64k*/
 
 static UWORD p1xf,p1yf,p1hf,p2xf,p2yf,p2hf;
 static UWORD p1x,p1y,p1h,p2x,p2y,p2h;

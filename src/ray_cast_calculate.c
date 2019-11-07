@@ -7,12 +7,13 @@ void CalculateRayCasts(WORD (*rayCastX)[TERRAINDEPTH], WORD (*rayCastY)[TERRAIND
 	int syy;
 	int tzz; //depth step value
 	int fovX = xSize/20; //this changes the field of view
-	int fovY = 8;
+	int fovY = 4; //4 nice height change
 
 	tzz = 1;
 	for(int tz=0;tz<TERRAINDEPTH;tz++)
 	{
-		tzz += 10;//+tz/16; //increase step with the distance from camera
+		//high - 2 - 8
+		tzz += debugValue3+tz/debugValue2;//+tz/16; //increase step with the distance from camera
 		for(int sx=-xSize/2;sx<xSize/2;sx++)
 		{
 			sxx = (sx * tzz)/30; //make smaller steps

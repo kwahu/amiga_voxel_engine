@@ -90,7 +90,6 @@ CMakeFiles/engine.exe.dir/src/main.c.obj: src/draw_screen.c
 CMakeFiles/engine.exe.dir/src/main.c.obj: src/draw_ships.c
 CMakeFiles/engine.exe.dir/src/main.c.obj: src/file_read.c
 CMakeFiles/engine.exe.dir/src/main.c.obj: src/main.c
-CMakeFiles/engine.exe.dir/src/main.c.obj: src/mipmaps.c
 CMakeFiles/engine.exe.dir/src/main.c.obj: src/ray_cast_calculate.c
 CMakeFiles/engine.exe.dir/src/main.c.obj: src/ray_casting.c
 CMakeFiles/engine.exe.dir/src/main.c.obj: src/ray_casting.h

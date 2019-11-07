@@ -4,7 +4,8 @@ void ProcessRayCastsNew(UBYTE *screen, WORD (*rayCastX)[TERRAINDEPTH], WORD (*ra
 UBYTE px, UBYTE py, UBYTE ph, UBYTE tableXStart,
 UBYTE tableStepSizeX, UBYTE tableStepSizeY, UBYTE tableStepNumber, UBYTE xCycles, UBYTE zStep)
 {
-	UBYTE sx,sy,tz;
+	UBYTE sx,sy;
+	UWORD tz;
 	UBYTE th = 0;
 	UWORD position;
 	UBYTE mx,my;;
@@ -31,7 +32,7 @@ UBYTE tableStepSizeX, UBYTE tableStepSizeY, UBYTE tableStepNumber, UBYTE xCycles
 			//take x from the height map based on the raycast path step
 			mx = (px + rayCastX[sx][tz]);
 			//take y from tbe height map based on the depth step
-			my = (py + tz);
+			my = (py + (tz<<debugValue4));
 			mapValue = map[ mx ][ my ];//read color + height
 			th = mapValue;//take just the height
 
@@ -51,11 +52,11 @@ UBYTE tableStepSizeX, UBYTE tableStepSizeY, UBYTE tableStepNumber, UBYTE xCycles
 		//finish vertical line with SKY
 		while(sy < YSIZE)
 		{
-			if(screen[position] == 31)
-				sy = YSIZE;
-			else
+			//if(screen[position] == 31)
+			//	sy = YSIZE;
+			//else
 			{
-				screen[position] = 31;
+				screen[position] = sy/4;
 				sy+=tableStepSizeY;
 				position-=currentScreenYStepSize;
 			}
@@ -452,7 +453,7 @@ UBYTE tableStepSizeX, UBYTE tableStepSizeY, UBYTE tableStepNumber, UBYTE xCycles
 	}
 }
 */
-
+/*
 void ProcessRayCastsWithMipMaps(UBYTE *screen, WORD (*rayCastX)[TERRAINDEPTH], WORD (*rayCastY)[TERRAINDEPTH],
 UBYTE px, UBYTE py, UBYTE ph,
 	UBYTE tableXStart,	UBYTE tableStepSizeX, UBYTE tableStepSizeY, UBYTE tableStepNumber, UBYTE xCycles)
@@ -538,3 +539,4 @@ UBYTE px, UBYTE py, UBYTE ph,
 		sx += tableStepSizeX;
 	}
 }
+*/
