@@ -89,6 +89,7 @@ CMakeFiles/engine.exe.dir/src/main.c.obj
  /work/src/draw_maps.c
  /work/src/draw_screen.c
  /work/src/draw_ships.c
+ /work/src/draw_sprite.c
  /work/src/file_read.c
  /work/src/main.c
  /work/src/ray_cast_calculate.c

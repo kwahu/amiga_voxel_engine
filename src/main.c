@@ -8,6 +8,7 @@
 #include "bitmap_filters.c"
 #include "dithering.c"
 #include "draw_ships.c"
+#include "draw_sprite.c"
 #include "draw_maps.c"
 #include <ace/managers/game.h>
 #include <ace/managers/timer.h>
@@ -65,20 +66,16 @@ void engineGsCreate(void)
 	);
 
 
-	p1xf = 40*15;
+	p1xf = 40*100;
 	p1yf = 0;
-	p1hf = 30*15;
+	p1hf = 30*100;
 
 	p2x = 0;
 	p2y = 0;
 	p2h = 10;
 
 
-	renderingDepth = 16;
-	debugValue=1;
-	debugValue2 = 1;
-	debugValue3 = 10;
-	debugValue4 = 2;
+
 
 	ReadHeight("height.raw");
 	//	ReadPalette("palette.raw");
@@ -88,7 +85,7 @@ void engineGsCreate(void)
 	SmoothHeightMap(heightMap0);
 
 	//CalculateRayCasts(rayCastXOdd, rayCastYOdd, XSIZEODD, YSIZE);
-	CalculateRayCasts(rayCastXEven, rayCastYEven, XSIZEEVEN, YSIZE);
+//	CalculateRayCasts(rayCastXEven, rayCastYEven, XSIZEEVEN, YSIZE);
 	//CalculateRayCastsSlow(rayCastXEven, rayCastYEven);
 //	CalculateRayCastsSingle(rayCastXYLow, 32, 32, 5);
 	//CalculateRayCastsSingle(rayCastXYEven, XSIZEEVEN, YSIZE, 7);
@@ -117,7 +114,12 @@ void engineGsCreate(void)
 	CombineMapsHigh(heightMap1, colorMap1, mapMed);
 	CombineMapsHigh(heightMap2, colorMap2, mapLow);
 
-
+	renderingDepth = 16;
+	debugValue=3;
+	debugValue2 = 1;
+	debugValue3 = 10;
+	debugValue4 = 2;
+	Recalculate();
 
 	memcpy(s_pVPort->pPalette, kolory, 16 * sizeof(UWORD));
 
@@ -138,6 +140,7 @@ void Recalculate()
 void engineGsLoop(void) {
 	logAvgBegin(s_pAvgTime);
 	joyProcess();
+//	keyProcess();
 	startTime = timerGetPrec();
 	deltaTime = startTime - lastTime;
 	lastTime = startTime;
@@ -147,7 +150,7 @@ if(keyCheck(KEY_SPACE)) {
 }
 else
 {
-	  if(joyCheck(JOY1_RIGHT)) { p1xf+=deltaTime/10000*3; }
+	 /* if(joyCheck(JOY1_RIGHT)) { p1xf+=deltaTime/10000*3; }
 		if(joyCheck(JOY1_LEFT)) {p1xf-=deltaTime/10000*3; }
 		if(joyCheck(JOY1_DOWN)) { p1hf-=deltaTime/10000*3; }
 		if(joyCheck(JOY1_UP)) { p1hf+=deltaTime/10000*3; }
@@ -158,9 +161,35 @@ else
 		if(keyCheck(KEY_RIGHT))p1xf+=deltaTime/10000*3;
 		if(keyCheck(KEY_LEFT))p1xf-=deltaTime/10000*3;
 		if(keyCheck(KEY_RALT))p1hf+=deltaTime/10000*3;
-		if(keyCheck(KEY_CONTROL))p1hf-=deltaTime/10000*3;
+		if(keyCheck(KEY_CONTROL))p1hf-=deltaTime/10000*3;*/
 
-	if(keyCheck(KEY_1))
+		if(joyCheck(JOY1_RIGHT)) {	cx+=deltaTime/100; }
+ 		else if(joyCheck(JOY1_LEFT)) {		cx-=deltaTime/100; }
+		else if(cx!=0) {cx = cx - cx/((LONG)(deltaTime)/1000);}
+
+		if(cx > 0x3000) cx = 0x3000;
+		else if(cx < -0x3000) cx = -0x3000;
+
+		if(cy > 0x3000) cy = 0x3000;
+		else if(cy < -0x3000) cy = -0x3000;
+
+ 		if(joyCheck(JOY1_DOWN)) {		cy+=deltaTime/100; }
+ 		else if(joyCheck(JOY1_UP)) {			cy-=deltaTime/100; }
+		else if(cy!=0) {cy = cy - cy/((LONG)(deltaTime)/1000);}
+
+ 		if(joyCheck(JOY1_FIRE)) {		p1yf+=deltaTime/10000;}
+
+		p1xf += (LONG)(deltaTime/10000) * cx/2000;
+		p1hf -= (LONG)(deltaTime/10000) * cy/1000;
+
+		p1yf+=deltaTime/2000;
+
+
+
+
+
+
+	if(keyCheck(KEY_1) && debugValue!=1)
 	{
 		renderingDepth = 16;
 		debugValue=1;
@@ -169,7 +198,7 @@ else
 		debugValue4 = 2;
 		Recalculate();
 	}
-	if(keyCheck(KEY_2))
+	if(keyCheck(KEY_2) && debugValue!=2)
 	{
 		renderingDepth = 16;
 		debugValue=2;
@@ -178,7 +207,7 @@ else
 		debugValue4 = 2;
 		Recalculate();
 	}
-	if(keyCheck(KEY_3))
+	if(keyCheck(KEY_3) && debugValue!=3)
 	{
 		renderingDepth = 16;
 		debugValue=3;
@@ -187,7 +216,7 @@ else
 		debugValue4 = 2;
 		Recalculate();
 	}
-	if(keyCheck(KEY_4))
+	if(keyCheck(KEY_4) && debugValue!=4)
 	{
 		renderingDepth = 32;
 		debugValue=4;
@@ -196,7 +225,7 @@ else
 		debugValue4 = 1;
 		Recalculate();
 	}
-	if(keyCheck(KEY_5))
+	if(keyCheck(KEY_5) && debugValue!=5)
 	{
 		renderingDepth = 32;
 		debugValue=5;
@@ -205,7 +234,7 @@ else
 		debugValue4 = 1;
 		Recalculate();
 	}
-	if(keyCheck(KEY_6))
+	if(keyCheck(KEY_6) && debugValue!=6)
 	{
 		renderingDepth = 32;
 		debugValue=6;
@@ -214,7 +243,7 @@ else
 		debugValue4 = 1;
 		Recalculate();
 	}
-	if(keyCheck(KEY_7))
+	if(keyCheck(KEY_7) && debugValue!=7)
 	{
 		renderingDepth = 64;
 		debugValue=7;
@@ -224,6 +253,7 @@ else
 		Recalculate();
 	}
 
+/*
 	if(keyCheck(KEY_Q)){debugValue2=1;Recalculate();}
 	if(keyCheck(KEY_W)){debugValue2=2;Recalculate();}
 	if(keyCheck(KEY_E)){debugValue2=3;Recalculate();}
@@ -256,6 +286,7 @@ else
 	if(keyCheck(KEY_COMMA)){debugValue4=8;Recalculate();}
 	if(keyCheck(KEY_PERIOD)){debugValue4=9;Recalculate();}
 	if(keyCheck(KEY_SLASH)){debugValue4=10;Recalculate();}
+	*/
 }
 /*
 if(debugValue == 9)
@@ -280,9 +311,9 @@ else
 if(renderingDepth<10) renderingDepth = 10;
 else if(renderingDepth>TERRAINDEPTH) renderingDepth = TERRAINDEPTH;
 
-p1y = p1yf/15;
-p1x = p1xf/15;
-p1h = p1hf/15;
+p1y = p1yf/32;
+p1x = p1xf/32;
+p1h = p1hf/32;
 
 if(p1h<5) p1h = 5;
 if(p2h<5) p2h = 5;
@@ -399,11 +430,10 @@ else if(debugValue == 7)
 	DrawPlayerScreen3x2(screen3x2e,1,0,16,4);
 }
 
-//DrawPlayerShip(1);
-//DrawPlayerShip(2);
+DrawPixel((160+(cx/100))/16, 128+(cy/100), 0);
 
-//DrawTerrain();
-//DrawScreenHighDither();
+vPortWaitForEnd(s_pVPort);
+CopyFastToChipW(s_pBuffer->pBack);
 
 interlace++;
 if(interlace == 4) interlace = 0;

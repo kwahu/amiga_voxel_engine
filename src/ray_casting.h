@@ -130,6 +130,7 @@ static UWORD p1xf,p1yf,p1hf,p2xf,p2yf,p2hf;
 static UWORD p1x,p1y,p1h,p2x,p2y,p2h;
 static int interlace;
 static UBYTE renderingDepth = TERRAINDEPTH;
+static WORD cx,cy;
 
 void engineGsCreate(void);
 

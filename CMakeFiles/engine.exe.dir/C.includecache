@@ -24,6 +24,8 @@ ray_casting.h
 ray_casting.h
 /work/src/ray_casting.h
 
+/work/src/draw_sprite.c
+
 /work/src/file_read.c
 ray_casting.h
 /work/src/ray_casting.h
@@ -53,6 +55,8 @@ dithering.c
 /work/src/dithering.c
 draw_ships.c
 /work/src/draw_ships.c
+draw_sprite.c
+/work/src/draw_sprite.c
 draw_maps.c
 /work/src/draw_maps.c
 ace/managers/game.h
