@@ -65,6 +65,8 @@ ace/managers/blit.h
 -
 ace/utils/file.h
 -
+ace/managers/joy.h
+-
 
 /work/src/ray_cast_calculate.c
 ray_casting.h
@@ -144,6 +146,10 @@ ace/managers/timer.h
 ace/managers/key.h
 -
 ace/utils/extview.h
+-
+
+deps/ace/include/ace/managers/joy.h
+ace/types.h
 -
 
 deps/ace/include/ace/managers/key.h

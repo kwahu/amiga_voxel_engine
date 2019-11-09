@@ -98,6 +98,7 @@ CMakeFiles/engine.exe.dir/src/main.c.obj: deps/ace/include/ace/macros.h
 CMakeFiles/engine.exe.dir/src/main.c.obj: deps/ace/include/ace/managers/blit.h
 CMakeFiles/engine.exe.dir/src/main.c.obj: deps/ace/include/ace/managers/copper.h
 CMakeFiles/engine.exe.dir/src/main.c.obj: deps/ace/include/ace/managers/game.h
+CMakeFiles/engine.exe.dir/src/main.c.obj: deps/ace/include/ace/managers/joy.h
 CMakeFiles/engine.exe.dir/src/main.c.obj: deps/ace/include/ace/managers/key.h
 CMakeFiles/engine.exe.dir/src/main.c.obj: deps/ace/include/ace/managers/log.h
 CMakeFiles/engine.exe.dir/src/main.c.obj: deps/ace/include/ace/managers/memory.h

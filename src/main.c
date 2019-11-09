@@ -14,6 +14,8 @@
 #include <ace/managers/system.h>
 #include <ace/managers/blit.h>
 #include <ace/utils/file.h>
+#include <ace/managers/joy.h>
+
 
 /*
 docker run --rm \
@@ -111,14 +113,10 @@ void engineGsCreate(void)
 	SmoothColorMap(colorMap2);
 
 
-	//CombineMapsLow(heightMap2, colorMap2, mapLow);//combine into WORDs
-	//CombineMapsMed(heightMap1, colorMap1, mapMed);
 	CombineMapsHigh(heightMap0, colorMap0, mapHigh);
 	CombineMapsHigh(heightMap1, colorMap1, mapMed);
 	CombineMapsHigh(heightMap2, colorMap2, mapLow);
 
-	//CalculateModulo2();
-	//CalculateEnemyPlacement();
 
 
 	memcpy(s_pVPort->pPalette, kolory, 16 * sizeof(UWORD));
@@ -127,6 +125,7 @@ void engineGsCreate(void)
 
 	viewLoad(s_pView);
 	keyCreate();
+	joyOpen(0);
 	systemUnuse();
 }
 
@@ -138,36 +137,28 @@ void Recalculate()
 
 void engineGsLoop(void) {
 	logAvgBegin(s_pAvgTime);
+	joyProcess();
 	startTime = timerGetPrec();
 	deltaTime = startTime - lastTime;
 	lastTime = startTime;
-
-/*if(p1y == 250)
-	{
-	gameClose();
-}
-p1y += 1;
-p2y += 1;*/
 
 if(keyCheck(KEY_SPACE)) {
 	gameClose();
 }
 else
 {
+	  if(joyCheck(JOY1_RIGHT)) { p1xf+=deltaTime/10000*3; }
+		if(joyCheck(JOY1_LEFT)) {p1xf-=deltaTime/10000*3; }
+		if(joyCheck(JOY1_DOWN)) { p1hf-=deltaTime/10000*3; }
+		if(joyCheck(JOY1_UP)) { p1hf+=deltaTime/10000*3; }
+		if(joyCheck(JOY1_FIRE)) { p1yf+=deltaTime/10000; }
 
-
-	//	if(interlace % 2 == 0)
-	{
 		if(keyCheck(KEY_UP))p1yf+=deltaTime/10000;
 		if(keyCheck(KEY_DOWN))p1yf-=deltaTime/10000;
 		if(keyCheck(KEY_RIGHT))p1xf+=deltaTime/10000*3;
 		if(keyCheck(KEY_LEFT))p1xf-=deltaTime/10000*3;
 		if(keyCheck(KEY_RALT))p1hf+=deltaTime/10000*3;
 		if(keyCheck(KEY_CONTROL))p1hf-=deltaTime/10000*3;
-	}
-//	if(keyCheck(KEY_H))renderingDepth++;
-//	if(keyCheck(KEY_N))renderingDepth--;
-
 
 	if(keyCheck(KEY_1))
 	{
@@ -407,88 +398,6 @@ else if(debugValue == 7)
 	DrawPlayerScreen3x2(screen3x2d,1,0,12,4);
 	DrawPlayerScreen3x2(screen3x2e,1,0,16,4);
 }
-/*else if(debugValue == 8)
-{
-	renderingDepth = TERRAINDEPTH/2;
-	ProcessRayCastsSlow(screen8x8slow,rayCastXYLow,mapLow,p1x,p1y,p1h,	0,  4, 4, 0, 32,5,2);
-	DrawPlayerScreen8x8Slow(screen8x8slow,1,0,2,16);
-}
-else if(debugValue == 9)
-{
-	renderingDepth = TERRAINDEPTH/2;
-	ProcessRayCastsSlow(screen8x8slow,rayCastXYLow,mapLow,p1x,p1y,p1h,	0,  4, 4, 0, 32,5,2);
-	DrawPlayerScreen8x8Slow(screen8x8slow,1,0,2,16);
-}
-else if(debugValue == 0)
-{
-	ProcessRayCastsSlow(screen8x8slow,rayCastXYLow,mapLow,p1x,p1y,p1h,	0,  4, 4, 0, 32,5,2);
-	DrawPlayerScreen8x8Slow(screen8x8slow,1,0,2,16);
-}*/
-vPortWaitForEnd(s_pVPort);
-CopyFastToChipW(s_pBuffer->pBack);
-/*
-case 0: sx = 0;xStep = 4;xCycles = 8;currentTableStepSize=4;currentScreenStepSize=4*XSIZE;currentStep=0;break;
-case 1: sx = 118;xStep = 4;xCycles = 8;currentTableStepSize=4;currentScreenStepSize=4*XSIZE;currentStep=0;break;
-case 2: sx = 32;xStep = 2;xCycles = 16;currentTableStepSize=2;currentScreenStepSize=2*XSIZE;currentStep=0;break;
-case 3: sx = 86;xStep = 2;xCycles = 16;currentTableStepSize=2;currentScreenStepSize=2*XSIZE;currentStep=0;break;
-case 4: sx = 64;xStep = 1;xCycles = 23;currentTableStepSize=stepSize;currentScreenStepSize=screenYStepSize;currentStep=stepNumber;break;
-*/
-//xStep = 1;xCycles = 120;currentTableStepSize=1;currentScreenStepSize=1*XSIZE;currentStep=0;
-//xStep = 2;xCycles = 60;currentTableStepSize=2;currentScreenStepSize=2*XSIZE;currentStep=0;
-//xStep = 4;xCycles = 30;currentTableStepSize=4;currentScreenStepSize=4*XSIZE;currentStep=0;
-
-//DrawPlayerScreen(1,0,1);
-//DrawPlayerScreen8x8(1,0,0,0,0,20);
-//DrawPlayerScreen4x4(1,0,0,0,0,20);
-if(interlace == 0)
-{
-//	ProcessRayCasts(1,4,1);
-	//SmoothScreen(1);
-//	DrawPlayerScreen(1,0,0);
-
-//	DrawPlayerScreen8x8(1,0,0,0,0,4);
-	//DrawPlayerScreen4x4(1,0,0,32,4,4);
-	//DrawPlayerScreen8x8(1,0,0,86,16,4);
-	//DrawPlayerScreen3x2(1,0,0,24,24,72);
-}
-if(interlace == 1)
-{
-//	ProcessRayCasts(1,4,2);
-	//	SmoothScreen(1);
-//	DrawPlayerScreen(1,0,1);
-
-//	DrawPlayerScreen8x8(1,0,0,0,0,4);
-//	DrawPlayerScreen4x4(1,0,0,32,4,4);
-//	DrawPlayerScreen8x8(1,0,0,86,16,4);
-	//DrawPlayerScreen3x2(1,0,1,24,24,72);
-}
-if(interlace == 2)
-{
-//	ProcessRayCasts(1,4,3);
-	//SmoothScreen(1);
-//	DrawPlayerScreen(1,0,0);
-
-//	DrawPlayerScreen8x8(1,0,0,0,0,4);
-//	DrawPlayerScreen4x4(1,0,0,32,4,4);
-//	DrawPlayerScreen8x8(1,0,0,86,16,4);
-	//DrawPlayerScreen3x2(1,0,0,24,24,72);
-}
-if(interlace == 3)
-{
-//	ProcessRayCasts(1,4,4);
-	//SmoothScreen(1);
-//	DrawPlayerScreen(1,0,1);
-
-//	DrawPlayerScreen8x8(1,0,0,0,0,4);
-//	DrawPlayerScreen4x4(1,0,0,32,4,4);
-//	DrawPlayerScreen8x8(1,0,0,86,16,4);
-	//DrawPlayerScreen3x2(1,0,1,24,24,72);
-}
-/*
-if(interlace == 0) DrawColorMap(1);
-if(interlace == 1) DrawHeightMap(1);
-if(interlace == 2) DrawColorMap(2);
-if(interlace == 3) DrawHeightMap(2);*/
 
 //DrawPlayerShip(1);
 //DrawPlayerShip(2);
@@ -498,19 +407,6 @@ if(interlace == 3) DrawHeightMap(2);*/
 
 interlace++;
 if(interlace == 4) interlace = 0;
-
-//
-
-
-
-//blitWait();
-/*blitLine(
-s_pBuffer->pBack,
-0, 200,
-320, 200,
-0x1f, 0xAAAA, 0 // Try patterns 0xAAAA, 0xEEEE, etc.
-);*/
-
 
 logAvgEnd(s_pAvgTime);
 endTime = timerGetPrec();
@@ -542,18 +438,14 @@ void logAvgWriteKwahu(tAvg *pAvg) {
 void engineGsDestroy(void)
 {
 	systemUse();
+	joyClose();
 	viewLoad(0);
 	viewDestroy(s_pView);
 
 	char szAvg[15];
-	//timerFormatPrec(szAvg, s_pAvgTime->uwCurrDelta);
 	timerFormatPrec(szAvg, endTime - startTime);
 
 	printf("%s", szAvg );
 	printf("%lu", deltaTime);
-	//printf("%d ", mul(13,7));
-	//printf("%d ", mul(-13,7));
-
-
 	logAvgDestroy(s_pAvgTime);
 }

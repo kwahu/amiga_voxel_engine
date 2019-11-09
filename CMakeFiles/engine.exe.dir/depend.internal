@@ -99,6 +99,7 @@ CMakeFiles/engine.exe.dir/src/main.c.obj
  deps/ace/include/ace/managers/blit.h
  deps/ace/include/ace/managers/copper.h
  deps/ace/include/ace/managers/game.h
+ deps/ace/include/ace/managers/joy.h
  deps/ace/include/ace/managers/key.h
  deps/ace/include/ace/managers/log.h
  deps/ace/include/ace/managers/memory.h
