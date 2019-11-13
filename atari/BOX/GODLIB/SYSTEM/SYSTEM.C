@@ -14,9 +14,9 @@
 
 #include	"SYSTEM.H"
 
-#include	<GODLIB\MFP\MFP.H>
-#include	<GODLIB\VBL\VBL.H>
-#include	<GODLIB\XBIOS\XBIOS.H>
+#include	<GODLIB/MFP/MFP.H>
+#include	<GODLIB/VBL/VBL.H>
+#include	<GODLIB/XBIOS/XBIOS.H>
 
 
 /* ###################################################################################

@@ -16,11 +16,11 @@
 
 #include	"AMIXER.H"
 
-#include	<GODLIB\AUDIO\AUDIO.H>
-#include	<GODLIB\MEMORY\MEMORY.H>
-#include	<GODLIB\MFP\MFP.H>
-#include	<GODLIB\SYSTEM\SYSTEM.H>
-#include	<GODLIB\VBL\VBL.H>
+#include	<GODLIB/AUDIO/AUDIO.H>
+#include	<GODLIB/MEMORY/MEMORY.H>
+#include	<GODLIB/MFP/MFP.H>
+#include	<GODLIB/SYSTEM/SYSTEM.H>
+#include	<GODLIB/VBL/VBL.H>
 
 
 /* ###################################################################################

@@ -15,7 +15,7 @@
 
 #include	"GIF.H"
 
-#include	<GODLIB\MEMORY\MEMORY.H>
+#include	<GODLIB/MEMORY/MEMORY.H>
 
 
 /* ###################################################################################

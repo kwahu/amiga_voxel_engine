@@ -14,7 +14,7 @@
 
 #include	"SPRITE.H"
 
-#include	<GODLIB\MEMORY\MEMORY.H>
+#include	<GODLIB/MEMORY/MEMORY.H>
 
 
 /* ###################################################################################

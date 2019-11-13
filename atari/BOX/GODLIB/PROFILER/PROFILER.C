@@ -16,11 +16,11 @@
 
 #include	<STRING.H>
 
-#include	<GODLIB\FILE\FILE.H>
-#include	<GODLIB\MEMORY\MEMORY.H>
-#include	<GODLIB\PROGRAM\PROGRAM.H>
-#include	<GODLIB\SYSTEM\SYSTEM.H>
-#include	<GODLIB\VBL\VBL.H>
+#include	<GODLIB/FILE/FILE.H>
+#include	<GODLIB/MEMORY/MEMORY.H>
+#include	<GODLIB/PROGRAM/PROGRAM.H>
+#include	<GODLIB/SYSTEM/SYSTEM.H>
+#include	<GODLIB/VBL/VBL.H>
 
 
 /* ###################################################################################

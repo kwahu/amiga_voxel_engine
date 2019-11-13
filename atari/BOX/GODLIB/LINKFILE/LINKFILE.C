@@ -15,12 +15,12 @@
 #include	"LINKFILE.H"
 
 #include	<STRING.H>
-#include	<GODLIB\DEBUGLOG\DEBUGLOG.H>
-#include	<GODLIB\DRIVE\DRIVE.H>
-#include	<GODLIB\FILE\FILE.H>
-#include	<GODLIB\GEMDOS\GEMDOS.H>
-#include	<GODLIB\MEMORY\MEMORY.H>
-#include	<GODLIB\PACKER\PACKER.H>
+#include	<GODLIB/DEBUGLOG/DEBUGLOG.H>
+#include	<GODLIB/DRIVE/DRIVE.H>
+#include	<GODLIB/FILE/FILE.H>
+#include	<GODLIB/GEMDOS/GEMDOS.H>
+#include	<GODLIB/MEMORY/MEMORY.H>
+#include	<GODLIB/PACKER/PACKER.H>
 
 
 /* ###################################################################################

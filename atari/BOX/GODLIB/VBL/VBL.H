@@ -5,8 +5,8 @@
 #  INCLUDES
 ################################################################################### */
 
-#include	<GODLIB\BASE\BASE.H>
-#include	<GODLIB\MFP\MFP.H>
+#include	<GODLIB/BASE/BASE.H>
+#include	<GODLIB/MFP/MFP.H>
 
 
 /* ###################################################################################

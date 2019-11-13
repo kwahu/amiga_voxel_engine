@@ -2,17 +2,17 @@
 #  INCLUDES
 ################################################################################### */
 
-#include	<GODLIB\AUDIO\AUDIO.H>
-#include	<GODLIB\AUDIO\AMIXER.H>
-#include	<GODLIB\BIOS\BIOS.H>
-#include	<GODLIB\GEMDOS\GEMDOS.H>
-#include	<GODLIB\GRAPHIC\GRAPHIC.H>
-#include	<GODLIB\MUSIC\PINKNOTE.H>
-#include	<GODLIB\MFP\MFP.H>
-#include	<GODLIB\SYSTEM\SYSTEM.H>
-#include	<GODLIB\VIDEO\VIDEO.H>
-#include	<GODLIB\VBL\VBL.H>
-#include	<GODLIB\XBIOS\XBIOS.H>
+#include	<GODLIB/AUDIO/AUDIO.H>
+#include	<GODLIB/AUDIO/AMIXER.H>
+#include	<GODLIB/BIOS/BIOS.H>
+#include	<GODLIB/GEMDOS/GEMDOS.H>
+#include	<GODLIB/GRAPHIC/GRAPHIC.H>
+#include	<GODLIB/MUSIC/PINKNOTE.H>
+#include	<GODLIB/MFP/MFP.H>
+#include	<GODLIB/SYSTEM/SYSTEM.H>
+#include	<GODLIB/VIDEO/VIDEO.H>
+#include	<GODLIB/VBL/VBL.H>
+#include	<GODLIB/XBIOS/XBIOS.H>
 
 
 /* ###################################################################################

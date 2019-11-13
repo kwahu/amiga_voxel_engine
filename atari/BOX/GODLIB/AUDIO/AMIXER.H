@@ -5,9 +5,9 @@
 #  INCLUDES
 ################################################################################### */
 
-#include	<GODLIB\BASE\BASE.H>
+#include	<GODLIB/BASE/BASE.H>
 
-#include	<GODLIB\AUDIO\AUDIO.H>
+#include	<GODLIB/AUDIO/AUDIO.H>
 
 
 /* ###################################################################################

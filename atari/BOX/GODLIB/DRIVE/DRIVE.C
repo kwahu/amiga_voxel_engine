@@ -16,7 +16,7 @@
 
 #include	"DRIVE.H"
 
-#include	<GODLIB\GEMDOS\GEMDOS.H>
+#include	<GODLIB/GEMDOS/GEMDOS.H>
 
 
 /* ###################################################################################

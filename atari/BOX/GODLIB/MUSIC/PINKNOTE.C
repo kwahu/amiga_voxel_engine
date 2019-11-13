@@ -14,10 +14,10 @@
 
 #include	"PINKNOTE.H"
 
-#include	<GODLIB\ASSERT\ASSERT.H>
-#include	<GODLIB\MUSIC\SND.H>
-#include	<GODLIB\MFP\MFP.H>
-#include	<GODLIB\SYSTEM\SYSTEM.H>
+#include	<GODLIB/ASSERT/ASSERT.H>
+#include	<GODLIB/MUSIC/SND.H>
+#include	<GODLIB/MFP/MFP.H>
+#include	<GODLIB/SYSTEM/SYSTEM.H>
 
 
 /* ###################################################################################

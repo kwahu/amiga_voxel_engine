@@ -14,8 +14,8 @@
 
 #include	"BLITTER.H"
 
-#include	<GODLIB\CLI\CLI.H>
-#include	<GODLIB\MEMORY\MEMORY.H>
+#include	<GODLIB/CLI/CLI.H>
+#include	<GODLIB/MEMORY/MEMORY.H>
 
 
 /* ###################################################################################

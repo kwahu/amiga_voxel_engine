@@ -22,8 +22,8 @@
 
 #include	"GFX.H"
 
-#include	<GODLIB\MEMORY\MEMORY.H>
-#include	<GODLIB\FILE\FILE.H>
+#include	<GODLIB/MEMORY/MEMORY.H>
+#include	<GODLIB/FILE/FILE.H>
 
 
 /* ###################################################################################

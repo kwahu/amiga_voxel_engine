@@ -5,9 +5,9 @@
 #  INCLUDES
 ################################################################################### */
 
-#include	<GODLIB\BASE\BASE.H>
+#include	<GODLIB/BASE/BASE.H>
 
-#include	<GODLIB\PICTYPES\CANVAS.H>
+#include	<GODLIB/PICTYPES/CANVAS.H>
 
 
 /* ###################################################################################

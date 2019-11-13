@@ -6,9 +6,9 @@
 #  INCLUDES
 ################################################################################### */
 
-#include	<GODLIB\BASE\BASE.H>
-#include	<GODLIB\COOKIE\COOKIE.H>
-#include	<GODLIB\CLOCK\CLOCK.H>
+#include	<GODLIB/BASE/BASE.H>
+#include	<GODLIB/COOKIE/COOKIE.H>
+#include	<GODLIB/CLOCK/CLOCK.H>
 
 
 /* ###################################################################################

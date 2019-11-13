@@ -6,12 +6,12 @@
 
 #ifdef	dCLI_ACTIVE
 
-#include	<GODLIB\ASSERT\ASSERT.H>
-#include	<GODLIB\DEBUGLOG\DEBUGLOG.H>
-#include	<GODLIB\FONT8X8\FONT8X8.H>
-#include	<GODLIB\IKBD\IKBD.H>
-#include	<GODLIB\MEMORY\MEMORY.H>
-#include	<GODLIB\VIDEO\VIDEO.H>
+#include	<GODLIB/ASSERT/ASSERT.H>
+#include	<GODLIB/DEBUGLOG/DEBUGLOG.H>
+#include	<GODLIB/FONT8X8/FONT8X8.H>
+#include	<GODLIB/IKBD/IKBD.H>
+#include	<GODLIB/MEMORY/MEMORY.H>
+#include	<GODLIB/VIDEO/VIDEO.H>
 
 
 /* ###################################################################################

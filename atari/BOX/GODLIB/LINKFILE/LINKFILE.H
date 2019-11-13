@@ -5,8 +5,8 @@
 #  INCLUDES
 ################################################################################### */
 
-#include	<GODLIB\BASE\BASE.H>
-#include	<GODLIB\FILE\FILE.H>
+#include	<GODLIB/BASE/BASE.H>
+#include	<GODLIB/FILE/FILE.H>
 
 /* ###################################################################################
 #  DEFINES

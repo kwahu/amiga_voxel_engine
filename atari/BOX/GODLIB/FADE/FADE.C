@@ -14,8 +14,8 @@
 
 #include	"FADE.H"
 
-#include	<GODLIB\VBL\VBL.H>
-#include	<GODLIB\VIDEO\VIDEO.H>
+#include	<GODLIB/VBL/VBL.H>
+#include	<GODLIB/VIDEO/VIDEO.H>
 
 
 /* ###################################################################################

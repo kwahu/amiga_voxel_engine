@@ -126,7 +126,7 @@ UBYTE dither3x2OddP4[COLORS*COLORS*COLORS];//32k
  UBYTE dither2x2P3Odd[COLORS/2*COLORS*COLORS*COLORS/2];//64k
  UBYTE dither2x2P4Odd[COLORS/2*COLORS*COLORS*COLORS/2];//64k*/
 
-static UWORD p1xf,p1yf,p1hf,p2xf,p2yf,p2hf;
+static WORD p1xf,p1yf,p1hf,p2xf,p2yf,p2hf;
 static UWORD p1x,p1y,p1h,p2x,p2y,p2h;
 static int interlace;
 static UBYTE renderingDepth = TERRAINDEPTH;

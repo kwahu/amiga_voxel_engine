@@ -1,6 +1,6 @@
 #include "ray_casting.h"
 
-void ProcessRayCastsNew(UBYTE *screen, WORD (*rayCastX)[TERRAINDEPTH], WORD (*rayCastY)[TERRAINDEPTH], UWORD (*map)[256],
+void ProcessRayCastsMist(UBYTE *screen, WORD (*rayCastX)[TERRAINDEPTH], WORD (*rayCastY)[TERRAINDEPTH], UWORD (*map)[256],
 UBYTE px, UBYTE py, UBYTE ph, UBYTE tableXStart,
 UBYTE tableStepSizeX, UBYTE tableStepSizeY, UBYTE tableStepNumber, UBYTE xCycles, UBYTE zStep)
 {
@@ -13,6 +13,8 @@ UBYTE tableStepSizeX, UBYTE tableStepSizeY, UBYTE tableStepNumber, UBYTE xCycles
 	BYTE xvalue,yvalue;
 	UWORD rayValue;
 	UWORD startPosition = ((YSIZE/tableStepSizeY)-1)*xCycles;
+	UBYTE mist;
+
 
 	UWORD currentScreenYStepSize;
 
@@ -25,10 +27,12 @@ UBYTE tableStepSizeX, UBYTE tableStepSizeY, UBYTE tableStepNumber, UBYTE xCycles
 		sy = 0 + tableStepNumber;
 		position = startPosition+i;
 		tz = 0;
+		mist = 0;
 
 		//check depth step by step
 		while(tz < renderingDepth)
 		{
+
 			//take x from the height map based on the raycast path step
 			mx = (px + rayCastX[sx][tz]);
 			//take y from tbe height map based on the depth step
@@ -39,14 +43,15 @@ UBYTE tableStepSizeX, UBYTE tableStepSizeY, UBYTE tableStepNumber, UBYTE xCycles
 			//check if read height is higher than what we expect from the raycast table
 			if(th>ph + rayCastY[sy][tz])
 			{
-				screen[position] = mapValue >> 8;//write pixel color
+				screen[position] = ( ( 12 - (mapValue >> 8) ) >> (mist>>4) )+ 12 + th/32;//write pixel color
 				sy+=tableStepSizeY;//go step higher in the raycast table
 				position-=currentScreenYStepSize;//go step higher on screen
 				if(sy == YSIZE) tz=renderingDepth; //break if end of screen
 			}
 			else
 			{
-				tz+=zStep;//go step in depth if no height hit
+				tz++;//go step in depth if no height hit
+				mist += zStep;
 			}
 		}
 		//finish vertical line with SKY
@@ -56,7 +61,7 @@ UBYTE tableStepSizeX, UBYTE tableStepSizeY, UBYTE tableStepNumber, UBYTE xCycles
 			//	sy = YSIZE;
 			//else
 			{
-				screen[position] = sy/4;
+				screen[position] = ph/32 + 4 +sy/8;
 				sy+=tableStepSizeY;
 				position-=currentScreenYStepSize;
 			}

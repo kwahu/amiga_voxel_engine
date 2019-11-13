@@ -4,8 +4,8 @@
 
 #include	"EXCEPT.H"
 
-#include	<GODLIB\FONT8X8\FONT8X8.H>
-#include	<GODLIB\SYSTEM\SYSTEM.H>
+#include	<GODLIB/FONT8X8/FONT8X8.H>
+#include	<GODLIB/SYSTEM/SYSTEM.H>
 
 /* ###################################################################################
 #  DEFINES

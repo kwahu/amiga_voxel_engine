@@ -15,8 +15,8 @@
 
 #include	"CANVASIC.H"
 
-#include	<GODLIB\MEMORY\MEMORY.H>
-#include	<GODLIB\PICTYPES\OCTTREE.H>
+#include	<GODLIB/MEMORY/MEMORY.H>
+#include	<GODLIB/PICTYPES/OCTTREE.H>
 
 
 /* ###################################################################################

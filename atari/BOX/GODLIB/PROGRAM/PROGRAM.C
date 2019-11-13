@@ -14,9 +14,9 @@
 
 #include	"PROGRAM.H"
 
-#include	<GODLIB\FILE\FILE.H>
-#include	<GODLIB\MEMORY\MEMORY.H>
-#include	<GODLIB\SYSTEM\SYSTEM.H>
+#include	<GODLIB/FILE/FILE.H>
+#include	<GODLIB/MEMORY/MEMORY.H>
+#include	<GODLIB/SYSTEM/SYSTEM.H>
 
 
 /* ###################################################################################

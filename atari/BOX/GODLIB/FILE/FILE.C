@@ -16,8 +16,8 @@
 
 #include	"FILE.H"
 
-#include	<GODLIB\GEMDOS\GEMDOS.H>
-#include	<GODLIB\MEMORY\MEMORY.H>
+#include	<GODLIB/GEMDOS/GEMDOS.H>
+#include	<GODLIB/MEMORY/MEMORY.H>
 
 
 /* ###################################################################################

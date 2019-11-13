@@ -16,10 +16,10 @@
 
 #include	"MEMORY.H"
 
-#include	<GODLIB\GEMDOS\GEMDOS.H>
-#include	<GODLIB\DEBUG\DEBUG.H>
-#include	<GODLIB\DEBUGLOG\DEBUGLOG.H>
-#include	<GODLIB\SYSTEM\SYSTEM.H>
+#include	<GODLIB/GEMDOS/GEMDOS.H>
+#include	<GODLIB/DEBUG/DEBUG.H>
+#include	<GODLIB/DEBUGLOG/DEBUGLOG.H>
+#include	<GODLIB/SYSTEM/SYSTEM.H>
 
 
 /* ###################################################################################

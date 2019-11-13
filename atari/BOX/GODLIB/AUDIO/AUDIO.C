@@ -16,8 +16,8 @@
 
 #include	"AUDIO.H"
 
-#include	<GODLIB\MFP\MFP.H>
-#include	<GODLIB\SYSTEM\SYSTEM.H>
+#include	<GODLIB/MFP/MFP.H>
+#include	<GODLIB/SYSTEM/SYSTEM.H>
 
 
 

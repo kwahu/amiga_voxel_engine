@@ -14,9 +14,9 @@
 
 #include	"VIDEO.H"
 
-#include	<GODLIB\DEBUGLOG\DEBUGLOG.H>
-#include	<GODLIB\SYSTEM\SYSTEM.H>
-#include	<GODLIB\VBL\VBL.H>
+#include	<GODLIB/DEBUGLOG/DEBUGLOG.H>
+#include	<GODLIB/SYSTEM/SYSTEM.H>
+#include	<GODLIB/VBL/VBL.H>
 
 
 /* ###################################################################################

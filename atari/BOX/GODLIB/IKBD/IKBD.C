@@ -13,10 +13,10 @@
 
 #include	"IKBD.H"
 
-#include	<GODLIB\MEMORY\MEMORY.H>
-#include	<GODLIB\SYSTEM\SYSTEM.H>
-#include	<GODLIB\VBL\VBL.H>
-#include	<GODLIB\XBIOS\XBIOS.H>
+#include	<GODLIB/MEMORY/MEMORY.H>
+#include	<GODLIB/SYSTEM/SYSTEM.H>
+#include	<GODLIB/VBL/VBL.H>
+#include	<GODLIB/XBIOS/XBIOS.H>
 
 
 /* ###################################################################################

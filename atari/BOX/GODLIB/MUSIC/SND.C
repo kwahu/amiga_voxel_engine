@@ -14,9 +14,9 @@
 
 #include	"SND.H"
 
-#include	<GODLIB\ASSERT\ASSERT.H>
-#include	<GODLIB\MFP\MFP.H>
-#include	<GODLIB\SYSTEM\SYSTEM.H>
+#include	<GODLIB/ASSERT/ASSERT.H>
+#include	<GODLIB/MFP/MFP.H>
+#include	<GODLIB/SYSTEM/SYSTEM.H>
 
 
 /* ###################################################################################

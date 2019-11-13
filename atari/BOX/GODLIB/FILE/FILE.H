@@ -5,8 +5,8 @@
 #  INCLUDES
 ################################################################################### */
 
-#include	<GODLIB\BASE\BASE.H>
-#include	<GODLIB\GEMDOS\GEMDOS.H>
+#include	<GODLIB/BASE/BASE.H>
+#include	<GODLIB/GEMDOS/GEMDOS.H>
 
 
 /* ###################################################################################

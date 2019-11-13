@@ -1,4 +1,4 @@
-#include	<GODLIB\BASE\BASE.H>
+#include	<GODLIB/BASE/BASE.H>
 
 U8 gFont8x8[12544] =
 {

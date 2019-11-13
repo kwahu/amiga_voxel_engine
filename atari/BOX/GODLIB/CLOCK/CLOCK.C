@@ -4,8 +4,8 @@
 
 #include	"CLOCK.H"
 
-#include	<GODLIB\SYSTEM\SYSTEM.H>
-#include	<GODLIB\VBL\VBL.H>
+#include	<GODLIB/SYSTEM/SYSTEM.H>
+#include	<GODLIB/VBL/VBL.H>
 
 
 /* ###################################################################################

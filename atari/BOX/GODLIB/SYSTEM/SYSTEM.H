@@ -6,8 +6,8 @@
 #  INCLUDES
 ################################################################################### */
 
-#include	<GODLIB\BASE\BASE.H>
-#include	<GODLIB\COOKIE\COOKIE.H>
+#include	<GODLIB/BASE/BASE.H>
+#include	<GODLIB/COOKIE/COOKIE.H>
 
 
 /* ###################################################################################

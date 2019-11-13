@@ -14,7 +14,7 @@
 
 #include	"DEBUGLOG.H"
 #include	<STRING.H>
-#include	<GODLIB\FILE\FILE.H>
+#include	<GODLIB/FILE/FILE.H>
 
 
 /* ###################################################################################

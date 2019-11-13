@@ -15,8 +15,8 @@
 #include	"GRAPHIC.H"
 
 
-#include	<GODLIB\BLITTER\BLITTER.H>
-#include	<GODLIB\SYSTEM\SYSTEM.H>
+#include	<GODLIB/BLITTER/BLITTER.H>
+#include	<GODLIB/SYSTEM/SYSTEM.H>
 
 
 /* ###################################################################################
