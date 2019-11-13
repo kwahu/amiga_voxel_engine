@@ -15,21 +15,24 @@
 #define XSIZEEVEN 160
 #define YSIZE 128
 
- UBYTE heightMap0[256][256];//64k
- UBYTE heightMap1[256][256];//16k
- UBYTE heightMap2[256][256];//4k
- //UBYTE heightMap3[32][32];//1k
- //UBYTE heightMap4[16][16];
-
- UBYTE colorMap0[256][256];//64
- UBYTE colorMap1[256][256];//16
- UBYTE colorMap2[256][256];//4
- //UBYTE colorMap3[32][32];//1
- //UBYTE colorMap4[16][16];
+ UBYTE heightMap[256][256];
+ UBYTE colorMap[256][256];
 
  UWORD mapLow[256][256];
  UWORD mapMed[256][256];
  UWORD mapHigh[256][256];
+
+ UWORD mapLow0[256][256];
+ UWORD mapMed0[256][256];
+ UWORD mapHigh0[256][256];
+
+ UWORD mapLow1[256][256];
+ UWORD mapMed1[256][256];
+ UWORD mapHigh1[256][256];
+
+  UWORD mapLow2[256][256];
+ UWORD mapMed2[256][256];
+ UWORD mapHigh2[256][256];
 
  UWORD plane1W[PLANEWIDTH*PLANEHEIGHT];//20k
  UWORD plane2W[PLANEWIDTH*PLANEHEIGHT];//20k
@@ -126,7 +129,7 @@ UBYTE dither3x2OddP4[COLORS*COLORS*COLORS];//32k
  UBYTE dither2x2P3Odd[COLORS/2*COLORS*COLORS*COLORS/2];//64k
  UBYTE dither2x2P4Odd[COLORS/2*COLORS*COLORS*COLORS/2];//64k*/
 
-static WORD p1xf,p1yf,p1hf,p2xf,p2yf,p2hf;
+static LONG p1xf,p1yf,p1hf,p2xf,p2yf,p2hf;
 static UWORD p1x,p1y,p1h,p2x,p2y,p2h;
 static int interlace;
 static UBYTE renderingDepth = TERRAINDEPTH;

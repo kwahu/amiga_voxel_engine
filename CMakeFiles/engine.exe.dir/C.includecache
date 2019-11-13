@@ -72,10 +72,6 @@ ace/utils/file.h
 ace/managers/joy.h
 -
 
-/work/src/mipmaps.c
-ray_casting.h
-/work/src/ray_casting.h
-
 /work/src/ray_cast_calculate.c
 ray_casting.h
 /work/src/ray_casting.h

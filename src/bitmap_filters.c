@@ -51,6 +51,7 @@ void SmoothScreen(UBYTE player)
 		screen[position] = value;
 	}
 }*/
+/*
 void GenerateColorMap()
 {
 	int value;
@@ -64,7 +65,7 @@ void GenerateColorMap()
 		if(value > 28) value = 28;
 		colorMap0[x][y] = (UBYTE)(value);
 	}
-}
+}*/
 //add more light to higher ground
 void AddHeightToColorMap(UBYTE (*mapColor)[256], UBYTE (*mapHeight)[256])
 {
@@ -96,7 +97,15 @@ void AddBumpToColorMap(UBYTE (*mapColor)[256], UBYTE (*mapHeight)[256])
 	}
 
 }
-void CopyMap(UBYTE (*source)[256], UBYTE (*destination)[256])
+void CopyMapByte(UBYTE (*source)[256], UBYTE (*destination)[256])
+{
+	for (int x = 0; x < 256; x++)
+	for (int y = 0; y < 256; y++)
+	{
+		destination[x][y] = source[x][y];
+	}
+}
+void CopyMapWord(UWORD (*source)[256], UWORD (*destination)[256])
 {
 	for (int x = 0; x < 256; x++)
 	for (int y = 0; y < 256; y++)

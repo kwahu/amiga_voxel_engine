@@ -44,165 +44,11 @@ static tView *s_pView;
 static tVPort *s_pVPort;
 static tSimpleBufferManager *s_pBuffer;
 static tAvg *s_pAvgTime;
+static UWORD lastOverwrittenLine;
 
-void engineGsCreate(void)
+void ProcessQualityInput()
 {
-	s_pView = viewCreate(0,
-		TAG_VIEW_GLOBAL_CLUT, 1,
-		TAG_DONE
-	);
-
-
-	s_pVPort = vPortCreate(0,
-		TAG_VPORT_VIEW, s_pView,
-		TAG_VPORT_BPP, DEPTH,
-		TAG_END
-	);
-
-	s_pBuffer = simpleBufferCreate(0,
-		TAG_SIMPLEBUFFER_VPORT, s_pVPort,
-		TAG_SIMPLEBUFFER_BITMAP_FLAGS, BMF_CLEAR,
-		TAG_DONE
-	);
-
-
-	p1xf = 40*100;
-	p1yf = 0;
-	p1hf = 30*100;
-
-	p2x = 0;
-	p2y = 0;
-	p2h = 10;
-
-
-
-
-	ReadHeight("height.raw");
-	//	ReadPalette("palette.raw");
-	ReadColor("color.raw");
-	AddBumpToColorMap(colorMap0,heightMap0);
-	SmoothColorMap(colorMap0);
-	SmoothHeightMap(heightMap0);
-
-	//CalculateRayCasts(rayCastXOdd, rayCastYOdd, XSIZEODD, YSIZE);
-//	CalculateRayCasts(rayCastXEven, rayCastYEven, XSIZEEVEN, YSIZE);
-	//CalculateRayCastsSlow(rayCastXEven, rayCastYEven);
-//	CalculateRayCastsSingle(rayCastXYLow, 32, 32, 5);
-	//CalculateRayCastsSingle(rayCastXYEven, XSIZEEVEN, YSIZE, 7);
-
-	GenerateWordDither8x8();
-	GenerateColorBytesNoDither4x4();
-		GenerateColorBytesDither3x2();
-//	GenerateColorBytesNoDither2x2();
-
-
-	//CalculateColorMipMaps();
-	//CalculateHeightMipMaps();
-
-	CopyMap(heightMap0, heightMap1);
-	SmoothHeightMap(heightMap1);
-	CopyMap(heightMap1, heightMap2);
-	SmoothHeightMap(heightMap2);
-
-	CopyMap(colorMap0, colorMap1);
-	SmoothColorMap(colorMap1);
-	CopyMap(colorMap1, colorMap2);
-	SmoothColorMap(colorMap2);
-
-
-	CombineMapsHigh(heightMap0, colorMap0, mapHigh);
-	CombineMapsHigh(heightMap1, colorMap1, mapMed);
-	CombineMapsHigh(heightMap2, colorMap2, mapLow);
-
-	renderingDepth = 16;
-	debugValue=3;
-	debugValue2 = 1;
-	debugValue3 = 10;
-	debugValue4 = 2;
-	Recalculate();
-
-	memcpy(s_pVPort->pPalette, kolory, 16 * sizeof(UWORD));
-
-	s_pAvgTime = logAvgCreate("perf", 100);
-
-	viewLoad(s_pView);
-	keyCreate();
-	joyOpen(0);
-	systemUnuse();
-}
-
-void Recalculate()
-{
-	CalculateRayCasts(rayCastXEven, rayCastYEven, XSIZEEVEN, YSIZE);
-	CalculateRayCasts(rayCastXOdd, rayCastYOdd, XSIZEODD, YSIZE);
-}
-
-void engineGsLoop(void) {
-	logAvgBegin(s_pAvgTime);
-	joyProcess();
-//	keyProcess();
-	startTime = timerGetPrec();
-	deltaTime = startTime - lastTime;
-	lastTime = startTime;
-
-if(keyCheck(KEY_SPACE)) {
-	gameClose();
-}
-else
-{
-	 /* if(joyCheck(JOY1_RIGHT)) { p1xf+=deltaTime/10000*3; }
-		if(joyCheck(JOY1_LEFT)) {p1xf-=deltaTime/10000*3; }
-		if(joyCheck(JOY1_DOWN)) { p1hf-=deltaTime/10000*3; }
-		if(joyCheck(JOY1_UP)) { p1hf+=deltaTime/10000*3; }
-		if(joyCheck(JOY1_FIRE)) { p1yf+=deltaTime/10000; }
-
-		if(keyCheck(KEY_UP))p1yf+=deltaTime/10000;
-		if(keyCheck(KEY_DOWN))p1yf-=deltaTime/10000;
-		if(keyCheck(KEY_RIGHT))p1xf+=deltaTime/10000*3;
-		if(keyCheck(KEY_LEFT))p1xf-=deltaTime/10000*3;
-		if(keyCheck(KEY_RALT))p1hf+=deltaTime/10000*3;
-		if(keyCheck(KEY_CONTROL))p1hf-=deltaTime/10000*3;*/
-
-		if(joyCheck(JOY1_RIGHT)) {	cx+=deltaTime/100; }
- 		else if(joyCheck(JOY1_LEFT)) {		cx-=deltaTime/100; }
-		else if(cx!=0) {cx = cx - cx/((LONG)(deltaTime)/1000);}
-
-		if(cx > 0x3000) cx = 0x3000;
-		else if(cx < -0x3000) cx = -0x3000;
-
-		if(cy > 0x3000) cy = 0x3000;
-		else if(cy < -0x3000) cy = -0x3000;
-
- 		if(joyCheck(JOY1_DOWN)) {		cy+=deltaTime/100; }
- 		else if(joyCheck(JOY1_UP)) {			cy-=deltaTime/100; }
-		else if(cy!=0) {cy = cy - cy/((LONG)(deltaTime)/1000);}
-
- 		if(joyCheck(JOY1_FIRE)) {		p1yf+=deltaTime/10000;}
-
-
-
-		p1xf += (LONG)(deltaTime/10000) * cx/2000;
-		p1hf -= (LONG)(deltaTime/10000) * cy/1000;
-
-		if(p1hf > 6000) p1hf = 6000;
-
-		p1yf+=deltaTime/(500 + (p1hf - (UBYTE)(mapHigh[p1xf/32][p1yf/32])*32 ) );
-
-		if(p1hf<50) p1hf = 50;//block going below ground
-
-p1y = p1yf/32;
-p1x = p1xf/32;
-p1h = p1hf/32;
-
-//if(p1h<5) p1h = 5;
-//if(p2h<5) p2h = 5;
-
-if( (p1h) < (UBYTE)(mapHigh[p1x][p1y]) ) gameClose();
-
-		
-
-
-
+	
 
 	if(keyCheck(KEY_1) && debugValue!=1)
 	{
@@ -268,66 +114,7 @@ if( (p1h) < (UBYTE)(mapHigh[p1x][p1y]) ) gameClose();
 		Recalculate();
 	}
 
-/*
-	if(keyCheck(KEY_Q)){debugValue2=1;Recalculate();}
-	if(keyCheck(KEY_W)){debugValue2=2;Recalculate();}
-	if(keyCheck(KEY_E)){debugValue2=3;Recalculate();}
-	if(keyCheck(KEY_R)){debugValue2=4;Recalculate();}
-	if(keyCheck(KEY_T)){debugValue2=5;Recalculate();}
-	if(keyCheck(KEY_Y)){debugValue2=6;Recalculate();}
-	if(keyCheck(KEY_U)){debugValue2=7;Recalculate();}
-	if(keyCheck(KEY_I)){debugValue2=8;Recalculate();}
-	if(keyCheck(KEY_O)){debugValue2=9;Recalculate();}
-	if(keyCheck(KEY_P)){debugValue2=10;Recalculate();}
-
-	if(keyCheck(KEY_A)){debugValue3=1;Recalculate();}
-	if(keyCheck(KEY_S)){debugValue3=2;Recalculate();}
-	if(keyCheck(KEY_D)){debugValue3=3;Recalculate();}
-	if(keyCheck(KEY_F)){debugValue3=4;Recalculate();}
-	if(keyCheck(KEY_G)){debugValue3=5;Recalculate();}
-	if(keyCheck(KEY_H)){debugValue3=6;Recalculate();}
-	if(keyCheck(KEY_J)){debugValue3=7;Recalculate();}
-	if(keyCheck(KEY_K)){debugValue3=8;Recalculate();}
-	if(keyCheck(KEY_L)){debugValue3=9;Recalculate();}
-	if(keyCheck(KEY_SEMICOLON)){debugValue3=10;Recalculate();}
-
-	if(keyCheck(KEY_Z)){debugValue4=1;Recalculate();}
-	if(keyCheck(KEY_X)){debugValue4=2;Recalculate();}
-	if(keyCheck(KEY_C)){debugValue4=3;Recalculate();}
-	if(keyCheck(KEY_V)){debugValue4=4;Recalculate();}
-	if(keyCheck(KEY_B)){debugValue4=5;Recalculate();}
-	if(keyCheck(KEY_N)){debugValue4=6;Recalculate();}
-	if(keyCheck(KEY_M)){debugValue4=7;Recalculate();}
-	if(keyCheck(KEY_COMMA)){debugValue4=8;Recalculate();}
-	if(keyCheck(KEY_PERIOD)){debugValue4=9;Recalculate();}
-	if(keyCheck(KEY_SLASH)){debugValue4=10;Recalculate();}
-	*/
-}
-/*
-if(debugValue == 9)
-{
-	 systemSetDma(DMAB_RASTER, 0);
-	 systemSetDma(DMAB_DISK, 0);
-	 systemSetDma(DMAB_SPRITE, 0);
-	 systemSetDma(DMAB_BLITTER , 0);
-	 systemSetDma(DMAB_COPPER  , 0);
-	 systemSetDma(DMAB_BLITHOG  , 0);
-}
-else
-{
-	systemSetDma(DMAB_RASTER, 1);
-	systemSetDma(DMAB_DISK, 1);
-	systemSetDma(DMAB_SPRITE, 1);
-	systemSetDma(DMAB_BLITTER , 1);
-	systemSetDma(DMAB_COPPER  , 1);
-	systemSetDma(DMAB_BLITHOG  , 1);
-}*/
-
-if(renderingDepth<10) renderingDepth = 10;
-else if(renderingDepth>TERRAINDEPTH) renderingDepth = TERRAINDEPTH;
-
-
-
+	
 if(debugValue == 1)
 {
 
@@ -439,7 +226,231 @@ else if(debugValue == 7)
 	DrawPlayerScreen3x2(screen3x2d,1,0,12,4);
 	DrawPlayerScreen3x2(screen3x2e,1,0,16,4);
 }
+}
+void ProcessPlayerInput()
+{
+	 /* if(joyCheck(JOY1_RIGHT)) { p1xf+=deltaTime/10000*3; }
+		if(joyCheck(JOY1_LEFT)) {p1xf-=deltaTime/10000*3; }
+		if(joyCheck(JOY1_DOWN)) { p1hf-=deltaTime/10000*3; }
+		if(joyCheck(JOY1_UP)) { p1hf+=deltaTime/10000*3; }
+		if(joyCheck(JOY1_FIRE)) { p1yf+=deltaTime/10000; }
 
+		if(keyCheck(KEY_UP))p1yf+=deltaTime/10000;
+		if(keyCheck(KEY_DOWN))p1yf-=deltaTime/10000;
+		if(keyCheck(KEY_RIGHT))p1xf+=deltaTime/10000*3;
+		if(keyCheck(KEY_LEFT))p1xf-=deltaTime/10000*3;
+		if(keyCheck(KEY_RALT))p1hf+=deltaTime/10000*3;
+		if(keyCheck(KEY_CONTROL))p1hf-=deltaTime/10000*3;*/
+
+		if(joyCheck(JOY1_RIGHT)) {	cx+=deltaTime/100; }
+ 		else if(joyCheck(JOY1_LEFT)) {		cx-=deltaTime/100; }
+		else if(cx!=0) {cx = cx - cx/((LONG)(deltaTime)/1000);}
+
+		if(cx > 0x3000) cx = 0x3000;
+		else if(cx < -0x3000) cx = -0x3000;
+
+		if(cy > 0x3000) cy = 0x3000;
+		else if(cy < -0x3000) cy = -0x3000;
+
+ 		if(joyCheck(JOY1_DOWN)) {		cy+=deltaTime/100; }
+ 		else if(joyCheck(JOY1_UP)) {			cy-=deltaTime/100; }
+		else if(cy!=0) {cy = cy - cy/((LONG)(deltaTime)/1000);}
+
+ 	//	if(joyCheck(JOY1_FIRE)) {		p1yf+=deltaTime/10000;}
+
+
+
+		p1xf += (LONG)(deltaTime/10000) * cx/2000;
+		p1hf -= (LONG)(deltaTime/10000) * cy/1000;
+
+		if(p1hf > 6000) p1hf = 6000;
+
+		p1yf+=deltaTime/(800 + (p1hf - (UBYTE)(mapHigh[p1xf/32][p1yf/32])*32 ) );
+
+		if(p1hf<50) p1hf = 50;//block going below ground
+
+	p1y = p1yf/32;
+	p1x = p1xf/32;
+	p1h = p1hf/32;
+}
+
+void engineGsCreate(void)
+{
+	s_pView = viewCreate(0,
+		TAG_VIEW_GLOBAL_CLUT, 1,
+		TAG_DONE
+	);
+
+
+	s_pVPort = vPortCreate(0,
+		TAG_VPORT_VIEW, s_pView,
+		TAG_VPORT_BPP, DEPTH,
+		TAG_END
+	);
+
+	s_pBuffer = simpleBufferCreate(0,
+		TAG_SIMPLEBUFFER_VPORT, s_pVPort,
+		TAG_SIMPLEBUFFER_BITMAP_FLAGS, BMF_CLEAR,
+		TAG_DONE
+	);
+
+
+	p1xf = 40*100;
+	p1yf = 0;
+	p1hf = 30*100;
+
+	p2x = 0;
+	p2y = 0;
+	p2h = 10;
+
+	lastOverwrittenLine = 0;
+
+
+	GenerateWordDither8x8();
+	GenerateColorBytesNoDither4x4();
+	GenerateColorBytesDither3x2();
+
+//read and prepare map0
+	ReadHeight("height.raw", heightMap);
+	ReadColor("color.raw", colorMap);
+	
+	//AddBumpToColorMap(colorMap,heightMap);
+	SmoothColorMap(colorMap);
+	SmoothHeightMap(heightMap);
+	CombineMapsHigh(heightMap, colorMap, mapHigh0);
+	SmoothHeightMap(heightMap);
+	SmoothColorMap(colorMap);
+	CombineMapsHigh(heightMap, colorMap, mapMed0);
+	SmoothHeightMap(heightMap);
+	SmoothColorMap(colorMap);
+	CombineMapsHigh(heightMap, colorMap, mapLow0);
+
+//read and prepare map1
+	ReadHeight("height2.raw", heightMap);
+	ReadColor("color2.raw", colorMap);
+	
+	//AddBumpToColorMap(colorMap,heightMap);
+	SmoothColorMap(colorMap);
+	SmoothHeightMap(heightMap);
+	CombineMapsHigh(heightMap, colorMap, mapHigh1);
+	SmoothHeightMap(heightMap);
+	SmoothColorMap(colorMap);
+	CombineMapsHigh(heightMap, colorMap, mapMed1);
+	SmoothHeightMap(heightMap);
+	SmoothColorMap(colorMap);
+	CombineMapsHigh(heightMap, colorMap, mapLow1);
+
+	//read and prepare map1
+	ReadHeight("height3.raw", heightMap);
+	ReadColor("color3.raw", colorMap);
+	
+	//AddBumpToColorMap(colorMap,heightMap);
+	SmoothColorMap(colorMap);
+	SmoothHeightMap(heightMap);
+	CombineMapsHigh(heightMap, colorMap, mapHigh2);
+	SmoothHeightMap(heightMap);
+	SmoothColorMap(colorMap);
+	CombineMapsHigh(heightMap, colorMap, mapMed2);
+	SmoothHeightMap(heightMap);
+	SmoothColorMap(colorMap);
+	CombineMapsHigh(heightMap, colorMap, mapLow2);
+
+//prepare starting map
+	CopyMapWord(mapHigh0, mapHigh);
+	CopyMapWord(mapMed0, mapMed);
+	CopyMapWord(mapLow0, mapLow);
+
+	renderingDepth = 16;
+	debugValue=3;
+	debugValue2 = 1;
+	debugValue3 = 10;
+	debugValue4 = 2;
+	Recalculate();
+
+	memcpy(s_pVPort->pPalette, kolory, 16 * sizeof(UWORD));
+
+	s_pAvgTime = logAvgCreate("perf", 100);
+
+	viewLoad(s_pView);
+	keyCreate();
+	joyOpen(0);
+	systemUnuse();
+}
+
+void Recalculate()
+{
+	CalculateRayCasts(rayCastXEven, rayCastYEven, XSIZEEVEN, YSIZE);
+	CalculateRayCasts(rayCastXOdd, rayCastYOdd, XSIZEODD, YSIZE);
+}
+
+void OverwriteMap()
+{
+	UBYTE mapNumber;
+	
+	UWORD (*_mapHigh)[256];
+	UWORD (*_mapMed)[256];
+	UWORD (*_mapLow)[256];
+
+	mapNumber = (p1y/256) % 3 ;
+
+	if(mapNumber == 0)
+	{
+		_mapHigh = mapHigh0;
+		_mapMed = mapMed0;
+		_mapLow = mapLow0;
+	}
+	else if(mapNumber == 1)
+	{
+		_mapHigh = mapHigh1;
+		_mapMed = mapMed1;
+		_mapLow = mapLow1;
+	}
+	else if(mapNumber == 2)
+	{
+		_mapHigh = mapHigh2;
+		_mapMed = mapMed2;
+		_mapLow = mapLow2;
+	}
+	
+	for(int y=lastOverwrittenLine;y<p1y;y++)
+	for(int x=0;x<256;x++)
+		{
+			mapHigh[x][(UBYTE)y] = _mapHigh[x][(UBYTE)y];
+			mapMed[x][(UBYTE)y] = _mapMed[x][(UBYTE)y];
+			mapLow[x][(UBYTE)y] =  _mapLow[x][(UBYTE)y];
+		}
+
+	lastOverwrittenLine = p1y;
+}
+
+void engineGsLoop(void) {
+	logAvgBegin(s_pAvgTime);
+	joyProcess();
+//	keyProcess();
+	startTime = timerGetPrec();
+	deltaTime = startTime - lastTime;
+	lastTime = startTime;
+
+if(keyCheck(KEY_SPACE)) {
+	gameClose();
+}
+else
+{
+	
+	ProcessPlayerInput();
+
+	if( (p1h) < (UBYTE)(mapHigh[(UBYTE)(p1x)][(UBYTE)(p1y)]) ) 
+		gameClose();
+
+ 	OverwriteMap();
+	ProcessQualityInput();
+}
+
+
+if(renderingDepth<10) renderingDepth = 10;
+else if(renderingDepth>TERRAINDEPTH) renderingDepth = TERRAINDEPTH;
+
+//draw crosshair
 DrawPixel((160+(cx/100))/16, 128+(cy/100), 0);
 
 vPortWaitForEnd(s_pVPort);
@@ -451,6 +462,7 @@ if(interlace == 4) interlace = 0;
 logAvgEnd(s_pAvgTime);
 endTime = timerGetPrec();
 }
+
 
 void logAvgWriteKwahu(tAvg *pAvg) {
 	ULONG ulAvg = 0;
@@ -489,3 +501,58 @@ void engineGsDestroy(void)
 	printf("%lu", deltaTime);
 	logAvgDestroy(s_pAvgTime);
 }
+
+/*
+if(debugValue == 9)
+{
+	 systemSetDma(DMAB_RASTER, 0);
+	 systemSetDma(DMAB_DISK, 0);
+	 systemSetDma(DMAB_SPRITE, 0);
+	 systemSetDma(DMAB_BLITTER , 0);
+	 systemSetDma(DMAB_COPPER  , 0);
+	 systemSetDma(DMAB_BLITHOG  , 0);
+}
+else
+{
+	systemSetDma(DMAB_RASTER, 1);
+	systemSetDma(DMAB_DISK, 1);
+	systemSetDma(DMAB_SPRITE, 1);
+	systemSetDma(DMAB_BLITTER , 1);
+	systemSetDma(DMAB_COPPER  , 1);
+	systemSetDma(DMAB_BLITHOG  , 1);
+}*/
+
+/*
+	if(keyCheck(KEY_Q)){debugValue2=1;Recalculate();}
+	if(keyCheck(KEY_W)){debugValue2=2;Recalculate();}
+	if(keyCheck(KEY_E)){debugValue2=3;Recalculate();}
+	if(keyCheck(KEY_R)){debugValue2=4;Recalculate();}
+	if(keyCheck(KEY_T)){debugValue2=5;Recalculate();}
+	if(keyCheck(KEY_Y)){debugValue2=6;Recalculate();}
+	if(keyCheck(KEY_U)){debugValue2=7;Recalculate();}
+	if(keyCheck(KEY_I)){debugValue2=8;Recalculate();}
+	if(keyCheck(KEY_O)){debugValue2=9;Recalculate();}
+	if(keyCheck(KEY_P)){debugValue2=10;Recalculate();}
+
+	if(keyCheck(KEY_A)){debugValue3=1;Recalculate();}
+	if(keyCheck(KEY_S)){debugValue3=2;Recalculate();}
+	if(keyCheck(KEY_D)){debugValue3=3;Recalculate();}
+	if(keyCheck(KEY_F)){debugValue3=4;Recalculate();}
+	if(keyCheck(KEY_G)){debugValue3=5;Recalculate();}
+	if(keyCheck(KEY_H)){debugValue3=6;Recalculate();}
+	if(keyCheck(KEY_J)){debugValue3=7;Recalculate();}
+	if(keyCheck(KEY_K)){debugValue3=8;Recalculate();}
+	if(keyCheck(KEY_L)){debugValue3=9;Recalculate();}
+	if(keyCheck(KEY_SEMICOLON)){debugValue3=10;Recalculate();}
+
+	if(keyCheck(KEY_Z)){debugValue4=1;Recalculate();}
+	if(keyCheck(KEY_X)){debugValue4=2;Recalculate();}
+	if(keyCheck(KEY_C)){debugValue4=3;Recalculate();}
+	if(keyCheck(KEY_V)){debugValue4=4;Recalculate();}
+	if(keyCheck(KEY_B)){debugValue4=5;Recalculate();}
+	if(keyCheck(KEY_N)){debugValue4=6;Recalculate();}
+	if(keyCheck(KEY_M)){debugValue4=7;Recalculate();}
+	if(keyCheck(KEY_COMMA)){debugValue4=8;Recalculate();}
+	if(keyCheck(KEY_PERIOD)){debugValue4=9;Recalculate();}
+	if(keyCheck(KEY_SLASH)){debugValue4=10;Recalculate();}
+	*/
