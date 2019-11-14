@@ -3,7 +3,7 @@
 
 CMakeFiles/engine.exe.dir/src/bitmap_filters.c.obj
  /work/src/bitmap_filters.c
- /work/src/ray_casting.h
+ /work/src/engine.h
  deps/ace/include/ace/macros.h
  deps/ace/include/ace/managers/copper.h
  deps/ace/include/ace/managers/log.h
@@ -19,7 +19,7 @@ CMakeFiles/engine.exe.dir/src/bitmap_filters.c.obj
  deps/ace/include/ace/utils/tag.h
 CMakeFiles/engine.exe.dir/src/dithering.c.obj
  /work/src/dithering.c
- /work/src/ray_casting.h
+ /work/src/engine.h
  deps/ace/include/ace/macros.h
  deps/ace/include/ace/managers/copper.h
  deps/ace/include/ace/managers/log.h
@@ -37,7 +37,7 @@ CMakeFiles/engine.exe.dir/src/draw_maps.c.obj
  /work/src/draw_maps.c
 CMakeFiles/engine.exe.dir/src/draw_screen.c.obj
  /work/src/draw_screen.c
- /work/src/ray_casting.h
+ /work/src/engine.h
  deps/ace/include/ace/macros.h
  deps/ace/include/ace/managers/copper.h
  deps/ace/include/ace/managers/log.h
@@ -53,7 +53,7 @@ CMakeFiles/engine.exe.dir/src/draw_screen.c.obj
  deps/ace/include/ace/utils/tag.h
 CMakeFiles/engine.exe.dir/src/draw_ships.c.obj
  /work/src/draw_ships.c
- /work/src/ray_casting.h
+ /work/src/engine.h
  deps/ace/include/ace/macros.h
  deps/ace/include/ace/managers/copper.h
  deps/ace/include/ace/managers/log.h
@@ -68,8 +68,8 @@ CMakeFiles/engine.exe.dir/src/draw_ships.c.obj
  deps/ace/include/ace/utils/file.h
  deps/ace/include/ace/utils/tag.h
 CMakeFiles/engine.exe.dir/src/file_read.c.obj
+ /work/src/engine.h
  /work/src/file_read.c
- /work/src/ray_casting.h
  deps/ace/include/ace/macros.h
  deps/ace/include/ace/managers/copper.h
  deps/ace/include/ace/managers/log.h
@@ -90,11 +90,15 @@ CMakeFiles/engine.exe.dir/src/main.c.obj
  /work/src/draw_screen.c
  /work/src/draw_ships.c
  /work/src/draw_sprite.c
+ /work/src/engine.h
  /work/src/file_read.c
+ /work/src/input_handling.c
  /work/src/main.c
+ /work/src/map_streaming.c
  /work/src/ray_cast_calculate.c
  /work/src/ray_casting.c
- /work/src/ray_casting.h
+ /work/src/rendering_quality.c
+ /work/src/setup_maps.c
  deps/ace/include/ace/generic/main.h
  deps/ace/include/ace/macros.h
  deps/ace/include/ace/managers/blit.h
@@ -113,10 +117,11 @@ CMakeFiles/engine.exe.dir/src/main.c.obj
  deps/ace/include/ace/utils/custom.h
  deps/ace/include/ace/utils/extview.h
  deps/ace/include/ace/utils/file.h
+ deps/ace/include/ace/utils/font.h
  deps/ace/include/ace/utils/tag.h
 CMakeFiles/engine.exe.dir/src/mipmaps.c.obj
+ /work/src/engine.h
  /work/src/mipmaps.c
- /work/src/ray_casting.h
  deps/ace/include/ace/macros.h
  deps/ace/include/ace/managers/copper.h
  deps/ace/include/ace/managers/log.h
@@ -131,8 +136,8 @@ CMakeFiles/engine.exe.dir/src/mipmaps.c.obj
  deps/ace/include/ace/utils/file.h
  deps/ace/include/ace/utils/tag.h
 CMakeFiles/engine.exe.dir/src/ray_casting.c.obj
+ /work/src/engine.h
  /work/src/ray_casting.c
- /work/src/ray_casting.h
  deps/ace/include/ace/macros.h
  deps/ace/include/ace/managers/copper.h
  deps/ace/include/ace/managers/log.h

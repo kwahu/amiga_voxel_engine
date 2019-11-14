@@ -7,28 +7,34 @@
 #IncludeRegexTransform: 
 
 /work/src/bitmap_filters.c
-ray_casting.h
-/work/src/ray_casting.h
+engine.h
+/work/src/engine.h
 
 /work/src/dithering.c
-ray_casting.h
-/work/src/ray_casting.h
+engine.h
+/work/src/engine.h
 
 /work/src/draw_maps.c
 
 /work/src/draw_screen.c
-ray_casting.h
-/work/src/ray_casting.h
+engine.h
+/work/src/engine.h
 
 /work/src/draw_ships.c
-ray_casting.h
-/work/src/ray_casting.h
+engine.h
+/work/src/engine.h
 
 /work/src/draw_sprite.c
 
+/work/src/engine.h
+stdlib.h
+-
+ace/managers/viewport/simplebuffer.h
+-
+
 /work/src/file_read.c
-ray_casting.h
-/work/src/ray_casting.h
+engine.h
+/work/src/engine.h
 stdio.h
 -
 stdlib.h
@@ -36,11 +42,17 @@ stdlib.h
 ace/utils/file.h
 -
 
+/work/src/input_handling.c
+ace/managers/joy.h
+-
+engine.h
+/work/src/engine.h
+
 /work/src/main.c
 ace/generic/main.h
 -
-ray_casting.h
-/work/src/ray_casting.h
+engine.h
+/work/src/engine.h
 ray_casting.c
 /work/src/ray_casting.c
 ray_cast_calculate.c
@@ -59,6 +71,14 @@ draw_sprite.c
 /work/src/draw_sprite.c
 draw_maps.c
 /work/src/draw_maps.c
+input_handling.c
+/work/src/input_handling.c
+map_streaming.c
+/work/src/map_streaming.c
+setup_maps.c
+/work/src/setup_maps.c
+rendering_quality.c
+/work/src/rendering_quality.c
 ace/managers/game.h
 -
 ace/managers/timer.h
@@ -69,22 +89,28 @@ ace/managers/blit.h
 -
 ace/utils/file.h
 -
-ace/managers/joy.h
+ace/utils/font.h
 -
+
+/work/src/map_streaming.c
+engine.h
+/work/src/engine.h
 
 /work/src/ray_cast_calculate.c
-ray_casting.h
-/work/src/ray_casting.h
+engine.h
+/work/src/engine.h
 
 /work/src/ray_casting.c
-ray_casting.h
-/work/src/ray_casting.h
+engine.h
+/work/src/engine.h
 
-/work/src/ray_casting.h
-stdlib.h
--
-ace/managers/viewport/simplebuffer.h
--
+/work/src/rendering_quality.c
+engine.h
+/work/src/engine.h
+
+/work/src/setup_maps.c
+engine.h
+/work/src/engine.h
 
 deps/ace/include/ace/generic/main.h
 stdlib.h
@@ -252,6 +278,14 @@ deps/ace/include/ace/utils/file.h
 stdio.h
 -
 ace/types.h
+-
+
+deps/ace/include/ace/utils/font.h
+ace/types.h
+-
+ace/managers/blit.h
+-
+ace/utils/bitmap.h
 -
 
 deps/ace/include/ace/utils/tag.h

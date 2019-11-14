@@ -1,4 +1,4 @@
-#include "ray_casting.h"
+#include "engine.h"
 
 //calculate paths for raycasts going from the camera
 void CalculateRayCasts(WORD (*rayCastX)[TERRAINDEPTH], WORD (*rayCastY)[TERRAINDEPTH], UBYTE xSize, UBYTE ySize)
@@ -6,7 +6,7 @@ void CalculateRayCasts(WORD (*rayCastX)[TERRAINDEPTH], WORD (*rayCastY)[TERRAIND
 	int sxx;
 	int syy;
 	int tzz; //depth step value
-	int fovX = xSize/20; //this changes the field of view
+	int fovX = xSize/debugValue7; //this changes the field of view
 	int fovY = 4; //4 nice height change
 
 	tzz = 1;
@@ -16,10 +16,10 @@ void CalculateRayCasts(WORD (*rayCastX)[TERRAINDEPTH], WORD (*rayCastY)[TERRAIND
 		tzz += debugValue3+tz/debugValue2;//+tz/16; //increase step with the distance from camera
 		for(int sx=-xSize/2;sx<xSize/2;sx++)
 		{
-			sxx = (sx * tzz)/30; //make smaller steps
+			sxx = (sx * tzz)/(debugValue6*4); //make smaller steps
 			for(int sy=-ySize/2;sy<ySize/2;sy++)
 			{
-				syy = (sy * tzz)/30;//make smaller steps
+				syy = (sy * tzz)/(debugValue6*4);//make smaller steps
 				rayCastX[xSize/2+sx][tz] = sxx/fovX;
 				rayCastY[ySize/2+sy][tz] = syy/fovY;
 			}
@@ -108,6 +108,7 @@ void CalculateRayCastsSlow(WORD (*rayCastX)[TERRAINDEPTH], WORD (*rayCastY)[TERR
 	}
 }
 */
+/*
 void CombineMapsLow(UBYTE (*height)[64], UBYTE (*color)[64], UWORD (*map)[256])
 {
 	for (int x = 0; x < 256; x++) {
@@ -124,7 +125,7 @@ void CombineMapsMed(UBYTE (*height)[128], UBYTE (*color)[128], UWORD (*map)[256]
 		}
 	}
 }
-
+*/
 void CombineMapsHigh(UBYTE (*height)[256], UBYTE (*color)[256], UWORD (*map)[256])
 {
 	for (int x = 0; x < 256; x++) {

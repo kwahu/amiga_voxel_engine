@@ -1,33 +1,35 @@
-#include "ray_casting.h"
+#include "engine.h"
 //smooth the map so that there are less "spike" artifacts from the coarse rendering
 void SmoothHeightMap(UBYTE (*map)[256])
 {
-	int value;
-	for (int x = 0; x < 256; x++)
-	for (int y = 0; y < 256; y++)
+	UWORD value;
+	for (UBYTE x = 1; x < 255; x++)
+	for (UBYTE y = 1; y < 255; y++)
 	{
-		value = 0;
-		for(int a = -1; a<2 ;a++)
-		for(int b = -1; b<2 ;b++)
-		value += map[(UBYTE)(x+a)][(UBYTE)(y+b)];
 
-		map[x][y] = value/9;
+		value = map[x+1][y];
+		value += map[x-1][y];
+		value += map[x][y+1];
+		value += map[x][y-1];
+
+		map[x][y] = value/4;
 	}
 }
 
 //smooth color map so that there are gradients between contrasting colours
 void SmoothColorMap(UBYTE (*map)[256])
 {
-	int value;
-	for (int x = 0; x < 256; x++)
-	for (int y = 0; y < 256; y++)
+	UBYTE value;
+	for (UBYTE x = 1; x < 255; x++)
+	for (UBYTE y = 1; y < 255; y++)
 	{
-		value = 0;
-		for(int a = -1; a<2 ;a++)
-		for(int b = -1; b<2 ;b++)
-		value += map[(UBYTE)(x+a)][(UBYTE)(y+b)];
 
-		map[x][y] = value/9;
+		value = map[x+1][y];
+		value += map[x-1][y];
+		value += map[x][y+1];
+		value += map[x][y-1];
+
+		map[x][y] = value/4;
 	}
 }
 /*

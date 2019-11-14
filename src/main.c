@@ -1,5 +1,5 @@
 #include <ace/generic/main.h>
-#include "ray_casting.h"
+#include "engine.h"
 #include "ray_casting.c"
 #include "ray_cast_calculate.c"
 #include "draw_screen.c"
@@ -10,12 +10,17 @@
 #include "draw_ships.c"
 #include "draw_sprite.c"
 #include "draw_maps.c"
+#include "input_handling.c"
+#include "map_streaming.c"
+#include "setup_maps.c"
+#include "rendering_quality.c"
 #include <ace/managers/game.h>
 #include <ace/managers/timer.h>
 #include <ace/managers/system.h>
 #include <ace/managers/blit.h>
 #include <ace/utils/file.h>
-#include <ace/managers/joy.h>
+#include <ace/utils/font.h>
+
 
 
 /*
@@ -26,7 +31,7 @@ docker run --rm \
 -it amigadev/crosstools:m68k-amigaos bash
 */
 
-static ULONG startTime,endTime,deltaTime,lastTime;
+static tFont *s_pMenuFont;
 
 void genericCreate(void) {
 	gamePushState(engineGsCreate, engineGsLoop, engineGsDestroy);
@@ -44,236 +49,29 @@ static tView *s_pView;
 static tVPort *s_pVPort;
 static tSimpleBufferManager *s_pBuffer;
 static tAvg *s_pAvgTime;
-static UWORD lastOverwrittenLine;
 
-void ProcessQualityInput()
+
+void SetDefaulResolution()
 {
-	
-
-	if(keyCheck(KEY_1) && debugValue!=1)
-	{
-		renderingDepth = 16;
-		debugValue=1;
-		debugValue2 = 1;
-		debugValue3 = 10;
-		debugValue4 = 2;
-		Recalculate();
-	}
-	if(keyCheck(KEY_2) && debugValue!=2)
-	{
-		renderingDepth = 16;
-		debugValue=2;
-		debugValue2 = 1;
-		debugValue3 = 10;
-		debugValue4 = 2;
-		Recalculate();
-	}
-	if(keyCheck(KEY_3) && debugValue!=3)
-	{
-		renderingDepth = 16;
-		debugValue=3;
-		debugValue2 = 1;
-		debugValue3 = 10;
-		debugValue4 = 2;
-		Recalculate();
-	}
-	if(keyCheck(KEY_4) && debugValue!=4)
-	{
-		renderingDepth = 32;
-		debugValue=4;
-		debugValue2 = 2;
-		debugValue3 = 2;
-		debugValue4 = 1;
-		Recalculate();
-	}
-	if(keyCheck(KEY_5) && debugValue!=5)
-	{
-		renderingDepth = 32;
-		debugValue=5;
-		debugValue2 = 2;
-		debugValue3 = 2;
-		debugValue4 = 1;
-		Recalculate();
-	}
-	if(keyCheck(KEY_6) && debugValue!=6)
-	{
-		renderingDepth = 32;
-		debugValue=6;
-		debugValue2 = 2;
-		debugValue3 = 2;
-		debugValue4 = 1;
-		Recalculate();
-	}
-	if(keyCheck(KEY_7) && debugValue!=7)
-	{
 		renderingDepth = 64;
 		debugValue=7;
 		debugValue2 = 7;
 		debugValue3 = 1;
 		debugValue4 = 0;
+
+		debugValue6 = 4;
+		debugValue7 = 20;
 		Recalculate();
-	}
-
-	
-if(debugValue == 1)
+}
+void Recalculate()
 {
-
-
-	ProcessRayCastsMist(screen8x8a,rayCastXEven, rayCastYEven,mapLow,p1x,p1y,p1h,	0,  4, 4, 0, 8,4);
-	ProcessRayCastsMist(screen8x8b,rayCastXEven, rayCastYEven,mapLow,p1x,p1y,p1h,	32, 4, 4, 0, 8,4);
-	ProcessRayCastsMist(screen8x8c,rayCastXEven, rayCastYEven,mapLow,p1x,p1y,p1h,	64, 4, 4, 0, 8,4);
-	ProcessRayCastsMist(screen8x8d,rayCastXEven, rayCastYEven,mapLow,p1x,p1y,p1h,	96, 4, 4, 0, 8,4);
-	ProcessRayCastsMist(screen8x8e,rayCastXEven, rayCastYEven,mapLow,p1x,p1y,p1h,	128, 4, 4, 0, 8,4);
-
-	DrawPlayerScreen8x8(screen8x8a,1,0,0,4);
-	DrawPlayerScreen8x8(screen8x8b,1,0,4,4);
-	DrawPlayerScreen8x8(screen8x8c,1,0,8,4);
-	DrawPlayerScreen8x8(screen8x8d,1,0,12,4);
-	DrawPlayerScreen8x8(screen8x8e,1,0,16,4);
-}
-else if(debugValue == 2)
-{
-
-	ProcessRayCastsMist(screen8x8a,rayCastXEven, rayCastYEven,mapLow,p1x,p1y,p1h,	0,  4, 4, 0, 8,4);
-	ProcessRayCastsMist(screen4x4b,rayCastXEven, rayCastYEven,mapMed,p1x,p1y,p1h,	32, 2, 2, 0, 16,4);
-	ProcessRayCastsMist(screen4x4c,rayCastXEven, rayCastYEven,mapMed,p1x,p1y,p1h,	64, 2, 2, 0, 16,4);
-	ProcessRayCastsMist(screen4x4d,rayCastXEven, rayCastYEven,mapMed,p1x,p1y,p1h,	96, 2, 2, 0, 16,4);
-	ProcessRayCastsMist(screen8x8e,rayCastXEven, rayCastYEven,mapLow,p1x,p1y,p1h,	128, 4, 4, 0, 8,4);
-
-	DrawPlayerScreen8x8(screen8x8a,1,0,0,4);
-	DrawPlayerScreen4x4(screen4x4b,1,0,4,4);
-	DrawPlayerScreen4x4(screen4x4c,1,0,8,4);
-	DrawPlayerScreen4x4(screen4x4d,1,0,12,4);
-	DrawPlayerScreen8x8(screen8x8e,1,0,16,4);
-}
-else if(debugValue == 3)
-{
-
-
-	ProcessRayCastsMist(screen8x8a,rayCastXEven, rayCastYEven,mapLow,p1x,p1y,p1h,	0,  4, 4, 0, 8,4);
-	ProcessRayCastsMist(screen4x4b,rayCastXEven, rayCastYEven,mapMed,p1x,p1y,p1h,	32, 2, 2, 0, 16,4);
-	ProcessRayCastsMist(screen3x2c,rayCastXOdd, rayCastYOdd,mapHigh,p1x,p1y,p1h,	48, 1, 1, 0, 24,4);
-	ProcessRayCastsMist(screen4x4d,rayCastXEven, rayCastYEven,mapMed,p1x,p1y,p1h,	96, 2, 2, 0, 16,4);
-	ProcessRayCastsMist(screen8x8e,rayCastXEven, rayCastYEven,mapLow,p1x,p1y,p1h,	128, 4, 4, 0, 8,4);
-
-	DrawPlayerScreen8x8(screen8x8a,1,0,0,4);
-	DrawPlayerScreen4x4(screen4x4b,1,0,4,4);
-	DrawPlayerScreen3x2(screen3x2c,1,0,8,4);
-	DrawPlayerScreen4x4(screen4x4d,1,0,12,4);
-	DrawPlayerScreen8x8(screen8x8e,1,0,16,4);
-}
-else if(debugValue == 4)
-{
-
-
-	ProcessRayCastsMist(screen4x4a,rayCastXEven, rayCastYEven,mapMed,p1x,p1y,p1h,	0,  2, 2, 0, 16,2);
-	ProcessRayCastsMist(screen4x4b,rayCastXEven, rayCastYEven,mapMed,p1x,p1y,p1h,	32, 2, 2, 0, 16,2);
-	ProcessRayCastsMist(screen3x2c,rayCastXOdd, rayCastYOdd,mapHigh,p1x,p1y,p1h,	48, 1, 1, 0, 24,2);
-	ProcessRayCastsMist(screen4x4d,rayCastXEven, rayCastYEven,mapMed,p1x,p1y,p1h,	96, 2, 2, 0, 16,2);
-	ProcessRayCastsMist(screen4x4e,rayCastXEven, rayCastYEven,mapMed,p1x,p1y,p1h,	128, 2, 2, 0, 16,2);
-
-	DrawPlayerScreen4x4(screen4x4a,1,0,0,4);
-	DrawPlayerScreen4x4(screen4x4b,1,0,4,4);
-	DrawPlayerScreen3x2(screen3x2c,1,0,8,4);
-	DrawPlayerScreen4x4(screen4x4d,1,0,12,4);
-	DrawPlayerScreen4x4(screen4x4e,1,0,16,4);
-}
-else if(debugValue == 5)
-{
-
-
-	ProcessRayCastsMist(screen4x4a,rayCastXEven, rayCastYEven,mapMed,p1x,p1y,p1h,	0,  2, 2, 0, 16,2);
-	ProcessRayCastsMist(screen3x2b,rayCastXOdd, rayCastYOdd,mapHigh,p1x,p1y,p1h,	24, 1, 1, 0, 24,2);
-	ProcessRayCastsMist(screen3x2c,rayCastXOdd, rayCastYOdd,mapHigh,p1x,p1y,p1h,	48, 1, 1, 0, 24,2);
-	ProcessRayCastsMist(screen3x2d,rayCastXOdd, rayCastYOdd,mapHigh,p1x,p1y,p1h,	72, 1, 1, 0, 24,2);
-	ProcessRayCastsMist(screen4x4e,rayCastXEven, rayCastYEven,mapMed,p1x,p1y,p1h,	128, 2, 2, 0, 16,2);
-
-	DrawPlayerScreen4x4(screen4x4a,1,0,0,4);
-	DrawPlayerScreen3x2(screen3x2b,1,0,4,4);
-	DrawPlayerScreen3x2(screen3x2c,1,0,8,4);
-	DrawPlayerScreen3x2(screen3x2d,1,0,12,4);
-	DrawPlayerScreen4x4(screen4x4e,1,0,16,4);
-}
-else if(debugValue == 6)
-{
-
-
-	ProcessRayCastsMist(screen3x2a,rayCastXOdd, rayCastYOdd,mapLow,p1x,p1y,p1h,	0,  1, 1, 0, 24,2);
-	ProcessRayCastsMist(screen3x2b,rayCastXOdd, rayCastYOdd,mapMed,p1x,p1y,p1h,	24, 1, 1, 0, 24,2);
-	ProcessRayCastsMist(screen3x2c,rayCastXOdd, rayCastYOdd,mapHigh,p1x,p1y,p1h,	48, 1, 1, 0, 24,2);
-	ProcessRayCastsMist(screen3x2d,rayCastXOdd, rayCastYOdd,mapMed,p1x,p1y,p1h,	72, 1, 1, 0, 24,2);
-	ProcessRayCastsMist(screen3x2e,rayCastXOdd, rayCastYOdd,mapLow,p1x,p1y,p1h,	96, 1, 1, 0, 24,2);
-
-	DrawPlayerScreen3x2(screen3x2a,1,0,0,4);
-	DrawPlayerScreen3x2(screen3x2b,1,0,4,4);
-	DrawPlayerScreen3x2(screen3x2c,1,0,8,4);
-	DrawPlayerScreen3x2(screen3x2d,1,0,12,4);
-	DrawPlayerScreen3x2(screen3x2e,1,0,16,4);
-}
-else if(debugValue == 7)
-{
-
-
-	ProcessRayCastsMist(screen3x2a,rayCastXOdd, rayCastYOdd,mapLow,p1x,p1y,p1h,	0,  1, 1, 0, 24,1);
-	ProcessRayCastsMist(screen3x2b,rayCastXOdd, rayCastYOdd,mapMed,p1x,p1y,p1h,	24, 1, 1, 0, 24,1);
-	ProcessRayCastsMist(screen3x2c,rayCastXOdd, rayCastYOdd,mapHigh,p1x,p1y,p1h,	48, 1, 1, 0, 24,1);
-	ProcessRayCastsMist(screen3x2d,rayCastXOdd, rayCastYOdd,mapMed,p1x,p1y,p1h,	72, 1, 1, 0, 24,1);
-	ProcessRayCastsMist(screen3x2e,rayCastXOdd, rayCastYOdd,mapLow,p1x,p1y,p1h,	96, 1, 1, 0, 24,1);
-
-	DrawPlayerScreen3x2(screen3x2a,1,0,0,4);
-	DrawPlayerScreen3x2(screen3x2b,1,0,4,4);
-	DrawPlayerScreen3x2(screen3x2c,1,0,8,4);
-	DrawPlayerScreen3x2(screen3x2d,1,0,12,4);
-	DrawPlayerScreen3x2(screen3x2e,1,0,16,4);
-}
-}
-void ProcessPlayerInput()
-{
-	 /* if(joyCheck(JOY1_RIGHT)) { p1xf+=deltaTime/10000*3; }
-		if(joyCheck(JOY1_LEFT)) {p1xf-=deltaTime/10000*3; }
-		if(joyCheck(JOY1_DOWN)) { p1hf-=deltaTime/10000*3; }
-		if(joyCheck(JOY1_UP)) { p1hf+=deltaTime/10000*3; }
-		if(joyCheck(JOY1_FIRE)) { p1yf+=deltaTime/10000; }
-
-		if(keyCheck(KEY_UP))p1yf+=deltaTime/10000;
-		if(keyCheck(KEY_DOWN))p1yf-=deltaTime/10000;
-		if(keyCheck(KEY_RIGHT))p1xf+=deltaTime/10000*3;
-		if(keyCheck(KEY_LEFT))p1xf-=deltaTime/10000*3;
-		if(keyCheck(KEY_RALT))p1hf+=deltaTime/10000*3;
-		if(keyCheck(KEY_CONTROL))p1hf-=deltaTime/10000*3;*/
-
-		if(joyCheck(JOY1_RIGHT)) {	cx+=deltaTime/100; }
- 		else if(joyCheck(JOY1_LEFT)) {		cx-=deltaTime/100; }
-		else if(cx!=0) {cx = cx - cx/((LONG)(deltaTime)/1000);}
-
-		if(cx > 0x3000) cx = 0x3000;
-		else if(cx < -0x3000) cx = -0x3000;
-
-		if(cy > 0x3000) cy = 0x3000;
-		else if(cy < -0x3000) cy = -0x3000;
-
- 		if(joyCheck(JOY1_DOWN)) {		cy+=deltaTime/100; }
- 		else if(joyCheck(JOY1_UP)) {			cy-=deltaTime/100; }
-		else if(cy!=0) {cy = cy - cy/((LONG)(deltaTime)/1000);}
-
- 	//	if(joyCheck(JOY1_FIRE)) {		p1yf+=deltaTime/10000;}
-
-
-
-		p1xf += (LONG)(deltaTime/10000) * cx/2000;
-		p1hf -= (LONG)(deltaTime/10000) * cy/1000;
-
-		if(p1hf > 6000) p1hf = 6000;
-
-		p1yf+=deltaTime/(800 + (p1hf - (UBYTE)(mapHigh[p1xf/32][p1yf/32])*32 ) );
-
-		if(p1hf<50) p1hf = 50;//block going below ground
-
-	p1y = p1yf/32;
-	p1x = p1xf/32;
-	p1h = p1hf/32;
+	CalculateRayCasts(rayCastXEven, rayCastYEven, XSIZEEVEN, YSIZE);
+	CalculateRayCasts(rayCastXOdd, rayCastYOdd, XSIZEODD, YSIZE);
+	deltaTime = 0;
 }
 
+
+//****************************** CREATE
 void engineGsCreate(void)
 {
 	s_pView = viewCreate(0,
@@ -294,10 +92,13 @@ void engineGsCreate(void)
 		TAG_DONE
 	);
 
+		// Load font
+	//s_pMenuFont = fontCreate("data/fonts/silkscreen.fnt");
 
-	p1xf = 40*100;
+
+	p1xf = 60*100;
 	p1yf = 0;
-	p1hf = 30*100;
+	p1hf = 40*100;
 
 	p2x = 0;
 	p2y = 0;
@@ -305,67 +106,14 @@ void engineGsCreate(void)
 
 	lastOverwrittenLine = 0;
 
+	SetupMaps();
 
 	GenerateWordDither8x8();
 	GenerateColorBytesNoDither4x4();
 	GenerateColorBytesDither3x2();
 
-//read and prepare map0
-	ReadHeight("height.raw", heightMap);
-	ReadColor("color.raw", colorMap);
-	
-	//AddBumpToColorMap(colorMap,heightMap);
-	SmoothColorMap(colorMap);
-	SmoothHeightMap(heightMap);
-	CombineMapsHigh(heightMap, colorMap, mapHigh0);
-	SmoothHeightMap(heightMap);
-	SmoothColorMap(colorMap);
-	CombineMapsHigh(heightMap, colorMap, mapMed0);
-	SmoothHeightMap(heightMap);
-	SmoothColorMap(colorMap);
-	CombineMapsHigh(heightMap, colorMap, mapLow0);
+	SetDefaulResolution();
 
-//read and prepare map1
-	ReadHeight("height2.raw", heightMap);
-	ReadColor("color2.raw", colorMap);
-	
-	//AddBumpToColorMap(colorMap,heightMap);
-	SmoothColorMap(colorMap);
-	SmoothHeightMap(heightMap);
-	CombineMapsHigh(heightMap, colorMap, mapHigh1);
-	SmoothHeightMap(heightMap);
-	SmoothColorMap(colorMap);
-	CombineMapsHigh(heightMap, colorMap, mapMed1);
-	SmoothHeightMap(heightMap);
-	SmoothColorMap(colorMap);
-	CombineMapsHigh(heightMap, colorMap, mapLow1);
-
-	//read and prepare map1
-	ReadHeight("height3.raw", heightMap);
-	ReadColor("color3.raw", colorMap);
-	
-	//AddBumpToColorMap(colorMap,heightMap);
-	SmoothColorMap(colorMap);
-	SmoothHeightMap(heightMap);
-	CombineMapsHigh(heightMap, colorMap, mapHigh2);
-	SmoothHeightMap(heightMap);
-	SmoothColorMap(colorMap);
-	CombineMapsHigh(heightMap, colorMap, mapMed2);
-	SmoothHeightMap(heightMap);
-	SmoothColorMap(colorMap);
-	CombineMapsHigh(heightMap, colorMap, mapLow2);
-
-//prepare starting map
-	CopyMapWord(mapHigh0, mapHigh);
-	CopyMapWord(mapMed0, mapMed);
-	CopyMapWord(mapLow0, mapLow);
-
-	renderingDepth = 16;
-	debugValue=3;
-	debugValue2 = 1;
-	debugValue3 = 10;
-	debugValue4 = 2;
-	Recalculate();
 
 	memcpy(s_pVPort->pPalette, kolory, 16 * sizeof(UWORD));
 
@@ -377,52 +125,9 @@ void engineGsCreate(void)
 	systemUnuse();
 }
 
-void Recalculate()
-{
-	CalculateRayCasts(rayCastXEven, rayCastYEven, XSIZEEVEN, YSIZE);
-	CalculateRayCasts(rayCastXOdd, rayCastYOdd, XSIZEODD, YSIZE);
-}
 
-void OverwriteMap()
-{
-	UBYTE mapNumber;
-	
-	UWORD (*_mapHigh)[256];
-	UWORD (*_mapMed)[256];
-	UWORD (*_mapLow)[256];
 
-	mapNumber = (p1y/256) % 3 ;
-
-	if(mapNumber == 0)
-	{
-		_mapHigh = mapHigh0;
-		_mapMed = mapMed0;
-		_mapLow = mapLow0;
-	}
-	else if(mapNumber == 1)
-	{
-		_mapHigh = mapHigh1;
-		_mapMed = mapMed1;
-		_mapLow = mapLow1;
-	}
-	else if(mapNumber == 2)
-	{
-		_mapHigh = mapHigh2;
-		_mapMed = mapMed2;
-		_mapLow = mapLow2;
-	}
-	
-	for(int y=lastOverwrittenLine;y<p1y;y++)
-	for(int x=0;x<256;x++)
-		{
-			mapHigh[x][(UBYTE)y] = _mapHigh[x][(UBYTE)y];
-			mapMed[x][(UBYTE)y] = _mapMed[x][(UBYTE)y];
-			mapLow[x][(UBYTE)y] =  _mapLow[x][(UBYTE)y];
-		}
-
-	lastOverwrittenLine = p1y;
-}
-
+//****************************** LOOP
 void engineGsLoop(void) {
 	logAvgBegin(s_pAvgTime);
 	joyProcess();
@@ -436,22 +141,71 @@ if(keyCheck(KEY_SPACE)) {
 }
 else
 {
+	if(keyCheck(KEY_Q)){debugValue5=1;}
+	if(keyCheck(KEY_W)){debugValue5=2;}
+	if(keyCheck(KEY_E)){debugValue5=3;}
+	if(keyCheck(KEY_R)){debugValue5=4;}
+	if(keyCheck(KEY_T)){debugValue5=5;}
+	if(keyCheck(KEY_Y)){debugValue5=6;}
+	if(keyCheck(KEY_U)){debugValue5=7;}
+	if(keyCheck(KEY_I)){debugValue5=8;}
+	if(keyCheck(KEY_O)){debugValue5=9;}
+	if(keyCheck(KEY_P)){debugValue5=10;}
+
+	if(keyCheck(KEY_A)){debugValue6=1;Recalculate();}
+	if(keyCheck(KEY_S)){debugValue6=2;Recalculate();}
+	if(keyCheck(KEY_D)){debugValue6=3;Recalculate();}
+	if(keyCheck(KEY_F)){debugValue6=4;Recalculate();}
+	if(keyCheck(KEY_G)){debugValue6=5;Recalculate();}
+	if(keyCheck(KEY_H)){debugValue6=6;Recalculate();}
+	if(keyCheck(KEY_J)){debugValue6=7;Recalculate();}
+	if(keyCheck(KEY_K)){debugValue6=8;Recalculate();}
+	if(keyCheck(KEY_L)){debugValue6=9;Recalculate();}
+	if(keyCheck(KEY_SEMICOLON)){debugValue6=10;Recalculate();}
+
+	if(keyCheck(KEY_Z)){debugValue7=2;Recalculate();}
+	if(keyCheck(KEY_X)){debugValue7=4;Recalculate();}
+	if(keyCheck(KEY_C)){debugValue7=6;Recalculate();}
+	if(keyCheck(KEY_V)){debugValue7=8;Recalculate();}
+	if(keyCheck(KEY_B)){debugValue7=10;Recalculate();}
+	if(keyCheck(KEY_N)){debugValue7=12;Recalculate();}
+	if(keyCheck(KEY_M)){debugValue7=14;Recalculate();}
+	if(keyCheck(KEY_COMMA)){debugValue7=16;Recalculate();}
+	if(keyCheck(KEY_PERIOD)){debugValue7=18;Recalculate();}
+	if(keyCheck(KEY_SLASH)){debugValue7=20;Recalculate();}
 	
 	ProcessPlayerInput();
+	OverwriteMap(); //this is how we go through many different maps, we just overwrite the main array with new content
 
-	if( (p1h) < (UBYTE)(mapHigh[(UBYTE)(p1x)][(UBYTE)(p1y)]) ) 
-		gameClose();
+//restart
+	if( (p1h-3) < (UBYTE)(mapHigh[(UBYTE)(p1x)][(UBYTE)(p1y+3)]) ) 
+	{
+		p1xf = 60*100;
+		p1yf = 0;
+		p1hf = 40*100;
+		CopyMapWord(mapHigh0, mapHigh);
+		CopyMapWord(mapMed0, mapMed);
+		CopyMapWord(mapLow0, mapLow);
+	}
+	
 
- 	OverwriteMap();
-	ProcessQualityInput();
+ 	ProcessQualityInput();
 }
 
 
 if(renderingDepth<10) renderingDepth = 10;
 else if(renderingDepth>TERRAINDEPTH) renderingDepth = TERRAINDEPTH;
 
+RenderQuality();
+
 //draw crosshair
 DrawPixel((160+(cx/100))/16, 128+(cy/100), 0);
+
+	// fontDrawStr(
+	// 	s_pMenuBfr->pBack, s_pMenuFont,
+	// 	s_pMenuBfr->uBfrBounds.uwX >> 1, 80,
+	// 	"ACE Showcase", 1, FONT_COOKIE|FONT_CENTER|FONT_SHADOW
+	// );
 
 vPortWaitForEnd(s_pVPort);
 CopyFastToChipW(s_pBuffer->pBack);
@@ -464,34 +218,13 @@ endTime = timerGetPrec();
 }
 
 
-void logAvgWriteKwahu(tAvg *pAvg) {
-	ULONG ulAvg = 0;
-	char szAvg[15];
-	char szMin[15];
-	char szMax[15];
-
-	if(!pAvg->uwUsedCount) {
-		printf("Avg %s: No measures taken!\n", pAvg->szName);
-		return;
-	}
-	// Calculate average time
-	for(UWORD i = pAvg->uwUsedCount; i--;) {
-		ulAvg += pAvg->pDeltas[i];
-	}
-	ulAvg /= pAvg->uwUsedCount;
-
-	// Display info
-	timerFormatPrec(szAvg, ulAvg);
-	timerFormatPrec(szMin, pAvg->ulMin);
-	timerFormatPrec(szMax, pAvg->ulMax);
-	printf("Avg %s: %s, min: %s, max: %s\n", pAvg->szName, szAvg, szMin, szMax);
-}
-
+//****************************** DESTROY
 void engineGsDestroy(void)
 {
 	systemUse();
 	joyClose();
 	viewLoad(0);
+//	fontDestroy(s_pMenuFont);
 	viewDestroy(s_pView);
 
 	char szAvg[15];

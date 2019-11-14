@@ -1,8 +1,8 @@
-#include "ray_casting.h"
+#include "engine.h"
 
 void ProcessRayCastsMist(UBYTE *screen, WORD (*rayCastX)[TERRAINDEPTH], WORD (*rayCastY)[TERRAINDEPTH], UWORD (*map)[256],
 UBYTE px, UBYTE py, UBYTE ph, UBYTE tableXStart,
-UBYTE tableStepSizeX, UBYTE tableStepSizeY, UBYTE tableStepNumber, UBYTE xCycles, UBYTE zStep)
+UBYTE tableStepSizeX, UBYTE tableStepSizeY, UBYTE tableStepNumber, UBYTE xCycles, UBYTE zStep, UBYTE zStart)
 {
 	UBYTE sx,sy;
 	UWORD tz;
@@ -26,8 +26,8 @@ UBYTE tableStepSizeX, UBYTE tableStepSizeY, UBYTE tableStepNumber, UBYTE xCycles
 	{
 		sy = 0 + tableStepNumber;
 		position = startPosition+i;
-		tz = 0;
-		mist = 0;
+		tz = zStart+debugValue5;//rendering start
+		mist = zStart+debugValue5*zStep;//rendering start
 
 		//check depth step by step
 		while(tz < renderingDepth)
@@ -61,7 +61,7 @@ UBYTE tableStepSizeX, UBYTE tableStepSizeY, UBYTE tableStepNumber, UBYTE xCycles
 			//	sy = YSIZE;
 			//else
 			{
-				screen[position] = ph/32 + 4 +sy/8;
+				screen[position] = ph/32 + 8 +sy/8;
 				sy+=tableStepSizeY;
 				position-=currentScreenYStepSize;
 			}
