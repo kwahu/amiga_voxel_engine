@@ -12,7 +12,7 @@
 #define TERRAINDEPTH 64
 #define XSIZEODD 120
 #define XSIZEEVEN 160
-#define YSIZE 128
+#define YSIZE 112
 
 UBYTE heightMap[256][256];
 UBYTE colorMap[256][256];
@@ -49,11 +49,12 @@ UBYTE debugValue,debugValue2,debugValue3,debugValue4,debugValue5,debugValue6,deb
 //sand dunes theme
 UWORD kolory[COLORS] =
 {
-	0x101,0x212,0x323,0x424,0x523,0x633,0x743,0x854,
-	0xa65,0xb75,0xc85,0xd96,0xeb8,0xfdb,0xbcc,0x8be
+	0x101,0x323,0x523,0x743,0xa65,0xc85,0xeb8,0xfdb,
+	0xbcc,0x8be,
+	0x243,0x9b8,0xafd,0x324,0xa9b,0xdcf
 };
 
-// UBYTE screen8x8slow[40*32];
+UBYTE screen8x8slow[32*30];
 
 UBYTE screen8x8a[8*32];//0,256k
 UBYTE screen8x8b[8*32];//0,256k

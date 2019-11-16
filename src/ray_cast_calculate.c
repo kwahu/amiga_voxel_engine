@@ -7,7 +7,8 @@ void CalculateRayCasts(WORD (*rayCastX)[TERRAINDEPTH], WORD (*rayCastY)[TERRAIND
 	int syy;
 	int tzz; //depth step value
 	int fovX = xSize/debugValue7; //this changes the field of view
-	int fovY = 4; //4 nice height change
+	int fovY = 5; //4 nice height change
+	WORD sxxx;
 
 	tzz = 1;
 	for(int tz=0;tz<TERRAINDEPTH;tz++)
@@ -17,10 +18,11 @@ void CalculateRayCasts(WORD (*rayCastX)[TERRAINDEPTH], WORD (*rayCastY)[TERRAIND
 		for(int sx=-xSize/2;sx<xSize/2;sx++)
 		{
 			sxx = (sx * tzz)/(debugValue6*4); //make smaller steps
+			sxxx = sxx/fovX;
 			for(int sy=-ySize/2;sy<ySize/2;sy++)
 			{
 				syy = (sy * tzz)/(debugValue6*4);//make smaller steps
-				rayCastX[xSize/2+sx][tz] = sxx/fovX;
+				rayCastX[xSize/2+sx][tz] = sxxx;
 				rayCastY[ySize/2+sy][tz] = syy/fovY;
 			}
 		}

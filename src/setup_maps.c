@@ -8,14 +8,15 @@ UWORD (*high)[256],UWORD (*med)[256],UWORD (*low)[256])
 	ReadColor(colorName, colorMap);
 	
 	//AddBumpToColorMap(colorMap,heightMap);
-	//SmoothColorMap(colorMap);
-	//SmoothHeightMap(heightMap);
+	LimitColorMap(colorMap,heightMap);
+	SmoothColorMap(colorMap);
+	SmoothHeightMap(heightMap);
 	CombineMapsHigh(heightMap, colorMap, high);
-	SmoothHeightMap(heightMap);
-	SmoothColorMap(colorMap);
+	//SmoothHeightMap(heightMap);
+	//SmoothColorMap(colorMap);
 	CombineMapsHigh(heightMap, colorMap, med);
-	SmoothHeightMap(heightMap);
-	SmoothColorMap(colorMap);
+	//SmoothHeightMap(heightMap);
+	//SmoothColorMap(colorMap);
 	CombineMapsHigh(heightMap, colorMap, low);
 }
 void SetupMaps()

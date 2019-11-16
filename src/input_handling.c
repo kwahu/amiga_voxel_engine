@@ -62,7 +62,7 @@ void ProcessQualityInput()
 	if(keyCheck(KEY_7) && debugValue!=7)
 	{
 		renderingDepth = 64;
-		debugValue=7;
+		debugValue=7;     
 		debugValue2 = 7;
 		debugValue3 = 1;
 		debugValue4 = 0;
@@ -93,8 +93,8 @@ void ProcessPlayerInput()
 		if(cx > 0x3000) cx = 0x3000;
 		else if(cx < -0x3000) cx = -0x3000;
 
-		if(cy > 0x3000) cy = 0x3000;
-		else if(cy < -0x3000) cy = -0x3000;
+		if(cy > 0x2000) cy = 0x2000;
+		else if(cy < -0x2000) cy = -0x2000;
 
  		if(joyCheck(JOY1_DOWN)) {		cy+=deltaTime/100; }
  		else if(joyCheck(JOY1_UP)) {			cy-=deltaTime/100; }

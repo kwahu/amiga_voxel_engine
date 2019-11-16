@@ -14,6 +14,7 @@ UBYTE tableStepSizeX, UBYTE tableStepSizeY, UBYTE tableStepNumber, UBYTE xCycles
 	UWORD rayValue;
 	UWORD startPosition = ((YSIZE/tableStepSizeY)-1)*xCycles;
 	UBYTE mist;
+	WORD slope;
 
 
 	UWORD currentScreenYStepSize;
@@ -26,8 +27,8 @@ UBYTE tableStepSizeX, UBYTE tableStepSizeY, UBYTE tableStepNumber, UBYTE xCycles
 	{
 		sy = 0 + tableStepNumber;
 		position = startPosition+i;
-		tz = zStart+debugValue5;//rendering start
-		mist = zStart+debugValue5*zStep;//rendering start
+		tz = zStart;//rendering start
+		mist = zStart*zStep;//rendering start
 
 		//check depth step by step
 		while(tz < renderingDepth)
@@ -41,15 +42,24 @@ UBYTE tableStepSizeX, UBYTE tableStepSizeY, UBYTE tableStepNumber, UBYTE xCycles
 			th = mapValue;//take just the height
 
 			//check if read height is higher than what we expect from the raycast table
-			if(th>ph + rayCastY[sy][tz])
+			slope = th - (ph + rayCastY[sy][tz]);
+			if(slope > tz>>3)
 			{
-				screen[position] = ( ( 12 - (mapValue >> 8) ) >> (mist>>4) )+ 12 + th/32;//write pixel color
+				screen[position] = (mapValue >> 8) + ((slope/4) & 1);//( ( 13 - (mapValue >> 8) ) >> (mist>>5) )+ 13 + ((slope/4) & 1);// + (((tz+py)>>2) & 1);//write pixel color
+				sy+=tableStepSizeY;//go step higher in the raycast table
+				position-=currentScreenYStepSize;//go step higher on screen
+				if(sy == YSIZE) tz=renderingDepth; //break if end of screen
+			}
+			else if(slope > 0)
+			{
+				screen[position] = (mapValue >> 8) + 2;//( ( 13 - (mapValue >> 8) ) >> (mist>>5) )+ 13 + ((slope/4) & 1);// + (((tz+py)>>2) & 1);//write pixel color
 				sy+=tableStepSizeY;//go step higher in the raycast table
 				position-=currentScreenYStepSize;//go step higher on screen
 				if(sy == YSIZE) tz=renderingDepth; //break if end of screen
 			}
 			else
-			{
+			{	
+				//screen[position] = 0;
 				tz++;//go step in depth if no height hit
 				mist += zStep;
 			}
@@ -61,7 +71,7 @@ UBYTE tableStepSizeX, UBYTE tableStepSizeY, UBYTE tableStepNumber, UBYTE xCycles
 			//	sy = YSIZE;
 			//else
 			{
-				screen[position] = ph/32 + 8 +sy/8;
+				screen[position] = ph/32 + 0 +sy/8;
 				sy+=tableStepSizeY;
 				position-=currentScreenYStepSize;
 			}

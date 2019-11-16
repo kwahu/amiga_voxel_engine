@@ -99,6 +99,23 @@ void AddBumpToColorMap(UBYTE (*mapColor)[256], UBYTE (*mapHeight)[256])
 	}
 
 }
+//add light and shadow contrast on the left and right sides of the terrain
+void LimitColorMap(UBYTE (*mapColor)[256], UBYTE (*mapHeight)[256])
+{
+	int value;
+
+	for (int x = 0; x < 256; x++)
+	{
+		for (int y = 0; y < 256; y++)
+		{
+			value = mapColor[x][y]/2;
+			if(value < 1) value = 1;
+			//if(value > 4) value = 4;
+			mapColor[x][y] = (UBYTE)(value);
+		}
+	}
+
+}
 void CopyMapByte(UBYTE (*source)[256], UBYTE (*destination)[256])
 {
 	for (int x = 0; x < 256; x++)

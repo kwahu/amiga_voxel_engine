@@ -60,7 +60,7 @@ void SetDefaulResolution()
 		debugValue4 = 0;
 
 		debugValue6 = 4;
-		debugValue7 = 20;
+		debugValue7 = 10;
 		Recalculate();
 }
 void Recalculate()
@@ -178,11 +178,11 @@ else
 	OverwriteMap(); //this is how we go through many different maps, we just overwrite the main array with new content
 
 //restart
-	if( (p1h-3) < (UBYTE)(mapHigh[(UBYTE)(p1x)][(UBYTE)(p1y+3)]) ) 
+	if( (p1h-3) < (UBYTE)(mapHigh[(UBYTE)(p1x)][(UBYTE)(p1y+10)]) ) 
 	{
 		p1xf = 60*100;
 		p1yf = 0;
-		p1hf = 40*100;
+		p1hf = 10*100;
 		CopyMapWord(mapHigh0, mapHigh);
 		CopyMapWord(mapMed0, mapMed);
 		CopyMapWord(mapLow0, mapLow);
@@ -199,7 +199,8 @@ else if(renderingDepth>TERRAINDEPTH) renderingDepth = TERRAINDEPTH;
 RenderQuality();
 
 //draw crosshair
-DrawPixel((160+(cx/100))/16, 128+(cy/100), 0);
+DrawPixel((160+(cx/100))/16, YSIZE+(cy/100)+4, 0);
+DrawPixel((160+(cx/100))/16, YSIZE+(cy/100)-4, 0);
 
 	// fontDrawStr(
 	// 	s_pMenuBfr->pBack, s_pMenuFont,
