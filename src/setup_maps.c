@@ -9,15 +9,15 @@ UWORD (*high)[256],UWORD (*med)[256],UWORD (*low)[256])
 	
 	//AddBumpToColorMap(colorMap,heightMap);
 	LimitColorMap(colorMap,heightMap);
-	SmoothColorMap(colorMap);
+	//SmoothColorMap(colorMap);
 	//SmoothHeightMap(heightMap);
 	CombineMapsHigh(heightMap, colorMap, high);
 	//SmoothHeightMap(heightMap);
 	//SmoothColorMap(colorMap);
-	CombineMapsHigh(heightMap, colorMap, med);
+	//CombineMapsHigh(heightMap, colorMap, med);
 	//SmoothHeightMap(heightMap);
 	//SmoothColorMap(colorMap);
-	CombineMapsHigh(heightMap, colorMap, low);
+	//CombineMapsHigh(heightMap, colorMap, low);
 }
 void SetupMaps()
 {
@@ -35,6 +35,6 @@ void SetupMaps()
 
 	//prepare starting map
 	CopyMapWord(mapHigh0, mapHigh);
-	CopyMapWord(mapMed0, mapMed);
-	CopyMapWord(mapLow0, mapLow);
+	//CopyMapWord(mapMed0, mapMed);
+	//CopyMapWord(mapLow0, mapLow);
 }

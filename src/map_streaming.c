@@ -25,9 +25,10 @@ void OverwriteMap()
 	for(UWORD y=lastOverwrittenLine;y<p1y;y++)
 	for(UWORD x=0;x<256;x++)
 		{
+			//CopyMem(_mapHigh[x][(UBYTE)y], mapHigh[x][(UBYTE)y], 256);
+			// = ;
 			mapHigh[x][(UBYTE)y] = _mapHigh[x][(UBYTE)y];
-			mapMed[x][(UBYTE)y] = _mapMed[x][(UBYTE)y];
-			mapLow[x][(UBYTE)y] =  _mapLow[x][(UBYTE)y];
+			//mapLow[x][(UBYTE)y] =  _mapLow[x][(UBYTE)y];
 		}
 
 	lastOverwrittenLine = p1y;

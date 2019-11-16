@@ -70,6 +70,38 @@ void Recalculate()
 	deltaTime = 0;
 }
 
+void ConvertIntToChar( int number, char *test)
+{
+	int temp;
+	int i = 9;
+	while(number!=0)
+	{
+		temp=number%10;
+		number/=10;
+		switch(temp)
+		{
+			case 1: test[i] = '1';break;
+			case 2: test[i] = '2';break;
+			case 3: test[i] = '3';break;
+			case 4: test[i] = '4';break;
+			case 5: test[i] = '5';break;
+			case 6: test[i] = '6';break;
+			case 7: test[i] = '7';break;
+			case 8: test[i] = '8';break;
+			case 9: test[i] = '9';break;
+			case 0: test[i] = '0';break;
+		}
+		i--;
+	}
+	while(i>=0)
+	{
+		test[i] = ' ';
+		i--;
+	}
+}
+
+tTextBitMap *pBitmapPlayerX, *pBitmapPlayerY, *pBitmapPlayerH;
+char sPlayerX[10],sPlayerY[10],sPlayerH[10];
 
 //****************************** CREATE
 void engineGsCreate(void)
@@ -93,7 +125,7 @@ void engineGsCreate(void)
 	);
 
 		// Load font
-	//s_pMenuFont = fontCreate("data/fonts/silkscreen.fnt");
+	s_pMenuFont = fontCreate("silkscreen.fnt");
 
 
 	p1xf = 60*100;
@@ -123,6 +155,10 @@ void engineGsCreate(void)
 	keyCreate();
 	joyOpen(0);
 	systemUnuse();
+
+	pBitmapPlayerX = fontCreateTextBitMapFromStr(s_pMenuFont, "ACE Showcase");
+	pBitmapPlayerY = fontCreateTextBitMapFromStr(s_pMenuFont, "ACE Showcase");
+	pBitmapPlayerH = fontCreateTextBitMapFromStr(s_pMenuFont, "ACE Showcase");
 }
 
 
@@ -205,14 +241,24 @@ RenderQuality();
 DrawPixel((160+(cx/150))/16, YSIZEODD+(cy/100)+4, 0);
 DrawPixel((160+(cx/150))/16, YSIZEODD+(cy/100)-4, 0);
 
-	// fontDrawStr(
-	// 	s_pMenuBfr->pBack, s_pMenuFont,
-	// 	s_pMenuBfr->uBfrBounds.uwX >> 1, 80,
-	// 	"ACE Showcase", 1, FONT_COOKIE|FONT_CENTER|FONT_SHADOW
-	// );
+
+
+
+
 
 vPortWaitForEnd(s_pVPort);
 CopyFastToChipW(s_pBuffer->pBack);
+
+ConvertIntToChar( p1x, sPlayerX);
+ConvertIntToChar( p1y, sPlayerY);
+ConvertIntToChar( p1h, sPlayerH);
+
+fontFillTextBitMap(s_pMenuFont, pBitmapPlayerX, sPlayerX);
+fontFillTextBitMap(s_pMenuFont, pBitmapPlayerY, sPlayerY);
+fontFillTextBitMap(s_pMenuFont, pBitmapPlayerH, sPlayerH);
+fontDrawTextBitMap(s_pBuffer->pBack, pBitmapPlayerX, 20, 225, 1, FONT_LEFT);
+fontDrawTextBitMap(s_pBuffer->pBack, pBitmapPlayerY, 40, 235, 1, FONT_LEFT);
+fontDrawTextBitMap(s_pBuffer->pBack, pBitmapPlayerH, 60, 245, 1, FONT_LEFT);
 
 interlace++;
 if(interlace == 4) interlace = 0;
@@ -228,8 +274,10 @@ void engineGsDestroy(void)
 	systemUse();
 	joyClose();
 	viewLoad(0);
-//	fontDestroy(s_pMenuFont);
+	fontDestroy(s_pMenuFont);
 	viewDestroy(s_pView);
+
+	fontDestroyTextBitMap(pBitmapPlayerX);
 
 	char szAvg[15];
 	timerFormatPrec(szAvg, endTime - startTime);

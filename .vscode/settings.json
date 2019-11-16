@@ -3,6 +3,7 @@
         "font.h": "c",
         "file.h": "c",
         "blit.h": "c",
-        "engine.h": "c"
+        "engine.h": "c",
+        "xstring": "c"
     }
 }
