@@ -58,7 +58,7 @@ void DrawPlayerScreen3x2(UBYTE *screen, UBYTE player, UBYTE depth, UBYTE startSc
 sp = 0;
 
 	//for each line
-	for(UBYTE y=0;y<YSIZE;y++)
+	for(UBYTE y=0;y<YSIZEODD;y++)
 	{
 		//40 bytes * y + even/odd + player screen offset WORDs
 		position = y*20*2  + startScreen;
@@ -125,7 +125,7 @@ void DrawPlayerScreen4x4(UBYTE *screen, UBYTE player, UBYTE depth, UBYTE startSc
 	}
 
 	//for each line
-	for(UBYTE y=0;y<YSIZE/2;y++)
+	for(UBYTE y=0;y<YSIZEEVEN;y++)
 	{
 		//40 bytes * y + even/odd + player screen offset WORDs
 		position = y*20*4  + startScreen;
@@ -290,7 +290,7 @@ void DrawPlayerScreen8x8(UBYTE *screen, UBYTE player, UBYTE depth, UBYTE startSc
 	}
 
 	//for each line
-	for(UBYTE y=0;y<YSIZE/4;y++)
+	for(UBYTE y=0;y<YSIZEEVEN/2;y++)
 	{
 		//40 bytes * y + even/odd + player screen offset WORDs
 		position = y*20*8  + startScreen;

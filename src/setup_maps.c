@@ -10,7 +10,7 @@ UWORD (*high)[256],UWORD (*med)[256],UWORD (*low)[256])
 	//AddBumpToColorMap(colorMap,heightMap);
 	LimitColorMap(colorMap,heightMap);
 	SmoothColorMap(colorMap);
-	SmoothHeightMap(heightMap);
+	//SmoothHeightMap(heightMap);
 	CombineMapsHigh(heightMap, colorMap, high);
 	//SmoothHeightMap(heightMap);
 	//SmoothColorMap(colorMap);

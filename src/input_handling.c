@@ -90,8 +90,8 @@ void ProcessPlayerInput()
  		else if(joyCheck(JOY1_LEFT)) {		cx-=deltaTime/100; }
 		else if(cx!=0) {cx = cx - cx/((LONG)(deltaTime)/1000);}
 
-		if(cx > 0x3000) cx = 0x3000;
-		else if(cx < -0x3000) cx = -0x3000;
+		if(cx > 0x4000) cx = 0x4000;
+		else if(cx < -0x4000) cx = -0x4000;
 
 		if(cy > 0x2000) cy = 0x2000;
 		else if(cy < -0x2000) cy = -0x2000;

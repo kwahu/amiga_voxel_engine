@@ -60,13 +60,13 @@ void SetDefaulResolution()
 		debugValue4 = 0;
 
 		debugValue6 = 4;
-		debugValue7 = 10;
+		xFOV = 10;
 		Recalculate();
 }
 void Recalculate()
 {
-	CalculateRayCasts(rayCastXEven, rayCastYEven, XSIZEEVEN, YSIZE);
-	CalculateRayCasts(rayCastXOdd, rayCastYOdd, XSIZEODD, YSIZE);
+	CalculateRayCasts(rayCastXEven, rayCastYEven, XSIZEEVEN, YSIZEEVEN,2);
+	CalculateRayCasts(rayCastXOdd, rayCastYOdd, XSIZEODD, YSIZEODD,1);
 	deltaTime = 0;
 }
 
@@ -163,7 +163,7 @@ else
 	if(keyCheck(KEY_L)){debugValue6=9;Recalculate();}
 	if(keyCheck(KEY_SEMICOLON)){debugValue6=10;Recalculate();}
 
-	if(keyCheck(KEY_Z)){debugValue7=2;Recalculate();}
+	/*if(keyCheck(KEY_Z)){debugValue7=2;Recalculate();}
 	if(keyCheck(KEY_X)){debugValue7=4;Recalculate();}
 	if(keyCheck(KEY_C)){debugValue7=6;Recalculate();}
 	if(keyCheck(KEY_V)){debugValue7=8;Recalculate();}
@@ -172,7 +172,7 @@ else
 	if(keyCheck(KEY_M)){debugValue7=14;Recalculate();}
 	if(keyCheck(KEY_COMMA)){debugValue7=16;Recalculate();}
 	if(keyCheck(KEY_PERIOD)){debugValue7=18;Recalculate();}
-	if(keyCheck(KEY_SLASH)){debugValue7=20;Recalculate();}
+	if(keyCheck(KEY_SLASH)){debugValue7=20;Recalculate();}*/
 	
 	ProcessPlayerInput();
 	OverwriteMap(); //this is how we go through many different maps, we just overwrite the main array with new content
@@ -196,11 +196,14 @@ else
 if(renderingDepth<10) renderingDepth = 10;
 else if(renderingDepth>TERRAINDEPTH) renderingDepth = TERRAINDEPTH;
 
+xOffsetOdd = cx/300;
+xOffsetEven = cx/450;
+
 RenderQuality();
 
 //draw crosshair
-DrawPixel((160+(cx/100))/16, YSIZE+(cy/100)+4, 0);
-DrawPixel((160+(cx/100))/16, YSIZE+(cy/100)-4, 0);
+DrawPixel((160+(cx/150))/16, YSIZEODD+(cy/100)+4, 0);
+DrawPixel((160+(cx/150))/16, YSIZEODD+(cy/100)-4, 0);
 
 	// fontDrawStr(
 	// 	s_pMenuBfr->pBack, s_pMenuFont,

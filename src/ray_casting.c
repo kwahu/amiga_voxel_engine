@@ -2,7 +2,7 @@
 
 void ProcessRayCastsMist(UBYTE *screen, WORD (*rayCastX)[TERRAINDEPTH], WORD (*rayCastY)[TERRAINDEPTH], UWORD (*map)[256],
 UBYTE px, UBYTE py, UBYTE ph, UBYTE tableXStart,
-UBYTE tableStepSizeX, UBYTE tableStepSizeY, UBYTE tableStepNumber, UBYTE xCycles, UBYTE zStep, UBYTE zStart)
+UBYTE tableStepSizeX, UBYTE tableStepSizeY, UBYTE tableStepNumber, UBYTE xCycles, UBYTE zStep, UBYTE zStart, UBYTE ySize, BYTE xOffset)
 {
 	UBYTE sx,sy;
 	UWORD tz;
@@ -12,14 +12,15 @@ UBYTE tableStepSizeX, UBYTE tableStepSizeY, UBYTE tableStepNumber, UBYTE xCycles
 	UWORD mapValue;
 	BYTE xvalue,yvalue;
 	UWORD rayValue;
-	UWORD startPosition = ((YSIZE/tableStepSizeY)-1)*xCycles;
+	UWORD startPosition = ((ySize/tableStepSizeY)-1)*xCycles;
 	UBYTE mist;
 	WORD slope;
 
 
 	UWORD currentScreenYStepSize;
 
-	sx = tableXStart;
+	//start with the buffor + vertical stripe start + turning amount
+	sx = XTURNBUFFOR + tableXStart + xOffset;
 	currentScreenYStepSize = xCycles;
 
 	//for each vertical line
@@ -48,14 +49,14 @@ UBYTE tableStepSizeX, UBYTE tableStepSizeY, UBYTE tableStepNumber, UBYTE xCycles
 				screen[position] = (mapValue >> 8) + ((slope/4) & 1);//( ( 13 - (mapValue >> 8) ) >> (mist>>5) )+ 13 + ((slope/4) & 1);// + (((tz+py)>>2) & 1);//write pixel color
 				sy+=tableStepSizeY;//go step higher in the raycast table
 				position-=currentScreenYStepSize;//go step higher on screen
-				if(sy == YSIZE) tz=renderingDepth; //break if end of screen
+				if(sy == ySize) tz=renderingDepth; //break if end of screen
 			}
 			else if(slope > 0)
 			{
 				screen[position] = (mapValue >> 8) + 2;//( ( 13 - (mapValue >> 8) ) >> (mist>>5) )+ 13 + ((slope/4) & 1);// + (((tz+py)>>2) & 1);//write pixel color
 				sy+=tableStepSizeY;//go step higher in the raycast table
 				position-=currentScreenYStepSize;//go step higher on screen
-				if(sy == YSIZE) tz=renderingDepth; //break if end of screen
+				if(sy == ySize) tz=renderingDepth; //break if end of screen
 			}
 			else
 			{	
@@ -65,7 +66,7 @@ UBYTE tableStepSizeX, UBYTE tableStepSizeY, UBYTE tableStepNumber, UBYTE xCycles
 			}
 		}
 		//finish vertical line with SKY
-		while(sy < YSIZE)
+		while(sy < ySize)
 		{
 			//if(screen[position] == 31)
 			//	sy = YSIZE;
@@ -180,7 +181,7 @@ UBYTE tableStepSizeX, UBYTE tableStepSizeY, UBYTE tableStepNumber, UBYTE xCycles
 	UWORD mapValue;
 	BYTE xvalue,yvalue;
 	UWORD rayValue;
-	UWORD startPosition = ((YSIZE/tableStepSizeY)-1)*xCycles;
+	UWORD startPosition = ((YSIZEEVEN/tableStepSizeY)-1)*xCycles;
 	UWORD sxa,sya,tza;
 
 	//UWORD currentScreenYStepSize;
@@ -213,7 +214,7 @@ UBYTE tableStepSizeX, UBYTE tableStepSizeY, UBYTE tableStepNumber, UBYTE xCycles
 				screen[position] = mapValue >> 8;
 				sy++;
 			//	sya = sy;
-				if(sy == YSIZE) tz=renderingDepth; //break
+				if(sy == YSIZEEVEN) tz=renderingDepth; //break
 				//sya = (sy<<5);
 				position-=xCycles;
 			}
@@ -224,10 +225,10 @@ UBYTE tableStepSizeX, UBYTE tableStepSizeY, UBYTE tableStepNumber, UBYTE xCycles
 			}
 		}
 		//finish vertical line with SKY
-		while(sy < YSIZE)
+		while(sy < YSIZEEVEN)
 		{
 			if(screen[position] == 31)
-				sy = YSIZE;
+				sy = YSIZEEVEN;
 			else
 			{
 				screen[position] = 31;

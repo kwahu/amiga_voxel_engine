@@ -1,13 +1,13 @@
 #include "engine.h"
 
 //calculate paths for raycasts going from the camera
-void CalculateRayCasts(WORD (*rayCastX)[TERRAINDEPTH], WORD (*rayCastY)[TERRAINDEPTH], UBYTE xSize, UBYTE ySize)
+void CalculateRayCasts(WORD (*rayCastX)[TERRAINDEPTH], WORD (*rayCastY)[TERRAINDEPTH], UBYTE xSize, UBYTE ySize, int stepSize)
 {
 	int sxx;
 	int syy;
 	int tzz; //depth step value
-	int fovX = xSize/debugValue7; //this changes the field of view
-	int fovY = 5; //4 nice height change
+	int fovX = xSize/xFOV; //width FOV
+	int fovY = 5; //height FOV
 	WORD sxxx;
 
 	tzz = 1;
@@ -21,7 +21,7 @@ void CalculateRayCasts(WORD (*rayCastX)[TERRAINDEPTH], WORD (*rayCastY)[TERRAIND
 			sxxx = sxx/fovX;
 			for(int sy=-ySize/2;sy<ySize/2;sy++)
 			{
-				syy = (sy * tzz)/(debugValue6*4);//make smaller steps
+				syy = (sy*stepSize * tzz)/(debugValue6*4);//make smaller steps
 				rayCastX[xSize/2+sx][tz] = sxxx;
 				rayCastY[ySize/2+sy][tz] = syy/fovY;
 			}

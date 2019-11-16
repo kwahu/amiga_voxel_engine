@@ -10,9 +10,13 @@
 #define COLORS 32
 
 #define TERRAINDEPTH 64
-#define XSIZEODD 120
-#define XSIZEEVEN 160
-#define YSIZE 112
+#define XTURNBUFFOR 55
+#define XSIZEODD 120+XTURNBUFFOR*2
+#define XSIZEEVEN 80+XTURNBUFFOR*2
+#define YSIZEODD 112
+#define YSIZEEVEN YSIZEODD/2
+
+
 
 UBYTE heightMap[256][256];
 UBYTE colorMap[256][256];
@@ -37,13 +41,13 @@ UWORD plane3W[PLANEWIDTH*PLANEHEIGHT];//20k
 UWORD plane4W[PLANEWIDTH*PLANEHEIGHT];//20k
 
 WORD rayCastXOdd[XSIZEODD][TERRAINDEPTH];//3,6k
-WORD rayCastYOdd[YSIZE][TERRAINDEPTH];//3,6k
+WORD rayCastYOdd[YSIZEODD][TERRAINDEPTH];//3,6k
 
 WORD rayCastXEven[XSIZEEVEN][TERRAINDEPTH];//3,6k
-WORD rayCastYEven[YSIZE][TERRAINDEPTH];//3,6k
+WORD rayCastYEven[YSIZEEVEN][TERRAINDEPTH];//3,6k
 
 
-UBYTE debugValue,debugValue2,debugValue3,debugValue4,debugValue5,debugValue6,debugValue7;
+UBYTE debugValue,debugValue2,debugValue3,debugValue4,debugValue5,debugValue6,xFOV;
 
 
 //sand dunes theme
@@ -115,6 +119,7 @@ static UBYTE renderingDepth = TERRAINDEPTH;
 static WORD cx,cy;
 static ULONG startTime,endTime,deltaTime,lastTime;
 static UWORD lastOverwrittenLine;
+static BYTE xOffsetEven, xOffsetOdd; //camera rotation offsett when turning
 
 void engineGsCreate(void);
 
