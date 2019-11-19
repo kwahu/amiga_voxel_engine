@@ -14,6 +14,7 @@
 #include "map_streaming.c"
 #include "setup_maps.c"
 #include "rendering_quality.c"
+#include "bitmap.c"
 #include <ace/managers/game.h>
 #include <ace/managers/timer.h>
 #include <ace/managers/system.h>
@@ -51,6 +52,15 @@ static tSimpleBufferManager *s_pBuffer;
 static tAvg *s_pAvgTime;
 
 
+tTextBitMap *pBitmapPlayerX, *pBitmapPlayerY, *pBitmapPlayerH;
+tTextBitMap *pBitmapTime, *pBitmapVelocity, *pBitmapScore;
+
+tTextBitMap *pixel[32];
+char sPixel[32][10];
+char sPlayerX[5],sPlayerY[5],sPlayerH[5];
+char sTime[5],sVelocity[5],sScore[5];
+
+
 void SetDefaulResolution()
 {
 		renderingDepth = 64;
@@ -73,7 +83,7 @@ void Recalculate()
 void ConvertIntToChar( int number, char *test)
 {
 	int temp;
-	int i = 9;
+	int i = 5;
 	while(number!=0)
 	{
 		temp=number%10;
@@ -100,8 +110,75 @@ void ConvertIntToChar( int number, char *test)
 	}
 }
 
-tTextBitMap *pBitmapPlayerX, *pBitmapPlayerY, *pBitmapPlayerH;
-char sPlayerX[10],sPlayerY[10],sPlayerH[10];
+void ConvertWordToChar( UWORD number, char *test)
+{
+	UWORD temp;
+	int i = 4;
+	while(i >=0)
+	{
+		temp=number%16;
+		number/=16;
+		switch(temp)
+		{
+			case 0: test[i] = '0';break;
+			case 1: test[i] = '1';break;
+			case 2: test[i] = '2';break;
+			case 3: test[i] = '3';break;
+			case 4: test[i] = '4';break;
+			case 5: test[i] = '5';break;
+			case 6: test[i] = '6';break;
+			case 7: test[i] = '7';break;
+			case 8: test[i] = '8';break;
+			case 9: test[i] = '9';break;
+			case 10: test[i] = 'a';break;
+			case 11: test[i] = 'b';break;
+			case 12: test[i] = 'c';break;
+			case 13: test[i] = 'd';break;
+			case 14: test[i] = 'e';break;
+			case 15: test[i] = 'f';break;
+		}
+		i--;
+	}
+	//  while(i>=0)
+	//  {
+	//  	test[i] = '_';
+	//  	i--;
+	//  }
+}
+
+void ConvertByteToChar( UBYTE number, char *test)
+{
+	UBYTE temp;
+	int i = 3;
+	while(number!=0)
+	{
+		temp=number%10;
+		number/=10;
+		switch(temp)
+		{
+			case 1: test[i] = '1';break;
+			case 2: test[i] = '2';break;
+			case 3: test[i] = '3';break;
+			case 4: test[i] = '4';break;
+			case 5: test[i] = '5';break;
+			case 6: test[i] = '6';break;
+			case 7: test[i] = '7';break;
+			case 8: test[i] = '8';break;
+			case 9: test[i] = '9';break;
+			case 0: test[i] = '0';break;
+		}
+		i--;
+	}
+	while(i>=0)
+	{
+		test[i] = ' ';
+		i--;
+	}
+}
+
+
+
+
 
 //****************************** CREATE
 void engineGsCreate(void)
@@ -138,27 +215,45 @@ void engineGsCreate(void)
 
 	lastOverwrittenLine = 0;
 
-	SetupMaps();
+	//SetupMaps();
 
-	GenerateWordDither8x8();
-	GenerateColorBytesNoDither4x4();
-	GenerateColorBytesDither3x2();
+	//GenerateWordDither8x8();
+	//GenerateColorBytesNoDither4x4();
+	//GenerateColorBytesDither3x2();
 
-	SetDefaulResolution();
+	//SetDefaulResolution();
 
+	bLogo = LoadBitmapFile("reference.bmp",&bhLogo, bcLogo);
 
-	memcpy(s_pVPort->pPalette, kolory, 16 * sizeof(UWORD));
+	for(int i=0;i<16;i++)
+	{
+		bitmapPalette[i] = ((bcLogo[i*4+2]>>4) << 8) + ((bcLogo[i*4+1]>>4) << 4) + (bcLogo[i*4+0]>>4);
+	}
+
+	//memcpy(s_pVPort->pPalette, kolory, 16 * sizeof(UWORD));
+	memcpy(s_pVPort->pPalette, bitmapPalette, 16 * sizeof(UWORD));
 
 	s_pAvgTime = logAvgCreate("perf", 100);
+
+	levelTime = 0;
+
+
+	
 
 	viewLoad(s_pView);
 	keyCreate();
 	joyOpen(0);
 	systemUnuse();
 
-	pBitmapPlayerX = fontCreateTextBitMapFromStr(s_pMenuFont, "ACE Showcase");
-	pBitmapPlayerY = fontCreateTextBitMapFromStr(s_pMenuFont, "ACE Showcase");
-	pBitmapPlayerH = fontCreateTextBitMapFromStr(s_pMenuFont, "ACE Showcase");
+	pBitmapPlayerX = fontCreateTextBitMapFromStr(s_pMenuFont, "1234567890");
+	pBitmapPlayerY = fontCreateTextBitMapFromStr(s_pMenuFont, "1234567890");
+	pBitmapPlayerH = fontCreateTextBitMapFromStr(s_pMenuFont, "1234567890");
+	pBitmapTime = fontCreateTextBitMapFromStr(s_pMenuFont, "1234567890");
+	pBitmapVelocity = fontCreateTextBitMapFromStr(s_pMenuFont, "1234567890");
+	pBitmapScore = fontCreateTextBitMapFromStr(s_pMenuFont, "1234567890");
+
+	for(int i=0;i<32;i++)
+		pixel[i] = fontCreateTextBitMapFromStr(s_pMenuFont, "1234567890");
 }
 
 
@@ -171,6 +266,7 @@ void engineGsLoop(void) {
 	startTime = timerGetPrec();
 	deltaTime = startTime - lastTime;
 	lastTime = startTime;
+	levelTime += deltaTime;
 
 if(keyCheck(KEY_SPACE)) {
 	gameClose();
@@ -220,8 +316,10 @@ else
 		p1yf = 0;
 		p1hf = 10*100;
 		CopyMapWord(mapHigh0, mapHigh);
-		CopyMapWord(mapMed0, mapMed);
-		CopyMapWord(mapLow0, mapLow);
+
+		levelTime = 0;
+		//CopyMapWord(mapMed0, mapMed);
+		//CopyMapWord(mapLow0, mapLow);
 	}
 	
 
@@ -241,7 +339,7 @@ RenderQuality();
 DrawPixel((160+(cx/150))/16, YSIZEODD+(cy/100)+4, 0);
 DrawPixel((160+(cx/150))/16, YSIZEODD+(cy/100)-4, 0);
 
-
+DrawBitmap(bLogo, &bhLogo);
 
 
 
@@ -249,16 +347,38 @@ DrawPixel((160+(cx/150))/16, YSIZEODD+(cy/100)-4, 0);
 vPortWaitForEnd(s_pVPort);
 CopyFastToChipW(s_pBuffer->pBack);
 
-ConvertIntToChar( p1x, sPlayerX);
-ConvertIntToChar( p1y, sPlayerY);
-ConvertIntToChar( p1h, sPlayerH);
+ConvertIntToChar( bcLogo[0], sPlayerX);
+ConvertIntToChar( bcLogo[1], sPlayerY);
+ConvertIntToChar( bcLogo[2], sPlayerH);
+//timerFormatPrec(sTime, levelTime);
+ConvertIntToChar( bcLogo[3], sTime);
+ConvertIntToChar( bcLogo[4], sVelocity);
+ConvertIntToChar( bcLogo[5], sScore);
 
+/*for(int i=0;i<16;i++)
+{
+	ConvertWordToChar( bitmapPalette[i], sPixel[i]);
+	fontFillTextBitMap(s_pMenuFont, pixel[i], sPixel[i]);
+	fontDrawTextBitMap(s_pBuffer->pBack, pixel[i], 20, i*8, 15, FONT_LEFT);
+}*/
+		
+
+/*
 fontFillTextBitMap(s_pMenuFont, pBitmapPlayerX, sPlayerX);
 fontFillTextBitMap(s_pMenuFont, pBitmapPlayerY, sPlayerY);
 fontFillTextBitMap(s_pMenuFont, pBitmapPlayerH, sPlayerH);
-fontDrawTextBitMap(s_pBuffer->pBack, pBitmapPlayerX, 20, 225, 1, FONT_LEFT);
-fontDrawTextBitMap(s_pBuffer->pBack, pBitmapPlayerY, 40, 235, 1, FONT_LEFT);
-fontDrawTextBitMap(s_pBuffer->pBack, pBitmapPlayerH, 60, 245, 1, FONT_LEFT);
+fontFillTextBitMap(s_pMenuFont, pBitmapTime , sTime);
+fontFillTextBitMap(s_pMenuFont, pBitmapVelocity, sVelocity);
+fontFillTextBitMap(s_pMenuFont, pBitmapScore, sScore);
+
+
+
+fontDrawTextBitMap(s_pBuffer->pBack, pBitmapPlayerX, 20, 225, 15, FONT_LEFT);
+fontDrawTextBitMap(s_pBuffer->pBack, pBitmapPlayerY, 40, 225, 15, FONT_LEFT);
+fontDrawTextBitMap(s_pBuffer->pBack, pBitmapPlayerH, 60, 225, 15, FONT_LEFT);
+fontDrawTextBitMap(s_pBuffer->pBack, pBitmapTime, 80, 225, 12, FONT_LEFT);
+fontDrawTextBitMap(s_pBuffer->pBack, pBitmapVelocity, 100, 225, 12, FONT_LEFT);
+fontDrawTextBitMap(s_pBuffer->pBack, pBitmapScore, 120, 225, 12, FONT_LEFT);*/
 
 interlace++;
 if(interlace == 4) interlace = 0;
@@ -281,6 +401,7 @@ void engineGsDestroy(void)
 
 	char szAvg[15];
 	timerFormatPrec(szAvg, endTime - startTime);
+
 
 	printf("%s", szAvg );
 	printf("%lu", deltaTime);

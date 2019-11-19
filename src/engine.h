@@ -16,35 +16,33 @@
 #define YSIZEODD 112
 #define YSIZEEVEN YSIZEODD/2
 
+UBYTE heightMap[256][256];//65k
+UBYTE colorMap[256][256];//65k
 
+UWORD mapHigh[256][256];//131k
 
-UBYTE heightMap[256][256];
-UBYTE colorMap[256][256];
-
-UWORD mapLow[256][256]; UWORD mapMed[256][256]; UWORD mapHigh[256][256];
-
-UWORD mapLow0[256][256]; UWORD mapMed0[256][256]; UWORD mapHigh0[256][256];
-UWORD mapLow1[256][256]; UWORD mapMed1[256][256]; UWORD mapHigh1[256][256];
-UWORD mapLow2[256][256]; UWORD mapMed2[256][256]; UWORD mapHigh2[256][256];
-UWORD mapLow3[256][256]; UWORD mapMed3[256][256]; UWORD mapHigh3[256][256];
-UWORD mapLow4[256][256]; UWORD mapMed4[256][256]; UWORD mapHigh4[256][256];
-UWORD mapLow5[256][256]; UWORD mapMed5[256][256]; UWORD mapHigh5[256][256];
-UWORD mapLow6[256][256]; UWORD mapMed6[256][256]; UWORD mapHigh6[256][256];
-UWORD mapLow7[256][256]; UWORD mapMed7[256][256]; UWORD mapHigh7[256][256];
-UWORD mapLow8[256][256]; UWORD mapMed8[256][256]; UWORD mapHigh8[256][256];
-UWORD mapLow9[256][256]; UWORD mapMed9[256][256]; UWORD mapHigh9[256][256];
-UWORD mapLow10[256][256]; UWORD mapMed10[256][256]; UWORD mapHigh10[256][256];
+UWORD mapHigh0[256][256];//131k
+UWORD mapHigh1[256][256];//131k
+UWORD mapHigh2[256][256];//131k
+UWORD mapHigh3[256][256];//131k
+UWORD mapHigh4[256][256];//131k
+UWORD mapHigh5[256][256];//131k
+UWORD mapHigh6[256][256];//131k
+UWORD mapHigh7[256][256];//131k
+UWORD mapHigh8[256][256];//131k
+UWORD mapHigh9[256][256];//131k
+UWORD mapHigh10[256][256];//131k
 
 UWORD plane1W[PLANEWIDTH*PLANEHEIGHT];//20k
 UWORD plane2W[PLANEWIDTH*PLANEHEIGHT];//20k
 UWORD plane3W[PLANEWIDTH*PLANEHEIGHT];//20k
 UWORD plane4W[PLANEWIDTH*PLANEHEIGHT];//20k
 
-WORD rayCastXOdd[XSIZEODD][TERRAINDEPTH];//3,6k
-WORD rayCastYOdd[YSIZEODD][TERRAINDEPTH];//3,6k
+WORD rayCastXOdd[XSIZEODD][TERRAINDEPTH];//51k
+WORD rayCastYOdd[YSIZEODD][TERRAINDEPTH];//51k
 
-WORD rayCastXEven[XSIZEEVEN][TERRAINDEPTH];//3,6k
-WORD rayCastYEven[YSIZEEVEN][TERRAINDEPTH];//3,6k
+WORD rayCastXEven[XSIZEEVEN][TERRAINDEPTH];//21k
+WORD rayCastYEven[YSIZEEVEN][TERRAINDEPTH];//21k
 
 
 UBYTE debugValue,debugValue2,debugValue3,debugValue4,debugValue5,debugValue6,xFOV;
@@ -57,6 +55,8 @@ UWORD kolory[COLORS] =
 	0xbcc,0x8be,
 	0x243,0x9b8,0xafd,0x324,0xa9b,0xdcf
 };
+
+UWORD bitmapPalette[16];
 
 UBYTE screen8x8slow[32*30];
 
@@ -118,14 +118,51 @@ static int interlace;
 static UBYTE renderingDepth = TERRAINDEPTH;
 static WORD cx,cy;
 static ULONG startTime,endTime,deltaTime,lastTime;
+static ULONG levelTime;
 static UWORD lastOverwrittenLine;
 static BYTE xOffsetEven, xOffsetOdd; //camera rotation offsett when turning
+
+typedef struct tagBITMAPFILEHEADER
+{
+    UWORD bfType;  //specifies the file type
+    ULONG  bfSize;  //specifies the size in bytes of the bitmap file
+    UWORD bfReserved1;  //reserved; must be 0
+    UWORD bfReserved2;  //reserved; must be 0
+    ULONG  bfOffBits;  //species the offset in bytes from the bitmapfileheader to the bitmap bits
+}BITMAPFILEHEADER;
+
+
+typedef struct tagBITMAPINFOHEADER
+{
+    ULONG  biSize;  //specifies the number of bytes required by the struct
+    ULONG  biWidth;  //specifies width in pixels
+    ULONG  biHeight;  //species height in pixels
+    UWORD biPlanes; //specifies the number of color planes, must be 1
+    UWORD biBitCount; //specifies the number of bit per pixel
+    ULONG  biCompression;//spcifies the type of compression
+    ULONG  biSizeImage;  //size of image in bytes
+    ULONG  biXPelsPerMeter;  //number of pixels per meter in x axis
+    ULONG  biYPelsPerMeter;  //number of pixels per meter in y axis
+    ULONG  biClrUsed;  //number of colors used by th ebitmap
+    ULONG  biClrImportant;  //number of colors that are important
+}BITMAPINFOHEADER;
+
+typedef struct tagBITMAPCOLORTABLE
+{
+    UBYTE r,g,b,a;
+}BITMAPCOLORTABLE;
+
+BITMAPINFOHEADER bhLogo;
+unsigned char *bLogo;
+unsigned char bcLogo[16*4];
 
 void engineGsCreate(void);
 
 void engineGsLoop(void);
 
 void engineGsDestroy(void);
+
+
 
 
 #endif // _ENGINE_H_

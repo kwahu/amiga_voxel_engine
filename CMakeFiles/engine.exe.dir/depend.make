@@ -34,6 +34,20 @@ CMakeFiles/engine.exe.dir/src/dithering.c.obj: deps/ace/include/ace/utils/file.h
 CMakeFiles/engine.exe.dir/src/dithering.c.obj: deps/ace/include/ace/utils/tag.h
 
 CMakeFiles/engine.exe.dir/src/draw_maps.c.obj: src/draw_maps.c
+CMakeFiles/engine.exe.dir/src/draw_maps.c.obj: src/engine.h
+CMakeFiles/engine.exe.dir/src/draw_maps.c.obj: deps/ace/include/ace/macros.h
+CMakeFiles/engine.exe.dir/src/draw_maps.c.obj: deps/ace/include/ace/managers/copper.h
+CMakeFiles/engine.exe.dir/src/draw_maps.c.obj: deps/ace/include/ace/managers/log.h
+CMakeFiles/engine.exe.dir/src/draw_maps.c.obj: deps/ace/include/ace/managers/memory.h
+CMakeFiles/engine.exe.dir/src/draw_maps.c.obj: deps/ace/include/ace/managers/timer.h
+CMakeFiles/engine.exe.dir/src/draw_maps.c.obj: deps/ace/include/ace/managers/viewport/camera.h
+CMakeFiles/engine.exe.dir/src/draw_maps.c.obj: deps/ace/include/ace/managers/viewport/simplebuffer.h
+CMakeFiles/engine.exe.dir/src/draw_maps.c.obj: deps/ace/include/ace/types.h
+CMakeFiles/engine.exe.dir/src/draw_maps.c.obj: deps/ace/include/ace/utils/bitmap.h
+CMakeFiles/engine.exe.dir/src/draw_maps.c.obj: deps/ace/include/ace/utils/custom.h
+CMakeFiles/engine.exe.dir/src/draw_maps.c.obj: deps/ace/include/ace/utils/extview.h
+CMakeFiles/engine.exe.dir/src/draw_maps.c.obj: deps/ace/include/ace/utils/file.h
+CMakeFiles/engine.exe.dir/src/draw_maps.c.obj: deps/ace/include/ace/utils/tag.h
 
 CMakeFiles/engine.exe.dir/src/draw_screen.c.obj: src/draw_screen.c
 CMakeFiles/engine.exe.dir/src/draw_screen.c.obj: src/engine.h
@@ -83,6 +97,7 @@ CMakeFiles/engine.exe.dir/src/file_read.c.obj: deps/ace/include/ace/utils/extvie
 CMakeFiles/engine.exe.dir/src/file_read.c.obj: deps/ace/include/ace/utils/file.h
 CMakeFiles/engine.exe.dir/src/file_read.c.obj: deps/ace/include/ace/utils/tag.h
 
+CMakeFiles/engine.exe.dir/src/main.c.obj: src/bitmap.c
 CMakeFiles/engine.exe.dir/src/main.c.obj: src/bitmap_filters.c
 CMakeFiles/engine.exe.dir/src/main.c.obj: src/dithering.c
 CMakeFiles/engine.exe.dir/src/main.c.obj: src/draw_maps.c

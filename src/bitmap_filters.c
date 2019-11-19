@@ -100,7 +100,7 @@ void AddBumpToColorMap(UBYTE (*mapColor)[256], UBYTE (*mapHeight)[256])
 
 }
 //add light and shadow contrast on the left and right sides of the terrain
-void LimitColorMap(UBYTE (*mapColor)[256], UBYTE (*mapHeight)[256])
+void LimitColorMap(UBYTE (*mapColor)[256])
 {
 	int value;
 
