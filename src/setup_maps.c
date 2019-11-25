@@ -1,12 +1,12 @@
 #include "engine.h"
 
-void LoadMap(const char *heightName, const char *colorName, 
-UWORD (*high)[256])
+void LoadMap(const char *heightName, const char *colorName,
+			 UWORD (*high)[256])
 {
 	//read and prepare map0
 	ReadHeight(heightName, heightMap);
 	ReadColor(colorName, colorMap);
-	
+
 	//AddBumpToColorMap(colorMap,heightMap);
 	//LimitColorMap(colorMap);
 	//SmoothColorMap(colorMap);
@@ -21,7 +21,8 @@ UWORD (*high)[256])
 }
 void SetupMaps()
 {
-	LoadMap("height0.raw", "color0.raw", mapHigh0);mapLoaded0=1;
+	LoadMap("data/height0.raw", "data/color0.raw", mapHigh0);
+	mapLoaded0 = 1;
 	//LoadMap("height1.raw", "color1.raw", mapHigh1);mapLoaded1=1;
 	/*LoadMap("height2.raw", "color2.raw", mapHigh2);
 	LoadMap("height3.raw", "color3.raw", mapHigh3);

@@ -1,3 +1,5 @@
+#include "engine.h"
+
 void DrawPixel(UWORD x, UWORD y, UBYTE color)
 {
   plane1W[y*20  + x] = 0b1000100110010001;
