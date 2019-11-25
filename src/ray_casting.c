@@ -81,6 +81,69 @@ UBYTE tableStepSizeX, UBYTE tableStepSizeY, UBYTE tableStepNumber, UBYTE xCycles
 	}
 }
 
+inline UWORD ProcessWord(UBYTE rounds, UBYTE sx, UBYTE sy, UWORD *_tz, UWORD *tzz, UBYTE px, UBYTE py,UBYTE ph,
+UWORD *address1, UWORD *address2, 
+WORD (*rayCastX)[TERRAINDEPTH], WORD (*rayCastY)[TERRAINDEPTH], UWORD (*map)[256])
+{
+	UWORD mapValue;
+	WORD slope;
+	UBYTE mx,my;
+	UBYTE c[6];
+	UBYTE sxx;
+	UBYTE th;
+	UBYTE tz;
+
+		/*tzz[1] = tzz[0];
+		tzz[2] = tzz[0];
+		tzz[3] = tzz[0];
+		tzz[4] = tzz[0];
+		tzz[5] = tzz[0];*/
+
+	//process 1,2,3 or 6 rounds to find colors for this WORD = 16 pixels
+	for(UBYTE iHor=0;iHor<rounds;iHor++)
+	{
+		sxx = sx + iHor;
+		//set current depth - tz
+
+
+		tz = tzz[iHor];
+		//check depth step by step
+		
+		while(tz < renderingDepth)
+		{
+			mx = ( px + rayCastX[sxx][tz] );
+			my = ( py + (tz << debugValue4) );
+			mapValue = map[ mx ][ my ];//read color + height
+			th = mapValue;//take just the height
+			//check if read height is higher than what we expect from the raycast table
+			slope = th - (ph + rayCastY[sy][tz]);
+			if(slope > 0)
+			{
+				c[iHor] = (mapValue >> 8);// + ((slope/4) & 1);
+				tzz[iHor] = tz;//save the depth we've arrived at
+				break;
+			}
+			else
+			{	
+				tz++;//go step in depth if no height hit
+			}
+		}
+		if(tz == renderingDepth)
+			c[iHor] = 15;
+		//draw sky if too deep
+	}
+	switch(rounds)
+	{
+		case 1: *address1 = (c[0]<<10) + (c[0]<<5) + (c[0]); *address2 = (c[0]<<10) + (c[0]<<5) + (c[0]);break;
+		case 2: *address1 = (c[0]<<10) + (c[0]<<5) + (c[0]); *address2 = (c[1]<<10) + (c[1]<<5) + (c[1]);break;
+		case 3: *address1 = (c[0]<<10) + (c[0]<<5) + (c[1]); *address2 = (c[1]<<10) + (c[2]<<5) + (c[2]);break;
+		default: *address1 = (c[0]<<10) + (c[1]<<5) + (c[2]); *address2 = (c[3]<<10) + (c[4]<<5) + (c[5]);
+	}
+	return tz;
+	//(c[0]<<10) + (c[1]<<5) + (c[2]);
+	//(c[3]<<10) + (c[4]<<5) + (c[5]);
+}
+
 void ProcessRayCasts3x2(WORD (*rayCastX)[TERRAINDEPTH], WORD (*rayCastY)[TERRAINDEPTH], UWORD (*map)[256],
 	UBYTE px, UBYTE py, UBYTE ph, 
 	UBYTE tableXStart, UBYTE xCycles, UBYTE zStep, UBYTE zStart, 
@@ -89,6 +152,8 @@ void ProcessRayCasts3x2(WORD (*rayCastX)[TERRAINDEPTH], WORD (*rayCastY)[TERRAIN
 	UBYTE sx,sy,mist;
 	UWORD tz,tzz[6];
 	UWORD position,address1,address2;
+
+	UBYTE verticalSteps;
 
 	UBYTE iInit, iVert;
 	UBYTE q1,q2,q3,q4;
@@ -110,16 +175,45 @@ void ProcessRayCasts3x2(WORD (*rayCastX)[TERRAINDEPTH], WORD (*rayCastY)[TERRAIN
 		//init values for this vertical line
 		tzz[0]=zStart;tzz[1]=zStart;tzz[2]=zStart;
 		tzz[3]=zStart;tzz[4]=zStart;tzz[5]=zStart;
+		tz = zStart;
 
 		//process this vertical line
 		while(sy < ySize)
 		{
-			 if(tzz[0] < 16)			ProcessWord(1,sx,sy,&tz,&tzz,px,py,ph,&address1,&address2,rayCastX, rayCastY, map);
+			 if(tz < 30)			
+			 {
+				 tz = ProcessWord(1,sx,sy,&tz,&tzz,px,py,ph,&address1,&address2,rayCastX, rayCastY, map);
+				 verticalSteps = 8;
+			 }
+			else if(tz < 40)			
+			 {
+				 tz = ProcessWord(2,sx,sy,&tz,&tzz,px,py,ph,&address1,&address2,rayCastX, rayCastY, map);
+				 verticalSteps = 6;
+			 }
+			else if(tz < 50)			
+			 {
+				 tz = ProcessWord(3,sx,sy,&tz,&tzz,px,py,ph,&address1,&address2,rayCastX, rayCastY, map);
+				 verticalSteps = 4;
+			 }
+			 else if(tz < 64)		
+			 {
+				 tz = ProcessWord(6,sx,sy,&tz,&tzz,px,py,ph,&address1,&address2,rayCastX, rayCastY, map);
+				 verticalSteps = 2;
+			 }
+			 else
+			 {
+				 address1 = 0b0111111111111111;
+				 address2 = 0b0111111111111111;
+				 verticalSteps = 1;
+			 }
+			 
+			 
 			// else if(tzz[0] < q2)	ProcessWord(2,sx,sy,&tz,&tzz,px,py,ph,&address1,&address2,rayCastX, rayCastY, map);
 			// else if(tzz[0] < q3)	ProcessWord(3,sx,sy,&tz,&tzz,px,py,ph,&address1,&address2,rayCastX, rayCastY, map);
 			 //else				ProcessWord(6,sx,sy,&tz,&tzz,px,py,ph,&address1,&address2,rayCastX, rayCastY, map);
 			//ProcessWord(1,sx,sy,&tz,&tzz,px,py,ph,&address1,&address2,rayCastX, rayCastY, map);
 			//draw on screen a WORD = 16 pixels
+			for(int i=0;i<verticalSteps;i++)
 			{
 				plane1W[position] = (dither3x2EvenP1[ address1 ]<<8) + dither3x2EvenP1[ address2 ];
 				plane2W[position] = (dither3x2EvenP2[ address1 ]<<8) + dither3x2EvenP2[ address2 ];
@@ -131,65 +225,15 @@ void ProcessRayCasts3x2(WORD (*rayCastX)[TERRAINDEPTH], WORD (*rayCastY)[TERRAIN
 				plane3W[position] = (dither3x2OddP3[ address1 ]<<8) + dither3x2OddP3[ address2 ];
 				plane4W[position] = (dither3x2OddP4[ address1 ]<<8) + dither3x2OddP4[ address2 ];
 				position-=20;
+				sy++;
 			}
-			sy++;//go step higher in the raycast table
+			//go step higher in the raycast table
 		}
 		sx += 6;//go to the next vertical line
 	}
 }
 
-void ProcessWord(UBYTE rounds, UBYTE sx, UBYTE sy, UWORD *_tz, UWORD *tzz[], UBYTE px, UBYTE py,UBYTE ph,
-UWORD *address1, UWORD *address2, 
-WORD (*rayCastX)[TERRAINDEPTH], WORD (*rayCastY)[TERRAINDEPTH], UWORD (*map)[256])
-{
-	UWORD mapValue;
-	WORD slope;
-	UBYTE mx,my;
-	UBYTE c[6];
-	UBYTE sxx;
-	UBYTE th;
-	UBYTE tz;
-	//process 1,2,3 or 6 rounds to find colors for this WORD = 16 pixels
-	for(UBYTE iHor=0;iHor<rounds;iHor++)
-	{
-		sxx = sx + iHor;
-		//set current depth - tz
-		tz = tzz[iHor];
-		//check depth step by step
-		
-		while(tz < renderingDepth)
-		{
-			mx = ( px + rayCastX[sxx][tz] );
-			my = ( py + (tz << debugValue4) );
-			mapValue = map[ mx ][ my ];//read color + height
-			th = mapValue;//take just the height
-			//check if read height is higher than what we expect from the raycast table
-			slope = th - (ph + rayCastY[sy][tz]);
-			if(slope > 0)
-			{
-				c[iHor] = (mapValue >> 8) + ((slope/4) & 1);
-				tzz[iHor] = tz;//save the depth we've arrived at
-				break;
-			}
-			else
-			{	
-				tz++;//go step in depth if no height hit
-			}
-		}
-		if(tz == renderingDepth)
-			c[iHor] = 15;
-		//draw sky if too deep
-	}
-	switch(rounds)
-	{
-		case 1: *address1 = (c[0]<<10) + (c[0]<<5) + (c[0]); *address2 = (c[0]<<10) + (c[0]<<5) + (c[0]);break;
-		case 2: *address1 = (c[0]<<10) + (c[0]<<5) + (c[0]); *address2 = (c[1]<<10) + (c[1]<<5) + (c[1]);break;
-		case 3: *address1 = (c[0]<<10) + (c[0]<<5) + (c[1]); *address2 = (c[1]<<10) + (c[2]<<5) + (c[2]);break;
-		default: *address1 = (c[0]<<10) + (c[1]<<5) + (c[2]); *address2 = (c[3]<<10) + (c[4]<<5) + (c[5]);
-	}
-	//(c[0]<<10) + (c[1]<<5) + (c[2]);
-	//(c[3]<<10) + (c[4]<<5) + (c[5]);
-}
+
 
 void ProcessRayCasts16(UBYTE *screen, WORD (*rayCastX)[TERRAINDEPTH], WORD (*rayCastY)[TERRAINDEPTH], UWORD (*map)[256],
 UBYTE px, UBYTE py, UBYTE ph, UBYTE tableXStart,

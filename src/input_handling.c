@@ -59,15 +59,21 @@ void ProcessQualityInput()
 		debugValue4 = 1;
 		Recalculate();
 	}
-	if (keyCheck(KEY_7) && debugValue != 7)
+	if (keyCheck(KEY_7) && debugValue != 7 )
 	{
 		renderingDepth = 64;
 		debugValue = 7;
 		debugValue2 = 7;
 		debugValue3 = 1;
 		debugValue4 = 0;
-		Recalculate();
+		if(debugValue != 8 && debugValue != 7)
+			Recalculate();
 	}
+	if (keyCheck(KEY_8) )
+	{
+		debugValue = 8;
+	}
+
 }
 void ProcessPlayerInput()
 {

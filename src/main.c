@@ -317,9 +317,10 @@ void engineGsCreate(void)
 	keyCreate();
 	joyOpen(0);
 
-	memcpy(s_pVPort->pPalette, kolory, 16 * sizeof(UWORD));
+	
 	viewLoad(s_pView);
 	systemUnuse();
+	memcpy(s_pVPort->pPalette, kolory2, 16 * sizeof(UWORD));
 }
 
 //****************************** LOOP
@@ -507,7 +508,7 @@ void engineGsLoop(void)
 
 	//DrawBitmap8b(bitmap1, &bitmapHeader1);
 
-	vPortWaitForEnd(s_pVPort);
+	//vPortWaitForEnd(s_pVPort);
 	CopyFastToChipW(s_pBuffer->pBack);
 
 	//ConvertIntToChar( bcLogo[0], sPlayerX);

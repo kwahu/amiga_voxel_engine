@@ -31,6 +31,8 @@ engine.h
 /work/src/engine.h
 
 /work/src/draw_sprite.c
+engine.h
+/work/src/engine.h
 
 /work/src/engine.h
 stdlib.h
@@ -50,6 +52,8 @@ ace/utils/file.h
 
 /work/src/input_handling.c
 ace/managers/joy.h
+-
+ace/managers/key.h
 -
 engine.h
 /work/src/engine.h
@@ -101,6 +105,10 @@ ace/utils/font.h
 -
 
 /work/src/map_streaming.c
+engine.h
+/work/src/engine.h
+
+/work/src/mipmaps.c
 engine.h
 /work/src/engine.h
 
