@@ -32,6 +32,8 @@ UWORD mapHigh7[256][256];//131k
 UWORD mapHigh8[256][256];//131k
 UWORD mapHigh9[256][256];//131k
 UWORD mapHigh10[256][256];//131k
+UBYTE mapLoaded0,mapLoaded1,mapLoaded2,mapLoaded3,mapLoaded4,mapLoaded5,mapLoaded6,
+mapLoaded7,mapLoaded8,mapLoaded9,mapLoaded10;
 
 UWORD plane1W[PLANEWIDTH*PLANEHEIGHT];//20k
 UWORD plane2W[PLANEWIDTH*PLANEHEIGHT];//20k
@@ -46,6 +48,7 @@ WORD rayCastYEven[YSIZEEVEN][TERRAINDEPTH];//21k
 
 
 UBYTE debugValue,debugValue2,debugValue3,debugValue4,debugValue5,debugValue6,xFOV;
+BYTE debugValue8,debugValue9;
 
 
 //sand dunes theme
@@ -147,14 +150,10 @@ typedef struct tagBITMAPINFOHEADER
     ULONG  biClrImportant;  //number of colors that are important
 }BITMAPINFOHEADER;
 
-typedef struct tagBITMAPCOLORTABLE
-{
-    UBYTE r,g,b,a;
-}BITMAPCOLORTABLE;
 
-BITMAPINFOHEADER bhLogo;
-unsigned char *bLogo;
-unsigned char bcLogo[16*4];
+BITMAPINFOHEADER bitmapHeader1,bitmapHeader2,bitmapHeader2;
+unsigned char *bitmap1,*bitmap2,*bitmap3;
+unsigned char bitmapPalette1[16*4], bitmapPalette2[16*4], bitmapPalette3[16*4];
 
 void engineGsCreate(void);
 

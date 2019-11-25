@@ -201,7 +201,25 @@ void engineGsCreate(void)
 		TAG_DONE
 	);
 
-		// Load font
+	bitmap1 = LoadBitmapFile("logo1.bmp",&bitmapHeader1, bitmapPalette1);
+	
+	//process paletter from an image
+	for(int i=0;i<16;i++)
+	{
+		bitmapPalette[i] = ((bitmapPalette1[i*4+2]>>4) << 8) +
+		 ((bitmapPalette1[i*4+1]>>4) << 4) + (bitmapPalette1[i*4+0]>>4);
+	}
+
+	memcpy(s_pVPort->pPalette, bitmapPalette, 16 * sizeof(UWORD));
+
+	viewLoad(s_pView);
+
+	DrawBitmap8b(bitmap1, &bitmapHeader1);
+	vPortWaitForEnd(s_pVPort);
+	CopyFastToChipW(s_pBuffer->pBack);
+
+
+	// Load font
 	s_pMenuFont = fontCreate("silkscreen.fnt");
 
 
@@ -215,35 +233,13 @@ void engineGsCreate(void)
 
 	lastOverwrittenLine = 0;
 
-	//SetupMaps();
+	SetupMaps();
 
-	//GenerateWordDither8x8();
-	//GenerateColorBytesNoDither4x4();
-	//GenerateColorBytesDither3x2();
+	GenerateWordDither8x8();
+	GenerateColorBytesNoDither4x4();
+	GenerateColorBytesDither3x2();
 
-	//SetDefaulResolution();
-
-	bLogo = LoadBitmapFile("reference.bmp",&bhLogo, bcLogo);
-
-	for(int i=0;i<16;i++)
-	{
-		bitmapPalette[i] = ((bcLogo[i*4+2]>>4) << 8) + ((bcLogo[i*4+1]>>4) << 4) + (bcLogo[i*4+0]>>4);
-	}
-
-	//memcpy(s_pVPort->pPalette, kolory, 16 * sizeof(UWORD));
-	memcpy(s_pVPort->pPalette, bitmapPalette, 16 * sizeof(UWORD));
-
-	s_pAvgTime = logAvgCreate("perf", 100);
-
-	levelTime = 0;
-
-
-	
-
-	viewLoad(s_pView);
-	keyCreate();
-	joyOpen(0);
-	systemUnuse();
+	SetDefaulResolution();
 
 	pBitmapPlayerX = fontCreateTextBitMapFromStr(s_pMenuFont, "1234567890");
 	pBitmapPlayerY = fontCreateTextBitMapFromStr(s_pMenuFont, "1234567890");
@@ -254,6 +250,18 @@ void engineGsCreate(void)
 
 	for(int i=0;i<32;i++)
 		pixel[i] = fontCreateTextBitMapFromStr(s_pMenuFont, "1234567890");
+
+
+
+	s_pAvgTime = logAvgCreate("perf", 100);
+	levelTime = 0;
+	
+	keyCreate();
+	joyOpen(0);
+
+	memcpy(s_pVPort->pPalette, kolory, 16 * sizeof(UWORD));
+	viewLoad(s_pView);
+	systemUnuse();
 }
 
 
@@ -295,22 +303,22 @@ else
 	if(keyCheck(KEY_L)){debugValue6=9;Recalculate();}
 	if(keyCheck(KEY_SEMICOLON)){debugValue6=10;Recalculate();}
 
-	/*if(keyCheck(KEY_Z)){debugValue7=2;Recalculate();}
-	if(keyCheck(KEY_X)){debugValue7=4;Recalculate();}
-	if(keyCheck(KEY_C)){debugValue7=6;Recalculate();}
-	if(keyCheck(KEY_V)){debugValue7=8;Recalculate();}
-	if(keyCheck(KEY_B)){debugValue7=10;Recalculate();}
-	if(keyCheck(KEY_N)){debugValue7=12;Recalculate();}
-	if(keyCheck(KEY_M)){debugValue7=14;Recalculate();}
-	if(keyCheck(KEY_COMMA)){debugValue7=16;Recalculate();}
-	if(keyCheck(KEY_PERIOD)){debugValue7=18;Recalculate();}
-	if(keyCheck(KEY_SLASH)){debugValue7=20;Recalculate();}*/
+	if(keyCheck(KEY_Z)){debugValue8=-2;}
+	if(keyCheck(KEY_X)){debugValue8=-1;}
+	if(keyCheck(KEY_C)){debugValue8=0;}
+	if(keyCheck(KEY_V)){debugValue8=1;}
+	if(keyCheck(KEY_B)){debugValue8=2;}
+	if(keyCheck(KEY_N)){debugValue9=-2;}
+	if(keyCheck(KEY_M)){debugValue9=-1;}
+	if(keyCheck(KEY_COMMA)){debugValue9=0;}
+	if(keyCheck(KEY_PERIOD)){debugValue9=1;}
+	if(keyCheck(KEY_SLASH)){debugValue9=2;}
 	
 	ProcessPlayerInput();
 	OverwriteMap(); //this is how we go through many different maps, we just overwrite the main array with new content
 
 //restart
-	if( (p1h-3) < (UBYTE)(mapHigh[(UBYTE)(p1x)][(UBYTE)(p1y+10)]) ) 
+	if( (p1h-3) < (UBYTE)(mapHigh[(UBYTE)(p1x)][(UBYTE)(p1y+15)]) ) 
 	{
 		p1xf = 60*100;
 		p1yf = 0;
@@ -339,7 +347,7 @@ RenderQuality();
 DrawPixel((160+(cx/150))/16, YSIZEODD+(cy/100)+4, 0);
 DrawPixel((160+(cx/150))/16, YSIZEODD+(cy/100)-4, 0);
 
-DrawBitmap(bLogo, &bhLogo);
+//DrawBitmap8b(bitmap1, &bitmapHeader1);
 
 
 
@@ -347,13 +355,13 @@ DrawBitmap(bLogo, &bhLogo);
 vPortWaitForEnd(s_pVPort);
 CopyFastToChipW(s_pBuffer->pBack);
 
-ConvertIntToChar( bcLogo[0], sPlayerX);
-ConvertIntToChar( bcLogo[1], sPlayerY);
-ConvertIntToChar( bcLogo[2], sPlayerH);
+//ConvertIntToChar( bcLogo[0], sPlayerX);
+//ConvertIntToChar( bcLogo[1], sPlayerY);
+//ConvertIntToChar( bcLogo[2], sPlayerH);
 //timerFormatPrec(sTime, levelTime);
-ConvertIntToChar( bcLogo[3], sTime);
-ConvertIntToChar( bcLogo[4], sVelocity);
-ConvertIntToChar( bcLogo[5], sScore);
+//ConvertIntToChar( bcLogo[3], sTime);
+//ConvertIntToChar( bcLogo[4], sVelocity);
+//ConvertIntToChar( bcLogo[5], sScore);
 
 /*for(int i=0;i<16;i++)
 {
@@ -401,6 +409,7 @@ void engineGsDestroy(void)
 
 	char szAvg[15];
 	timerFormatPrec(szAvg, endTime - startTime);
+	free(bitmap1);
 
 
 	printf("%s", szAvg );

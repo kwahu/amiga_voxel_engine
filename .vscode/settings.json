@@ -4,6 +4,16 @@
         "file.h": "c",
         "blit.h": "c",
         "engine.h": "c",
-        "xstring": "c"
+        "xstring": "c",
+        "map": "c",
+        "BOX.C": "cpp",
+        "SYSTEM.C": "cpp",
+        "GEMDOS.C": "cpp",
+        "VBL.C": "cpp",
+        "VIDEO.C": "cpp",
+        "IKBD.C": "cpp",
+        "GRAPHIC.C": "cpp",
+        "BLITTER.C": "cpp",
+        "BASE.C": "cpp"
     }
 }

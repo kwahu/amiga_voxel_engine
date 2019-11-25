@@ -80,6 +80,22 @@ unsigned char *LoadBitmapFile(char *filename, BITMAPINFOHEADER *bitmapInfoHeader
     //read in the bitmap image data
     fread(bitmapImage,bitmapInfoHeader->biSizeImage,1,filePtr);
 
+	unsigned char byte;
+    for(int i=0;i<bitmapInfoHeader->biSizeImage/3;i++)
+    {
+        byte = bitmapImage[i*3+2];
+        bitmapImage[i*3+2] = bitmapImage[i*3];
+        bitmapImage[i*3] = byte;
+    }
+
+    // UBYTE byte;
+    //read in the bitmap image data
+    // for(int i=0;i<256*256;i++)
+    // {
+    //     fileRead(filePtr, &byte , 1);
+	// 			bitmapImage[i] = byte;
+    // }
+
     //make sure bitmap image data was read
     if (bitmapImage == NULL)
     {

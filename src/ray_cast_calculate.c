@@ -3,27 +3,30 @@
 //calculate paths for raycasts going from the camera
 void CalculateRayCasts(WORD (*rayCastX)[TERRAINDEPTH], WORD (*rayCastY)[TERRAINDEPTH], UBYTE xSize, UBYTE ySize, int stepSize)
 {
-	int sxx;
-	int syy;
-	int tzz; //depth step value
-	int fovX = xSize/xFOV; //width FOV
-	int fovY = 5; //height FOV
+	WORD sxx;
+	WORD syy;
+	WORD tzz; //depth step value
+	WORD fovX = xSize/xFOV; //width FOV
+	WORD fovY = 5; //height FOV
 	WORD sxxx;
+	WORD xMiddle = xSize/2;
+	WORD yMiddle = ySize/2;
+	WORD stepModifier = debugValue6*4;
 
 	tzz = 1;
 	for(int tz=0;tz<TERRAINDEPTH;tz++)
 	{
 		//high - 2 - 8
 		tzz += debugValue3+tz/debugValue2;//+tz/16; //increase step with the distance from camera
-		for(int sx=-xSize/2;sx<xSize/2;sx++)
+		for(int sx=-xMiddle;sx<xMiddle;sx++)
 		{
-			sxx = (sx * tzz)/(debugValue6*4); //make smaller steps
+			sxx = (sx * tzz)/stepModifier; //make smaller steps
 			sxxx = sxx/fovX;
-			for(int sy=-ySize/2;sy<ySize/2;sy++)
+			for(int sy=-yMiddle;sy<yMiddle;sy++)
 			{
-				syy = (sy*stepSize * tzz)/(debugValue6*4);//make smaller steps
-				rayCastX[xSize/2+sx][tz] = sxxx;
-				rayCastY[ySize/2+sy][tz] = syy/fovY;
+				syy = (sy*stepSize * tzz)/stepModifier;//make smaller steps
+				rayCastX[xMiddle+sx][tz] = sxxx;
+				rayCastY[yMiddle+sy][tz] = syy/fovY;
 			}
 		}
 	}

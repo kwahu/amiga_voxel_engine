@@ -10,8 +10,8 @@ void ReadHeight(const char *name, UBYTE (*map)[256])
 	if (file) {
 		for (int x = 0; x < 256; x++) {
 			for (int y = 0; y < 256; y++) {
-				fileRead(file, &byte , 1);
-				map[x][y] = byte;
+				fileRead(file, &map[x][y] , 1);
+				//map[x][y] = byte;
 			}
 		}
 		fileClose(file);
@@ -44,8 +44,8 @@ void ReadColor(const char *name, UBYTE (*map)[256])
 	if (file) {
 		for (int x = 0; x < 256; x++) {
 			for (int y = 0; y < 256; y++) {
-				fileRead(file, &byte, 1);
-				map[x][y] = byte;
+				fileRead(file, &map[x][y], 1);
+				//map[x][y] = byte;
 			}
 		}
 		fileClose(file);

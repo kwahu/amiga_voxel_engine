@@ -126,9 +126,10 @@ void CopyMapByte(UBYTE (*source)[256], UBYTE (*destination)[256])
 }
 void CopyMapWord(UWORD (*source)[256], UWORD (*destination)[256])
 {
-	for (int x = 0; x < 256; x++)
+	CopyMemQuick(source, destination, 256*256*2);
+	/*for (int x = 0; x < 256; x++)
 	for (int y = 0; y < 256; y++)
 	{
 		destination[x][y] = source[x][y];
-	}
+	}*/
 }
