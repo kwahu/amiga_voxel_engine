@@ -84,8 +84,6 @@ else if(debugValue == 5)
 }
 else if(debugValue == 6)
 {
-
-
 	ProcessRayCastsFull(screen3x2a,rayCastXOdd, rayCastYOdd,mapHigh,p1x,p1y,p1h,	0,  1, 1, 0, 24,2,3,YSIZEODD, xOffsetOdd);
 	ProcessRayCastsFull(screen3x2b,rayCastXOdd, rayCastYOdd,mapHigh,p1x,p1y,p1h,	24, 1, 1, 0, 24,2,4,YSIZEODD, xOffsetOdd);
 	ProcessRayCastsFull(screen3x2c,rayCastXOdd, rayCastYOdd,mapHigh,p1x,p1y,p1h,48, 1, 1, 0, 24,2,5,YSIZEODD, xOffsetOdd);
@@ -113,5 +111,21 @@ else if(debugValue == 7)
 	DrawPlayerScreen3x2(screen3x2c,1,0,8,4);
 	DrawPlayerScreen3x2(screen3x2d,1,0,12,4);
 	DrawPlayerScreen3x2(screen3x2e,1,0,16,4);
+}
+else if(debugValue == 8)
+{
+
+
+	ProcessRayCasts3x2(rayCastXOdd, rayCastYOdd,mapHigh,p1x,p1y,p1h,0,   4,1,8,YSIZEODD, xOffsetOdd);
+	ProcessRayCasts3x2(rayCastXOdd, rayCastYOdd,mapHigh,p1x,p1y,p1h,24,  4,1,9,YSIZEODD, xOffsetOdd);
+	ProcessRayCasts3x2(rayCastXOdd, rayCastYOdd,mapHigh,p1x,p1y,p1h,48,  4,1,10,YSIZEODD, xOffsetOdd);
+	ProcessRayCasts3x2(rayCastXOdd, rayCastYOdd,mapHigh,p1x,p1y,p1h,72,  4,1,9,YSIZEODD, xOffsetOdd);
+	ProcessRayCasts3x2(rayCastXOdd, rayCastYOdd,mapHigh,p1x,p1y,p1h,96,  4,1,8,YSIZEODD, xOffsetOdd);
+
+	// DrawPlayerScreen3x2(screen3x2a,1,0,0,4);
+	// DrawPlayerScreen3x2(screen3x2b,1,0,4,4);
+	// DrawPlayerScreen3x2(screen3x2c,1,0,8,4);
+	// DrawPlayerScreen3x2(screen3x2d,1,0,12,4);
+	// DrawPlayerScreen3x2(screen3x2e,1,0,16,4);
 }
 }

@@ -215,7 +215,7 @@ void engineGsCreate(void)
 	viewLoad(s_pView);
 
 	DrawBitmap8b(bitmap1, &bitmapHeader1);
-	vPortWaitForEnd(s_pVPort);
+	//vPortWaitForEnd(s_pVPort);
 	CopyFastToChipW(s_pBuffer->pBack);
 
 
@@ -352,7 +352,7 @@ DrawPixel((160+(cx/150))/16, YSIZEODD+(cy/100)-4, 0);
 
 
 
-vPortWaitForEnd(s_pVPort);
+//vPortWaitForEnd(s_pVPort);
 CopyFastToChipW(s_pBuffer->pBack);
 
 //ConvertIntToChar( bcLogo[0], sPlayerX);

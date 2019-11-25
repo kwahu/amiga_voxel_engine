@@ -68,6 +68,10 @@ void ProcessQualityInput()
 		debugValue4 = 0;
 		Recalculate();
 	}
+	if(keyCheck(KEY_8))
+	{
+		debugValue = 8;
+	}
 
 
 }
