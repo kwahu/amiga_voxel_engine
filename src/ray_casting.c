@@ -81,13 +81,13 @@ UBYTE tableStepSizeX, UBYTE tableStepSizeY, UBYTE tableStepNumber, UBYTE xCycles
 	}
 }
 
-inline UWORD ProcessWord(UBYTE rounds, UBYTE sx, UBYTE sy, UWORD *_tz, UWORD *tzz, UBYTE px, UBYTE py,UBYTE ph,
+UBYTE ProcessWord(UBYTE rounds, UBYTE sx, UBYTE sy, UWORD *_tz, UWORD *tzz, UBYTE px, UBYTE py,UBYTE ph,
 UWORD *address1, UWORD *address2, 
 WORD (*rayCastX)[TERRAINDEPTH], WORD (*rayCastY)[TERRAINDEPTH], UWORD (*map)[256])
 {
 	UWORD mapValue;
 	WORD slope;
-	UBYTE mx,my;
+	//UBYTE mx,my;
 	UBYTE c[6];
 	UBYTE sxx;
 	UBYTE th;
@@ -111,9 +111,9 @@ WORD (*rayCastX)[TERRAINDEPTH], WORD (*rayCastY)[TERRAINDEPTH], UWORD (*map)[256
 		
 		while(tz < renderingDepth)
 		{
-			mx = ( px + rayCastX[sxx][tz] );
-			my = ( py + (tz << debugValue4) );
-			mapValue = map[ mx ][ my ];//read color + height
+			//mx = ( px + rayCastX[sxx][tz] );
+			//my = ( py + tz );
+			mapValue = map[ (UBYTE)( px + rayCastX[sxx][tz] ) ][ (UBYTE)( py + tz ) ];//read color + height
 			th = mapValue;//take just the height
 			//check if read height is higher than what we expect from the raycast table
 			slope = th - (ph + rayCastY[sy][tz]);
@@ -134,14 +134,12 @@ WORD (*rayCastX)[TERRAINDEPTH], WORD (*rayCastY)[TERRAINDEPTH], UWORD (*map)[256
 	}
 	switch(rounds)
 	{
-		case 1: *address1 = (c[0]<<10) + (c[0]<<5) + (c[0]); *address2 = (c[0]<<10) + (c[0]<<5) + (c[0]);break;
+		case 1: *address1 = (c[0]<<10) + (c[0]<<5) + (c[0]); *address2 = *address1;break;
 		case 2: *address1 = (c[0]<<10) + (c[0]<<5) + (c[0]); *address2 = (c[1]<<10) + (c[1]<<5) + (c[1]);break;
 		case 3: *address1 = (c[0]<<10) + (c[0]<<5) + (c[1]); *address2 = (c[1]<<10) + (c[2]<<5) + (c[2]);break;
 		default: *address1 = (c[0]<<10) + (c[1]<<5) + (c[2]); *address2 = (c[3]<<10) + (c[4]<<5) + (c[5]);
 	}
 	return tz;
-	//(c[0]<<10) + (c[1]<<5) + (c[2]);
-	//(c[3]<<10) + (c[4]<<5) + (c[5]);
 }
 
 void ProcessRayCasts3x2(WORD (*rayCastX)[TERRAINDEPTH], WORD (*rayCastY)[TERRAINDEPTH], UWORD (*map)[256],
