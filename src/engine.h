@@ -36,10 +36,10 @@ UWORD mapHigh10[256][256]; //131k
 UBYTE mapLoaded0, mapLoaded1, mapLoaded2, mapLoaded3, mapLoaded4, mapLoaded5, mapLoaded6,
     mapLoaded7, mapLoaded8, mapLoaded9, mapLoaded10;
 
-UWORD plane1W[PLANEWIDTHWORD * PLANEHEIGHT]; //20k
-UWORD plane2W[PLANEWIDTHWORD * PLANEHEIGHT]; //20k
-UWORD plane3W[PLANEWIDTHWORD * PLANEHEIGHT]; //20k
-UWORD plane4W[PLANEWIDTHWORD * PLANEHEIGHT]; //20k
+UWORD plane1W[PLANEWIDTHWORD * PLANEHEIGHT]; //10k
+UWORD plane2W[PLANEWIDTHWORD * PLANEHEIGHT]; //10k
+UWORD plane3W[PLANEWIDTHWORD * PLANEHEIGHT]; //10k
+UWORD plane4W[PLANEWIDTHWORD * PLANEHEIGHT]; //10k
 
 WORD rayCastXOdd[XSIZEODD][TERRAINDEPTH]; //51k
 WORD rayCastYOdd[YSIZEODD][TERRAINDEPTH]; //51k
@@ -123,9 +123,11 @@ static LONG p1xf, p1yf, p1hf, p2xf, p2yf, p2hf;
 static UWORD p1x, p1y, p1h, p2x, p2y, p2h;
 static int interlace;
 static UBYTE renderingDepth = TERRAINDEPTH;
+static UBYTE screenIndex;
 static WORD cx, cy;
 static ULONG startTime, endTime, deltaTime, lastTime;
 static ULONG levelTime;
+static ULONG screenDuration;
 static UWORD lastOverwrittenLine;
 static BYTE xOffsetEven, xOffsetOdd; //camera rotation offsett when turning
 
@@ -153,7 +155,7 @@ typedef struct tagBITMAPINFOHEADER
     ULONG biClrImportant;  //number of colors that are important
 } BITMAPINFOHEADER;
 
-BITMAPINFOHEADER bitmapHeader1, bitmapHeader2, bitmapHeader2;
+BITMAPINFOHEADER bitmapHeader1, bitmapHeader2, bitmapHeader3;
 unsigned char *bitmap1, *bitmap2, *bitmap3;
 unsigned char bitmapPalette1[16 * 4], bitmapPalette2[16 * 4], bitmapPalette3[16 * 4];
 

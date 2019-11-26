@@ -57,7 +57,7 @@ tTextBitMap *pBitmapTime, *pBitmapVelocity, *pBitmapScore;
 tTextBitMap *pixel[32];
 char sPixel[32][10];
 char sPlayerX[5], sPlayerY[5], sPlayerH[5];
-char sTime[5], sVelocity[5], sScore[5];
+char sTime[10], sVelocity[5], sScore[5];
 
 void SetDefaulResolution()
 {
@@ -264,6 +264,8 @@ void engineGsCreate(void)
 								   TAG_DONE);
 
 	bitmap1 = LoadBitmapFile("data/logo1.bmp", &bitmapHeader1, bitmapPalette1);
+	bitmap2 = LoadBitmapFile("data/logo2.bmp", &bitmapHeader2, bitmapPalette2);
+	bitmap3 = LoadBitmapFile("data/logo3.bmp", &bitmapHeader3, bitmapPalette3);
 
 	//process paletter from an image
 	for (int i = 0; i < 16; i++)
@@ -313,14 +315,15 @@ void engineGsCreate(void)
 
 	s_pAvgTime = logAvgCreate("perf", 100);
 	levelTime = 0;
+	screenIndex = 1;
+	screenDuration = 0;
 
 	keyCreate();
 	joyOpen(0);
 
-	
 	viewLoad(s_pView);
 	systemUnuse();
-	memcpy(s_pVPort->pPalette, kolory2, 16 * sizeof(UWORD));
+	//memcpy(s_pVPort->pPalette, kolory2, 16 * sizeof(UWORD));
 }
 
 //****************************** LOOP
@@ -334,214 +337,263 @@ void engineGsLoop(void)
 	lastTime = startTime;
 	levelTime += deltaTime;
 
-	if (keyCheck(KEY_SPACE))
+	if (screenIndex > 0)
 	{
-		gameClose();
+		if (screenDuration > 12500000)
+		{
+			screenDuration = 12500000;
+			screenIndex = (screenIndex + 1) % 4;
+
+			switch (screenIndex)
+			{
+			case 2:
+			{
+				for (int i = 0; i < 16; i++)
+				{
+					bitmapPalette[i] = ((bitmapPalette2[i * 4 + 2] >> 4) << 8) +
+									   ((bitmapPalette2[i * 4 + 1] >> 4) << 4) + (bitmapPalette2[i * 4 + 0] >> 4);
+				}
+				memcpy(s_pVPort->pPalette, bitmapPalette, 16 * sizeof(UWORD));
+				DrawBitmap8b(bitmap2, &bitmapHeader2);
+				viewLoad(s_pView);
+				vPortWaitForEnd(s_pVPort);
+				CopyFastToChipW(s_pBuffer->pBack);
+			}
+			break;
+			case 3:
+			{
+				for (int i = 0; i < 16; i++)
+				{
+					bitmapPalette[i] = ((bitmapPalette3[i * 4 + 2] >> 4) << 8) +
+									   ((bitmapPalette3[i * 4 + 1] >> 4) << 4) + (bitmapPalette3[i * 4 + 0] >> 4);
+				}
+				memcpy(s_pVPort->pPalette, bitmapPalette, 16 * sizeof(UWORD));
+				DrawBitmap8b(bitmap3, &bitmapHeader3);
+				viewLoad(s_pView);
+				vPortWaitForEnd(s_pVPort);
+				CopyFastToChipW(s_pBuffer->pBack);
+			}
+			break;
+			case 0:
+			{
+				memcpy(s_pVPort->pPalette, kolory2, 16 * sizeof(UWORD));
+				viewLoad(s_pView);
+			}
+			break;
+			}
+		}
+
+		screenDuration -= deltaTime;
 	}
 	else
 	{
-		if (keyCheck(KEY_Q))
+
+		if (keyCheck(KEY_SPACE))
 		{
-			debugValue5 = 1;
+			gameClose();
 		}
-		if (keyCheck(KEY_W))
+		else
 		{
-			debugValue5 = 2;
-		}
-		if (keyCheck(KEY_E))
-		{
-			debugValue5 = 3;
-		}
-		if (keyCheck(KEY_R))
-		{
-			debugValue5 = 4;
-		}
-		if (keyCheck(KEY_T))
-		{
-			debugValue5 = 5;
-		}
-		if (keyCheck(KEY_Y))
-		{
-			debugValue5 = 6;
-		}
-		if (keyCheck(KEY_U))
-		{
-			debugValue5 = 7;
-		}
-		if (keyCheck(KEY_I))
-		{
-			debugValue5 = 8;
-		}
-		if (keyCheck(KEY_O))
-		{
-			debugValue5 = 9;
-		}
-		if (keyCheck(KEY_P))
-		{
-			debugValue5 = 10;
+			if (keyCheck(KEY_Q))
+			{
+				debugValue5 = 1;
+			}
+			if (keyCheck(KEY_W))
+			{
+				debugValue5 = 2;
+			}
+			if (keyCheck(KEY_E))
+			{
+				debugValue5 = 3;
+			}
+			if (keyCheck(KEY_R))
+			{
+				debugValue5 = 4;
+			}
+			if (keyCheck(KEY_T))
+			{
+				debugValue5 = 5;
+			}
+			if (keyCheck(KEY_Y))
+			{
+				debugValue5 = 6;
+			}
+			if (keyCheck(KEY_U))
+			{
+				debugValue5 = 7;
+			}
+			if (keyCheck(KEY_I))
+			{
+				debugValue5 = 8;
+			}
+			if (keyCheck(KEY_O))
+			{
+				debugValue5 = 9;
+			}
+			if (keyCheck(KEY_P))
+			{
+				debugValue5 = 10;
+			}
+
+			if (keyCheck(KEY_A))
+			{
+				debugValue6 = 1;
+				Recalculate();
+			}
+			if (keyCheck(KEY_S))
+			{
+				debugValue6 = 2;
+				Recalculate();
+			}
+			if (keyCheck(KEY_D))
+			{
+				debugValue6 = 3;
+				Recalculate();
+			}
+			if (keyCheck(KEY_F))
+			{
+				debugValue6 = 4;
+				Recalculate();
+			}
+			if (keyCheck(KEY_G))
+			{
+				debugValue6 = 5;
+				Recalculate();
+			}
+			if (keyCheck(KEY_H))
+			{
+				debugValue6 = 6;
+				Recalculate();
+			}
+			if (keyCheck(KEY_J))
+			{
+				debugValue6 = 7;
+				Recalculate();
+			}
+			if (keyCheck(KEY_K))
+			{
+				debugValue6 = 8;
+				Recalculate();
+			}
+			if (keyCheck(KEY_L))
+			{
+				debugValue6 = 9;
+				Recalculate();
+			}
+			if (keyCheck(KEY_SEMICOLON))
+			{
+				debugValue6 = 10;
+				Recalculate();
+			}
+
+			if (keyCheck(KEY_Z))
+			{
+				debugValue8 = -2;
+			}
+			if (keyCheck(KEY_X))
+			{
+				debugValue8 = -1;
+			}
+			if (keyCheck(KEY_C))
+			{
+				debugValue8 = 0;
+			}
+			if (keyCheck(KEY_V))
+			{
+				debugValue8 = 1;
+			}
+			if (keyCheck(KEY_B))
+			{
+				debugValue8 = 2;
+			}
+			if (keyCheck(KEY_N))
+			{
+				debugValue9 = -2;
+			}
+			if (keyCheck(KEY_M))
+			{
+				debugValue9 = -1;
+			}
+			if (keyCheck(KEY_COMMA))
+			{
+				debugValue9 = 0;
+			}
+			if (keyCheck(KEY_PERIOD))
+			{
+				debugValue9 = 1;
+			}
+			if (keyCheck(KEY_SLASH))
+			{
+				debugValue9 = 2;
+			}
+
+			ProcessPlayerInput();
+			OverwriteMap(); //this is how we go through many different maps, we just overwrite the main array with new content
+
+			//restart
+			if ((p1h - 3) < (UBYTE)(mapHigh[(UBYTE)(p1x)][(UBYTE)(p1y + 15)]))
+			{
+				p1xf = 60 * 100;
+				p1yf = 0;
+				p1hf = 10 * 100;
+				CopyMapWord(mapHigh0, mapHigh);
+
+				levelTime = 0;
+				//CopyMapWord(mapMed0, mapMed);
+				//CopyMapWord(mapLow0, mapLow);
+			}
+
+			ProcessQualityInput();
 		}
 
-		if (keyCheck(KEY_A))
-		{
-			debugValue6 = 1;
-			Recalculate();
-		}
-		if (keyCheck(KEY_S))
-		{
-			debugValue6 = 2;
-			Recalculate();
-		}
-		if (keyCheck(KEY_D))
-		{
-			debugValue6 = 3;
-			Recalculate();
-		}
-		if (keyCheck(KEY_F))
-		{
-			debugValue6 = 4;
-			Recalculate();
-		}
-		if (keyCheck(KEY_G))
-		{
-			debugValue6 = 5;
-			Recalculate();
-		}
-		if (keyCheck(KEY_H))
-		{
-			debugValue6 = 6;
-			Recalculate();
-		}
-		if (keyCheck(KEY_J))
-		{
-			debugValue6 = 7;
-			Recalculate();
-		}
-		if (keyCheck(KEY_K))
-		{
-			debugValue6 = 8;
-			Recalculate();
-		}
-		if (keyCheck(KEY_L))
-		{
-			debugValue6 = 9;
-			Recalculate();
-		}
-		if (keyCheck(KEY_SEMICOLON))
-		{
-			debugValue6 = 10;
-			Recalculate();
-		}
+		if (renderingDepth < 10)
+			renderingDepth = 10;
+		else if (renderingDepth > TERRAINDEPTH)
+			renderingDepth = TERRAINDEPTH;
 
-		if (keyCheck(KEY_Z))
-		{
-			debugValue8 = -2;
-		}
-		if (keyCheck(KEY_X))
-		{
-			debugValue8 = -1;
-		}
-		if (keyCheck(KEY_C))
-		{
-			debugValue8 = 0;
-		}
-		if (keyCheck(KEY_V))
-		{
-			debugValue8 = 1;
-		}
-		if (keyCheck(KEY_B))
-		{
-			debugValue8 = 2;
-		}
-		if (keyCheck(KEY_N))
-		{
-			debugValue9 = -2;
-		}
-		if (keyCheck(KEY_M))
-		{
-			debugValue9 = -1;
-		}
-		if (keyCheck(KEY_COMMA))
-		{
-			debugValue9 = 0;
-		}
-		if (keyCheck(KEY_PERIOD))
-		{
-			debugValue9 = 1;
-		}
-		if (keyCheck(KEY_SLASH))
-		{
-			debugValue9 = 2;
-		}
+		xOffsetOdd = cx / 300;
+		xOffsetEven = cx / 450;
 
-		ProcessPlayerInput();
-		OverwriteMap(); //this is how we go through many different maps, we just overwrite the main array with new content
+		RenderQuality();
 
-		//restart
-		if ((p1h - 3) < (UBYTE)(mapHigh[(UBYTE)(p1x)][(UBYTE)(p1y + 15)]))
-		{
-			p1xf = 60 * 100;
-			p1yf = 0;
-			p1hf = 10 * 100;
-			CopyMapWord(mapHigh0, mapHigh);
+		//draw crosshair
+		DrawPixel((160 + (cx / 150)) / 16, YSIZEODD + (cy / 100) + 4, 0);
+		DrawPixel((160 + (cx / 150)) / 16, YSIZEODD + (cy / 100) - 4, 0);
 
-			levelTime = 0;
-			//CopyMapWord(mapMed0, mapMed);
-			//CopyMapWord(mapLow0, mapLow);
-		}
+		//DrawBitmap8b(bitmap1, &bitmapHeader1);
 
-		ProcessQualityInput();
+		vPortWaitForEnd(s_pVPort);
+		CopyFastToChipW(s_pBuffer->pBack);
 	}
 
-	if (renderingDepth < 10)
-		renderingDepth = 10;
-	else if (renderingDepth > TERRAINDEPTH)
-		renderingDepth = TERRAINDEPTH;
-
-	xOffsetOdd = cx / 300;
-	xOffsetEven = cx / 450;
-
-	RenderQuality();
-
-	//draw crosshair
-	DrawPixel((160 + (cx / 150)) / 16, YSIZEODD + (cy / 100) + 4, 0);
-	DrawPixel((160 + (cx / 150)) / 16, YSIZEODD + (cy / 100) - 4, 0);
-
-	//DrawBitmap8b(bitmap1, &bitmapHeader1);
-
-	//vPortWaitForEnd(s_pVPort);
-	CopyFastToChipW(s_pBuffer->pBack);
-
-	//ConvertIntToChar( bcLogo[0], sPlayerX);
-	//ConvertIntToChar( bcLogo[1], sPlayerY);
-	//ConvertIntToChar( bcLogo[2], sPlayerH);
+	//ConvertIntToChar(bcLogo[0], sPlayerX);
+	//ConvertIntToChar(bcLogo[1], sPlayerY);
+	//ConvertIntToChar(bcLogo[2], sPlayerH);
 	//timerFormatPrec(sTime, levelTime);
-	//ConvertIntToChar( bcLogo[3], sTime);
-	//ConvertIntToChar( bcLogo[4], sVelocity);
-	//ConvertIntToChar( bcLogo[5], sScore);
+	//ConvertIntToChar(bcLogo[3], sTime);
+	//ConvertIntToChar(bcLogo[4], sVelocity);
+	//ConvertIntToChar(bcLogo[5], sScore);
 
-	/*for(int i=0;i<16;i++)
-{
-	ConvertWordToChar( bitmapPalette[i], sPixel[i]);
-	fontFillTextBitMap(s_pMenuFont, pixel[i], sPixel[i]);
-	fontDrawTextBitMap(s_pBuffer->pBack, pixel[i], 20, i*8, 15, FONT_LEFT);
-}*/
+	/*for (int i = 0; i < 16; i++)
+	{
+		ConvertWordToChar(bitmapPalette[i], sPixel[i]);
+		fontFillTextBitMap(s_pMenuFont, pixel[i], sPixel[i]);
+		fontDrawTextBitMap(s_pBuffer->pBack, pixel[i], 20, i * 8, 15, FONT_LEFT);
+	}*/
 
-	/*
-fontFillTextBitMap(s_pMenuFont, pBitmapPlayerX, sPlayerX);
-fontFillTextBitMap(s_pMenuFont, pBitmapPlayerY, sPlayerY);
-fontFillTextBitMap(s_pMenuFont, pBitmapPlayerH, sPlayerH);
-fontFillTextBitMap(s_pMenuFont, pBitmapTime , sTime);
-fontFillTextBitMap(s_pMenuFont, pBitmapVelocity, sVelocity);
-fontFillTextBitMap(s_pMenuFont, pBitmapScore, sScore);
+	//fontFillTextBitMap(s_pMenuFont, pBitmapPlayerX, sPlayerX);
+	//fontFillTextBitMap(s_pMenuFont, pBitmapPlayerY, sPlayerY);
+	//fontFillTextBitMap(s_pMenuFont, pBitmapPlayerH, sPlayerH);
+	//fontFillTextBitMap(s_pMenuFont, pBitmapTime, sTime);
+	//fontFillTextBitMap(s_pMenuFont, pBitmapVelocity, sVelocity);
+	//fontFillTextBitMap(s_pMenuFont, pBitmapScore, sScore);
 
-
-
-fontDrawTextBitMap(s_pBuffer->pBack, pBitmapPlayerX, 20, 225, 15, FONT_LEFT);
-fontDrawTextBitMap(s_pBuffer->pBack, pBitmapPlayerY, 40, 225, 15, FONT_LEFT);
-fontDrawTextBitMap(s_pBuffer->pBack, pBitmapPlayerH, 60, 225, 15, FONT_LEFT);
-fontDrawTextBitMap(s_pBuffer->pBack, pBitmapTime, 80, 225, 12, FONT_LEFT);
-fontDrawTextBitMap(s_pBuffer->pBack, pBitmapVelocity, 100, 225, 12, FONT_LEFT);
-fontDrawTextBitMap(s_pBuffer->pBack, pBitmapScore, 120, 225, 12, FONT_LEFT);*/
+	//fontDrawTextBitMap(s_pBuffer->pBack, pBitmapPlayerX, 20, 225, 15, FONT_LEFT);
+	//fontDrawTextBitMap(s_pBuffer->pBack, pBitmapPlayerY, 40, 225, 15, FONT_LEFT);
+	//fontDrawTextBitMap(s_pBuffer->pBack, pBitmapPlayerH, 60, 225, 15, FONT_LEFT);
+	//fontDrawTextBitMap(s_pBuffer->pBack, pBitmapTime, 80, 225, 12, FONT_LEFT);
+	//fontDrawTextBitMap(s_pBuffer->pBack, pBitmapVelocity, 100, 225, 12, FONT_LEFT);
+	//fontDrawTextBitMap(s_pBuffer->pBack, pBitmapScore, 120, 225, 12, FONT_LEFT);
 
 	interlace++;
 	if (interlace == 4)
