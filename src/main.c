@@ -1,4 +1,6 @@
 #include <ace/generic/main.h>
+
+#include "settings_amiga.h"
 #include "engine.h"
 #include "ray_casting.c"
 #include "ray_cast_calculate.c"
@@ -62,10 +64,10 @@ char sTime[10], sVelocity[5], sScore[5];
 void SetDefaulResolution()
 {
 	renderingDepth = 64;
-		debugValue = 6;
-		debugValue2 = 2;
-		debugValue3 = 2;
-		debugValue4 = 1;
+	debugValue = 7;
+	debugValue2 = 2;
+	debugValue3 = 2;
+	debugValue4 = 1;
 
 	debugValue6 = 4;
 	xFOV = 10;

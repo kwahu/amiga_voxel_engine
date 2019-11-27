@@ -10,7 +10,7 @@
 //#include <gem.h>
 //#include <gemx.h>
 
-
+#include "settings_atari.h"
 #include "bitmap.c"
 #include "file_read.c"
 #include "engine.h"

@@ -69,6 +69,10 @@ void ProcessRayCasts3x2(WORD (*rayCastX)[TERRAINDEPTH], WORD (*rayCastY)[TERRAIN
 	UBYTE sx,sy,mist;
 	UWORD tz,tzz[6];
 	UWORD position,address1,address2;
+	UBYTE threshold1 = TERRAINDEPTH/4;
+	UBYTE threshold2 = TERRAINDEPTH/2;
+	UBYTE threshold3 = TERRAINDEPTH - TERRAINDEPTH/4;
+
 
 	UBYTE verticalSteps;
 
@@ -97,30 +101,30 @@ void ProcessRayCasts3x2(WORD (*rayCastX)[TERRAINDEPTH], WORD (*rayCastY)[TERRAIN
 		//process this vertical line
 		while(sy < ySize)
 		{
-			 if(tz < 30)			
+			 if(tz < threshold1)			
 			 {
 				 tz = ProcessWord(1,sx,sy,&tz,tzz,px,py,ph,&address1,&address2,rayCastX, rayCastY, map);
-				 verticalSteps = 8;
-			 }
-			else if(tz < 40)			
-			 {
-				 tz = ProcessWord(2,sx,sy,&tz,tzz,px,py,ph,&address1,&address2,rayCastX, rayCastY, map);
-				 verticalSteps = 6;
-			 }
-			else if(tz < 50)			
-			 {
-				 tz = ProcessWord(3,sx,sy,&tz,tzz,px,py,ph,&address1,&address2,rayCastX, rayCastY, map);
 				 verticalSteps = 4;
 			 }
-			 else if(tz < 64)		
+			else if(tz < threshold2)			
+			 {
+				 tz = ProcessWord(2,sx,sy,&tz,tzz,px,py,ph,&address1,&address2,rayCastX, rayCastY, map);
+				 verticalSteps = 4;
+			 }
+			else if(tz < threshold3)			
+			 {
+				 tz = ProcessWord(3,sx,sy,&tz,tzz,px,py,ph,&address1,&address2,rayCastX, rayCastY, map);
+				 verticalSteps = 2;
+			 }
+			 else if(tz < TERRAINDEPTH)		
 			 {
 				 tz = ProcessWord(6,sx,sy,&tz,tzz,px,py,ph,&address1,&address2,rayCastX, rayCastY, map);
 				 verticalSteps = 2;
 			 }
 			 else
 			 {
-				 address1 = 0b0111111111111111;
-				 address2 = 0b0111111111111111;
+				 address1 = 0b0011110111101111;
+				 address2 = 0b0011110111101111;
 				 verticalSteps = 1;
 			 }
 			 

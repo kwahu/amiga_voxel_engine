@@ -39,7 +39,7 @@ main_atari.o: src/main_atari.c \
  /opt/cross-mint/lib/gcc/m68k-atari-mint/4.6.4/../../../../m68k-atari-mint/include/mint/trap14.h \
  src/time.c \
  /opt/cross-mint/lib/gcc/m68k-atari-mint/4.6.4/../../../../m68k-atari-mint/include/stdint.h \
- src/bitmap.c src/engine.h \
+ src/settings_atari.h src/bitmap.c src/engine.h \
  /opt/cross-mint/lib/gcc/m68k-atari-mint/4.6.4/../../../../m68k-atari-mint/include/stdlib.h \
  src/file_read.c src/draw_maps_atari.c src/ray_cast_calculate.c \
  src/bitmap_filters.c src/setup_maps.c src/dithering.c \
