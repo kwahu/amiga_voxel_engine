@@ -6,7 +6,7 @@
 //#include <stdint.h>
 //#include <mint/osbind.h>
 #include <mint/sysbind.h>
-#include "time.c"
+#include "time_atari.c"
 //#include <gem.h>
 //#include <gemx.h>
 
