@@ -2,9 +2,9 @@
 void OverwriteMap()
 {
 	UBYTE mapNumber;
+	UWORD word;
 
-	UWORD(*_mapHigh)
-	[256];
+	UWORD(*_mapHigh)[MAPSIZE];
 
 	mapNumber = (p1y / 256) % 11;
 
@@ -134,12 +134,15 @@ void OverwriteMap()
 	}
 
 	for (UWORD y = lastOverwrittenLine; y < p1y; y++)
-		for (UWORD x = 0; x < 256; x++)
+		for (UWORD x = 0; x < MAPSIZE; x++)
 		{
 			//int x = 0;
 			//CopyMem(&_mapHigh[x][(UBYTE)y], &mapHigh[x][(UBYTE)y], 256);
-
-			mapHigh[x][(UBYTE)y] = _mapHigh[x][(UBYTE)y];
+			word = _mapHigh[x][(UBYTE)(y)/2];
+			mapHigh[x][(UBYTE)y] = word;
+			mapHigh[x+1][(UBYTE)y] = word;
+			mapHigh[x][(UBYTE)y+1] = word;
+			mapHigh[x+1][(UBYTE)y+1] = word;
 			//mapLow[x][(UBYTE)y] =  _mapLow[x][(UBYTE)y];
 		}
 

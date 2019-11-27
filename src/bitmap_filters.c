@@ -1,10 +1,10 @@
 #include "engine.h"
 //smooth the map so that there are less "spike" artifacts from the coarse rendering
-void SmoothHeightMap(UBYTE (*map)[256])
+void SmoothHeightMap(UBYTE (*map)[MAPSIZE])
 {
 	UWORD value;
-	for (UBYTE x = 1; x < 255; x++)
-	for (UBYTE y = 1; y < 255; y++)
+	for (UBYTE x = 0; x < MAPSIZE; ++x)
+	for (UBYTE y = 0; y < MAPSIZE; ++y)
 	{
 
 		value = map[x+1][y];
@@ -17,11 +17,11 @@ void SmoothHeightMap(UBYTE (*map)[256])
 }
 
 //smooth color map so that there are gradients between contrasting colours
-void SmoothColorMap(UBYTE (*map)[256])
+void SmoothColorMap(UBYTE (*map)[MAPSIZE])
 {
 	UBYTE value;
-	for (UBYTE x = 1; x < 255; x++)
-	for (UBYTE y = 1; y < 255; y++)
+	for (UBYTE x = 0; x < MAPSIZE; ++x)
+	for (UBYTE y = 0; y < MAPSIZE; ++y)
 	{
 
 		value = map[x+1][y];
@@ -57,8 +57,8 @@ void SmoothScreen(UBYTE player)
 void GenerateColorMap()
 {
 	int value;
-	for (int x = 0; x < 256; x++)
-	for (int y = 0; y < 256; y++)
+	for (int x = 0; x < MAPSIZE; x++)
+	for (int y = 0; y < MAPSIZE; y++)
 	{
 		value = 4;
 		value += heightMap0[x][y]/16;
@@ -69,11 +69,11 @@ void GenerateColorMap()
 	}
 }*/
 //add more light to higher ground
-void AddHeightToColorMap(UBYTE (*mapColor)[256], UBYTE (*mapHeight)[256])
+void AddHeightToColorMap(UBYTE (*mapColor)[MAPSIZE], UBYTE (*mapHeight)[MAPSIZE])
 {
 	int value;
-	for (int x = 0; x < 256; x++)
-	for (int y = 0; y < 256; y++)
+	for (int x = 0; x < MAPSIZE; x++)
+	for (int y = 0; y < MAPSIZE; y++)
 	{
 		value = mapColor[x][y]+mapHeight[x][y]/32-5;
 		if(value < 1) value = 1;
@@ -82,13 +82,13 @@ void AddHeightToColorMap(UBYTE (*mapColor)[256], UBYTE (*mapHeight)[256])
 	}
 }
 //add light and shadow contrast on the left and right sides of the terrain
-void AddBumpToColorMap(UBYTE (*mapColor)[256], UBYTE (*mapHeight)[256])
+void AddBumpToColorMap(UBYTE (*mapColor)[MAPSIZE], UBYTE (*mapHeight)[MAPSIZE])
 {
 	int value;
 
-	for (int x = 0; x < 256; x++)
+	for (int x = 0; x < MAPSIZE; x++)
 	{
-		for (int y = 0; y < 256; y++)
+		for (int y = 0; y < MAPSIZE; y++)
 		{
 			value =  mapHeight[x][y] - mapHeight[x+1][y];//  + heightMap0[x][y] - heightMap0[x][y-1];
 			value = mapColor[x][y] + 4 +  ( value /2);
@@ -100,13 +100,13 @@ void AddBumpToColorMap(UBYTE (*mapColor)[256], UBYTE (*mapHeight)[256])
 
 }
 //add light and shadow contrast on the left and right sides of the terrain
-void LimitColorMap(UBYTE (*mapColor)[256])
+void LimitColorMap(UBYTE (*mapColor)[MAPSIZE])
 {
 	int value;
 
-	for (int x = 0; x < 256; x++)
+	for (int x = 0; x < MAPSIZE; x++)
 	{
-		for (int y = 0; y < 256; y++)
+		for (int y = 0; y < MAPSIZE; y++)
 		{
 			value = mapColor[x][y]/2;
 			if(value < 1) value = 1;
@@ -116,21 +116,26 @@ void LimitColorMap(UBYTE (*mapColor)[256])
 	}
 
 }
-void CopyMapByte(UBYTE (*source)[256], UBYTE (*destination)[256])
+void CopyMapByte(UBYTE (*source)[MAPSIZE], UBYTE (*destination)[MAPSIZE])
 {
-	for (int x = 0; x < 256; x++)
-	for (int y = 0; y < 256; y++)
+	for (int x = 0; x < MAPSIZE; x++)
+	for (int y = 0; y < MAPSIZE; y++)
 	{
 		destination[x][y] = source[x][y];
 	}
 }
-void CopyMapWord(UWORD (*source)[256], UWORD (*destination)[256])
+void CopyMapWord(UWORD (*source)[MAPSIZE], UWORD (*destination)[256])
 {
-	//CopyMemQuick(source, destination, 256*256*2);
-	memcpy(destination, source, 256*256*2);
-	/*for (int x = 0; x < 256; x++)
-	for (int y = 0; y < 256; y++)
-	{
-		destination[x][y] = source[x][y];
-	}*/
+	UWORD word;
+	//CopyMemQuick(source, destination, MAPSIZE*MAPSIZE*2);
+	//memcpy(destination, source, MAPSIZE*MAPSIZE*2);
+	for (int x = 0; x < MAPSIZE; x++)
+		for (int y = 0; y < MAPSIZE; y++)
+		{
+			word = source[x][y];
+			destination[x*2][y*2] = word;
+			destination[x*2+1][y*2] = word;
+			destination[x*2][y*2+1] = word;
+			destination[x*2+1][y*2+1] = word;
+		}
 }

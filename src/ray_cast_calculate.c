@@ -131,17 +131,25 @@ void CombineMapsMed(UBYTE (*height)[128], UBYTE (*color)[128], UWORD (*map)[256]
 	}
 }
 */
-void CombineMapsHigh(UBYTE (*height)[256], UBYTE (*color)[256], UWORD (*map)[256])
+void CombineMapsHigh(UBYTE (*height)[MAPSIZE], UBYTE (*color)[MAPSIZE], UWORD (*map)[MAPSIZE])
 {
-	for (int x = 0; x < 256; x++) {
-		for (int y = 0; y < 256; y++) {
-			map[x][y] = (color[x][y] << 8) + height[x][y];
+	for (int x = 0; x < MAPSIZE; x++) {
+		for (int y = 0; y < MAPSIZE; y++) {
+			map[y][x] = (color[x][y] << 8) + height[x][y];
+		}
+	}
+}
+void GenerateMap(UWORD (*map)[MAPSIZE])
+{
+	for (int x = 0; x < MAPSIZE; x++) {
+		for (int y = 0; y < MAPSIZE; y++) {
+			map[x][y] = ( ( (x>>4) + (y>>4) ) << 8) + x;
 		}
 	}
 }
 void Recalculate()
 {
-	CalculateRayCasts(rayCastXEven, rayCastYEven, XSIZEEVEN, YSIZEEVEN, 2);
+	//CalculateRayCasts(rayCastXEven, rayCastYEven, XSIZEEVEN, YSIZEEVEN, 2);
 	CalculateRayCasts(rayCastXOdd, rayCastYOdd, XSIZEODD, YSIZEODD, 1);
 	deltaTime = 0;
 }

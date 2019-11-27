@@ -14,7 +14,7 @@
 #include "map_streaming.c"
 #include "setup_maps.c"
 #include "rendering_quality.c"
-#include "bitmap.c"
+//#include "bitmap.c"
 #include <ace/managers/game.h>
 #include <ace/managers/timer.h>
 #include <ace/managers/system.h>
@@ -271,6 +271,17 @@ void engineGsCreate(void)
 
 	memcpy(s_pVPort->pPalette, bitmapPalette, 16 * sizeof(UWORD));
 
+	paletteBitmap = LoadBitmapFile("data/palette.bmp", &paletteHeader, palettePalette);
+
+	//process paletter from an image
+	for (int i = 0; i < 16; i++)
+	{
+		bitmapPalette[i] = ((palettePalette[i * 4 + 2] >> 4) << 8) +
+						   ((palettePalette[i * 4 + 1] >> 4) << 4) + (palettePalette[i * 4 + 0] >> 4);
+	}
+
+	
+
 	viewLoad(s_pView);
 
 	DrawBitmap8b(bitmap1, &bitmapHeader1);
@@ -280,9 +291,9 @@ void engineGsCreate(void)
 	// Load font
 	s_pMenuFont = fontCreate("data/silkscreen.fnt");
 
-	p1xf = 60 * 100;
+	p1xf = 100 * 100;
 	p1yf = 0;
-	p1hf = 40 * 100;
+	p1hf = 200 * 100;
 
 	p2x = 0;
 	p2y = 0;
@@ -371,7 +382,8 @@ void engineGsLoop(void)
 			break;
 			case 0:
 			{
-				memcpy(s_pVPort->pPalette, kolory2, 16 * sizeof(UWORD));
+				memcpy(s_pVPort->pPalette, bitmapPalette, 16 * sizeof(UWORD));
+				//memcpy(s_pVPort->pPalette, kolory2, 16 * sizeof(UWORD));
 				viewLoad(s_pView);
 			}
 			break;
@@ -528,14 +540,12 @@ void engineGsLoop(void)
 			//restart
 			if ((p1h - 3) < (UBYTE)(mapHigh[(UBYTE)(p1x)][(UBYTE)(p1y + 15)]))
 			{
-				p1xf = 60 * 100;
+				p1xf = 64 * 100;
 				p1yf = 0;
-				p1hf = 10 * 100;
+				p1hf = 50 * 100;
 				CopyMapWord(mapHigh0, mapHigh);
 
 				levelTime = 0;
-				//CopyMapWord(mapMed0, mapMed);
-				//CopyMapWord(mapLow0, mapLow);
 			}
 
 			ProcessQualityInput();
@@ -557,7 +567,7 @@ void engineGsLoop(void)
 
 		//DrawBitmap8b(bitmap1, &bitmapHeader1);
 
-		vPortWaitForEnd(s_pVPort);
+	//	vPortWaitForEnd(s_pVPort);
 		CopyFastToChipW(s_pBuffer->pBack);
 	}
 

@@ -11,7 +11,7 @@
 #define BYTE	signed char
 
 
-#define PLANEHEIGHT 256
+#define PLANEHEIGHT 200
 #define PLANEWIDTH 40
 #define PLANEWIDTHWORD 20
 #define DEPTH 4
@@ -24,22 +24,24 @@
 #define YSIZEODD 80
 #define YSIZEEVEN YSIZEODD / 2
 
-UBYTE heightMap[256][256]; //65k
-UBYTE colorMap[256][256];  //65k
+#define MAPSIZE 128
+
+UBYTE heightMap[MAPSIZE][MAPSIZE]; //65k
+UBYTE colorMap[MAPSIZE][MAPSIZE];  //65k
 
 UWORD mapHigh[256][256]; //131k
 
-UWORD mapHigh0[256][256];  //131k
-UWORD mapHigh1[256][256];  //131k
-UWORD mapHigh2[256][256];  //131k
-UWORD mapHigh3[256][256];  //131k
-UWORD mapHigh4[256][256];  //131k
-UWORD mapHigh5[256][256];  //131k
-UWORD mapHigh6[256][256];  //131k
-UWORD mapHigh7[256][256];  //131k
-UWORD mapHigh8[256][256];  //131k
-UWORD mapHigh9[256][256];  //131k
-UWORD mapHigh10[256][256]; //131k
+UWORD mapHigh0[MAPSIZE][MAPSIZE];  //131k
+UWORD mapHigh1[MAPSIZE][MAPSIZE];  //131k
+UWORD mapHigh2[MAPSIZE][MAPSIZE];  //131k
+UWORD mapHigh3[MAPSIZE][MAPSIZE];  //131k
+UWORD mapHigh4[MAPSIZE][MAPSIZE];  //131k
+UWORD mapHigh5[MAPSIZE][MAPSIZE];  //131k
+UWORD mapHigh6[MAPSIZE][MAPSIZE];  //131k
+UWORD mapHigh7[MAPSIZE][MAPSIZE];  //131k
+UWORD mapHigh8[MAPSIZE][MAPSIZE];  //131k
+UWORD mapHigh9[MAPSIZE][MAPSIZE];  //131k
+UWORD mapHigh10[MAPSIZE][MAPSIZE]; //131k
 UBYTE mapLoaded0, mapLoaded1, mapLoaded2, mapLoaded3, mapLoaded4, mapLoaded5, mapLoaded6,
     mapLoaded7, mapLoaded8, mapLoaded9, mapLoaded10;
 
@@ -171,9 +173,9 @@ typedef struct tagBITMAPINFOHEADER
     ULONG biClrImportant;  //number of colors that are important
 } BITMAPINFOHEADER;
 
-BITMAPINFOHEADER bitmapHeader1, bitmapHeader2, bitmapHeader3;
-unsigned char *bitmap1, *bitmap2, *bitmap3;
-unsigned char bitmapPalette1[16 * 4], bitmapPalette2[16 * 4], bitmapPalette3[16 * 4];
+BITMAPINFOHEADER bitmapHeader1, bitmapHeader2, bitmapHeader3, paletteHeader;
+unsigned char *bitmap1, *bitmap2, *bitmap3, *paletteBitmap;
+unsigned char bitmapPalette1[16 * 4], bitmapPalette2[16 * 4], bitmapPalette3[16 * 4],palettePalette[16 * 4];
 
 void engineGsCreate(void);
 

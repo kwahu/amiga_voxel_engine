@@ -16,10 +16,11 @@ HATARI=/usr/local/bin/hatari
 endif
 
 CFLAGS=-mcpu=68000\
-	-O3\
 	-fomit-frame-pointer \
+	-Ofast\
 	-std=c99\
 	-lgem
+	#
 	#-Wall\
 	#-mshort\
 	#-nostdlib

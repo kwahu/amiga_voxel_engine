@@ -87,8 +87,6 @@ setup_maps.c
 /work/src/setup_maps.c
 rendering_quality.c
 /work/src/rendering_quality.c
-bitmap.c
-/work/src/bitmap.c
 ace/managers/game.h
 -
 ace/managers/timer.h
@@ -103,10 +101,6 @@ ace/utils/font.h
 -
 
 /work/src/map_streaming.c
-engine.h
-/work/src/engine.h
-
-/work/src/mipmaps.c
 engine.h
 /work/src/engine.h
 
@@ -125,6 +119,8 @@ engine.h
 /work/src/setup_maps.c
 engine.h
 /work/src/engine.h
+bitmap.c
+/work/src/bitmap.c
 
 deps/ace/include/ace/generic/main.h
 stdlib.h

@@ -115,7 +115,7 @@ void DrawBitmap8b(unsigned char *bLogo, BITMAPINFOHEADER *bhLogo)
 	}
 }
 
-void DrawColorMap(UBYTE (*map)[256])
+void DrawColorMap(UBYTE (*map)[MAPSIZE])
 {
 	UWORD position;
 	unsigned char b1,b2,b3,b4,b5,b6,b7,b8,b9,b10,b11,b12,b13,b14,b15,b16;
@@ -129,12 +129,12 @@ void DrawColorMap(UBYTE (*map)[256])
 
 	position = startOffset;
 
-	for (ULONG y=0; y < 200; y++)
+	for (ULONG y=0; y < MAPSIZE; y++)
 	{
 		//yy = (y - 1) * 256*4;
 		position = y * PLANEWIDTH/2 * 4;
 
-		for (ULONG x = 0; x < 256/16; x++)
+		for (ULONG x = 0; x < MAPSIZE/16; x++)
 		{
 			xx = x*16;
 

@@ -8,7 +8,7 @@ UBYTE tableStepSizeX, UBYTE tableStepSizeY, UBYTE tableStepNumber, UBYTE xCycles
 	UWORD tz;
 	UBYTE th = 0;
 	UWORD position;
-	UBYTE mx,my;;
+	UBYTE mx,my;
 	UWORD mapValue;
 	UWORD startPosition = ((ySize/tableStepSizeY)-1)*xCycles;
 	UBYTE mist;
@@ -181,17 +181,17 @@ void ProcessRayCasts3x2(WORD (*rayCastX)[TERRAINDEPTH], WORD (*rayCastY)[TERRAIN
 			 if(tz < 30)			
 			 {
 				 tz = ProcessWord(1,sx,sy,&tz,&tzz,px,py,ph,&address1,&address2,rayCastX, rayCastY, map);
-				 verticalSteps = 8;
+				 verticalSteps = 4;
 			 }
 			else if(tz < 40)			
 			 {
 				 tz = ProcessWord(2,sx,sy,&tz,&tzz,px,py,ph,&address1,&address2,rayCastX, rayCastY, map);
-				 verticalSteps = 6;
+				 verticalSteps = 4;
 			 }
 			else if(tz < 50)			
 			 {
 				 tz = ProcessWord(3,sx,sy,&tz,&tzz,px,py,ph,&address1,&address2,rayCastX, rayCastY, map);
-				 verticalSteps = 4;
+				 verticalSteps = 2;
 			 }
 			 else if(tz < 64)		
 			 {
@@ -200,8 +200,8 @@ void ProcessRayCasts3x2(WORD (*rayCastX)[TERRAINDEPTH], WORD (*rayCastY)[TERRAIN
 			 }
 			 else
 			 {
-				 address1 = 0b0111111111111111;
-				 address2 = 0b0111111111111111;
+				 address1 = 0b0011110111101111;
+				 address2 = 0b0011110111101111;
 				 verticalSteps = 1;
 			 }
 			 
@@ -233,7 +233,7 @@ void ProcessRayCasts3x2(WORD (*rayCastX)[TERRAINDEPTH], WORD (*rayCastY)[TERRAIN
 
 
 
-void ProcessRayCasts16(UBYTE *screen, WORD (*rayCastX)[TERRAINDEPTH], WORD (*rayCastY)[TERRAINDEPTH], UWORD (*map)[256],
+void ProcessRayCasts16(UBYTE *screen, WORD (*rayCastX)[TERRAINDEPTH], WORD (*rayCastY)[TERRAINDEPTH], UWORD (*map)[MAPSIZE],
 UBYTE px, UBYTE py, UBYTE ph, UBYTE tableXStart,
 UBYTE tableStepSizeX, UBYTE tableStepSizeY, UBYTE tableStepNumber, UBYTE xCycles, UBYTE zStep, UBYTE zStart, UBYTE ySize, BYTE xOffset)
 {
@@ -400,7 +400,7 @@ UBYTE tableStepSizeX, UBYTE tableStepSizeY, UBYTE tableStepNumber, UBYTE xCycles
 	}
 }
 */
-void ProcessRayCastsSlow(UBYTE *screen, WORD *rayCastXY, UWORD (*map)[256],
+void ProcessRayCastsSlow(UBYTE *screen, WORD *rayCastXY, UWORD (*map)[MAPSIZE],
 UBYTE px, UBYTE py, UBYTE ph, UBYTE tableXStart,
 UBYTE tableStepSizeX, UBYTE tableStepSizeY, UBYTE tableStepNumber, UBYTE xCycles, UBYTE adrSize, UBYTE zStep)
 {
