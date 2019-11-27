@@ -31,17 +31,17 @@ UBYTE colorMap[MAPSIZE][MAPSIZE];  //65k
 
 UWORD mapHigh[256][256]; //131k
 
-UWORD mapHigh0[MAPSIZE][MAPSIZE];  //131k
-UWORD mapHigh1[MAPSIZE][MAPSIZE];  //131k
-UWORD mapHigh2[MAPSIZE][MAPSIZE];  //131k
-UWORD mapHigh3[MAPSIZE][MAPSIZE];  //131k
-UWORD mapHigh4[MAPSIZE][MAPSIZE];  //131k
-UWORD mapHigh5[MAPSIZE][MAPSIZE];  //131k
-UWORD mapHigh6[MAPSIZE][MAPSIZE];  //131k
-UWORD mapHigh7[MAPSIZE][MAPSIZE];  //131k
-UWORD mapHigh8[MAPSIZE][MAPSIZE];  //131k
-UWORD mapHigh9[MAPSIZE][MAPSIZE];  //131k
-UWORD mapHigh10[MAPSIZE][MAPSIZE]; //131k
+UWORD mapSource[11][MAPSIZE][MAPSIZE];  //131k
+// UWORD mapHigh1[MAPSIZE][MAPSIZE];  //131k
+// UWORD mapHigh2[MAPSIZE][MAPSIZE];  //131k
+// UWORD mapHigh3[MAPSIZE][MAPSIZE];  //131k
+// UWORD mapHigh4[MAPSIZE][MAPSIZE];  //131k
+// UWORD mapHigh5[MAPSIZE][MAPSIZE];  //131k
+// UWORD mapHigh6[MAPSIZE][MAPSIZE];  //131k
+// UWORD mapHigh7[MAPSIZE][MAPSIZE];  //131k
+// UWORD mapHigh8[MAPSIZE][MAPSIZE];  //131k
+// UWORD mapHigh9[MAPSIZE][MAPSIZE];  //131k
+// UWORD mapHigh10[MAPSIZE][MAPSIZE]; //131k
 UBYTE mapLoaded0, mapLoaded1, mapLoaded2, mapLoaded3, mapLoaded4, mapLoaded5, mapLoaded6,
     mapLoaded7, mapLoaded8, mapLoaded9, mapLoaded10;
 
@@ -146,7 +146,7 @@ static WORD cx, cy;
 static ULONG startTime, endTime, deltaTime, lastTime;
 static ULONG levelTime;
 static ULONG screenDuration;
-static UWORD lastOverwrittenLine;
+UWORD lastOverwrittenLine;
 static BYTE xOffsetEven, xOffsetOdd; //camera rotation offsett when turning
 
 typedef struct tagBITMAPFILEHEADER

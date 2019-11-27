@@ -104,6 +104,10 @@ ace/utils/font.h
 engine.h
 /work/src/engine.h
 
+/work/src/mipmaps.c
+engine.h
+/work/src/engine.h
+
 /work/src/ray_cast_calculate.c
 engine.h
 /work/src/engine.h

@@ -62,10 +62,10 @@ char sTime[10], sVelocity[5], sScore[5];
 void SetDefaulResolution()
 {
 	renderingDepth = 64;
-	debugValue = 7;
-	debugValue2 = 7;
-	debugValue3 = 1;
-	debugValue4 = 0;
+		debugValue = 6;
+		debugValue2 = 2;
+		debugValue3 = 2;
+		debugValue4 = 1;
 
 	debugValue6 = 4;
 	xFOV = 10;
@@ -345,9 +345,9 @@ void engineGsLoop(void)
 
 	if (screenIndex > 0)
 	{
-		if (screenDuration > 12500000)
+		if (screenDuration > 2500000)
 		{
-			screenDuration = 12500000;
+			screenDuration = 2500000;
 			screenIndex = (screenIndex + 1) % 4;
 
 			switch (screenIndex)
@@ -538,15 +538,15 @@ void engineGsLoop(void)
 			OverwriteMap(); //this is how we go through many different maps, we just overwrite the main array with new content
 
 			//restart
-			if ((p1h - 3) < (UBYTE)(mapHigh[(UBYTE)(p1x)][(UBYTE)(p1y + 15)]))
-			{
-				p1xf = 64 * 100;
-				p1yf = 0;
-				p1hf = 50 * 100;
-				CopyMapWord(mapHigh0, mapHigh);
+			// if ((p1h - 3) < (UBYTE)(mapHigh[(UBYTE)(p1x)][(UBYTE)(p1y + 15)]))
+			// {
+			// 	p1xf = 64 * 100;
+			// 	p1yf = 0;
+			// 	p1hf = 50 * 100;
+			// 	CopyMapWord(mapSource[0], mapHigh);
 
-				levelTime = 0;
-			}
+			// 	levelTime = 0;
+			// }
 
 			ProcessQualityInput();
 		}
