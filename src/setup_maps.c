@@ -23,16 +23,16 @@ void SetupMaps()
 {
 	LoadMap("data/height0.raw", "data/color0.raw", mapHigh0);
 	mapLoaded0 = 1;
-	//LoadMap("height1.raw", "color1.raw", mapHigh1);mapLoaded1=1;
-	/*LoadMap("height2.raw", "color2.raw", mapHigh2);
-	LoadMap("height3.raw", "color3.raw", mapHigh3);
-	LoadMap("height4.raw", "color4.raw", mapHigh4);
-	LoadMap("height5.raw", "color5.raw", mapHigh5);
-	LoadMap("height6.raw", "color6.raw", mapHigh6);
-	LoadMap("height7.raw", "color7.raw", mapHigh7);
-	LoadMap("height8.raw", "color8.raw", mapHigh8);
-	LoadMap("height9.raw", "color9.raw", mapHigh9);
-	LoadMap("height10.raw", "color10.raw", mapHigh10);*/
+	LoadMap("data/height1.raw", "data/color1.raw", mapHigh1);mapLoaded1=1;
+	LoadMap("data/height2.raw", "data/color2.raw", mapHigh2);mapLoaded2=1;
+	LoadMap("data/height3.raw", "data/color3.raw", mapHigh3);mapLoaded3=1;
+	LoadMap("data/height4.raw", "data/color4.raw", mapHigh4);mapLoaded4=1;
+	LoadMap("data/height5.raw", "data/color5.raw", mapHigh5);mapLoaded5=1;
+	LoadMap("data/height6.raw", "data/color6.raw", mapHigh6);mapLoaded6=1;
+	LoadMap("data/height7.raw", "data/color7.raw", mapHigh7);mapLoaded7=1;
+	LoadMap("data/height8.raw", "data/color8.raw", mapHigh8);mapLoaded8=1;
+	LoadMap("data/height9.raw", "data/color9.raw", mapHigh9);mapLoaded9=1;
+	LoadMap("data/height10.raw", "data/color10.raw", mapHigh10);mapLoaded10=1;
 
 	//prepare starting map
 	CopyMapWord(mapHigh0, mapHigh);
