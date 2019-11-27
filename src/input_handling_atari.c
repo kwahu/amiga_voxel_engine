@@ -64,16 +64,23 @@ void ProcessQualityInputAtari()
 	if(IKBD_Keyboard[KEY_7] && debugValue!=7)
 	{
 		renderingDepth = TERRAINDEPTH;
-		debugValue=7;     
-		debugValue2 = 7;
-		debugValue3 = 1;
-		debugValue4 = 0;
+		debugValue = 7;
+		debugValue2 = 2;
+		debugValue3 = 2;
+		debugValue4 = 1;
+		// debugValue=7;     
+		// debugValue2 = 7;
+		// debugValue3 = 1;
+		// debugValue4 = 0;
 		if(debugValue != 8 && debugValue != 7)
 			Recalculate();
 	}
 	if (IKBD_Keyboard[KEY_8] )
 	{
 		debugValue = 8;
+		debugValue2 = 2;
+		debugValue3 = 2;
+		debugValue4 = 1;
 	}
 
 

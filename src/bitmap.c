@@ -1,3 +1,5 @@
+#pragma once
+
 #include "engine.h"
 
 ULONG ConvertEndianLONG(ULONG number)

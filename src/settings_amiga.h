@@ -1,0 +1,1 @@
+#define TERRAINDEPTH 64

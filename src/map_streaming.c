@@ -7,8 +7,8 @@ void OverwriteMap()
 
 	for (UWORD y = lastOverwrittenLine; y < p1y; y++)
 	{
-		yy = y % 256;
-		mapNumber = (p1y / 256 + 256) % 11;
+		yy = (UBYTE)y ;
+		mapNumber = (p1y / 256 + 256) % MAPLENGTH;
 		for (UWORD x = 0; x < MAPSIZE; x++)
 		{
 			word = mapSource[mapNumber][x][yy/2];

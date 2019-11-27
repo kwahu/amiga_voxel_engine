@@ -2,7 +2,7 @@
 
 UBYTE ProcessWord(UBYTE rounds, UBYTE sx, UBYTE sy, UWORD *_tz, UWORD *tzz, UBYTE px, UBYTE py,UBYTE ph,
 UWORD *address1, UWORD *address2, 
-WORD (*rayCastX)[TERRAINDEPTH], WORD (*rayCastY)[TERRAINDEPTH], UWORD (*map)[MAPSIZE])
+WORD (*rayCastX)[TERRAINDEPTH], WORD (*rayCastY)[TERRAINDEPTH], UWORD (*map)[256])
 {
 	UWORD mapValue;
 	WORD slope;
@@ -61,7 +61,7 @@ WORD (*rayCastX)[TERRAINDEPTH], WORD (*rayCastY)[TERRAINDEPTH], UWORD (*map)[MAP
 	return tz;
 }
 
-void ProcessRayCasts3x2(WORD (*rayCastX)[TERRAINDEPTH], WORD (*rayCastY)[TERRAINDEPTH], UWORD (*map)[MAPSIZE],
+void ProcessRayCasts3x2(WORD (*rayCastX)[TERRAINDEPTH], WORD (*rayCastY)[TERRAINDEPTH], UWORD (*map)[256],
 	UBYTE px, UBYTE py, UBYTE ph, 
 	UBYTE tableXStart, UBYTE xCycles, UBYTE zStep, UBYTE zStart, 
 	UBYTE ySize, BYTE xOffset)
@@ -69,6 +69,10 @@ void ProcessRayCasts3x2(WORD (*rayCastX)[TERRAINDEPTH], WORD (*rayCastY)[TERRAIN
 	UBYTE sx,sy,mist;
 	UWORD tz,tzz[6];
 	UWORD position,address1,address2;
+	UBYTE threshold1 = TERRAINDEPTH/4;
+	UBYTE threshold2 = TERRAINDEPTH/2;
+	UBYTE threshold3 = TERRAINDEPTH - TERRAINDEPTH/4;
+
 
 	UBYTE verticalSteps;
 
@@ -97,30 +101,30 @@ void ProcessRayCasts3x2(WORD (*rayCastX)[TERRAINDEPTH], WORD (*rayCastY)[TERRAIN
 		//process this vertical line
 		while(sy < ySize)
 		{
-			 if(tz < 30)			
+			 if(tz < threshold1)			
 			 {
 				 tz = ProcessWord(1,sx,sy,&tz,tzz,px,py,ph,&address1,&address2,rayCastX, rayCastY, map);
-				 verticalSteps = 8;
-			 }
-			else if(tz < 40)			
-			 {
-				 tz = ProcessWord(2,sx,sy,&tz,tzz,px,py,ph,&address1,&address2,rayCastX, rayCastY, map);
-				 verticalSteps = 6;
-			 }
-			else if(tz < 50)			
-			 {
-				 tz = ProcessWord(3,sx,sy,&tz,tzz,px,py,ph,&address1,&address2,rayCastX, rayCastY, map);
 				 verticalSteps = 4;
 			 }
-			 else if(tz < 64)		
+			else if(tz < threshold2)			
+			 {
+				 tz = ProcessWord(2,sx,sy,&tz,tzz,px,py,ph,&address1,&address2,rayCastX, rayCastY, map);
+				 verticalSteps = 4;
+			 }
+			else if(tz < threshold3)			
+			 {
+				 tz = ProcessWord(3,sx,sy,&tz,tzz,px,py,ph,&address1,&address2,rayCastX, rayCastY, map);
+				 verticalSteps = 2;
+			 }
+			 else if(tz < TERRAINDEPTH)		
 			 {
 				 tz = ProcessWord(6,sx,sy,&tz,tzz,px,py,ph,&address1,&address2,rayCastX, rayCastY, map);
 				 verticalSteps = 2;
 			 }
 			 else
 			 {
-				 address1 = 0b0111111111111111;
-				 address2 = 0b0111111111111111;
+				 address1 = 0b0011110111101111;
+				 address2 = 0b0011110111101111;
 				 verticalSteps = 1;
 			 }
 			 
@@ -152,7 +156,7 @@ void ProcessRayCasts3x2(WORD (*rayCastX)[TERRAINDEPTH], WORD (*rayCastY)[TERRAIN
 }
 
 
-void ProcessRayCastsFull(UBYTE *screen, WORD (*rayCastX)[TERRAINDEPTH], WORD (*rayCastY)[TERRAINDEPTH], UWORD (*map)[MAPSIZE],
+void ProcessRayCastsFull(UBYTE *screen, WORD (*rayCastX)[TERRAINDEPTH], WORD (*rayCastY)[TERRAINDEPTH], UWORD (*map)[256],
 UBYTE px, UBYTE py, UBYTE ph, UBYTE tableXStart,
 UBYTE tableStepSizeX, UBYTE tableStepSizeY, UBYTE tableStepNumber, UBYTE xCycles, UBYTE zStep, UBYTE zStart, UBYTE ySize, BYTE xOffset)
 {
@@ -234,7 +238,7 @@ UBYTE tableStepSizeX, UBYTE tableStepSizeY, UBYTE tableStepNumber, UBYTE xCycles
 		sx += tableStepSizeX;//go to the next vertical line
 	}
 }
-void ProcessRayCasts16(UBYTE *screen, WORD (*rayCastX)[TERRAINDEPTH], WORD (*rayCastY)[TERRAINDEPTH], UWORD (*map)[MAPSIZE],
+void ProcessRayCasts16(UBYTE *screen, WORD (*rayCastX)[TERRAINDEPTH], WORD (*rayCastY)[TERRAINDEPTH], UWORD (*map)[256],
 UBYTE px, UBYTE py, UBYTE ph, UBYTE tableXStart,
 UBYTE tableStepSizeX, UBYTE tableStepSizeY, UBYTE tableStepNumber, UBYTE xCycles, UBYTE zStep, UBYTE zStart, UBYTE ySize, BYTE xOffset)
 {
@@ -403,7 +407,7 @@ UBYTE tableStepSizeX, UBYTE tableStepSizeY, UBYTE tableStepNumber, UBYTE xCycles
 	}
 }
 */
-void ProcessRayCastsSlow(UBYTE *screen, WORD *rayCastXY, UWORD (*map)[MAPSIZE],
+void ProcessRayCastsSlow(UBYTE *screen, WORD *rayCastXY, UWORD (*map)[256],
 UBYTE px, UBYTE py, UBYTE ph, UBYTE tableXStart,
 UBYTE tableStepSizeX, UBYTE tableStepSizeY, UBYTE tableStepNumber, UBYTE xCycles, UBYTE adrSize, UBYTE zStep)
 {
