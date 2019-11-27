@@ -288,6 +288,7 @@ void engineGsCreate(void)
 	vPortWaitForEnd(s_pVPort);
 	CopyFastToChipW(s_pBuffer->pBack);
 
+	
 	// Load font
 	s_pMenuFont = fontCreate("data/silkscreen.fnt");
 
@@ -325,9 +326,8 @@ void engineGsCreate(void)
 	screenDuration = 0;
 
 	keyCreate();
-	joyOpen(0);
 
-	viewLoad(s_pView);
+	joyOpen(0);
 	systemUnuse();
 	//memcpy(s_pVPort->pPalette, kolory2, 16 * sizeof(UWORD));
 }
@@ -342,7 +342,6 @@ void engineGsLoop(void)
 	deltaTime = startTime - lastTime;
 	lastTime = startTime;
 	levelTime += deltaTime;
-
 	if (screenIndex > 0)
 	{
 		if (screenDuration > 2500000)
@@ -574,7 +573,7 @@ void engineGsLoop(void)
 	//ConvertIntToChar(bcLogo[0], sPlayerX);
 	//ConvertIntToChar(bcLogo[1], sPlayerY);
 	//ConvertIntToChar(bcLogo[2], sPlayerH);
-	//timerFormatPrec(sTime, levelTime);
+	//timerFormatPrec(sTime, startTime);
 	//ConvertIntToChar(bcLogo[3], sTime);
 	//ConvertIntToChar(bcLogo[4], sVelocity);
 	//ConvertIntToChar(bcLogo[5], sScore);
