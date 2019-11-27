@@ -67,7 +67,7 @@ uint16_t systemPalette[16];
 void SetDefaulResolution()
 {
 		renderingDepth = TERRAINDEPTH;
-		debugValue = 6;
+		debugValue = 7;
 		debugValue2 = 2;
 		debugValue3 = 2;
 		debugValue4 = 1;

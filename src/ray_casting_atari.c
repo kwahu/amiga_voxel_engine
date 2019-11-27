@@ -6,36 +6,20 @@ WORD (*rayCastX)[TERRAINDEPTH], WORD (*rayCastY)[TERRAINDEPTH], UWORD (*map)[256
 {
 	UWORD mapValue;
 	WORD slope;
-	//UBYTE mx,my;
 	UBYTE c[6];
-	UBYTE sxx;
 	UBYTE th;
 	UBYTE tz;
-
-		/*tzz[1] = tzz[0];
-		tzz[2] = tzz[0];
-		tzz[3] = tzz[0];
-		tzz[4] = tzz[0];
-		tzz[5] = tzz[0];*/
 
 	//process 1,2,3 or 6 rounds to find colors for this WORD = 16 pixels
 	for(UBYTE iHor=0;iHor<rounds;iHor++)
 	{
-		sxx = sx + iHor;
-		//set current depth - tz
-
-
-		tz = tzz[iHor];
-		//check depth step by step
 		
-		while(tz < renderingDepth)
+		tz = tzz[iHor];//set current depth - tz
+		while(tz < TERRAINDEPTH)//check depth step by step
 		{
-			//mx = ( px + rayCastX[sxx][tz] );
-			//my = ( py + tz );
-			mapValue = map[ (UBYTE)( px + rayCastX[sxx][tz] ) ][ (UBYTE)( py + tz ) ];//read color + height
+			mapValue = map[ (UBYTE)( px + rayCastX[sx][tz] ) ][ (UBYTE)( py + tz<<debugValue4 ) ];//read color + height
 			th = mapValue;//take just the height
-			//check if read height is higher than what we expect from the raycast table
-			slope = th - (ph + rayCastY[sy][tz]);
+			slope = th - (ph + rayCastY[sy][tz]);//check if read height is higher than what we expect from the raycast table
 			if(slope > 0)
 			{
 				c[iHor] = (mapValue >> 8);// + ((slope/4) & 1);
@@ -47,9 +31,9 @@ WORD (*rayCastX)[TERRAINDEPTH], WORD (*rayCastY)[TERRAINDEPTH], UWORD (*map)[256
 				tz++;//go step in depth if no height hit
 			}
 		}
-		if(tz == renderingDepth)
-			c[iHor] = 15;
-		//draw sky if too deep
+		if(tz == TERRAINDEPTH) c[iHor] = 15; //draw sky if too deep
+
+		sx = sx + iHor;
 	}
 	switch(rounds)
 	{
@@ -60,7 +44,159 @@ WORD (*rayCastX)[TERRAINDEPTH], WORD (*rayCastY)[TERRAINDEPTH], UWORD (*map)[256
 	}
 	return tz;
 }
+UBYTE ProcessWord1(UBYTE rounds, UBYTE sx, UBYTE sy, UWORD *_tz, UWORD *tzz, UBYTE px, UBYTE py,UBYTE ph,
+UWORD *address1, UWORD *address2, 
+WORD (*rayCastX)[TERRAINDEPTH], WORD (*rayCastY)[TERRAINDEPTH], UWORD (*map)[256])
+{
+	UWORD mapValue;
+	WORD slope;
+	UBYTE c;
+	UBYTE th;
+	UBYTE tz;
+	UBYTE iHor=0;
+	//process 1,2,3 or 6 rounds to find colors for this WORD = 16 pixels
+	//for(UBYTE iHor=0;iHor<rounds;iHor++)
+	{
+		sx = sx + 2;
+		tz = tzz[iHor];//set current depth - tz
+		while(tz < TERRAINDEPTH)//check depth step by step
+		{
+			mapValue = map[ (UBYTE)( px + rayCastX[sx][tz] ) ][ (UBYTE)( py + tz<<debugValue4 ) ];//read color + height
+			th = mapValue;//take just the height
+			slope = th - (ph + rayCastY[sy][tz]);//check if read height is higher than what we expect from the raycast table
+			if(slope > 0)
+			{
+				c = (mapValue >> 8);// + ((slope/4) & 1);
+				tzz[iHor] = tz;//save the depth we've arrived at
+				break;
+			}
+			else
+			{	
+				tz++;//go step in depth if no height hit
+			}
+		}
+		if(tz == TERRAINDEPTH) c = 15; //draw sky if too deep
+	}
+	*address1 = (c<<10) + (c<<5) + (c); *address2 = *address1;
+	
+	return tz;
+}
+UBYTE ProcessWord2(UBYTE rounds, UBYTE sx, UBYTE sy, UWORD *_tz, UWORD *tzz, UBYTE px, UBYTE py,UBYTE ph,
+UWORD *address1, UWORD *address2, 
+WORD (*rayCastX)[TERRAINDEPTH], WORD (*rayCastY)[TERRAINDEPTH], UWORD (*map)[256])
+{
+	UWORD mapValue;
+	WORD slope;
+	UBYTE c[2];
+	UBYTE th;
+	UBYTE tz;
 
+	sx = sx + 1;
+	//process 1,2,3 or 6 rounds to find colors for this WORD = 16 pixels
+	for(UBYTE iHor=0;iHor<2;iHor++)
+	{
+		
+		tz = tzz[iHor];//set current depth - tz
+		while(tz < TERRAINDEPTH)//check depth step by step
+		{
+			mapValue = map[ (UBYTE)( px + rayCastX[sx][tz] ) ][ (UBYTE)( py + tz<<debugValue4 ) ];//read color + height
+			th = mapValue;//take just the height
+			slope = th - (ph + rayCastY[sy][tz]);//check if read height is higher than what we expect from the raycast table
+			if(slope > 0)
+			{
+				c[iHor] = (mapValue >> 8);// + ((slope/4) & 1);
+				tzz[iHor] = tz;//save the depth we've arrived at
+				break;
+			}
+			else
+			{	
+				tz++;//go step in depth if no height hit
+			}
+		}
+		if(tz == TERRAINDEPTH) c[iHor] = 15; //draw sky if too deep
+		sx = sx + 3;
+	}
+	*address1 = (c[0]<<10) + (c[0]<<5) + (c[0]); *address2 = (c[1]<<10) + (c[1]<<5) + (c[1]);
+
+	return tz;
+}
+UBYTE ProcessWord3(UBYTE rounds, UBYTE sx, UBYTE sy, UWORD *_tz, UWORD *tzz, UBYTE px, UBYTE py,UBYTE ph,
+UWORD *address1, UWORD *address2, 
+WORD (*rayCastX)[TERRAINDEPTH], WORD (*rayCastY)[TERRAINDEPTH], UWORD (*map)[256])
+{
+	UWORD mapValue;
+	WORD slope;
+	UBYTE c[3];
+	UBYTE th;
+	UBYTE tz;
+
+	//process 1,2,3 or 6 rounds to find colors for this WORD = 16 pixels
+	for(UBYTE iHor=0;iHor<3;iHor++)
+	{
+		
+		tz = tzz[iHor];//set current depth - tz
+		while(tz < TERRAINDEPTH)//check depth step by step
+		{
+			mapValue = map[ (UBYTE)( px + rayCastX[sx][tz] ) ][ (UBYTE)( py + tz<<debugValue4 ) ];//read color + height
+			th = mapValue;//take just the height
+			slope = th - (ph + rayCastY[sy][tz]);//check if read height is higher than what we expect from the raycast table
+			if(slope > 0)
+			{
+				c[iHor] = (mapValue >> 8);// + ((slope/4) & 1);
+				tzz[iHor] = tz;//save the depth we've arrived at
+				break;
+			}
+			else
+			{	
+				tz++;//go step in depth if no height hit
+			}
+		}
+		if(tz == TERRAINDEPTH) c[iHor] = 15; //draw sky if too deep
+		sx = sx + 2;
+	}
+	*address1 = (c[0]<<10) + (c[0]<<5) + (c[1]); *address2 = (c[1]<<10) + (c[2]<<5) + (c[2]);
+
+	return tz;
+}
+UBYTE ProcessWord6(UBYTE rounds, UBYTE sx, UBYTE sy, UWORD *_tz, UWORD *tzz, UBYTE px, UBYTE py,UBYTE ph,
+UWORD *address1, UWORD *address2, 
+WORD (*rayCastX)[TERRAINDEPTH], WORD (*rayCastY)[TERRAINDEPTH], UWORD (*map)[256])
+{
+	UWORD mapValue;
+	WORD slope;
+	UBYTE c[6];
+	UBYTE th;
+	UBYTE tz;
+
+	//process 1,2,3 or 6 rounds to find colors for this WORD = 16 pixels
+	for(UBYTE iHor=0;iHor<6;iHor++)
+	{
+		
+		tz = tzz[iHor];//set current depth - tz
+		while(tz < TERRAINDEPTH)//check depth step by step
+		{
+			mapValue = map[ (UBYTE)( px + rayCastX[sx][tz] ) ][ (UBYTE)( py + tz<<debugValue4 ) ];//read color + height
+			th = mapValue;//take just the height
+			slope = th - (ph + rayCastY[sy][tz]);//check if read height is higher than what we expect from the raycast table
+			if(slope > 0)
+			{
+				c[iHor] = (mapValue >> 8);// + ((slope/4) & 1);
+				tzz[iHor] = tz;//save the depth we've arrived at
+				break;
+			}
+			else
+			{	
+				tz++;//go step in depth if no height hit
+			}
+		}
+		if(tz == TERRAINDEPTH) c[iHor] = 15; //draw sky if too deep
+
+		sx += 1;
+	}
+	*address1 = (c[0]<<10) + (c[1]<<5) + (c[2]); *address2 = (c[3]<<10) + (c[4]<<5) + (c[5]);
+
+	return tz;
+}
 void ProcessRayCasts3x2(WORD (*rayCastX)[TERRAINDEPTH], WORD (*rayCastY)[TERRAINDEPTH], UWORD (*map)[256],
 	UBYTE px, UBYTE py, UBYTE ph, 
 	UBYTE tableXStart, UBYTE xCycles, UBYTE zStep, UBYTE zStart, 
@@ -77,10 +213,6 @@ void ProcessRayCasts3x2(WORD (*rayCastX)[TERRAINDEPTH], WORD (*rayCastY)[TERRAIN
 	UBYTE verticalSteps;
 
 	UBYTE iInit, iVert;
-	UBYTE q1,q2,q3,q4;
-	q1 = renderingDepth/4;
-	q2 = q1*2;
-	q3 = q1*3;
 
 	//start with the buffor + vertical stripe start + turning amount
 	sx = XTURNBUFFOR + tableXStart + xOffset;
@@ -103,22 +235,22 @@ void ProcessRayCasts3x2(WORD (*rayCastX)[TERRAINDEPTH], WORD (*rayCastY)[TERRAIN
 		{
 			 if(tz < threshold1)			
 			 {
-				 tz = ProcessWord(1,sx,sy,&tz,tzz,px,py,ph,&address1,&address2,rayCastX, rayCastY, map);
+				 tz = ProcessWord1(1,sx,sy,&tz,tzz,px,py,ph,&address1,&address2,rayCastX, rayCastY, map);
 				 verticalSteps = 4;
 			 }
 			else if(tz < threshold2)			
 			 {
-				 tz = ProcessWord(2,sx,sy,&tz,tzz,px,py,ph,&address1,&address2,rayCastX, rayCastY, map);
+				 tz = ProcessWord2(2,sx,sy,&tz,tzz,px,py,ph,&address1,&address2,rayCastX, rayCastY, map);
 				 verticalSteps = 4;
 			 }
 			else if(tz < threshold3)			
 			 {
-				 tz = ProcessWord(3,sx,sy,&tz,tzz,px,py,ph,&address1,&address2,rayCastX, rayCastY, map);
-				 verticalSteps = 2;
+				 tz = ProcessWord3(3,sx,sy,&tz,tzz,px,py,ph,&address1,&address2,rayCastX, rayCastY, map);
+				 verticalSteps = 4;
 			 }
 			 else if(tz < TERRAINDEPTH)		
 			 {
-				 tz = ProcessWord(6,sx,sy,&tz,tzz,px,py,ph,&address1,&address2,rayCastX, rayCastY, map);
+				 tz = ProcessWord6(6,sx,sy,&tz,tzz,px,py,ph,&address1,&address2,rayCastX, rayCastY, map);
 				 verticalSteps = 2;
 			 }
 			 else

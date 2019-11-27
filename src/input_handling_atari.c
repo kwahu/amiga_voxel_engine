@@ -66,7 +66,7 @@ void ProcessQualityInputAtari()
 		renderingDepth = TERRAINDEPTH;
 		debugValue = 7;
 		debugValue2 = 2;
-		debugValue3 = 2;
+		debugValue3 = 4;
 		debugValue4 = 1;
 		// debugValue=7;     
 		// debugValue2 = 7;
@@ -77,9 +77,10 @@ void ProcessQualityInputAtari()
 	}
 	if (IKBD_Keyboard[KEY_8] )
 	{
+		renderingDepth = TERRAINDEPTH;
 		debugValue = 8;
 		debugValue2 = 2;
-		debugValue3 = 2;
+		debugValue3 = 4;
 		debugValue4 = 1;
 	}
 
