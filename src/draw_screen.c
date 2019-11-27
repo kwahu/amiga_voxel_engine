@@ -1,4 +1,5 @@
 #include "engine.h"
+#include <ace/managers/viewport/simplebuffer.h>
 
 void CopyFastToChipW(tBitMap *bm)
 {

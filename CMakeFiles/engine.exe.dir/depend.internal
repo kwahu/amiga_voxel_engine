@@ -4,51 +4,12 @@
 CMakeFiles/engine.exe.dir/src/bitmap_filters.c.obj
  /work/src/bitmap_filters.c
  /work/src/engine.h
- deps/ace/include/ace/macros.h
- deps/ace/include/ace/managers/copper.h
- deps/ace/include/ace/managers/log.h
- deps/ace/include/ace/managers/memory.h
- deps/ace/include/ace/managers/timer.h
- deps/ace/include/ace/managers/viewport/camera.h
- deps/ace/include/ace/managers/viewport/simplebuffer.h
- deps/ace/include/ace/types.h
- deps/ace/include/ace/utils/bitmap.h
- deps/ace/include/ace/utils/custom.h
- deps/ace/include/ace/utils/extview.h
- deps/ace/include/ace/utils/file.h
- deps/ace/include/ace/utils/tag.h
 CMakeFiles/engine.exe.dir/src/dithering.c.obj
  /work/src/dithering.c
  /work/src/engine.h
- deps/ace/include/ace/macros.h
- deps/ace/include/ace/managers/copper.h
- deps/ace/include/ace/managers/log.h
- deps/ace/include/ace/managers/memory.h
- deps/ace/include/ace/managers/timer.h
- deps/ace/include/ace/managers/viewport/camera.h
- deps/ace/include/ace/managers/viewport/simplebuffer.h
- deps/ace/include/ace/types.h
- deps/ace/include/ace/utils/bitmap.h
- deps/ace/include/ace/utils/custom.h
- deps/ace/include/ace/utils/extview.h
- deps/ace/include/ace/utils/file.h
- deps/ace/include/ace/utils/tag.h
 CMakeFiles/engine.exe.dir/src/draw_maps.c.obj
  /work/src/draw_maps.c
  /work/src/engine.h
- deps/ace/include/ace/macros.h
- deps/ace/include/ace/managers/copper.h
- deps/ace/include/ace/managers/log.h
- deps/ace/include/ace/managers/memory.h
- deps/ace/include/ace/managers/timer.h
- deps/ace/include/ace/managers/viewport/camera.h
- deps/ace/include/ace/managers/viewport/simplebuffer.h
- deps/ace/include/ace/types.h
- deps/ace/include/ace/utils/bitmap.h
- deps/ace/include/ace/utils/custom.h
- deps/ace/include/ace/utils/extview.h
- deps/ace/include/ace/utils/file.h
- deps/ace/include/ace/utils/tag.h
 CMakeFiles/engine.exe.dir/src/draw_screen.c.obj
  /work/src/draw_screen.c
  /work/src/engine.h
@@ -68,35 +29,9 @@ CMakeFiles/engine.exe.dir/src/draw_screen.c.obj
 CMakeFiles/engine.exe.dir/src/draw_ships.c.obj
  /work/src/draw_ships.c
  /work/src/engine.h
- deps/ace/include/ace/macros.h
- deps/ace/include/ace/managers/copper.h
- deps/ace/include/ace/managers/log.h
- deps/ace/include/ace/managers/memory.h
- deps/ace/include/ace/managers/timer.h
- deps/ace/include/ace/managers/viewport/camera.h
- deps/ace/include/ace/managers/viewport/simplebuffer.h
- deps/ace/include/ace/types.h
- deps/ace/include/ace/utils/bitmap.h
- deps/ace/include/ace/utils/custom.h
- deps/ace/include/ace/utils/extview.h
- deps/ace/include/ace/utils/file.h
- deps/ace/include/ace/utils/tag.h
 CMakeFiles/engine.exe.dir/src/file_read.c.obj
  /work/src/engine.h
  /work/src/file_read.c
- deps/ace/include/ace/macros.h
- deps/ace/include/ace/managers/copper.h
- deps/ace/include/ace/managers/log.h
- deps/ace/include/ace/managers/memory.h
- deps/ace/include/ace/managers/timer.h
- deps/ace/include/ace/managers/viewport/camera.h
- deps/ace/include/ace/managers/viewport/simplebuffer.h
- deps/ace/include/ace/types.h
- deps/ace/include/ace/utils/bitmap.h
- deps/ace/include/ace/utils/custom.h
- deps/ace/include/ace/utils/extview.h
- deps/ace/include/ace/utils/file.h
- deps/ace/include/ace/utils/tag.h
 CMakeFiles/engine.exe.dir/src/main.c.obj
  /work/src/bitmap.c
  /work/src/bitmap_filters.c
@@ -137,32 +72,6 @@ CMakeFiles/engine.exe.dir/src/main.c.obj
 CMakeFiles/engine.exe.dir/src/mipmaps.c.obj
  /work/src/engine.h
  /work/src/mipmaps.c
- deps/ace/include/ace/macros.h
- deps/ace/include/ace/managers/copper.h
- deps/ace/include/ace/managers/log.h
- deps/ace/include/ace/managers/memory.h
- deps/ace/include/ace/managers/timer.h
- deps/ace/include/ace/managers/viewport/camera.h
- deps/ace/include/ace/managers/viewport/simplebuffer.h
- deps/ace/include/ace/types.h
- deps/ace/include/ace/utils/bitmap.h
- deps/ace/include/ace/utils/custom.h
- deps/ace/include/ace/utils/extview.h
- deps/ace/include/ace/utils/file.h
- deps/ace/include/ace/utils/tag.h
 CMakeFiles/engine.exe.dir/src/ray_casting.c.obj
  /work/src/engine.h
  /work/src/ray_casting.c
- deps/ace/include/ace/macros.h
- deps/ace/include/ace/managers/copper.h
- deps/ace/include/ace/managers/log.h
- deps/ace/include/ace/managers/memory.h
- deps/ace/include/ace/managers/timer.h
- deps/ace/include/ace/managers/viewport/camera.h
- deps/ace/include/ace/managers/viewport/simplebuffer.h
- deps/ace/include/ace/types.h
- deps/ace/include/ace/utils/bitmap.h
- deps/ace/include/ace/utils/custom.h
- deps/ace/include/ace/utils/extview.h
- deps/ace/include/ace/utils/file.h
- deps/ace/include/ace/utils/tag.h

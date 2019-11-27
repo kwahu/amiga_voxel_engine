@@ -71,12 +71,7 @@ void SetDefaulResolution()
 	xFOV = 10;
 	Recalculate();
 }
-void Recalculate()
-{
-	CalculateRayCasts(rayCastXEven, rayCastYEven, XSIZEEVEN, YSIZEEVEN, 2);
-	CalculateRayCasts(rayCastXOdd, rayCastYOdd, XSIZEODD, YSIZEODD, 1);
-	deltaTime = 0;
-}
+
 
 void ConvertIntToChar(int number, char *test)
 {

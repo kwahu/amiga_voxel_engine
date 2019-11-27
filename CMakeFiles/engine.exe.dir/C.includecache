@@ -25,6 +25,8 @@ engine.h
 /work/src/draw_screen.c
 engine.h
 /work/src/engine.h
+ace/managers/viewport/simplebuffer.h
+-
 
 /work/src/draw_ships.c
 engine.h
@@ -37,8 +39,6 @@ engine.h
 /work/src/engine.h
 stdlib.h
 -
-ace/managers/viewport/simplebuffer.h
--
 
 /work/src/file_read.c
 engine.h
@@ -46,8 +46,6 @@ engine.h
 stdio.h
 -
 stdlib.h
--
-ace/utils/file.h
 -
 
 /work/src/input_handling.c
@@ -105,6 +103,10 @@ ace/utils/font.h
 -
 
 /work/src/map_streaming.c
+engine.h
+/work/src/engine.h
+
+/work/src/mipmaps.c
 engine.h
 /work/src/engine.h
 

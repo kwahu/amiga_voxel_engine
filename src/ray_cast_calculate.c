@@ -139,3 +139,9 @@ void CombineMapsHigh(UBYTE (*height)[256], UBYTE (*color)[256], UWORD (*map)[256
 		}
 	}
 }
+void Recalculate()
+{
+	CalculateRayCasts(rayCastXEven, rayCastYEven, XSIZEEVEN, YSIZEEVEN, 2);
+	CalculateRayCasts(rayCastXOdd, rayCastYOdd, XSIZEODD, YSIZEODD, 1);
+	deltaTime = 0;
+}

@@ -2,7 +2,14 @@
 #define _ENGINE_H_
 
 #include <stdlib.h>
-#include <ace/managers/viewport/simplebuffer.h>
+
+#define ULONG 	uint32_t
+#define LONG	int32_t
+#define UWORD 	uint16_t
+#define WORD 	int16_t
+#define UBYTE  unsigned char
+#define BYTE	signed char
+
 
 #define PLANEHEIGHT 256
 #define PLANEWIDTH 40
@@ -14,7 +21,7 @@
 #define XTURNBUFFOR 55
 #define XSIZEODD 120 + XTURNBUFFOR * 2
 #define XSIZEEVEN 80 + XTURNBUFFOR * 2
-#define YSIZEODD 112
+#define YSIZEODD 80
 #define YSIZEEVEN YSIZEODD / 2
 
 UBYTE heightMap[256][256]; //65k
@@ -36,6 +43,9 @@ UWORD mapHigh10[256][256]; //131k
 UBYTE mapLoaded0, mapLoaded1, mapLoaded2, mapLoaded3, mapLoaded4, mapLoaded5, mapLoaded6,
     mapLoaded7, mapLoaded8, mapLoaded9, mapLoaded10;
 
+//ATARI
+uint16_t *planes;
+//AMIGA
 UWORD plane1W[PLANEWIDTHWORD * PLANEHEIGHT]; //10k
 UWORD plane2W[PLANEWIDTHWORD * PLANEHEIGHT]; //10k
 UWORD plane3W[PLANEWIDTHWORD * PLANEHEIGHT]; //10k
@@ -63,6 +73,12 @@ UWORD kolory2[COLORS] =
         0x101, 0x312, 0x423, 0x533, 0x634, 0x754, 0x865, 0x975,
         0xa86, 0xb97,
         0xca8, 0xda9, 0xeba, 0xfcb, 0x12f, 0x23f};
+
+UWORD grayColors[16] =
+{
+	0x000,0x111,0x222,0x333,0x444,0x555,0x666,0x777,
+	0x888,0x999,0xaaa,0xbbb,0xccc,0xddd,0xeee,0xfff
+};
 
 UWORD bitmapPalette[16];
 

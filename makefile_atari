@@ -1,0 +1,57 @@
+# 
+# Makefile for libikbd.a and associated test program
+#
+
+TOOLCHAIN_PREFIX=m68k-atari-mint-
+CC=$(TOOLCHAIN_PREFIX)gcc
+AR=$(TOOLCHAIN_PREFIX)ar
+
+UNAME := $(shell uname)
+ifeq ($(UNAME),Linux)
+PREFIX=m68k-atari-mint
+HATARI=hatari
+else
+PREFIX=/opt/cross-mint/m68k-atari-mint
+HATARI=/usr/local/bin/hatari
+endif
+
+CFLAGS=-mcpu=68000\
+	-O3\
+	-fomit-frame-pointer \
+	-std=c99\
+	-lgem
+	#-Wall\
+	#-mshort\
+	#-nostdlib
+	
+ASFLAGS=$(CFLAGS)	
+	
+ICARUS=icarus_rising
+APP=$(ICARUS).tos
+LIB=libikbd.a
+
+all: $(LIB) $(APP) 
+
+CSOURCES=ikbd/keys.c ikbd/mouse.c
+		
+OBJECTS=ikbd/keys.o ikbd/mouse.o ikbd/ikbd.o
+
+LDLIBS= -lscandir
+
+$(APP): $(OBJECTS) ikbd/startup.S src/main_atari.c depend
+	$(CC) $(CFLAGS) ikbd/startup.S src/main_atari.c $(LIB) -o $(APP)
+	m68k-atari-mint-strip $(APP)
+
+$(LIB): $(OBJECTS)
+	$(AR) rcs $(LIB) $(OBJECTS) 
+		
+.PHONY clean:
+	- rm -rf *.o $(LIB) depend $(APP)
+
+depend: $(CSOURCES) src/main_atari.c 
+		$(CC) $(CFLAGS) $(INCLUDE) -M $(CSOURCES) src/main_atari.c  > depend
+
+	
+ifneq (clean,$(MAKECMDGOALS))
+-include depend
+endif
