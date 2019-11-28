@@ -67,3 +67,6 @@ CF0/compactflash.device
 CF0/CF0
 CF0.info
 CF0/CF0.info
+
+*.cmake
+*.make
