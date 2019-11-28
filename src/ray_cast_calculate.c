@@ -14,7 +14,7 @@ void CalculateRayCasts(WORD (*rayCastX)[TERRAINDEPTH], WORD (*rayCastY)[TERRAIND
 	WORD stepModifier = debugValue6*4;
 
 	tzz = 1;
-	for(int tz=0;tz<TERRAINDEPTH;tz++)
+	for(int tz=12;tz<TERRAINDEPTH;tz++)
 	{
 		//high - 2 - 8
 		tzz += debugValue3+tz/debugValue2;//+tz/16; //increase step with the distance from camera
