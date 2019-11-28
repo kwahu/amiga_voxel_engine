@@ -1,3 +1,5 @@
+#pragma once
+
 #define ULONG 	uint32_t
 #define LONG	int32_t
 #define UWORD 	uint16_t

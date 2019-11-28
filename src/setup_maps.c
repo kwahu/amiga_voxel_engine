@@ -6,16 +6,16 @@ void LoadMap(const char *heightName, const char *colorName,
 {
 	BITMAPINFOHEADER tempHeader;
 	unsigned char tempColorTable[16 * 4];
-	unsigned char *tempMap, *colorMap;
+	unsigned char *heightMap, *colorMap;
 
-	tempMap = LoadBitmapFile(heightName, &tempHeader, tempColorTable);
+	heightMap = LoadBitmapFile(heightName, &tempHeader, tempColorTable);
 	colorMap = LoadBitmapFile(colorName, &tempHeader, tempColorTable);
 
-	CombineMapsHigh(tempMap, colorMap,high);
+	CombineMapsHigh(heightMap, colorMap,high);
 						//GenerateMap(high);
 
-	//free(heightMap);
-	//free(colorMap);
+	free(heightMap);
+	free(colorMap);
 
 	//ReadHeight(heightName, heightMap);
 	//ReadColor(colorName, colorMap);

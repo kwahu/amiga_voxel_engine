@@ -1,4 +1,5 @@
 #include "engine.h"
+#include "settings_amiga.h"
 
 void DrawPixel(UWORD x, UWORD y, UBYTE color)
 {

@@ -1,6 +1,6 @@
 //#include <ace/managers/joy.h>
-#include "engine.h"
-#include "key_map.h"
+#include "../src/engine.h"
+#include "key_map_atari.h"
 #include "../ikbd/ikbd.h"
 
 void ProcessQualityInputAtari()

@@ -1,4 +1,4 @@
-#include "engine.h"
+#include "../src/engine.h"
 
 UBYTE ProcessWord(UBYTE rounds, UBYTE sx, UBYTE sy, UWORD *_tz, UWORD *tzz, UBYTE px, UBYTE py,UBYTE ph,
 UWORD *address1, UWORD *address2, 
@@ -31,7 +31,7 @@ WORD (*rayCastX)[TERRAINDEPTH], WORD (*rayCastY)[TERRAINDEPTH], UWORD (*map)[256
 				tz++;//go step in depth if no height hit
 			}
 		}
-		if(tz == TERRAINDEPTH) c[iHor] = 15; //draw sky if too deep
+		if(tz == TERRAINDEPTH) c[iHor] = 0; //draw sky if too deep
 
 		sx = sx + iHor;
 	}
@@ -75,7 +75,7 @@ WORD (*rayCastX)[TERRAINDEPTH], WORD (*rayCastY)[TERRAINDEPTH], UWORD (*map)[256
 				tz++;//go step in depth if no height hit
 			}
 		}
-		if(tz == TERRAINDEPTH) c = 15; //draw sky if too deep
+		if(tz == TERRAINDEPTH) c = 31; //draw sky if too deep
 	}
 	*address1 = (c<<10) + (c<<5) + (c); *address2 = *address1;
 	
@@ -113,7 +113,7 @@ WORD (*rayCastX)[TERRAINDEPTH], WORD (*rayCastY)[TERRAINDEPTH], UWORD (*map)[256
 				tz++;//go step in depth if no height hit
 			}
 		}
-		if(tz == TERRAINDEPTH) c[iHor] = 15; //draw sky if too deep
+		if(tz == TERRAINDEPTH) c[iHor] = 31; //draw sky if too deep
 		sx = sx + 3;
 	}
 	*address1 = (c[0]<<10) + (c[0]<<5) + (c[0]); *address2 = (c[1]<<10) + (c[1]<<5) + (c[1]);
@@ -151,7 +151,7 @@ WORD (*rayCastX)[TERRAINDEPTH], WORD (*rayCastY)[TERRAINDEPTH], UWORD (*map)[256
 				tz++;//go step in depth if no height hit
 			}
 		}
-		if(tz == TERRAINDEPTH) c[iHor] = 15; //draw sky if too deep
+		if(tz == TERRAINDEPTH) c[iHor] = 31; //draw sky if too deep
 		sx = sx + 2;
 	}
 	*address1 = (c[0]<<10) + (c[0]<<5) + (c[1]); *address2 = (c[1]<<10) + (c[2]<<5) + (c[2]);
@@ -358,8 +358,8 @@ void ProcessRayCasts3x2(WORD (*rayCastX)[TERRAINDEPTH], WORD (*rayCastY)[TERRAIN
 			//  }
 			 else 	
 			 {
-				address1 = 0b0011110111101111;
-				address2 = 0b0011110111101111;
+				address1 = 0b0111111111111111;
+				address2 = 0b0111111111111111;
 
 				word = (dither3x2EvenP1[ address1 ]<<8) + dither3x2EvenP1[ address2 ];
 				planes[position] = word;

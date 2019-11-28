@@ -1,3 +1,5 @@
+#define ATARI atari
+
 //#include <inttypes.h>
 #include <string.h>
 #include <stdio.h>
@@ -11,18 +13,18 @@
 //#include <gemx.h>
 
 #include "settings_atari.h"
-#include "bitmap.c"
-#include "file_read.c"
-#include "engine.h"
+#include "../src/bitmap.c"
+#include "../src/file_read.c"
+#include "../src/engine.h"
 #include "draw_maps_atari.c"
-#include "ray_cast_calculate.c"
-#include "bitmap_filters.c"
-#include "setup_maps.c"
-#include "dithering.c"
+#include "../src/ray_cast_calculate.c"
+#include "../src/bitmap_filters.c"
+#include "../src/setup_maps.c"
+#include "../src/dithering.c"
 #include "ray_casting_atari.c"
 #include "draw_screen_atari.c"
 #include "rendering_quality_atari.c"
-#include "map_streaming.c"
+#include "../src/map_streaming.c"
 #include "input_handling_atari.c"
 
 //http://retrospec.sgn.net/users/tomcat/miodrag/Atari_ST/Atari%20ST%20Internals.htm#SCREEN_DISPLAY
@@ -141,6 +143,15 @@ void main_supervisor()
 
 	Setpalette(bitmapPalette);
     DrawBitmap8b(bitmap1, &bitmapHeader1);
+
+	paletteBitmap = LoadBitmapFile("data/palette.bmp", &paletteHeader, palettePalette);
+
+	//process paletter from an image
+	for(int i=0;i<16;i++)
+	{
+		bitmapPalette[i] = ((palettePalette[i*4+2]>>5) << 8) +
+		 ((palettePalette[i*4+1]>>5) << 4) + (palettePalette[i*4+0]>>5);
+	}
 	
 	
 	//*************************************************
@@ -179,11 +190,14 @@ void main_supervisor()
 
 	initDeltaTime();
 	printf("last \r\n");
+
+	Setpalette(bitmapPalette);
+
     while ( exitflag == 0)
     {
 		
 		getDeltaTime();
-		//OverwriteMap();
+		OverwriteMap();
 		ProcessQualityInputAtari();
 		ProcessPlayerInputAtari();
 
@@ -234,7 +248,9 @@ void main_supervisor()
        // make hidden framebuffer visible using framebuffer_flip()
 	   endTime = timerGetPrec();
     }
-
+	free(bitmap1);
+	free(paletteBitmap);
+	
 	IKBD_Flush();
 
 	IKBD_Uninstall();

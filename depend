@@ -17,7 +17,7 @@ mouse.o: ikbd/mouse.c ikbd/ikbd.h \
  /opt/cross-mint/lib/gcc/m68k-atari-mint/4.6.4/../../../../m68k-atari-mint/include/linker.h \
  /opt/cross-mint/lib/gcc/m68k-atari-mint/4.6.4/../../../../m68k-atari-mint/include/sys/cdefs.h \
  /opt/cross-mint/lib/gcc/m68k-atari-mint/4.6.4/include/stddef.h
-main_atari.o: src/main_atari.c \
+main_atari.o: src_atari/main_atari.c \
  /opt/cross-mint/lib/gcc/m68k-atari-mint/4.6.4/../../../../m68k-atari-mint/include/string.h \
  /opt/cross-mint/lib/gcc/m68k-atari-mint/4.6.4/../../../../m68k-atari-mint/include/features.h \
  /opt/cross-mint/lib/gcc/m68k-atari-mint/4.6.4/../../../../m68k-atari-mint/include/compiler.h \
@@ -37,12 +37,15 @@ main_atari.o: src/main_atari.c \
  /opt/cross-mint/lib/gcc/m68k-atari-mint/4.6.4/../../../../m68k-atari-mint/include/mint/trap1.h \
  /opt/cross-mint/lib/gcc/m68k-atari-mint/4.6.4/../../../../m68k-atari-mint/include/mint/trap13.h \
  /opt/cross-mint/lib/gcc/m68k-atari-mint/4.6.4/../../../../m68k-atari-mint/include/mint/trap14.h \
- src/time_atari.c \
+ src_atari/time_atari.c \
  /opt/cross-mint/lib/gcc/m68k-atari-mint/4.6.4/../../../../m68k-atari-mint/include/stdint.h \
- src/settings_atari.h src/bitmap.c src/engine.h \
+ src_atari/settings_atari.h src_atari/../src/bitmap.c \
+ src_atari/../src/engine.h \
  /opt/cross-mint/lib/gcc/m68k-atari-mint/4.6.4/../../../../m68k-atari-mint/include/stdlib.h \
- src/file_read.c src/draw_maps_atari.c src/ray_cast_calculate.c \
- src/bitmap_filters.c src/setup_maps.c src/dithering.c \
- src/ray_casting_atari.c src/draw_screen_atari.c \
- src/rendering_quality_atari.c src/map_streaming.c \
- src/input_handling_atari.c src/key_map.h src/../ikbd/ikbd.h
+ src_atari/../src/file_read.c src_atari/../src/engine.h \
+ src_atari/draw_maps_atari.c src_atari/../src/ray_cast_calculate.c \
+ src_atari/../src/bitmap_filters.c src_atari/../src/setup_maps.c \
+ src_atari/../src/dithering.c src_atari/ray_casting_atari.c \
+ src_atari/draw_screen_atari.c src_atari/rendering_quality_atari.c \
+ src_atari/../src/map_streaming.c src_atari/input_handling_atari.c \
+ src_atari/key_map_atari.h src_atari/../ikbd/ikbd.h

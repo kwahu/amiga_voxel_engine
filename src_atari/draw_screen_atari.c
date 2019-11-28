@@ -1,4 +1,4 @@
-#include "engine.h"
+#include "../src/engine.h"
 
 // void CopyFastToChipW(tBitMap *bm)
 // {

@@ -182,6 +182,33 @@ ace/fast:
 	$(MAKE) -f ace/CMakeFiles/ace.dir/build.make ace/CMakeFiles/ace.dir/build
 .PHONY : ace/fast
 
+src/bitmap.obj: src/bitmap.c.obj
+
+.PHONY : src/bitmap.obj
+
+# target to build an object file
+src/bitmap.c.obj:
+	$(MAKE) -f CMakeFiles/engine.exe.dir/build.make CMakeFiles/engine.exe.dir/src/bitmap.c.obj
+.PHONY : src/bitmap.c.obj
+
+src/bitmap.i: src/bitmap.c.i
+
+.PHONY : src/bitmap.i
+
+# target to preprocess a source file
+src/bitmap.c.i:
+	$(MAKE) -f CMakeFiles/engine.exe.dir/build.make CMakeFiles/engine.exe.dir/src/bitmap.c.i
+.PHONY : src/bitmap.c.i
+
+src/bitmap.s: src/bitmap.c.s
+
+.PHONY : src/bitmap.s
+
+# target to generate assembly for a file
+src/bitmap.c.s:
+	$(MAKE) -f CMakeFiles/engine.exe.dir/build.make CMakeFiles/engine.exe.dir/src/bitmap.c.s
+.PHONY : src/bitmap.c.s
+
 src/bitmap_filters.obj: src/bitmap_filters.c.obj
 
 .PHONY : src/bitmap_filters.obj
@@ -236,59 +263,59 @@ src/dithering.c.s:
 	$(MAKE) -f CMakeFiles/engine.exe.dir/build.make CMakeFiles/engine.exe.dir/src/dithering.c.s
 .PHONY : src/dithering.c.s
 
-src/draw_maps.obj: src/draw_maps.c.obj
+src/draw_maps_amiga.obj: src/draw_maps_amiga.c.obj
 
-.PHONY : src/draw_maps.obj
-
-# target to build an object file
-src/draw_maps.c.obj:
-	$(MAKE) -f CMakeFiles/engine.exe.dir/build.make CMakeFiles/engine.exe.dir/src/draw_maps.c.obj
-.PHONY : src/draw_maps.c.obj
-
-src/draw_maps.i: src/draw_maps.c.i
-
-.PHONY : src/draw_maps.i
-
-# target to preprocess a source file
-src/draw_maps.c.i:
-	$(MAKE) -f CMakeFiles/engine.exe.dir/build.make CMakeFiles/engine.exe.dir/src/draw_maps.c.i
-.PHONY : src/draw_maps.c.i
-
-src/draw_maps.s: src/draw_maps.c.s
-
-.PHONY : src/draw_maps.s
-
-# target to generate assembly for a file
-src/draw_maps.c.s:
-	$(MAKE) -f CMakeFiles/engine.exe.dir/build.make CMakeFiles/engine.exe.dir/src/draw_maps.c.s
-.PHONY : src/draw_maps.c.s
-
-src/draw_screen.obj: src/draw_screen.c.obj
-
-.PHONY : src/draw_screen.obj
+.PHONY : src/draw_maps_amiga.obj
 
 # target to build an object file
-src/draw_screen.c.obj:
-	$(MAKE) -f CMakeFiles/engine.exe.dir/build.make CMakeFiles/engine.exe.dir/src/draw_screen.c.obj
-.PHONY : src/draw_screen.c.obj
+src/draw_maps_amiga.c.obj:
+	$(MAKE) -f CMakeFiles/engine.exe.dir/build.make CMakeFiles/engine.exe.dir/src/draw_maps_amiga.c.obj
+.PHONY : src/draw_maps_amiga.c.obj
 
-src/draw_screen.i: src/draw_screen.c.i
+src/draw_maps_amiga.i: src/draw_maps_amiga.c.i
 
-.PHONY : src/draw_screen.i
+.PHONY : src/draw_maps_amiga.i
 
 # target to preprocess a source file
-src/draw_screen.c.i:
-	$(MAKE) -f CMakeFiles/engine.exe.dir/build.make CMakeFiles/engine.exe.dir/src/draw_screen.c.i
-.PHONY : src/draw_screen.c.i
+src/draw_maps_amiga.c.i:
+	$(MAKE) -f CMakeFiles/engine.exe.dir/build.make CMakeFiles/engine.exe.dir/src/draw_maps_amiga.c.i
+.PHONY : src/draw_maps_amiga.c.i
 
-src/draw_screen.s: src/draw_screen.c.s
+src/draw_maps_amiga.s: src/draw_maps_amiga.c.s
 
-.PHONY : src/draw_screen.s
+.PHONY : src/draw_maps_amiga.s
 
 # target to generate assembly for a file
-src/draw_screen.c.s:
-	$(MAKE) -f CMakeFiles/engine.exe.dir/build.make CMakeFiles/engine.exe.dir/src/draw_screen.c.s
-.PHONY : src/draw_screen.c.s
+src/draw_maps_amiga.c.s:
+	$(MAKE) -f CMakeFiles/engine.exe.dir/build.make CMakeFiles/engine.exe.dir/src/draw_maps_amiga.c.s
+.PHONY : src/draw_maps_amiga.c.s
+
+src/draw_screen_amiga.obj: src/draw_screen_amiga.c.obj
+
+.PHONY : src/draw_screen_amiga.obj
+
+# target to build an object file
+src/draw_screen_amiga.c.obj:
+	$(MAKE) -f CMakeFiles/engine.exe.dir/build.make CMakeFiles/engine.exe.dir/src/draw_screen_amiga.c.obj
+.PHONY : src/draw_screen_amiga.c.obj
+
+src/draw_screen_amiga.i: src/draw_screen_amiga.c.i
+
+.PHONY : src/draw_screen_amiga.i
+
+# target to preprocess a source file
+src/draw_screen_amiga.c.i:
+	$(MAKE) -f CMakeFiles/engine.exe.dir/build.make CMakeFiles/engine.exe.dir/src/draw_screen_amiga.c.i
+.PHONY : src/draw_screen_amiga.c.i
+
+src/draw_screen_amiga.s: src/draw_screen_amiga.c.s
+
+.PHONY : src/draw_screen_amiga.s
+
+# target to generate assembly for a file
+src/draw_screen_amiga.c.s:
+	$(MAKE) -f CMakeFiles/engine.exe.dir/build.make CMakeFiles/engine.exe.dir/src/draw_screen_amiga.c.s
+.PHONY : src/draw_screen_amiga.c.s
 
 src/draw_ships.obj: src/draw_ships.c.obj
 
@@ -317,6 +344,33 @@ src/draw_ships.c.s:
 	$(MAKE) -f CMakeFiles/engine.exe.dir/build.make CMakeFiles/engine.exe.dir/src/draw_ships.c.s
 .PHONY : src/draw_ships.c.s
 
+src/draw_sprite.obj: src/draw_sprite.c.obj
+
+.PHONY : src/draw_sprite.obj
+
+# target to build an object file
+src/draw_sprite.c.obj:
+	$(MAKE) -f CMakeFiles/engine.exe.dir/build.make CMakeFiles/engine.exe.dir/src/draw_sprite.c.obj
+.PHONY : src/draw_sprite.c.obj
+
+src/draw_sprite.i: src/draw_sprite.c.i
+
+.PHONY : src/draw_sprite.i
+
+# target to preprocess a source file
+src/draw_sprite.c.i:
+	$(MAKE) -f CMakeFiles/engine.exe.dir/build.make CMakeFiles/engine.exe.dir/src/draw_sprite.c.i
+.PHONY : src/draw_sprite.c.i
+
+src/draw_sprite.s: src/draw_sprite.c.s
+
+.PHONY : src/draw_sprite.s
+
+# target to generate assembly for a file
+src/draw_sprite.c.s:
+	$(MAKE) -f CMakeFiles/engine.exe.dir/build.make CMakeFiles/engine.exe.dir/src/draw_sprite.c.s
+.PHONY : src/draw_sprite.c.s
+
 src/file_read.obj: src/file_read.c.obj
 
 .PHONY : src/file_read.obj
@@ -343,6 +397,33 @@ src/file_read.s: src/file_read.c.s
 src/file_read.c.s:
 	$(MAKE) -f CMakeFiles/engine.exe.dir/build.make CMakeFiles/engine.exe.dir/src/file_read.c.s
 .PHONY : src/file_read.c.s
+
+src/input_handling_amiga.obj: src/input_handling_amiga.c.obj
+
+.PHONY : src/input_handling_amiga.obj
+
+# target to build an object file
+src/input_handling_amiga.c.obj:
+	$(MAKE) -f CMakeFiles/engine.exe.dir/build.make CMakeFiles/engine.exe.dir/src/input_handling_amiga.c.obj
+.PHONY : src/input_handling_amiga.c.obj
+
+src/input_handling_amiga.i: src/input_handling_amiga.c.i
+
+.PHONY : src/input_handling_amiga.i
+
+# target to preprocess a source file
+src/input_handling_amiga.c.i:
+	$(MAKE) -f CMakeFiles/engine.exe.dir/build.make CMakeFiles/engine.exe.dir/src/input_handling_amiga.c.i
+.PHONY : src/input_handling_amiga.c.i
+
+src/input_handling_amiga.s: src/input_handling_amiga.c.s
+
+.PHONY : src/input_handling_amiga.s
+
+# target to generate assembly for a file
+src/input_handling_amiga.c.s:
+	$(MAKE) -f CMakeFiles/engine.exe.dir/build.make CMakeFiles/engine.exe.dir/src/input_handling_amiga.c.s
+.PHONY : src/input_handling_amiga.c.s
 
 src/main.obj: src/main.c.obj
 
@@ -371,6 +452,33 @@ src/main.c.s:
 	$(MAKE) -f CMakeFiles/engine.exe.dir/build.make CMakeFiles/engine.exe.dir/src/main.c.s
 .PHONY : src/main.c.s
 
+src/map_streaming.obj: src/map_streaming.c.obj
+
+.PHONY : src/map_streaming.obj
+
+# target to build an object file
+src/map_streaming.c.obj:
+	$(MAKE) -f CMakeFiles/engine.exe.dir/build.make CMakeFiles/engine.exe.dir/src/map_streaming.c.obj
+.PHONY : src/map_streaming.c.obj
+
+src/map_streaming.i: src/map_streaming.c.i
+
+.PHONY : src/map_streaming.i
+
+# target to preprocess a source file
+src/map_streaming.c.i:
+	$(MAKE) -f CMakeFiles/engine.exe.dir/build.make CMakeFiles/engine.exe.dir/src/map_streaming.c.i
+.PHONY : src/map_streaming.c.i
+
+src/map_streaming.s: src/map_streaming.c.s
+
+.PHONY : src/map_streaming.s
+
+# target to generate assembly for a file
+src/map_streaming.c.s:
+	$(MAKE) -f CMakeFiles/engine.exe.dir/build.make CMakeFiles/engine.exe.dir/src/map_streaming.c.s
+.PHONY : src/map_streaming.c.s
+
 src/mipmaps.obj: src/mipmaps.c.obj
 
 .PHONY : src/mipmaps.obj
@@ -398,32 +506,113 @@ src/mipmaps.c.s:
 	$(MAKE) -f CMakeFiles/engine.exe.dir/build.make CMakeFiles/engine.exe.dir/src/mipmaps.c.s
 .PHONY : src/mipmaps.c.s
 
-src/ray_casting.obj: src/ray_casting.c.obj
+src/ray_cast_calculate.obj: src/ray_cast_calculate.c.obj
 
-.PHONY : src/ray_casting.obj
+.PHONY : src/ray_cast_calculate.obj
 
 # target to build an object file
-src/ray_casting.c.obj:
-	$(MAKE) -f CMakeFiles/engine.exe.dir/build.make CMakeFiles/engine.exe.dir/src/ray_casting.c.obj
-.PHONY : src/ray_casting.c.obj
+src/ray_cast_calculate.c.obj:
+	$(MAKE) -f CMakeFiles/engine.exe.dir/build.make CMakeFiles/engine.exe.dir/src/ray_cast_calculate.c.obj
+.PHONY : src/ray_cast_calculate.c.obj
 
-src/ray_casting.i: src/ray_casting.c.i
+src/ray_cast_calculate.i: src/ray_cast_calculate.c.i
 
-.PHONY : src/ray_casting.i
+.PHONY : src/ray_cast_calculate.i
 
 # target to preprocess a source file
-src/ray_casting.c.i:
-	$(MAKE) -f CMakeFiles/engine.exe.dir/build.make CMakeFiles/engine.exe.dir/src/ray_casting.c.i
-.PHONY : src/ray_casting.c.i
+src/ray_cast_calculate.c.i:
+	$(MAKE) -f CMakeFiles/engine.exe.dir/build.make CMakeFiles/engine.exe.dir/src/ray_cast_calculate.c.i
+.PHONY : src/ray_cast_calculate.c.i
 
-src/ray_casting.s: src/ray_casting.c.s
+src/ray_cast_calculate.s: src/ray_cast_calculate.c.s
 
-.PHONY : src/ray_casting.s
+.PHONY : src/ray_cast_calculate.s
 
 # target to generate assembly for a file
-src/ray_casting.c.s:
-	$(MAKE) -f CMakeFiles/engine.exe.dir/build.make CMakeFiles/engine.exe.dir/src/ray_casting.c.s
-.PHONY : src/ray_casting.c.s
+src/ray_cast_calculate.c.s:
+	$(MAKE) -f CMakeFiles/engine.exe.dir/build.make CMakeFiles/engine.exe.dir/src/ray_cast_calculate.c.s
+.PHONY : src/ray_cast_calculate.c.s
+
+src/ray_casting_amiga.obj: src/ray_casting_amiga.c.obj
+
+.PHONY : src/ray_casting_amiga.obj
+
+# target to build an object file
+src/ray_casting_amiga.c.obj:
+	$(MAKE) -f CMakeFiles/engine.exe.dir/build.make CMakeFiles/engine.exe.dir/src/ray_casting_amiga.c.obj
+.PHONY : src/ray_casting_amiga.c.obj
+
+src/ray_casting_amiga.i: src/ray_casting_amiga.c.i
+
+.PHONY : src/ray_casting_amiga.i
+
+# target to preprocess a source file
+src/ray_casting_amiga.c.i:
+	$(MAKE) -f CMakeFiles/engine.exe.dir/build.make CMakeFiles/engine.exe.dir/src/ray_casting_amiga.c.i
+.PHONY : src/ray_casting_amiga.c.i
+
+src/ray_casting_amiga.s: src/ray_casting_amiga.c.s
+
+.PHONY : src/ray_casting_amiga.s
+
+# target to generate assembly for a file
+src/ray_casting_amiga.c.s:
+	$(MAKE) -f CMakeFiles/engine.exe.dir/build.make CMakeFiles/engine.exe.dir/src/ray_casting_amiga.c.s
+.PHONY : src/ray_casting_amiga.c.s
+
+src/rendering_quality_amiga.obj: src/rendering_quality_amiga.c.obj
+
+.PHONY : src/rendering_quality_amiga.obj
+
+# target to build an object file
+src/rendering_quality_amiga.c.obj:
+	$(MAKE) -f CMakeFiles/engine.exe.dir/build.make CMakeFiles/engine.exe.dir/src/rendering_quality_amiga.c.obj
+.PHONY : src/rendering_quality_amiga.c.obj
+
+src/rendering_quality_amiga.i: src/rendering_quality_amiga.c.i
+
+.PHONY : src/rendering_quality_amiga.i
+
+# target to preprocess a source file
+src/rendering_quality_amiga.c.i:
+	$(MAKE) -f CMakeFiles/engine.exe.dir/build.make CMakeFiles/engine.exe.dir/src/rendering_quality_amiga.c.i
+.PHONY : src/rendering_quality_amiga.c.i
+
+src/rendering_quality_amiga.s: src/rendering_quality_amiga.c.s
+
+.PHONY : src/rendering_quality_amiga.s
+
+# target to generate assembly for a file
+src/rendering_quality_amiga.c.s:
+	$(MAKE) -f CMakeFiles/engine.exe.dir/build.make CMakeFiles/engine.exe.dir/src/rendering_quality_amiga.c.s
+.PHONY : src/rendering_quality_amiga.c.s
+
+src/setup_maps.obj: src/setup_maps.c.obj
+
+.PHONY : src/setup_maps.obj
+
+# target to build an object file
+src/setup_maps.c.obj:
+	$(MAKE) -f CMakeFiles/engine.exe.dir/build.make CMakeFiles/engine.exe.dir/src/setup_maps.c.obj
+.PHONY : src/setup_maps.c.obj
+
+src/setup_maps.i: src/setup_maps.c.i
+
+.PHONY : src/setup_maps.i
+
+# target to preprocess a source file
+src/setup_maps.c.i:
+	$(MAKE) -f CMakeFiles/engine.exe.dir/build.make CMakeFiles/engine.exe.dir/src/setup_maps.c.i
+.PHONY : src/setup_maps.c.i
+
+src/setup_maps.s: src/setup_maps.c.s
+
+.PHONY : src/setup_maps.s
+
+# target to generate assembly for a file
+src/setup_maps.c.s:
+	$(MAKE) -f CMakeFiles/engine.exe.dir/build.make CMakeFiles/engine.exe.dir/src/setup_maps.c.s
+.PHONY : src/setup_maps.c.s
 
 # Help Target
 help:
@@ -439,33 +628,54 @@ help:
 	@echo "... list_install_components"
 	@echo "... install"
 	@echo "... ace"
+	@echo "... src/bitmap.obj"
+	@echo "... src/bitmap.i"
+	@echo "... src/bitmap.s"
 	@echo "... src/bitmap_filters.obj"
 	@echo "... src/bitmap_filters.i"
 	@echo "... src/bitmap_filters.s"
 	@echo "... src/dithering.obj"
 	@echo "... src/dithering.i"
 	@echo "... src/dithering.s"
-	@echo "... src/draw_maps.obj"
-	@echo "... src/draw_maps.i"
-	@echo "... src/draw_maps.s"
-	@echo "... src/draw_screen.obj"
-	@echo "... src/draw_screen.i"
-	@echo "... src/draw_screen.s"
+	@echo "... src/draw_maps_amiga.obj"
+	@echo "... src/draw_maps_amiga.i"
+	@echo "... src/draw_maps_amiga.s"
+	@echo "... src/draw_screen_amiga.obj"
+	@echo "... src/draw_screen_amiga.i"
+	@echo "... src/draw_screen_amiga.s"
 	@echo "... src/draw_ships.obj"
 	@echo "... src/draw_ships.i"
 	@echo "... src/draw_ships.s"
+	@echo "... src/draw_sprite.obj"
+	@echo "... src/draw_sprite.i"
+	@echo "... src/draw_sprite.s"
 	@echo "... src/file_read.obj"
 	@echo "... src/file_read.i"
 	@echo "... src/file_read.s"
+	@echo "... src/input_handling_amiga.obj"
+	@echo "... src/input_handling_amiga.i"
+	@echo "... src/input_handling_amiga.s"
 	@echo "... src/main.obj"
 	@echo "... src/main.i"
 	@echo "... src/main.s"
+	@echo "... src/map_streaming.obj"
+	@echo "... src/map_streaming.i"
+	@echo "... src/map_streaming.s"
 	@echo "... src/mipmaps.obj"
 	@echo "... src/mipmaps.i"
 	@echo "... src/mipmaps.s"
-	@echo "... src/ray_casting.obj"
-	@echo "... src/ray_casting.i"
-	@echo "... src/ray_casting.s"
+	@echo "... src/ray_cast_calculate.obj"
+	@echo "... src/ray_cast_calculate.i"
+	@echo "... src/ray_cast_calculate.s"
+	@echo "... src/ray_casting_amiga.obj"
+	@echo "... src/ray_casting_amiga.i"
+	@echo "... src/ray_casting_amiga.s"
+	@echo "... src/rendering_quality_amiga.obj"
+	@echo "... src/rendering_quality_amiga.i"
+	@echo "... src/rendering_quality_amiga.s"
+	@echo "... src/setup_maps.obj"
+	@echo "... src/setup_maps.i"
+	@echo "... src/setup_maps.s"
 .PHONY : help
 
 

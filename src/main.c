@@ -1,21 +1,23 @@
+#define AMIGA amiga
+
 #include <ace/generic/main.h>
 
 #include "settings_amiga.h"
 #include "engine.h"
-#include "ray_casting.c"
+#include "ray_casting_amiga.c"
 #include "ray_cast_calculate.c"
-#include "draw_screen.c"
+#include "draw_screen_amiga.c"
 //#include "mipmaps.c"
 #include "file_read.c"
 #include "bitmap_filters.c"
 #include "dithering.c"
 #include "draw_ships.c"
 #include "draw_sprite.c"
-#include "draw_maps.c"
-#include "input_handling.c"
+#include "draw_maps_amiga.c"
+#include "input_handling_amiga.c"
 #include "map_streaming.c"
 #include "setup_maps.c"
-#include "rendering_quality.c"
+#include "rendering_quality_amiga.c"
 //#include "bitmap.c"
 #include <ace/managers/game.h>
 #include <ace/managers/timer.h>
@@ -63,20 +65,22 @@ char sTime[10], sVelocity[5], sScore[5];
 char fadeInStatus[4], fadeOutStatus[4];
 unsigned char *currentPallete;
 
+UBYTE gamePaletteSet = 0;
+
 void Recalculate()
 {
-	CalculateRayCasts(rayCastXEven, rayCastYEven, XSIZEEVEN, YSIZEEVEN, 1); //było 2
+	CalculateRayCasts(rayCastXEven, rayCastYEven, XSIZEEVEN, YSIZEEVEN, 2); //było 2
 	CalculateRayCasts(rayCastXOdd, rayCastYOdd, XSIZEODD, YSIZEODD, 1);
 	deltaTime = 0;
 }
 
 void SetDefaulResolution()
 {
-		renderingDepth = 16;
-		debugValue = 2;
-		debugValue2 = 1;
-		debugValue3 = 10;
-		debugValue4 = 2;
+		renderingDepth = 64;
+		debugValue = 6;
+		debugValue2 = 2;
+		debugValue3 = 2;
+		debugValue4 = 1;
 
 
 	debugValue6 = 4;
@@ -255,6 +259,22 @@ void ConvertByteToChar(UBYTE number, char *test)
 	}
 }
 
+void SetGamePaletter()
+{
+	
+
+	//process paletter from an image
+	for (int i = 0; i < 16; i++)
+	{
+		bitmapPalette[i] = ((palettePalette[i * 4 + 2] >> 4) << 8) +
+						   ((palettePalette[i * 4 + 1] >> 4) << 4) + (palettePalette[i * 4 + 0] >> 4);
+	}
+
+	memcpy(s_pVPort->pPalette, bitmapPalette, 16 * sizeof(UWORD));
+
+	viewLoad(s_pView);
+}
+
 //****************************** CREATE
 void engineGsCreate(void)
 {
@@ -275,6 +295,7 @@ void engineGsCreate(void)
 	bitmap1 = LoadBitmapFile("data/logo1.bmp", &bitmapHeader1, bitmapPalette1);
 	bitmap2 = LoadBitmapFile("data/logo2.bmp", &bitmapHeader2, bitmapPalette2);
 	bitmap3 = LoadBitmapFile("data/logo3.bmp", &bitmapHeader3, bitmapPalette3);
+	paletteBitmap = LoadBitmapFile("data/palette.bmp", &paletteHeader, palettePalette);
 
 	//process paletter from an image
 	for (int i = 0; i < 16; i++)
@@ -291,15 +312,6 @@ void engineGsCreate(void)
 	}
 
 	memcpy(s_pVPort->pPalette, bitmapPalette, 16 * sizeof(UWORD));
-
-	paletteBitmap = LoadBitmapFile("data/palette.bmp", &paletteHeader, palettePalette);
-
-	//process paletter from an image
-	for (int i = 0; i < 16; i++)
-	{
-		bitmapPalette[i] = ((palettePalette[i * 4 + 2] >> 4) << 8) +
-						   ((palettePalette[i * 4 + 1] >> 4) << 4) + (palettePalette[i * 4 + 0] >> 4);
-	}
 
 	
 
@@ -532,7 +544,13 @@ void engineGsLoop(void)
 	}
 	else
 	{
+		if(gamePaletteSet == 0)
+		{
+			SetGamePaletter();
+			gamePaletteSet = 1;
+		}
 
+	
 		if (keyCheck(KEY_SPACE))
 		{
 			gameClose();
@@ -757,6 +775,9 @@ void engineGsDestroy(void)
 	char szAvg[15];
 	timerFormatPrec(szAvg, endTime - startTime);
 	free(bitmap1);
+	free(bitmap2);
+	free(bitmap3);
+	free(paletteBitmap);
 
 	printf("%s", szAvg);
 	printf("%lu", deltaTime);

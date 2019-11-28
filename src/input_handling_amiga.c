@@ -1,6 +1,7 @@
 #include <ace/managers/joy.h>
 #include <ace/managers/key.h>
 #include "engine.h"
+#include "settings_amiga.h"
 
 void ProcessQualityInput()
 {

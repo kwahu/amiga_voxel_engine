@@ -243,7 +243,7 @@ CMAKE_STATIC_LINKER_FLAGS_RELWITHDEBINFO:STRING=
 CMAKE_STRIP:FILEPATH=/opt/m68k-amigaos/bin/m68k-amigaos-strip
 
 //No help, variable specified on the command line.
-CMAKE_TOOLCHAIN_FILE:FILEPATH=/opt/m68k-amigaos/lib/m68k-amigaos.cmake
+CMAKE_TOOLCHAIN_FILE:UNINITIALIZED=/path/to/AmigaCMakeCrossToolchains/m68k.cmake
 
 //If this value is on, makefiles will be generated without the
 // .SILENT directive, and all commands will be echoed to the console
@@ -256,6 +256,9 @@ M68K_CPU:STRING=68000
 
 //FPU type
 M68K_FPU:STRING=soft
+
+//No help, variable specified on the command line.
+M68K_TOOLCHAIN_PATH:UNINITIALIZED=/path/to/toolchain
 
 //Value Computed by CMake
 engine_BINARY_DIR:STATIC=/work

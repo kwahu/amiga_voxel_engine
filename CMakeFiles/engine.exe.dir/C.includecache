@@ -18,13 +18,13 @@ engine.h
 engine.h
 /work/src/engine.h
 
-/work/src/draw_maps.c
+/work/src/draw_maps_amiga.c
 engine.h
 /work/src/engine.h
 settings_amiga.h
 /work/src/settings_amiga.h
 
-/work/src/draw_screen.c
+/work/src/draw_screen_amiga.c
 engine.h
 /work/src/engine.h
 settings_amiga.h
@@ -39,6 +39,8 @@ engine.h
 /work/src/draw_sprite.c
 engine.h
 /work/src/engine.h
+settings_amiga.h
+/work/src/settings_amiga.h
 
 /work/src/engine.h
 stdlib.h
@@ -52,13 +54,15 @@ stdio.h
 stdlib.h
 -
 
-/work/src/input_handling.c
+/work/src/input_handling_amiga.c
 ace/managers/joy.h
 -
 ace/managers/key.h
 -
 engine.h
 /work/src/engine.h
+settings_amiga.h
+/work/src/settings_amiga.h
 
 /work/src/main.c
 ace/generic/main.h
@@ -67,12 +71,12 @@ settings_amiga.h
 /work/src/settings_amiga.h
 engine.h
 /work/src/engine.h
-ray_casting.c
-/work/src/ray_casting.c
+ray_casting_amiga.c
+/work/src/ray_casting_amiga.c
 ray_cast_calculate.c
 /work/src/ray_cast_calculate.c
-draw_screen.c
-/work/src/draw_screen.c
+draw_screen_amiga.c
+/work/src/draw_screen_amiga.c
 file_read.c
 /work/src/file_read.c
 bitmap_filters.c
@@ -83,16 +87,16 @@ draw_ships.c
 /work/src/draw_ships.c
 draw_sprite.c
 /work/src/draw_sprite.c
-draw_maps.c
-/work/src/draw_maps.c
-input_handling.c
-/work/src/input_handling.c
+draw_maps_amiga.c
+/work/src/draw_maps_amiga.c
+input_handling_amiga.c
+/work/src/input_handling_amiga.c
 map_streaming.c
 /work/src/map_streaming.c
 setup_maps.c
 /work/src/setup_maps.c
-rendering_quality.c
-/work/src/rendering_quality.c
+rendering_quality_amiga.c
+/work/src/rendering_quality_amiga.c
 ace/managers/game.h
 -
 ace/managers/timer.h
@@ -110,23 +114,25 @@ ace/utils/font.h
 engine.h
 /work/src/engine.h
 
-/work/src/mipmaps.c
-engine.h
-/work/src/engine.h
-
 /work/src/ray_cast_calculate.c
 engine.h
 /work/src/engine.h
+settings_amiga.h
+/work/src/settings_amiga.h
+../src_atari/settings_atari.h
+/work/src_atari/settings_atari.h
 
-/work/src/ray_casting.c
+/work/src/ray_casting_amiga.c
 engine.h
 /work/src/engine.h
 settings_amiga.h
 /work/src/settings_amiga.h
 
-/work/src/rendering_quality.c
+/work/src/rendering_quality_amiga.c
 engine.h
 /work/src/engine.h
+settings_amiga.h
+/work/src/settings_amiga.h
 
 /work/src/settings_amiga.h
 engine.h
@@ -137,6 +143,8 @@ engine.h
 /work/src/engine.h
 bitmap.c
 /work/src/bitmap.c
+
+/work/src_atari/settings_atari.h
 
 deps/ace/include/ace/generic/main.h
 stdlib.h
