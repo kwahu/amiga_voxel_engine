@@ -3,6 +3,7 @@
 #include "engine.h"
 #include "settings_amiga.h"
 
+
 void ProcessQualityInput()
 {
 
@@ -97,11 +98,11 @@ void ProcessPlayerInput()
 
 	if (joyCheck(JOY1_RIGHT))
 	{
-		cx += deltaTime / 100;
+		cx += deltaTime / 60;
 	}
 	else if (joyCheck(JOY1_LEFT))
 	{
-		cx -= deltaTime / 100;
+		cx -= deltaTime / 60;
 	}
 	else if (cx != 0)
 	{
@@ -120,24 +121,29 @@ void ProcessPlayerInput()
 
 	if (joyCheck(JOY1_DOWN))
 	{
-		cy += deltaTime / 100;
+		cy += deltaTime / 60;
 	}
 	else if (joyCheck(JOY1_UP))
 	{
-		cy -= deltaTime / 100;
+		cy -= deltaTime / 60;
 	}
 	else if (cy != 0)
 	{
 		cy = cy - cy / ((LONG)(deltaTime) / 1000);
 	}
 
-	if (joyCheck(JOY1_FIRE))
-	{
-		p1yf += deltaTime / 2000;
-	}
+	ULONG lowerDelta = (deltaTime/10000);
 
-	p1xf += (LONG)(deltaTime / 10000) * cx / 2000;
-	p1hf -= (LONG)(deltaTime / 10000) * cy / 1000;
+	acceleration = (300 - ((p1h - 3) - (UBYTE)(mapHigh[(UBYTE)(p1x)][(UBYTE)(p1y + 15)]))) - lowerDelta*velocity/16;
+
+
+	velocity = velocity + lowerDelta*(acceleration/64);
+
+	p1yf += lowerDelta*velocity/64;
+
+
+	p1xf += (LONG)lowerDelta * cx / 2000;
+	p1hf -= (LONG)lowerDelta * cy / 1000;
 
 	if (p1hf > 7000)
 		p1hf = 7000; //block going above hills

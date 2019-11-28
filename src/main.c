@@ -588,6 +588,7 @@ void engineGsLoop(void)
 				p1xf = 64 * 100;
 				p1yf = 0;
 				p1hf = 50 * 100;
+				velocity = 0;
 				CopyMapWord(mapSource[0], mapHigh);
 
 				levelTime = 0;
@@ -613,13 +614,13 @@ void engineGsLoop(void)
 		CopyFastToChipW(s_pBuffer->pBack);
 	}
 
-	//ConvertIntToChar(bcLogo[0], sPlayerX);
-	ConvertIntToChar(p1y, sPlayerY);
+	ConvertIntToChar(acceleration, sPlayerX);
+	//ConvertIntToChar(p1y, sPlayerY);
 	//ConvertIntToChar(bcLogo[2], sPlayerH);
 	//timerFormatPrec(sTime, startTime);
 	//ConvertIntToChar(bcLogo[3], sTime);
-	//ConvertIntToChar(bcLogo[4], sVelocity);
-	//ConvertIntToChar(bcLogo[5], sScore);
+	ConvertIntToChar(velocity, sVelocity);
+	//ConvertIntToChar(acceleration, sScore);
 
 	/*for (int i = 0; i < 16; i++)
 	{
@@ -628,18 +629,18 @@ void engineGsLoop(void)
 		fontDrawTextBitMap(s_pBuffer->pBack, pixel[i], 20, i * 8, 15, FONT_LEFT);
 	}*/
 
-	//fontFillTextBitMap(s_pMenuFont, pBitmapPlayerX, sPlayerX);
-	fontFillTextBitMap(s_pMenuFont, pBitmapPlayerY, sPlayerY);
+	fontFillTextBitMap(s_pMenuFont, pBitmapPlayerX, sPlayerX);
+	//fontFillTextBitMap(s_pMenuFont, pBitmapPlayerY, sPlayerY);
 	//fontFillTextBitMap(s_pMenuFont, pBitmapPlayerH, sPlayerH);
 	//fontFillTextBitMap(s_pMenuFont, pBitmapTime, sTime);
-	//fontFillTextBitMap(s_pMenuFont, pBitmapVelocity, sVelocity);
+	fontFillTextBitMap(s_pMenuFont, pBitmapVelocity, sVelocity);
 	//fontFillTextBitMap(s_pMenuFont, pBitmapScore, sScore);
 
-	//fontDrawTextBitMap(s_pBuffer->pBack, pBitmapPlayerX, 20, 225, 15, FONT_LEFT);
-	fontDrawTextBitMap(s_pBuffer->pBack, pBitmapPlayerY, 40, 225, 15, FONT_LEFT);
+	fontDrawTextBitMap(s_pBuffer->pBack, pBitmapPlayerX, 20, 225, 15, FONT_LEFT);
+	//fontDrawTextBitMap(s_pBuffer->pBack, pBitmapPlayerY, 40, 225, 15, FONT_LEFT);
 	//fontDrawTextBitMap(s_pBuffer->pBack, pBitmapPlayerH, 60, 225, 15, FONT_LEFT);
 	//fontDrawTextBitMap(s_pBuffer->pBack, pBitmapTime, 80, 225, 12, FONT_LEFT);
-	//fontDrawTextBitMap(s_pBuffer->pBack, pBitmapVelocity, 100, 225, 12, FONT_LEFT);
+	fontDrawTextBitMap(s_pBuffer->pBack, pBitmapVelocity, 100, 225, 12, FONT_LEFT);
 	//fontDrawTextBitMap(s_pBuffer->pBack, pBitmapScore, 120, 225, 12, FONT_LEFT);
 
 	interlace++;
