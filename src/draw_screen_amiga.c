@@ -33,6 +33,10 @@ void DrawPlayerScreen3x2(UBYTE *screen, UBYTE player, UBYTE depth, UBYTE startSc
 	UWORD sp,position;
 	UWORD address1, address2;
 	UWORD word;
+	UWORD yOffset;
+
+
+	yOffset = (256 - YSIZEODD*2)/2 * 20;
 
 	sp = 0;
 
@@ -40,7 +44,7 @@ void DrawPlayerScreen3x2(UBYTE *screen, UBYTE player, UBYTE depth, UBYTE startSc
 	for(UBYTE y=0;y<YSIZEODD;y++)
 	{
 		//40 bytes * y + even/odd + player screen offset WORDs
-		position = y*20*2  + startScreen;
+		position = yOffset + y*20*2  + startScreen;
 		//draw the line with WORDs made up of 2 BYTEs each consisting 3 pixels
 		for(UBYTE x=0;x<xCycles;x++)
 		{
