@@ -13,7 +13,7 @@ void ProcessQualityInput()
 		debugValue2 = 1;
 		debugValue3 = 10;
 		debugValue4 = 2;
-		Recalculate();
+	//	Recalculate();
 	}
 	if (keyCheck(KEY_2) && debugValue != 2)
 	{
@@ -22,7 +22,7 @@ void ProcessQualityInput()
 		debugValue2 = 1;
 		debugValue3 = 10;
 		debugValue4 = 2;
-		Recalculate();
+	//	Recalculate();
 	}
 	if (keyCheck(KEY_3) && debugValue != 3)
 	{
@@ -31,7 +31,7 @@ void ProcessQualityInput()
 		debugValue2 = 1;
 		debugValue3 = 10;
 		debugValue4 = 2;
-		Recalculate();
+	//	Recalculate();
 	}
 	if (keyCheck(KEY_4) && debugValue != 4)
 	{
@@ -40,7 +40,7 @@ void ProcessQualityInput()
 		debugValue2 = 2;
 		debugValue3 = 2;
 		debugValue4 = 1;
-		Recalculate();
+	//	Recalculate();
 	}
 	if (keyCheck(KEY_5) && debugValue != 5)
 	{
@@ -49,7 +49,7 @@ void ProcessQualityInput()
 		debugValue2 = 2;
 		debugValue3 = 2;
 		debugValue4 = 1;
-		Recalculate();
+	//	Recalculate();
 	}
 	if (keyCheck(KEY_6) && debugValue != 6)
 	{
@@ -58,7 +58,7 @@ void ProcessQualityInput()
 		debugValue2 = 2;
 		debugValue3 = 2;
 		debugValue4 = 1;
-		Recalculate();
+		RecalculateOdd();
 	}
 	if (keyCheck(KEY_7) && debugValue != 7 )
 	{
@@ -72,7 +72,7 @@ void ProcessQualityInput()
 		// debugValue3 = 1;
 		// debugValue4 = 0;
 		if(debugValue != 8 && debugValue != 7)
-			Recalculate();
+			RecalculateOdd();
 	}
 	if (keyCheck(KEY_8) )
 	{

@@ -23,8 +23,9 @@ void CalculateRayCasts(WORD (*rayCastX)[TERRAINDEPTH], WORD (*rayCastY)[TERRAIND
 	WORD stepModifier = debugValue6*4;
 
 	tzz = 1;
-	for(int tz=1;tz<TERRAINDEPTH;tz++)
+	for(int tz=1;tz<renderingDepth;tz++)
 	{
+		DrawPixelWord((tz*20)/renderingDepth,PLANEHEIGHT/2,(tz*16)/renderingDepth);
 		//high - 2 - 8
 		tzz += debugValue3+tz/debugValue2;//+tz/16; //increase step with the distance from camera
 		for(int sx=-xMiddle;sx<xMiddle;sx++)

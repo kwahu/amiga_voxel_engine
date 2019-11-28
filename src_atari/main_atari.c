@@ -17,6 +17,7 @@
 #include "../src/file_read.c"
 #include "../src/engine.h"
 #include "draw_maps_atari.c"
+#include "draw_sprite_atari.c"
 #include "../src/ray_cast_calculate.c"
 #include "../src/bitmap_filters.c"
 #include "../src/setup_maps.c"
@@ -203,6 +204,10 @@ void main_supervisor()
 
 		
 		RenderQuality();
+
+		//draw crosshair
+		DrawPixel((160 + (cx / 150)) / 16, YSIZEODD + (cy / 100) + 4, 0);
+		DrawPixel((160 + (cx / 150)) / 16, YSIZEODD + (cy / 100) - 4, 0);
             
 
 		//IKBD_Flush();

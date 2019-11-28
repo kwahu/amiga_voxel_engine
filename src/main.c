@@ -55,7 +55,7 @@ static tVPort *s_pVPort;
 static tSimpleBufferManager *s_pBuffer;
 static tAvg *s_pAvgTime;
 
-tTextBitMap *pBitmapPlayerX, *pBitmapPlayerY, *pBitmapPlayerH;
+tTextBitMap *pBitmapPlayerX, *pBitmapPlayerY, *pBitmapPlayerH, *informationText;
 tTextBitMap *pBitmapTime, *pBitmapVelocity, *pBitmapScore;
 
 tTextBitMap *pixel[32];
@@ -65,31 +65,20 @@ char sTime[10], sVelocity[5], sScore[5];
 char fadeInStatus[4], fadeOutStatus[4];
 unsigned char *currentPallete;
 
+UBYTE hardwareSelection = 0;
+
 UBYTE gamePaletteSet = 0;
 
-void Recalculate()
+void RecalculateEven()
 {
 	CalculateRayCasts(rayCastXEven, rayCastYEven, XSIZEEVEN, YSIZEEVEN, 2); //było 2
+	deltaTime = 0;
+}
+void RecalculateOdd()
+{
 	CalculateRayCasts(rayCastXOdd, rayCastYOdd, XSIZEODD, YSIZEODD, 1);
 	deltaTime = 0;
 }
-
-void SetDefaulResolution()
-{
-		renderingDepth = 64;
-		debugValue = 6;
-		debugValue2 = 2;
-		debugValue3 = 2;
-		debugValue4 = 1;
-
-
-	debugValue6 = 4;
-	xFOV = 10;
-	Recalculate();
-}
-
-
-
 
 void ConvertIntToChar(int number, char *test)
 {
@@ -342,7 +331,6 @@ void engineGsCreate(void)
 	GenerateColorBytesNoDither4x4();
 	GenerateColorBytesDither3x2();
 
-	SetDefaulResolution();
 
 	pBitmapPlayerX = fontCreateTextBitMapFromStr(s_pMenuFont, "1234567890");
 	pBitmapPlayerY = fontCreateTextBitMapFromStr(s_pMenuFont, "1234567890");
@@ -350,6 +338,7 @@ void engineGsCreate(void)
 	pBitmapTime = fontCreateTextBitMapFromStr(s_pMenuFont, "1234567890");
 	pBitmapVelocity = fontCreateTextBitMapFromStr(s_pMenuFont, "1234567890");
 	pBitmapScore = fontCreateTextBitMapFromStr(s_pMenuFont, "1234567890");
+	
 
 	for (int i = 0; i < 32; i++)
 		pixel[i] = fontCreateTextBitMapFromStr(s_pMenuFont, "1234567890");
@@ -362,6 +351,51 @@ void engineGsCreate(void)
 
 	joyOpen(0);
 	systemUnuse();
+
+	informationText = fontCreateTextBitMapFromStr(s_pMenuFont, "KEY 1 = A500  KEY 2 = A1200 KEY 3 = A3000");
+	//fontFillTextBitMap(s_pMenuFont, informationText, sPlayerY);
+	fontDrawTextBitMap(s_pBuffer->pBack, informationText, 50, PLANEHEIGHT/2, 3, FONT_LEFT);
+	//vPortWaitForEnd(s_pVPort);
+	//CopyFastToChipW(s_pBuffer->pBack);
+	while(hardwareSelection == 0) //A500
+	{
+		if (keyCheck(KEY_1))
+		{
+			renderingDepth = TERRAINDEPTH;
+			debugValue = 8;
+			debugValue2 = 2;
+			debugValue3 = 2;
+			debugValue4 = 1;
+
+			debugValue6 = 4;
+			xFOV = 10;
+			RecalculateOdd();
+			hardwareSelection = 1;
+		}
+		if (keyCheck(KEY_2) && debugValue != 2) //A1200
+		{
+			renderingDepth = 16;
+			debugValue = 2;
+			debugValue2 = 1;
+			debugValue3 = 10;
+			debugValue4 = 2;
+			RecalculateEven();
+			hardwareSelection = 2;
+		}
+		if (keyCheck(KEY_3) && debugValue != 3) //A3000
+		{
+			renderingDepth = 64;
+			debugValue = 6;
+			debugValue2 = 2;
+			debugValue3 = 2;
+			debugValue4 = 1;
+
+			debugValue6 = 4;
+			xFOV = 10;
+			RecalculateOdd();
+			hardwareSelection = 3;
+		}
+	}
 	screenDuration = 5000000;
 	//memcpy(s_pVPort->pPalette, kolory2, 16 * sizeof(UWORD));
 }
@@ -544,6 +578,12 @@ void engineGsLoop(void)
 	}
 	else
 	{
+
+		if (keyCheck(KEY_ESCAPE))
+			{
+				gameClose();
+			}
+
 		if(gamePaletteSet == 0)
 		{
 			SetGamePaletter();
@@ -551,161 +591,23 @@ void engineGsLoop(void)
 		}
 
 	
-		if (keyCheck(KEY_SPACE))
-		{
-			gameClose();
-		}
-		else
-		{
-			if (keyCheck(KEY_Q))
-			{
-				debugValue5 = 1;
-			}
-			if (keyCheck(KEY_W))
-			{
-				debugValue5 = 2;
-			}
-			if (keyCheck(KEY_E))
-			{
-				debugValue5 = 3;
-			}
-			if (keyCheck(KEY_R))
-			{
-				debugValue5 = 4;
-			}
-			if (keyCheck(KEY_T))
-			{
-				debugValue5 = 5;
-			}
-			if (keyCheck(KEY_Y))
-			{
-				debugValue5 = 6;
-			}
-			if (keyCheck(KEY_U))
-			{
-				debugValue5 = 7;
-			}
-			if (keyCheck(KEY_I))
-			{
-				debugValue5 = 8;
-			}
-			if (keyCheck(KEY_O))
-			{
-				debugValue5 = 9;
-			}
-			if (keyCheck(KEY_P))
-			{
-				debugValue5 = 10;
-			}
-
-			if (keyCheck(KEY_A))
-			{
-				debugValue6 = 1;
-				Recalculate();
-			}
-			if (keyCheck(KEY_S))
-			{
-				debugValue6 = 2;
-				Recalculate();
-			}
-			if (keyCheck(KEY_D))
-			{
-				debugValue6 = 3;
-				Recalculate();
-			}
-			if (keyCheck(KEY_F))
-			{
-				debugValue6 = 4;
-				Recalculate();
-			}
-			if (keyCheck(KEY_G))
-			{
-				debugValue6 = 5;
-				Recalculate();
-			}
-			if (keyCheck(KEY_H))
-			{
-				debugValue6 = 6;
-				Recalculate();
-			}
-			if (keyCheck(KEY_J))
-			{
-				debugValue6 = 7;
-				Recalculate();
-			}
-			if (keyCheck(KEY_K))
-			{
-				debugValue6 = 8;
-				Recalculate();
-			}
-			if (keyCheck(KEY_L))
-			{
-				debugValue6 = 9;
-				Recalculate();
-			}
-			if (keyCheck(KEY_SEMICOLON))
-			{
-				debugValue6 = 10;
-				Recalculate();
-			}
-
-			if (keyCheck(KEY_Z))
-			{
-				debugValue8 = -2;
-			}
-			if (keyCheck(KEY_X))
-			{
-				debugValue8 = -1;
-			}
-			if (keyCheck(KEY_C))
-			{
-				debugValue8 = 0;
-			}
-			if (keyCheck(KEY_V))
-			{
-				debugValue8 = 1;
-			}
-			if (keyCheck(KEY_B))
-			{
-				debugValue8 = 2;
-			}
-			if (keyCheck(KEY_N))
-			{
-				debugValue9 = -2;
-			}
-			if (keyCheck(KEY_M))
-			{
-				debugValue9 = -1;
-			}
-			if (keyCheck(KEY_COMMA))
-			{
-				debugValue9 = 0;
-			}
-			if (keyCheck(KEY_PERIOD))
-			{
-				debugValue9 = 1;
-			}
-			if (keyCheck(KEY_SLASH))
-			{
-				debugValue9 = 2;
-			}
 
 			ProcessPlayerInput();
 			OverwriteMap(); //this is how we go through many different maps, we just overwrite the main array with new content
 
 			//restart
-			// if ((p1h - 3) < (UBYTE)(mapHigh[(UBYTE)(p1x)][(UBYTE)(p1y + 15)]))
-			// {
-			// 	p1xf = 64 * 100;
-			// 	p1yf = 0;
-			// 	p1hf = 50 * 100;
-			// 	CopyMapWord(mapSource[0], mapHigh);
+			if ((p1h - 3) < (UBYTE)(mapHigh[(UBYTE)(p1x)][(UBYTE)(p1y + 15)]))
+			{
+				p1xf = 64 * 100;
+				p1yf = 0;
+				p1hf = 50 * 100;
+				CopyMapWord(mapSource[0], mapHigh);
 
-			// 	levelTime = 0;
-			// }
+				levelTime = 0;
+			}
 
 			ProcessQualityInput();
-		}
+		
 
 
 
