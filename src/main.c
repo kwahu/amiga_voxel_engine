@@ -60,6 +60,7 @@ tTextBitMap *pixel[32];
 char sPixel[32][10];
 char sPlayerX[5], sPlayerY[5], sPlayerH[5];
 char sTime[10], sVelocity[5], sScore[5];
+char fadeInStatus[4], fadeOutStatus[4];
 
 void SetDefaulResolution()
 {
@@ -271,6 +272,12 @@ void engineGsCreate(void)
 						   ((bitmapPalette1[i * 4 + 1] >> 4) << 4) + (bitmapPalette1[i * 4 + 0] >> 4);
 	}
 
+	for(int i = 0; i < 4; i++)
+	{
+		fadeInStatus[i] = 1;
+		fadeOutStatus[i] = 0;
+	}
+
 	memcpy(s_pVPort->pPalette, bitmapPalette, 16 * sizeof(UWORD));
 
 	paletteBitmap = LoadBitmapFile("data/palette.bmp", &paletteHeader, palettePalette);
@@ -289,6 +296,7 @@ void engineGsCreate(void)
 	DrawBitmap8b(bitmap1, &bitmapHeader1);
 	vPortWaitForEnd(s_pVPort);
 	CopyFastToChipW(s_pBuffer->pBack);
+	ULONG blitTime = timerGetPrec();
 
 	
 	// Load font
@@ -325,12 +333,12 @@ void engineGsCreate(void)
 	s_pAvgTime = logAvgCreate("perf", 100);
 	levelTime = 0;
 	screenIndex = 1;
-	screenDuration = 0;
 
 	keyCreate();
 
 	joyOpen(0);
 	systemUnuse();
+	screenDuration = 5000000 - (timerGetPrec() - blitTime);
 	//memcpy(s_pVPort->pPalette, kolory2, 16 * sizeof(UWORD));
 }
 
@@ -362,9 +370,15 @@ void engineGsLoop(void)
 				}
 				memcpy(s_pVPort->pPalette, bitmapPalette, 16 * sizeof(UWORD));
 				DrawBitmap8b(bitmap2, &bitmapHeader2);
-				viewLoad(s_pView);
-				vPortWaitForEnd(s_pVPort);
-				CopyFastToChipW(s_pBuffer->pBack);
+				
+				for(int i = 0; i < 4; i++)
+				{
+					fadeInStatus[i] = 0;
+					fadeOutStatus[i] = 0;
+				}
+				//viewLoad(s_pView);
+				//vPortWaitForEnd(s_pVPort);
+				//CopyFastToChipW(s_pBuffer->pBack);
 			}
 			break;
 			case 3:
@@ -376,9 +390,15 @@ void engineGsLoop(void)
 				}
 				memcpy(s_pVPort->pPalette, bitmapPalette, 16 * sizeof(UWORD));
 				DrawBitmap8b(bitmap3, &bitmapHeader3);
-				viewLoad(s_pView);
-				vPortWaitForEnd(s_pVPort);
-				CopyFastToChipW(s_pBuffer->pBack);
+				
+				for(int i = 0; i < 4; i++)
+				{
+					fadeInStatus[i] = 0;
+					fadeOutStatus[i] = 0;
+				}
+				//viewLoad(s_pView);
+				//vPortWaitForEnd(s_pVPort);
+				//CopyFastToChipW(s_pBuffer->pBack);
 			}
 			break;
 			case 0:
@@ -390,25 +410,55 @@ void engineGsLoop(void)
 			break;
 			}
 		}
-		if(screenDuration < 4000000)
+
+		if(screenDuration < 4800000 && !fadeInStatus[3])
 		{
-			ZeroPlane(s_pBuffer->pBack->Planes[0]);
+			CopyPlane(plane4W, s_pBuffer->pBack->Planes[3]);
+			fadeInStatus[3] = 1;
 				viewLoad(s_pView);
 		}
-		if(screenDuration < 3000000)
+		if(screenDuration < 4600000 && !fadeInStatus[2])
+		{
+			CopyPlane(plane3W, s_pBuffer->pBack->Planes[2]);
+				viewLoad(s_pView);
+			fadeInStatus[2] = 1;
+		}
+		if(screenDuration < 4400000 && !fadeInStatus[1])
+		{
+			CopyPlane(plane2W, s_pBuffer->pBack->Planes[1]);
+				viewLoad(s_pView);
+			fadeInStatus[1] = 1;
+		}
+		if(screenDuration < 4200000 && !fadeInStatus[0])
+		{
+			CopyPlane(plane1W, s_pBuffer->pBack->Planes[0]);
+			viewLoad(s_pView);
+			fadeInStatus[0] = 1;
+		}
+
+		if(screenDuration < 800000 && !fadeOutStatus[0])
+		{
+			ZeroPlane(s_pBuffer->pBack->Planes[0]);
+			fadeOutStatus[0] = 1;
+				viewLoad(s_pView);
+		}
+		if(screenDuration < 600000 && !fadeOutStatus[1])
 		{
 			ZeroPlane(s_pBuffer->pBack->Planes[1]);
 				viewLoad(s_pView);
+			fadeOutStatus[1] = 1;
 		}
-		if(screenDuration < 2000000)
+		if(screenDuration < 400000 && !fadeOutStatus[2])
 		{
 			ZeroPlane(s_pBuffer->pBack->Planes[2]);
 				viewLoad(s_pView);
+			fadeOutStatus[2] = 1;
 		}
-		if(screenDuration < 1000000)
+		if(screenDuration < 200000 && !fadeOutStatus[3])
 		{
 			ZeroPlane(s_pBuffer->pBack->Planes[3]);
 			viewLoad(s_pView);
+			fadeOutStatus[3] = 1;
 		}
 
 		screenDuration -= deltaTime;
