@@ -85,6 +85,135 @@ void SetDefaulResolution()
 		Recalculate();
 }
 
+char fadeInStatus[4], fadeOutStatus[4];
+
+void switchIntroScreen()
+{
+
+	switch (screenIndex)
+	{
+	case 2:
+	{
+		bitmap1 = LoadBitmapFile("data/logo2.bmp", &bitmapHeader1, bitmapPalette1);
+		
+		DrawBitmap8b(bitmap1, &bitmapHeader1);
+		
+		for(int i = 0; i < 4; i++)
+		{
+			fadeInStatus[i] = 0;
+			fadeOutStatus[i] = 0;
+		}
+	}
+	break;
+	case 3:
+	{
+		bitmap1 = LoadBitmapFile("data/logo3.bmp", &bitmapHeader1, bitmapPalette1);
+		
+		DrawBitmap8b(bitmap1, &bitmapHeader1);
+		
+		for(int i = 0; i < 4; i++)
+		{
+			fadeInStatus[i] = 0;
+			fadeOutStatus[i] = 0;
+		}
+	}
+	break;
+	case 0:
+	{
+		for (int i = 0; i < 16; i++)
+		{
+			bitmapPalette[i] = ((palettePalette[i * 4 + 2] >> 5) << 8) +
+								((palettePalette[i * 4 + 1] >> 5) << 4) + (palettePalette[i * 4 + 0] >> 5);
+		}
+		Setpalette(bitmapPalette);
+	}
+	break;
+	}
+}
+
+void animateIntro()
+{
+	if(screenDuration < 4600000 && !fadeInStatus[3])
+	{
+		for (int i = 0; i < 16; i++)
+		{
+			bitmapPalette[i] = ((((bitmapPalette1[i * 4 + 2]/4) >> 5) << 8) +
+								(((bitmapPalette1[i * 4 + 1]/4) >> 5) << 4) + ((bitmapPalette1[i * 4 + 0]/4) >> 5));
+		}
+		Setpalette(bitmapPalette);
+		fadeInStatus[3] = 1;
+	}
+	if(screenDuration < 4200000 && !fadeInStatus[2])
+	{
+		for (int i = 0; i < 16; i++)
+		{
+			bitmapPalette[i] = ((((bitmapPalette1[i * 4 + 2]/2) >> 5) << 8) +
+								(((bitmapPalette1[i * 4 + 1]/2) >> 5) << 4) + ((bitmapPalette1[i * 4 + 0]/2) >> 5));
+		}
+		Setpalette(bitmapPalette);
+		fadeInStatus[2] = 1;
+	}
+	if(screenDuration < 3800000 && !fadeInStatus[1])
+	{
+		for (int i = 0; i < 16; i++)
+		{
+			bitmapPalette[i] = ((((bitmapPalette1[i * 4 + 2]*3/4) >> 5) << 8) +
+								(((bitmapPalette1[i * 4 + 1]*3/4) >> 5) << 4) + ((bitmapPalette1[i * 4 + 0]*3/4) >> 5));
+		}
+		Setpalette(bitmapPalette);
+		fadeInStatus[1] = 1;
+	}
+	if(screenDuration < 3400000 && !fadeInStatus[0])
+	{
+		for (int i = 0; i < 16; i++)
+		{
+			bitmapPalette[i] = (((bitmapPalette1[i * 4 + 2] >> 5) << 8) +
+								((bitmapPalette1[i * 4 + 1] >> 5) << 4) + (bitmapPalette1[i * 4 + 0] >> 5));
+		}
+		Setpalette(bitmapPalette);
+		fadeInStatus[0] = 1;
+	}
+
+	if(screenDuration < 1600000 && !fadeOutStatus[0])
+	{
+		for (int i = 0; i < 16; i++)
+		{
+			bitmapPalette[i] = ((((bitmapPalette1[i * 4 + 2]*3/4) >> 5) << 8) +
+								(((bitmapPalette1[i * 4 + 1]*3/4) >> 5) << 4) + ((bitmapPalette1[i * 4 + 0]*3/4) >> 5));
+		}
+		Setpalette(bitmapPalette);
+		fadeOutStatus[0] = 1;
+	}
+	if(screenDuration < 1200000 && !fadeOutStatus[1])
+	{
+		for (int i = 0; i < 16; i++)
+		{
+			bitmapPalette[i] = ((((bitmapPalette1[i * 4 + 2]/2) >> 5) << 8) +
+								(((bitmapPalette1[i * 4 + 1]/2) >> 5) << 4) + ((bitmapPalette1[i * 4 + 0]/2) >> 5));
+		}
+		Setpalette(bitmapPalette);
+		fadeOutStatus[1] = 1;
+	}
+	if(screenDuration < 800000 && !fadeOutStatus[2])
+	{
+		for (int i = 0; i < 16; i++)
+		{
+			bitmapPalette[i] = ((((bitmapPalette1[i * 4 + 2]/4) >> 5) << 8) +
+								(((bitmapPalette1[i * 4 + 1]/4) >> 5) << 4) + ((bitmapPalette1[i * 4 + 0]/4) >> 5));
+		}
+		Setpalette(bitmapPalette);
+		fadeOutStatus[2] = 1;
+	}
+	if(screenDuration < 400000 && !fadeOutStatus[3])
+	{
+		for (int i = 0; i < 16; i++)
+		{
+			bitmapPalette[i] = 0;
+		}
+		Setpalette(bitmapPalette);
+		fadeOutStatus[3] = 1;
+	}
+}
 
 
 
@@ -145,6 +274,9 @@ void main_supervisor()
 	Setpalette(bitmapPalette);
     DrawBitmap8b(bitmap1, &bitmapHeader1);
 
+	screenDuration = 100;
+	screenIndex = 1;
+
 	paletteBitmap = LoadBitmapFile("data/palette.bmp", &paletteHeader, palettePalette);
 
 	//process paletter from an image
@@ -196,36 +328,54 @@ void main_supervisor()
 
     while ( exitflag == 0)
     {
-		
 		getDeltaTime();
-		OverwriteMap();
-		ProcessQualityInputAtari();
-		ProcessPlayerInputAtari();
-
-		
-		RenderQuality();
-
-		//draw crosshair
-		DrawPixel((160 + (cx / 150)) / 16, YSIZEODD + (cy / 100) + 4, 0);
-		DrawPixel((160 + (cx / 150)) / 16, YSIZEODD + (cy / 100) - 4, 0);
-            
-
-		//IKBD_Flush();
-        Vsync();
-		//IKBD_ReadMouse();
-		if(IKBD_Keyboard[IKBD_KEY_ESC])
+		if(screenIndex > 0)
 		{
-		    //PRINT("ESC\r\n");
-			exitflag = 1;
+			if(screenDuration > 5000000)
+			{
+				screenDuration = 5000000;
+				screenIndex = (screenIndex + 1) % 4;
+				switchIntroScreen();
+			}
+
+			animateIntro();
+
+
+			screenDuration -= deltaTime;
 		}
-		if(IKBD_Keyboard[IKBD_KEY_UP]) p1h += 1;
-		if(IKBD_Keyboard[IKBD_KEY_DOWN]) p1h -= 1;
-		//if(IKBD_Keyboard[IKBD_KEY_RIGHT]) p1x += 1;
-		//if(IKBD_Keyboard[IKBD_KEY_LEFT]) p1x -= 1;
-		if(IKBD_Keyboard[IKBD_KEY_CONTROL]) p1y += 1;
-		if(IKBD_Keyboard[IKBD_KEY_ALT]) p1y -= 1;
+		else
+		{
+			OverwriteMap();
+			ProcessQualityInputAtari();
+			ProcessPlayerInputAtari();
+
+			
+			RenderQuality();
+
+			//draw crosshair
+			DrawPixel((160 + (cx / 150)) / 16, YSIZEODD + (cy / 100) + 4, 0);
+			DrawPixel((160 + (cx / 150)) / 16, YSIZEODD + (cy / 100) - 4, 0);
+				
+
+			//IKBD_Flush();
+			Vsync();
+			//IKBD_ReadMouse();
+			if(IKBD_Keyboard[IKBD_KEY_ESC])
+			{
+				//PRINT("ESC\r\n");
+				exitflag = 1;
+			}
+			if(IKBD_Keyboard[IKBD_KEY_UP]) p1h += 1;
+			if(IKBD_Keyboard[IKBD_KEY_DOWN]) p1h -= 1;
+			//if(IKBD_Keyboard[IKBD_KEY_RIGHT]) p1x += 1;
+			//if(IKBD_Keyboard[IKBD_KEY_LEFT]) p1x -= 1;
+			if(IKBD_Keyboard[IKBD_KEY_CONTROL]) p1y += 1;
+			if(IKBD_Keyboard[IKBD_KEY_ALT]) p1y -= 1;
+			
+			if(IKBD_Keyboard[IKBD_KEY_SPACE])  printf("[%ul] \r\n", deltaTime);
+			
+		}
 		
-		if(IKBD_Keyboard[IKBD_KEY_SPACE])  printf("[%ul] \r\n", deltaTime);
 		
 
 		//  joy[0] = IKBD_Joystick0;
