@@ -1,3 +1,7 @@
+#pragma once
+
+#include "engine.h"
+
 #define TERRAINDEPTH 64
 
 #define XTURNBUFFOR 55

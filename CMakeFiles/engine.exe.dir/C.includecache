@@ -115,12 +115,16 @@ engine.h
 /work/src/ray_casting.c
 engine.h
 /work/src/engine.h
+settings_amiga.h
+/work/src/settings_amiga.h
 
 /work/src/rendering_quality.c
 engine.h
 /work/src/engine.h
 
 /work/src/settings_amiga.h
+engine.h
+/work/src/engine.h
 
 /work/src/setup_maps.c
 engine.h
