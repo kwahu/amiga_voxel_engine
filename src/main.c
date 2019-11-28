@@ -50,9 +50,7 @@ void genericDestroy(void)
 {
 }
 
-static tView *s_pView;
-static tVPort *s_pVPort;
-static tSimpleBufferManager *s_pBuffer;
+
 static tAvg *s_pAvgTime;
 
 tTextBitMap *pBitmapPlayerX, *pBitmapPlayerY, *pBitmapPlayerH, *informationText;
@@ -461,9 +459,9 @@ void engineGsCreate(void)
 	// Load font
 	s_pMenuFont = fontCreate("data/silkscreen.fnt");
 
-	p1xf = 100 * 100;
+	p1xf = 40 * 100;
 	p1yf = 0;
-	p1hf = 200 * 100;
+	p1hf = 20 * 100;
 
 	p2x = 0;
 	p2y = 0;
@@ -590,7 +588,9 @@ void engineGsLoop(void)
 				p1hf = 50 * 100;
 				velocity = 0;
 				CopyMapWord(mapSource[0], mapHigh);
-
+				lastOverwrittenLine = 0;
+				cx = 0;
+				cy = 0;
 				levelTime = 0;
 			}
 
@@ -614,8 +614,8 @@ void engineGsLoop(void)
 		CopyFastToChipW(s_pBuffer->pBack);
 	}
 
-	ConvertIntToChar(acceleration, sPlayerX);
-	//ConvertIntToChar(p1y, sPlayerY);
+	ConvertIntToChar((lastOverwrittenLine / 256 + 1) % MAPLENGTH, sPlayerX);
+	ConvertIntToChar(p1y, sPlayerY);
 	//ConvertIntToChar(bcLogo[2], sPlayerH);
 	//timerFormatPrec(sTime, startTime);
 	//ConvertIntToChar(bcLogo[3], sTime);
@@ -630,14 +630,23 @@ void engineGsLoop(void)
 	}*/
 
 	fontFillTextBitMap(s_pMenuFont, pBitmapPlayerX, sPlayerX);
+<<<<<<< HEAD
 	//fontFillTextBitMap(s_pMenuFont, pBitmapPlayerY, sPlayerY);
+=======
+	fontFillTextBitMap(s_pMenuFont, pBitmapPlayerY, sPlayerY);
+>>>>>>> 5c64d1bb1879372bd26b7e413b6fa7b78f8ebda0
 	//fontFillTextBitMap(s_pMenuFont, pBitmapPlayerH, sPlayerH);
 	//fontFillTextBitMap(s_pMenuFont, pBitmapTime, sTime);
 	fontFillTextBitMap(s_pMenuFont, pBitmapVelocity, sVelocity);
 	//fontFillTextBitMap(s_pMenuFont, pBitmapScore, sScore);
 
+<<<<<<< HEAD
 	fontDrawTextBitMap(s_pBuffer->pBack, pBitmapPlayerX, 20, 225, 15, FONT_LEFT);
 	//fontDrawTextBitMap(s_pBuffer->pBack, pBitmapPlayerY, 40, 225, 15, FONT_LEFT);
+=======
+	fontDrawTextBitMap(s_pBuffer->pBack, pBitmapPlayerX, 00, 225, 15, FONT_LEFT);
+	fontDrawTextBitMap(s_pBuffer->pBack, pBitmapPlayerY, 40, 225, 15, FONT_LEFT);
+>>>>>>> 5c64d1bb1879372bd26b7e413b6fa7b78f8ebda0
 	//fontDrawTextBitMap(s_pBuffer->pBack, pBitmapPlayerH, 60, 225, 15, FONT_LEFT);
 	//fontDrawTextBitMap(s_pBuffer->pBack, pBitmapTime, 80, 225, 12, FONT_LEFT);
 	fontDrawTextBitMap(s_pBuffer->pBack, pBitmapVelocity, 100, 225, 12, FONT_LEFT);
@@ -661,6 +670,7 @@ void engineGsDestroy(void)
 	viewDestroy(s_pView);
 
 	fontDestroyTextBitMap(pBitmapPlayerX);
+	fontDestroyTextBitMap(pBitmapPlayerY);
 
 	char szAvg[15];
 	timerFormatPrec(szAvg, endTime - startTime);

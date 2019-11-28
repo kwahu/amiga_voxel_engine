@@ -3,7 +3,7 @@
 
 #include <stdlib.h>
 
-#define PLANEHEIGHT 256
+
 #define PLANEWIDTH 40
 #define PLANEWIDTHWORD 20
 #define DEPTH 4
@@ -69,8 +69,8 @@ UBYTE dither3x2EvenP2[COLORS * COLORS * COLORS]; //32k
 UBYTE dither3x2EvenP3[COLORS * COLORS * COLORS]; //32k
 UBYTE dither3x2EvenP4[COLORS * COLORS * COLORS]; //32k
 
-static LONG p1xf, p1yf, p1hf, p2xf, p2yf, p2hf;
-static UWORD p1x, p1y, p1h, p2x, p2y, p2h;
+LONG p1xf, p1yf, p1hf, p2xf, p2yf, p2hf;
+UWORD p1x, p1y, p1h, p2x, p2y, p2h;
 static int interlace;
 ULONG velocity = 0;
 LONG acceleration = 0;

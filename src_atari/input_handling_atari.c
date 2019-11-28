@@ -66,7 +66,7 @@ void ProcessQualityInputAtari()
 		renderingDepth = TERRAINDEPTH;
 		debugValue = 7;
 		debugValue2 = 2;
-		debugValue3 = 4;
+		debugValue3 = 2;
 		debugValue4 = 1;
 		DrawBitmap8b(bitmap1, &bitmapHeader1);
 	}
@@ -75,7 +75,7 @@ void ProcessQualityInputAtari()
 		renderingDepth = TERRAINDEPTH;
 		debugValue = 8;
 		debugValue2 = 2;
-		debugValue3 = 4;
+		debugValue3 = 2;
 		debugValue4 = 1;
 	}
 
@@ -110,7 +110,7 @@ void ProcessPlayerInputAtari()
  		else if((IKBD_STICK1 & IKBD_JOY_UP) || IKBD_Keyboard[KEY_UP]) {			cy-=deltaTime/100; }
 		else if(cy!=0) {cy = cy - cy/((LONG)(deltaTime)/1000);}
 
- 		if((IKBD_Joystick1 & IKBD_JOY_FIRE ) || IKBD_Keyboard[KEY_CTRL]) 
+ 		if((IKBD_STICK1 & IKBD_JOY_FIRE ) || IKBD_Keyboard[KEY_CTRL]) 
 		 {		p1yf+=deltaTime/2000;}
 
 

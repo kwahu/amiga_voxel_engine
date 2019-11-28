@@ -1,9 +1,10 @@
 #pragma once
 
 #include "engine.h"
+#include <ace/managers/viewport/simplebuffer.h>
 
 #define TERRAINDEPTH 64
-
+#define PLANEHEIGHT 256
 #define XTURNBUFFOR 55
 
 
@@ -26,3 +27,7 @@ UWORD plane1W[PLANEWIDTHWORD * PLANEHEIGHT]; //8k
 UWORD plane2W[PLANEWIDTHWORD * PLANEHEIGHT]; //8k
 UWORD plane3W[PLANEWIDTHWORD * PLANEHEIGHT]; //8k
 UWORD plane4W[PLANEWIDTHWORD * PLANEHEIGHT]; //8k
+
+static tView *s_pView;
+static tVPort *s_pVPort;
+static tSimpleBufferManager *s_pBuffer;

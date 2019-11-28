@@ -9,8 +9,8 @@ void OverwriteMap()
 	for (UWORD y = lastOverwrittenLine; y < p1y; y++)
 	{
 		yy = (UBYTE)y ;
-		yyplusone = yy+1;
-		mapNumber = (y / 256) % MAPLENGTH;
+		yyplusone = (yy+1);
+		mapNumber = (y / 256 + 1) % MAPLENGTH;
 		for (UWORD x = 0; x < MAPSIZE; x++)
 		{
 			word = mapSource[mapNumber][x][yy/2];

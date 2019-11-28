@@ -320,7 +320,7 @@ void main_supervisor()
 	//DrawColorMap(mapHigh);
 
 	initDeltaTime();
-	printf("last \r\n");
+	printf("\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n");
 
 	screenDuration = 5000000;
 	screenIndex = 1;
@@ -349,10 +349,10 @@ void main_supervisor()
 		}
 		else
 		{
-			OverwriteMap();
+			
 			ProcessQualityInputAtari();
 			ProcessPlayerInputAtari();
-
+			OverwriteMap();
 			
 			RenderQuality();
 
@@ -360,7 +360,8 @@ void main_supervisor()
 			DrawPixel((160 + (cx / 150)) / 16, YSIZEODD + (cy / 100) + 4, 0);
 			DrawPixel((160 + (cx / 150)) / 16, YSIZEODD + (cy / 100) - 4, 0);
 				
-
+			printf("%d	%d\r", p1y, (p1y / 256 + 1) % MAPLENGTH);
+			fflush(stdout);
 			//IKBD_Flush();
 			Vsync();
 			//IKBD_ReadMouse();
@@ -369,42 +370,28 @@ void main_supervisor()
 				//PRINT("ESC\r\n");
 				exitflag = 1;
 			}
-			if(IKBD_Keyboard[IKBD_KEY_UP]) p1h += 1;
-			if(IKBD_Keyboard[IKBD_KEY_DOWN]) p1h -= 1;
+			//if(IKBD_Keyboard[IKBD_KEY_UP]) p1h += 1;
+			//if(IKBD_Keyboard[IKBD_KEY_DOWN]) p1h -= 1;
 			//if(IKBD_Keyboard[IKBD_KEY_RIGHT]) p1x += 1;
 			//if(IKBD_Keyboard[IKBD_KEY_LEFT]) p1x -= 1;
-			if(IKBD_Keyboard[IKBD_KEY_CONTROL]) p1y += 1;
-			if(IKBD_Keyboard[IKBD_KEY_ALT]) p1y -= 1;
+			//if(IKBD_Keyboard[IKBD_KEY_CONTROL]) p1y += 1;
+			//if(IKBD_Keyboard[IKBD_KEY_ALT]) p1y -= 1;
 			
-			if(IKBD_Keyboard[IKBD_KEY_SPACE])  printf("[%ul] \r\n", deltaTime);
 			
 		}
 		
-		
-
-		//  joy[0] = IKBD_Joystick0;
-		// joy[1] = IKBD_Joystick1;
-
-        //     for(joy_id = 0; joy_id < 2; joy_id ++)
-        //     {
-        //         for(idx = 0; idx < 5; idx++)
-        //         {
-        //             if(joy[joy_id] & joydecode[idx].mask)
-        //             {
-        //                 Bconout(2,'0'+joy_id);
-        //                 Bconout(2,' ');
-        //                 PRINT(joydecode[idx].txt);
-        //                 //PRINT("\r\n");
-        //             }
-        //         }
-        //     }
-
-        
-       // framebuffer_flip();
-       //key = Cconin ();
-       // main game loop goes here, one iteration per frame drawn
-       // draw content into framebuffer provided by framebuffer_get_pointer()
-       // make hidden framebuffer visible using framebuffer_flip()
+			//restart
+			if ((p1h - 3) < (UBYTE)(mapHigh[(UBYTE)(p1x)][(UBYTE)(p1y + 15)]))
+			{
+				p1xf = 64 * 100;
+				p1yf = 0;
+				p1hf = 50 * 100;
+				CopyMapWord(mapSource[0], mapHigh);
+				lastOverwrittenLine = 0;
+				cx = 0;
+				cy = 0;
+				levelTime = 0;
+			}
 	   endTime = timerGetPrec();
     }
 	free(bitmap1);

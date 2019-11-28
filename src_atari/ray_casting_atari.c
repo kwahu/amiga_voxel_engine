@@ -61,7 +61,7 @@ WORD (*rayCastX)[TERRAINDEPTH], WORD (*rayCastY)[TERRAINDEPTH], UWORD (*map)[256
 		tz = tzz[iHor];//set current depth - tz
 		while(tz < TERRAINDEPTH)//check depth step by step
 		{
-			mapValue = map[ (UBYTE)( px + rayCastX[sx][tz] ) ][ (UBYTE)( py + tz<<debugValue4 ) ];//read color + height
+			mapValue = map[ (UBYTE)( px + rayCastX[sx][tz] ) ][ (UBYTE)( py + (tz<<debugValue4) ) ];//read color + height
 			th = mapValue;//take just the height
 			slope = th - (ph + rayCastY[sy][tz]);//check if read height is higher than what we expect from the raycast table
 			if(slope > 0)
@@ -78,6 +78,7 @@ WORD (*rayCastX)[TERRAINDEPTH], WORD (*rayCastY)[TERRAINDEPTH], UWORD (*map)[256
 		if(tz == TERRAINDEPTH) c = 31; //draw sky if too deep
 	}
 	*address1 = (c<<10) + (c<<5) + (c); *address2 = *address1;
+	
 	
 	return tz;
 }
@@ -99,7 +100,7 @@ WORD (*rayCastX)[TERRAINDEPTH], WORD (*rayCastY)[TERRAINDEPTH], UWORD (*map)[256
 		tz = tzz[iHor];//set current depth - tz
 		while(tz < TERRAINDEPTH)//check depth step by step
 		{
-			mapValue = map[ (UBYTE)( px + rayCastX[sx][tz] ) ][ (UBYTE)( py + tz<<debugValue4 ) ];//read color + height
+			mapValue = map[ (UBYTE)( px + rayCastX[sx][tz] ) ][ (UBYTE)( py + (tz<<debugValue4) ) ];//read color + height
 			th = mapValue;//take just the height
 			slope = th - (ph + rayCastY[sy][tz]);//check if read height is higher than what we expect from the raycast table
 			if(slope > 0)
@@ -137,7 +138,7 @@ WORD (*rayCastX)[TERRAINDEPTH], WORD (*rayCastY)[TERRAINDEPTH], UWORD (*map)[256
 		tz = tzz[iHor];//set current depth - tz
 		while(tz < TERRAINDEPTH)//check depth step by step
 		{
-			mapValue = map[ (UBYTE)( px + rayCastX[sx][tz] ) ][ (UBYTE)( py + tz<<debugValue4 ) ];//read color + height
+			mapValue = map[ (UBYTE)( px + rayCastX[sx][tz] ) ][ (UBYTE)( py + (tz<<debugValue4) ) ];//read color + height
 			th = mapValue;//take just the height
 			slope = th - (ph + rayCastY[sy][tz]);//check if read height is higher than what we expect from the raycast table
 			if(slope > 0)
@@ -175,7 +176,7 @@ WORD (*rayCastX)[TERRAINDEPTH], WORD (*rayCastY)[TERRAINDEPTH], UWORD (*map)[256
 		tz = tzz[iHor];//set current depth - tz
 		while(tz < TERRAINDEPTH)//check depth step by step
 		{
-			mapValue = map[ (UBYTE)( px + rayCastX[sx][tz] ) ][ (UBYTE)( py + tz<<debugValue4 ) ];//read color + height
+			mapValue = map[ (UBYTE)( px + rayCastX[sx][tz] ) ][ (UBYTE)( py + (tz<<debugValue4) ) ];//read color + height
 			th = mapValue;//take just the height
 			slope = th - (ph + rayCastY[sy][tz]);//check if read height is higher than what we expect from the raycast table
 			if(slope > 0)
@@ -217,6 +218,7 @@ void ProcessRayCasts3x2(WORD (*rayCastX)[TERRAINDEPTH], WORD (*rayCastY)[TERRAIN
 	//start with the buffor + vertical stripe start + turning amount
 	sx = XTURNBUFFOR + tableXStart + xOffset;
 	//currentScreenYStepSize = xCycles;
+
 
 	//for each vertical line
 	for(iVert=0;iVert<xCycles;iVert++)

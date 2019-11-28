@@ -34,6 +34,13 @@ else if(debugValue == 7)
 }
 else if(debugValue == 8)
 {
+	// ProcessRayCastsFull(screen3x2b,rayCastXOdd, rayCastYOdd,mapHigh,p1x,p1y,p1h,24, 1, 1, 0, 24,1,12,YSIZEODD, xOffsetOdd);
+	// ProcessRayCastsFull(screen3x2c,rayCastXOdd, rayCastYOdd,mapHigh,p1x,p1y,p1h,48, 1, 1, 0, 24,1,12,YSIZEODD, xOffsetOdd);
+	// ProcessRayCastsFull(screen3x2d,rayCastXOdd, rayCastYOdd,mapHigh,p1x,p1y,p1h,72, 1, 1, 0, 24,1,12,YSIZEODD, xOffsetOdd);
+
+	// DrawPlayerScreen3x2(screen3x2b,1,0,4,4);
+	// DrawPlayerScreen3x2(screen3x2c,1,0,8,4);
+	// DrawPlayerScreen3x2(screen3x2d,1,0,12,4);
 	ProcessRayCasts3x2(rayCastXOdd, rayCastYOdd,mapHigh,p1x,p1y,p1h,0,   20,1,12,YSIZEODD, xOffsetOdd);
 }
 }
