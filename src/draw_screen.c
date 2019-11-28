@@ -9,6 +9,11 @@ void CopyFastToChipW(tBitMap *bm)
 	CopyMemQuick(plane3W, bm->Planes[2], PLANEWIDTH*PLANEHEIGHT);
 	CopyMemQuick(plane4W, bm->Planes[3], PLANEWIDTH*PLANEHEIGHT);
 }
+
+void ZeroPlane(UBYTE *plane)
+{
+	memset(plane, 0, PLANEWIDTH*PLANEHEIGHT);
+}
 /*
 void CalculateModulo2()
 {
