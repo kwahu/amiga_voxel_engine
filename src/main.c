@@ -282,8 +282,6 @@ void engineGsCreate(void)
 								   TAG_DONE);
 
 	bitmap1 = LoadBitmapFile("data/logo1.bmp", &bitmapHeader1, bitmapPalette1);
-	bitmap2 = LoadBitmapFile("data/logo2.bmp", &bitmapHeader2, bitmapPalette2);
-	bitmap3 = LoadBitmapFile("data/logo3.bmp", &bitmapHeader3, bitmapPalette3);
 	paletteBitmap = LoadBitmapFile("data/palette.bmp", &paletteHeader, palettePalette);
 
 	//process paletter from an image
@@ -421,15 +419,18 @@ void engineGsLoop(void)
 			{
 			case 2:
 			{
+				systemUse();
+				bitmap1 = LoadBitmapFile("data/logo2.bmp", &bitmapHeader1, bitmapPalette1);
+				systemUnuse();
 				// for (int i = 0; i < 16; i++)
 				// {
 				// 	bitmapPalette[i] = ((bitmapPalette2[i * 4 + 2] >> 4) << 8) +
 				// 					   ((bitmapPalette2[i * 4 + 1] >> 4) << 4) + (bitmapPalette2[i * 4 + 0] >> 4);
 				// }
 				
-				currentPallete = bitmapPalette2;
+				currentPallete = bitmapPalette1;
 				//memcpy(s_pVPort->pPalette, bitmapPalette, 16 * sizeof(UWORD));
-				DrawBitmap8b(bitmap2, &bitmapHeader2);
+				DrawBitmap8b(bitmap1, &bitmapHeader1);
 				
 				for(int i = 0; i < 4; i++)
 				{
@@ -443,15 +444,18 @@ void engineGsLoop(void)
 			break;
 			case 3:
 			{
+				systemUse();
+				bitmap1 = LoadBitmapFile("data/logo3.bmp", &bitmapHeader1, bitmapPalette1);
+				systemUnuse();
 				// for (int i = 0; i < 16; i++)
 				// {
 				// 	bitmapPalette[i] = ((bitmapPalette3[i * 4 + 2] >> 4) << 8) +
 				// 					   ((bitmapPalette3[i * 4 + 1] >> 4) << 4) + (bitmapPalette3[i * 4 + 0] >> 4);
 				// }
 				
-				currentPallete = bitmapPalette3;
+				currentPallete = bitmapPalette1;
 				//memcpy(s_pVPort->pPalette, bitmapPalette, 16 * sizeof(UWORD));
-				DrawBitmap8b(bitmap3, &bitmapHeader3);
+				DrawBitmap8b(bitmap1, &bitmapHeader1);
 				
 				for(int i = 0; i < 4; i++)
 				{
@@ -467,8 +471,8 @@ void engineGsLoop(void)
 			{
 				for (int i = 0; i < 16; i++)
 				{
-					bitmapPalette[i] = ((bitmapPalette3[i * 4 + 2] >> 4) << 8) +
-									   ((bitmapPalette3[i * 4 + 1] >> 4) << 4) + (bitmapPalette3[i * 4 + 0] >> 4);
+					bitmapPalette[i] = ((palettePalette[i * 4 + 2] >> 4) << 8) +
+									   ((palettePalette[i * 4 + 1] >> 4) << 4) + (palettePalette[i * 4 + 0] >> 4);
 				}
 				memcpy(s_pVPort->pPalette, bitmapPalette, 16 * sizeof(UWORD));
 				//memcpy(s_pVPort->pPalette, kolory2, 16 * sizeof(UWORD));
@@ -486,6 +490,7 @@ void engineGsLoop(void)
 			 	bitmapPalette[i] = ((((currentPallete[i * 4 + 2]/4) >> 4) << 8) +
 			 					   (((currentPallete[i * 4 + 1]/4) >> 4) << 4) + ((currentPallete[i * 4 + 0]/4) >> 4));
 			}
+				memcpy(s_pVPort->pPalette, bitmapPalette, 16 * sizeof(UWORD));
 			fadeInStatus[3] = 1;
 				viewLoad(s_pView);
 		}
@@ -583,12 +588,6 @@ void engineGsLoop(void)
 			{
 				gameClose();
 			}
-
-		if(gamePaletteSet == 0)
-		{
-			SetGamePaletter();
-			gamePaletteSet = 1;
-		}
 
 	
 
