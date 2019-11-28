@@ -12,6 +12,7 @@ CMakeFiles/engine.exe.dir/src/draw_maps.c.obj: src/engine.h
 
 CMakeFiles/engine.exe.dir/src/draw_screen.c.obj: src/draw_screen.c
 CMakeFiles/engine.exe.dir/src/draw_screen.c.obj: src/engine.h
+CMakeFiles/engine.exe.dir/src/draw_screen.c.obj: src/settings_amiga.h
 CMakeFiles/engine.exe.dir/src/draw_screen.c.obj: deps/ace/include/ace/macros.h
 CMakeFiles/engine.exe.dir/src/draw_screen.c.obj: deps/ace/include/ace/managers/copper.h
 CMakeFiles/engine.exe.dir/src/draw_screen.c.obj: deps/ace/include/ace/managers/log.h
@@ -47,6 +48,7 @@ CMakeFiles/engine.exe.dir/src/main.c.obj: src/map_streaming.c
 CMakeFiles/engine.exe.dir/src/main.c.obj: src/ray_cast_calculate.c
 CMakeFiles/engine.exe.dir/src/main.c.obj: src/ray_casting.c
 CMakeFiles/engine.exe.dir/src/main.c.obj: src/rendering_quality.c
+CMakeFiles/engine.exe.dir/src/main.c.obj: src/settings_amiga.h
 CMakeFiles/engine.exe.dir/src/main.c.obj: src/setup_maps.c
 CMakeFiles/engine.exe.dir/src/main.c.obj: deps/ace/include/ace/generic/main.h
 CMakeFiles/engine.exe.dir/src/main.c.obj: deps/ace/include/ace/macros.h
@@ -74,4 +76,5 @@ CMakeFiles/engine.exe.dir/src/mipmaps.c.obj: src/mipmaps.c
 
 CMakeFiles/engine.exe.dir/src/ray_casting.c.obj: src/engine.h
 CMakeFiles/engine.exe.dir/src/ray_casting.c.obj: src/ray_casting.c
+CMakeFiles/engine.exe.dir/src/ray_casting.c.obj: src/settings_amiga.h
 
