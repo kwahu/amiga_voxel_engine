@@ -43,7 +43,7 @@ UBYTE tableStepSizeX, UBYTE tableStepSizeY, UBYTE tableStepNumber, UBYTE xCycles
 
 			//check if read height is higher than what we expect from the raycast table
 			slope = th - (ph + rayCastY[sy][tz]);
-			if(slope > tz>>3)
+			if(slope > tz>>2)
 			{
 				screen[position] = (mapValue >> 8) + ((slope/4) & 1);//( ( 13 - (mapValue >> 8) ) >> (mist>>5) )+ 13 + ((slope/4) & 1);// + (((tz+py)>>2) & 1);//write pixel color
 				sy+=tableStepSizeY;//go step higher in the raycast table

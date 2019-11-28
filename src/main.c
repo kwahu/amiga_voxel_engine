@@ -621,7 +621,7 @@ void engineGsLoop(void)
 
 		//DrawBitmap8b(bitmap1, &bitmapHeader1);
 
-	//	vPortWaitForEnd(s_pVPort);
+		vPortWaitForEnd(s_pVPort);
 		CopyFastToChipW(s_pBuffer->pBack);
 	}
 
