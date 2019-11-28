@@ -8,7 +8,7 @@
 #define BYTE	signed char
 
 #define TERRAINDEPTH 32
-
+#define PLANEHEIGHT 200
 #define XSIZEODD 120 + XTURNBUFFOR * 2
 #define XSIZEEVEN 80 + XTURNBUFFOR * 2
 

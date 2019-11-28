@@ -190,7 +190,7 @@ void main_supervisor()
 	//DrawColorMap(mapHigh);
 
 	initDeltaTime();
-	printf("last \r\n");
+	printf("\r\n \r\n \r\n \r\n \r\n \r\n \r\n \r\n \r\n \r\n \r\n \r\n \r\n \r\n \r\n \r\n \r\n \r\n \r\n \r\n");
 
 	Setpalette(bitmapPalette);
 
@@ -198,9 +198,10 @@ void main_supervisor()
     {
 		
 		getDeltaTime();
-		OverwriteMap();
+		
 		ProcessQualityInputAtari();
 		ProcessPlayerInputAtari();
+		OverwriteMap();
 
 		
 		RenderQuality();
@@ -208,10 +209,14 @@ void main_supervisor()
 		//draw crosshair
 		DrawPixel((160 + (cx / 150)) / 16, YSIZEODD + (cy / 100) + 4, 0);
 		DrawPixel((160 + (cx / 150)) / 16, YSIZEODD + (cy / 100) - 4, 0);
+
+
             
 
 		//IKBD_Flush();
         Vsync();
+		printf("%d %d\r", p1y , (lastOverwrittenLine / 256 + 1) % MAPLENGTH );
+		fflush(stdout);
 		//IKBD_ReadMouse();
 		if(IKBD_Keyboard[IKBD_KEY_ESC])
 		{
@@ -225,25 +230,19 @@ void main_supervisor()
 		if(IKBD_Keyboard[IKBD_KEY_CONTROL]) p1y += 1;
 		if(IKBD_Keyboard[IKBD_KEY_ALT]) p1y -= 1;
 		
-		if(IKBD_Keyboard[IKBD_KEY_SPACE])  printf("[%ul] \r\n", deltaTime);
-		
-
-		//  joy[0] = IKBD_Joystick0;
-		// joy[1] = IKBD_Joystick1;
-
-        //     for(joy_id = 0; joy_id < 2; joy_id ++)
-        //     {
-        //         for(idx = 0; idx < 5; idx++)
-        //         {
-        //             if(joy[joy_id] & joydecode[idx].mask)
-        //             {
-        //                 Bconout(2,'0'+joy_id);
-        //                 Bconout(2,' ');
-        //                 PRINT(joydecode[idx].txt);
-        //                 //PRINT("\r\n");
-        //             }
-        //         }
-        //     }
+			//restart
+			if ((p1h - 3) < (UBYTE)(mapHigh[(UBYTE)(p1x)][(UBYTE)(p1y + 15)]))
+			{
+				p1xf = 40 * 100;
+				p1yf = 0;
+				p1hf = 20 * 100;
+				CopyMapWord(mapSource[0], mapHigh);
+				lastOverwrittenLine = 0;
+				cx = 0;
+				cy = 0;
+				levelTime = 0;
+				
+			}
 
         
        // framebuffer_flip();

@@ -3,7 +3,7 @@
 
 #include <stdlib.h>
 
-#define PLANEHEIGHT 256
+
 #define PLANEWIDTH 40
 #define PLANEWIDTHWORD 20
 #define DEPTH 4

@@ -25,7 +25,17 @@ void CalculateRayCasts(WORD (*rayCastX)[TERRAINDEPTH], WORD (*rayCastY)[TERRAIND
 	tzz = 1;
 	for(int tz=1;tz<renderingDepth;tz++)
 	{
-		DrawPixelWord((tz*20)/renderingDepth,PLANEHEIGHT/2,(tz*16)/renderingDepth);
+		DrawPixelWord((tz*20)/renderingDepth,PLANEHEIGHT-8,(tz*20)/renderingDepth);
+		DrawPixelWord((tz*20)/renderingDepth,PLANEHEIGHT-7,(tz*20)/renderingDepth);
+		DrawPixelWord((tz*20)/renderingDepth,PLANEHEIGHT-6,(tz*20)/renderingDepth);
+		DrawPixelWord((tz*20)/renderingDepth,PLANEHEIGHT-5,(tz*20)/renderingDepth);
+		DrawPixelWord((tz*20)/renderingDepth,PLANEHEIGHT-4,(tz*20)/renderingDepth);
+		DrawPixelWord((tz*20)/renderingDepth,PLANEHEIGHT-3,(tz*20)/renderingDepth);
+		DrawPixelWord((tz*20)/renderingDepth,PLANEHEIGHT-2,(tz*20)/renderingDepth);
+		DrawPixelWord((tz*20)/renderingDepth,PLANEHEIGHT-1,(tz*20)/renderingDepth);
+		#ifdef AMIGA
+			CopyFastToChipW(s_pBuffer->pBack);
+		#endif
 		//high - 2 - 8
 		tzz += debugValue3+tz/debugValue2;//+tz/16; //increase step with the distance from camera
 		for(int sx=-xMiddle;sx<xMiddle;sx++)
