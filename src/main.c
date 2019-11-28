@@ -67,6 +67,154 @@ UBYTE hardwareSelection = 0;
 
 UBYTE gamePaletteSet = 0;
 
+
+void switchIntroScreen()
+{
+
+	switch (screenIndex)
+	{
+	case 2:
+	{
+		systemUse();
+		bitmap1 = LoadBitmapFile("data/logo2.bmp", &bitmapHeader1, bitmapPalette1);
+		systemUnuse();
+		
+		DrawBitmap8b(bitmap1, &bitmapHeader1);
+		
+		for(int i = 0; i < 4; i++)
+		{
+			fadeInStatus[i] = 0;
+			fadeOutStatus[i] = 0;
+		}
+		viewLoad(s_pView);
+		vPortWaitForEnd(s_pVPort);
+		CopyFastToChipW(s_pBuffer->pBack);
+	}
+	break;
+	case 3:
+	{
+		systemUse();
+		bitmap1 = LoadBitmapFile("data/logo3.bmp", &bitmapHeader1, bitmapPalette1);
+		systemUnuse();
+		DrawBitmap8b(bitmap1, &bitmapHeader1);
+		
+		for(int i = 0; i < 4; i++)
+		{
+			fadeInStatus[i] = 0;
+			fadeOutStatus[i] = 0;
+		}
+		viewLoad(s_pView);
+		vPortWaitForEnd(s_pVPort);
+		CopyFastToChipW(s_pBuffer->pBack);
+	}
+	break;
+	case 0:
+	{
+		for (int i = 0; i < 16; i++)
+		{
+			bitmapPalette[i] = ((palettePalette[i * 4 + 2] >> 4) << 8) +
+								((palettePalette[i * 4 + 1] >> 4) << 4) + (palettePalette[i * 4 + 0] >> 4);
+		}
+		memcpy(s_pVPort->pPalette, bitmapPalette, 16 * sizeof(UWORD));
+		viewLoad(s_pView);
+	}
+	break;
+	}
+}
+
+void animateIntro()
+{
+	if(screenDuration < 4600000 && !fadeInStatus[3])
+	{
+		for (int i = 0; i < 16; i++)
+		{
+			bitmapPalette[i] = ((((currentPallete[i * 4 + 2]/4) >> 4) << 8) +
+								(((currentPallete[i * 4 + 1]/4) >> 4) << 4) + ((currentPallete[i * 4 + 0]/4) >> 4));
+		}
+		memcpy(s_pVPort->pPalette, bitmapPalette, 16 * sizeof(UWORD));
+		viewLoad(s_pView);
+		fadeInStatus[3] = 1;
+	}
+	if(screenDuration < 4200000 && !fadeInStatus[2])
+	{
+		for (int i = 0; i < 16; i++)
+		{
+			bitmapPalette[i] = ((((currentPallete[i * 4 + 2]/2) >> 4) << 8) +
+								(((currentPallete[i * 4 + 1]/2) >> 4) << 4) + ((currentPallete[i * 4 + 0]/2) >> 4));
+		}
+		memcpy(s_pVPort->pPalette, bitmapPalette, 16 * sizeof(UWORD));
+		viewLoad(s_pView);
+		fadeInStatus[2] = 1;
+	}
+	if(screenDuration < 3800000 && !fadeInStatus[1])
+	{
+		for (int i = 0; i < 16; i++)
+		{
+			bitmapPalette[i] = ((((currentPallete[i * 4 + 2]*3/4) >> 4) << 8) +
+								(((currentPallete[i * 4 + 1]*3/4) >> 4) << 4) + ((currentPallete[i * 4 + 0]*3/4) >> 4));
+		}
+		memcpy(s_pVPort->pPalette, bitmapPalette, 16 * sizeof(UWORD));
+		viewLoad(s_pView);
+		fadeInStatus[1] = 1;
+	}
+	if(screenDuration < 3400000 && !fadeInStatus[0])
+	{
+		for (int i = 0; i < 16; i++)
+		{
+			bitmapPalette[i] = (((currentPallete[i * 4 + 2] >> 4) << 8) +
+								((currentPallete[i * 4 + 1] >> 4) << 4) + (currentPallete[i * 4 + 0] >> 4));
+		}
+		memcpy(s_pVPort->pPalette, bitmapPalette, 16 * sizeof(UWORD));
+		viewLoad(s_pView);
+		fadeInStatus[0] = 1;
+	}
+
+	if(screenDuration < 1600000 && !fadeOutStatus[0])
+	{
+		for (int i = 0; i < 16; i++)
+		{
+			bitmapPalette[i] = ((((currentPallete[i * 4 + 2]*3/4) >> 4) << 8) +
+								(((currentPallete[i * 4 + 1]*3/4) >> 4) << 4) + ((currentPallete[i * 4 + 0]*3/4) >> 4));
+		}
+		memcpy(s_pVPort->pPalette, bitmapPalette, 16 * sizeof(UWORD));
+		viewLoad(s_pView);
+		fadeOutStatus[0] = 1;
+	}
+	if(screenDuration < 1200000 && !fadeOutStatus[1])
+	{
+		for (int i = 0; i < 16; i++)
+		{
+			bitmapPalette[i] = ((((currentPallete[i * 4 + 2]/2) >> 4) << 8) +
+								(((currentPallete[i * 4 + 1]/2) >> 4) << 4) + ((currentPallete[i * 4 + 0]/2) >> 4));
+		}
+		memcpy(s_pVPort->pPalette, bitmapPalette, 16 * sizeof(UWORD));
+		viewLoad(s_pView);
+		fadeOutStatus[1] = 1;
+	}
+	if(screenDuration < 800000 && !fadeOutStatus[2])
+	{
+		for (int i = 0; i < 16; i++)
+		{
+			bitmapPalette[i] = ((((currentPallete[i * 4 + 2]/4) >> 4) << 8) +
+								(((currentPallete[i * 4 + 1]/4) >> 4) << 4) + ((currentPallete[i * 4 + 0]/4) >> 4));
+		}
+		memcpy(s_pVPort->pPalette, bitmapPalette, 16 * sizeof(UWORD));
+		viewLoad(s_pView);
+		fadeOutStatus[2] = 1;
+	}
+	if(screenDuration < 400000 && !fadeOutStatus[3])
+	{
+		for (int i = 0; i < 16; i++)
+		{
+			bitmapPalette[i] = 0;
+		}
+		memcpy(s_pVPort->pPalette, bitmapPalette, 16 * sizeof(UWORD));
+		viewLoad(s_pView);
+		fadeOutStatus[3] = 1;
+	}
+}
+
+
 void RecalculateEven()
 {
 	CalculateRayCasts(rayCastXEven, rayCastYEven, XSIZEEVEN, YSIZEEVEN, 2); //było 2
@@ -280,8 +428,6 @@ void engineGsCreate(void)
 								   TAG_DONE);
 
 	bitmap1 = LoadBitmapFile("data/logo1.bmp", &bitmapHeader1, bitmapPalette1);
-	bitmap2 = LoadBitmapFile("data/logo2.bmp", &bitmapHeader2, bitmapPalette2);
-	bitmap3 = LoadBitmapFile("data/logo3.bmp", &bitmapHeader3, bitmapPalette3);
 	paletteBitmap = LoadBitmapFile("data/palette.bmp", &paletteHeader, palettePalette);
 
 	//process paletter from an image
@@ -410,167 +556,14 @@ void engineGsLoop(void)
 	levelTime += deltaTime;
 	if (screenIndex > 0)
 	{
-		if (screenDuration > 5000000)
+		if(screenDuration > 5000000)
 		{
 			screenDuration = 5000000;
 			screenIndex = (screenIndex + 1) % 4;
-
-			switch (screenIndex)
-			{
-			case 2:
-			{
-				// for (int i = 0; i < 16; i++)
-				// {
-				// 	bitmapPalette[i] = ((bitmapPalette2[i * 4 + 2] >> 4) << 8) +
-				// 					   ((bitmapPalette2[i * 4 + 1] >> 4) << 4) + (bitmapPalette2[i * 4 + 0] >> 4);
-				// }
-				
-				currentPallete = bitmapPalette2;
-				//memcpy(s_pVPort->pPalette, bitmapPalette, 16 * sizeof(UWORD));
-				DrawBitmap8b(bitmap2, &bitmapHeader2);
-				
-				for(int i = 0; i < 4; i++)
-				{
-					fadeInStatus[i] = 0;
-					fadeOutStatus[i] = 0;
-				}
-				viewLoad(s_pView);
-				vPortWaitForEnd(s_pVPort);
-				CopyFastToChipW(s_pBuffer->pBack);
-			}
-			break;
-			case 3:
-			{
-				// for (int i = 0; i < 16; i++)
-				// {
-				// 	bitmapPalette[i] = ((bitmapPalette3[i * 4 + 2] >> 4) << 8) +
-				// 					   ((bitmapPalette3[i * 4 + 1] >> 4) << 4) + (bitmapPalette3[i * 4 + 0] >> 4);
-				// }
-				
-				currentPallete = bitmapPalette3;
-				//memcpy(s_pVPort->pPalette, bitmapPalette, 16 * sizeof(UWORD));
-				DrawBitmap8b(bitmap3, &bitmapHeader3);
-				
-				for(int i = 0; i < 4; i++)
-				{
-					fadeInStatus[i] = 0;
-					fadeOutStatus[i] = 0;
-				}
-				viewLoad(s_pView);
-				vPortWaitForEnd(s_pVPort);
-				CopyFastToChipW(s_pBuffer->pBack);
-			}
-			break;
-			case 0:
-			{
-				for (int i = 0; i < 16; i++)
-				{
-					bitmapPalette[i] = ((bitmapPalette3[i * 4 + 2] >> 4) << 8) +
-									   ((bitmapPalette3[i * 4 + 1] >> 4) << 4) + (bitmapPalette3[i * 4 + 0] >> 4);
-				}
-				memcpy(s_pVPort->pPalette, bitmapPalette, 16 * sizeof(UWORD));
-				//memcpy(s_pVPort->pPalette, kolory2, 16 * sizeof(UWORD));
-				viewLoad(s_pView);
-			}
-			break;
-			}
+			switchIntroScreen();
 		}
 
-		if(screenDuration < 4600000 && !fadeInStatus[3])
-		{
-			//CopyPlane(plane4W, s_pBuffer->pBack->Planes[3]);
-			for (int i = 0; i < 16; i++)
-			{
-			 	bitmapPalette[i] = ((((currentPallete[i * 4 + 2]/4) >> 4) << 8) +
-			 					   (((currentPallete[i * 4 + 1]/4) >> 4) << 4) + ((currentPallete[i * 4 + 0]/4) >> 4));
-			}
-			fadeInStatus[3] = 1;
-				viewLoad(s_pView);
-		}
-		if(screenDuration < 4200000 && !fadeInStatus[2])
-		{
-			for (int i = 0; i < 16; i++)
-			{
-			 	bitmapPalette[i] = ((((currentPallete[i * 4 + 2]/2) >> 4) << 8) +
-			 					   (((currentPallete[i * 4 + 1]/2) >> 4) << 4) + ((currentPallete[i * 4 + 0]/2) >> 4));
-			}
-				memcpy(s_pVPort->pPalette, bitmapPalette, 16 * sizeof(UWORD));
-			//CopyPlane(plane3W, s_pBuffer->pBack->Planes[2]);
-				viewLoad(s_pView);
-			fadeInStatus[2] = 1;
-		}
-		if(screenDuration < 3800000 && !fadeInStatus[1])
-		{
-			for (int i = 0; i < 16; i++)
-			{
-			 	bitmapPalette[i] = ((((currentPallete[i * 4 + 2]*3/4) >> 4) << 8) +
-			 					   (((currentPallete[i * 4 + 1]*3/4) >> 4) << 4) + ((currentPallete[i * 4 + 0]*3/4) >> 4));
-			}
-				memcpy(s_pVPort->pPalette, bitmapPalette, 16 * sizeof(UWORD));
-			//CopyPlane(plane2W, s_pBuffer->pBack->Planes[1]);
-				viewLoad(s_pView);
-			fadeInStatus[1] = 1;
-		}
-		if(screenDuration < 3400000 && !fadeInStatus[0])
-		{
-			for (int i = 0; i < 16; i++)
-			{
-			 	bitmapPalette[i] = (((currentPallete[i * 4 + 2] >> 4) << 8) +
-			 					   ((currentPallete[i * 4 + 1] >> 4) << 4) + (currentPallete[i * 4 + 0] >> 4));
-			}
-				memcpy(s_pVPort->pPalette, bitmapPalette, 16 * sizeof(UWORD));
-			//CopyPlane(plane1W, s_pBuffer->pBack->Planes[0]);
-			viewLoad(s_pView);
-			fadeInStatus[0] = 1;
-		}
-
-		if(screenDuration < 1600000 && !fadeOutStatus[0])
-		{
-			for (int i = 0; i < 16; i++)
-			{
-			 	bitmapPalette[i] = ((((currentPallete[i * 4 + 2]*3/4) >> 4) << 8) +
-			 					   (((currentPallete[i * 4 + 1]*3/4) >> 4) << 4) + ((currentPallete[i * 4 + 0]*3/4) >> 4));
-			}
-				memcpy(s_pVPort->pPalette, bitmapPalette, 16 * sizeof(UWORD));
-			//ZeroPlane(s_pBuffer->pBack->Planes[0]);
-			fadeOutStatus[0] = 1;
-				viewLoad(s_pView);
-		}
-		if(screenDuration < 1200000 && !fadeOutStatus[1])
-		{
-			for (int i = 0; i < 16; i++)
-			{
-			 	bitmapPalette[i] = ((((currentPallete[i * 4 + 2]/2) >> 4) << 8) +
-			 					   (((currentPallete[i * 4 + 1]/2) >> 4) << 4) + ((currentPallete[i * 4 + 0]/2) >> 4));
-			}
-				memcpy(s_pVPort->pPalette, bitmapPalette, 16 * sizeof(UWORD));
-			//ZeroPlane(s_pBuffer->pBack->Planes[1]);
-				viewLoad(s_pView);
-			fadeOutStatus[1] = 1;
-		}
-		if(screenDuration < 800000 && !fadeOutStatus[2])
-		{
-			for (int i = 0; i < 16; i++)
-			{
-			 	bitmapPalette[i] = ((((currentPallete[i * 4 + 2]/4) >> 4) << 8) +
-			 					   (((currentPallete[i * 4 + 1]/4) >> 4) << 4) + ((currentPallete[i * 4 + 0]/4) >> 4));
-			}
-				memcpy(s_pVPort->pPalette, bitmapPalette, 16 * sizeof(UWORD));
-			//ZeroPlane(s_pBuffer->pBack->Planes[2]);
-				viewLoad(s_pView);
-			fadeOutStatus[2] = 1;
-		}
-		if(screenDuration < 400000 && !fadeOutStatus[3])
-		{
-			for (int i = 0; i < 16; i++)
-			{
-			 	bitmapPalette[i] = 0;
-			}
-				memcpy(s_pVPort->pPalette, bitmapPalette, 16 * sizeof(UWORD));
-			//ZeroPlane(s_pBuffer->pBack->Planes[3]);
-			viewLoad(s_pView);
-			fadeOutStatus[3] = 1;
-		}
+		animateIntro();
 
 		screenDuration -= deltaTime;
 	}
@@ -581,12 +574,6 @@ void engineGsLoop(void)
 			{
 				gameClose();
 			}
-
-		if(gamePaletteSet == 0)
-		{
-			SetGamePaletter();
-			gamePaletteSet = 1;
-		}
 
 	
 
