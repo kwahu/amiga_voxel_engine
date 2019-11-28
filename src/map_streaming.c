@@ -3,7 +3,7 @@ void OverwriteMap()
 {
 	UBYTE mapNumber;
 	UWORD word;
-	UBYTE yy;
+	UBYTE yyplusone;
 
 	for (UWORD y = lastOverwrittenLine; y < p1y; y++)
 	{
