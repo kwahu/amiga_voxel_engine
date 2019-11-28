@@ -60,6 +60,8 @@ tTextBitMap *pixel[32];
 char sPixel[32][10];
 char sPlayerX[5], sPlayerY[5], sPlayerH[5];
 char sTime[10], sVelocity[5], sScore[5];
+char fadeInStatus[4], fadeOutStatus[4];
+unsigned char *currentPallete;
 
 void Recalculate()
 {
@@ -281,6 +283,13 @@ void engineGsCreate(void)
 						   ((bitmapPalette1[i * 4 + 1] >> 4) << 4) + (bitmapPalette1[i * 4 + 0] >> 4);
 	}
 
+	currentPallete = bitmapPalette1;
+	for(int i = 0; i < 4; i++)
+	{
+		fadeInStatus[i] = 1;
+		fadeOutStatus[i] = 0;
+	}
+
 	memcpy(s_pVPort->pPalette, bitmapPalette, 16 * sizeof(UWORD));
 
 	paletteBitmap = LoadBitmapFile("data/palette.bmp", &paletteHeader, palettePalette);
@@ -299,6 +308,7 @@ void engineGsCreate(void)
 	DrawBitmap8b(bitmap1, &bitmapHeader1);
 	vPortWaitForEnd(s_pVPort);
 	CopyFastToChipW(s_pBuffer->pBack);
+	ULONG blitTime = timerGetPrec();
 
 	
 	// Load font
@@ -335,12 +345,12 @@ void engineGsCreate(void)
 	s_pAvgTime = logAvgCreate("perf", 100);
 	levelTime = 0;
 	screenIndex = 1;
-	screenDuration = 0;
 
 	keyCreate();
 
 	joyOpen(0);
 	systemUnuse();
+	screenDuration = 5000000;
 	//memcpy(s_pVPort->pPalette, kolory2, 16 * sizeof(UWORD));
 }
 
@@ -365,13 +375,21 @@ void engineGsLoop(void)
 			{
 			case 2:
 			{
-				for (int i = 0; i < 16; i++)
-				{
-					bitmapPalette[i] = ((bitmapPalette2[i * 4 + 2] >> 4) << 8) +
-									   ((bitmapPalette2[i * 4 + 1] >> 4) << 4) + (bitmapPalette2[i * 4 + 0] >> 4);
-				}
-				memcpy(s_pVPort->pPalette, bitmapPalette, 16 * sizeof(UWORD));
+				// for (int i = 0; i < 16; i++)
+				// {
+				// 	bitmapPalette[i] = ((bitmapPalette2[i * 4 + 2] >> 4) << 8) +
+				// 					   ((bitmapPalette2[i * 4 + 1] >> 4) << 4) + (bitmapPalette2[i * 4 + 0] >> 4);
+				// }
+				
+				currentPallete = bitmapPalette2;
+				//memcpy(s_pVPort->pPalette, bitmapPalette, 16 * sizeof(UWORD));
 				DrawBitmap8b(bitmap2, &bitmapHeader2);
+				
+				for(int i = 0; i < 4; i++)
+				{
+					fadeInStatus[i] = 0;
+					fadeOutStatus[i] = 0;
+				}
 				viewLoad(s_pView);
 				vPortWaitForEnd(s_pVPort);
 				CopyFastToChipW(s_pBuffer->pBack);
@@ -379,13 +397,21 @@ void engineGsLoop(void)
 			break;
 			case 3:
 			{
-				for (int i = 0; i < 16; i++)
-				{
-					bitmapPalette[i] = ((bitmapPalette3[i * 4 + 2] >> 4) << 8) +
-									   ((bitmapPalette3[i * 4 + 1] >> 4) << 4) + (bitmapPalette3[i * 4 + 0] >> 4);
-				}
-				memcpy(s_pVPort->pPalette, bitmapPalette, 16 * sizeof(UWORD));
+				// for (int i = 0; i < 16; i++)
+				// {
+				// 	bitmapPalette[i] = ((bitmapPalette3[i * 4 + 2] >> 4) << 8) +
+				// 					   ((bitmapPalette3[i * 4 + 1] >> 4) << 4) + (bitmapPalette3[i * 4 + 0] >> 4);
+				// }
+				
+				currentPallete = bitmapPalette3;
+				//memcpy(s_pVPort->pPalette, bitmapPalette, 16 * sizeof(UWORD));
 				DrawBitmap8b(bitmap3, &bitmapHeader3);
+				
+				for(int i = 0; i < 4; i++)
+				{
+					fadeInStatus[i] = 0;
+					fadeOutStatus[i] = 0;
+				}
 				viewLoad(s_pView);
 				vPortWaitForEnd(s_pVPort);
 				CopyFastToChipW(s_pBuffer->pBack);
@@ -393,6 +419,11 @@ void engineGsLoop(void)
 			break;
 			case 0:
 			{
+				for (int i = 0; i < 16; i++)
+				{
+					bitmapPalette[i] = ((bitmapPalette3[i * 4 + 2] >> 4) << 8) +
+									   ((bitmapPalette3[i * 4 + 1] >> 4) << 4) + (bitmapPalette3[i * 4 + 0] >> 4);
+				}
 				memcpy(s_pVPort->pPalette, bitmapPalette, 16 * sizeof(UWORD));
 				//memcpy(s_pVPort->pPalette, kolory2, 16 * sizeof(UWORD));
 				viewLoad(s_pView);
@@ -400,25 +431,101 @@ void engineGsLoop(void)
 			break;
 			}
 		}
-		if(screenDuration < 4000000)
+
+		if(screenDuration < 4600000 && !fadeInStatus[3])
 		{
-			ZeroPlane(s_pBuffer->pBack->Planes[0]);
+			//CopyPlane(plane4W, s_pBuffer->pBack->Planes[3]);
+			for (int i = 0; i < 16; i++)
+			{
+			 	bitmapPalette[i] = ((((currentPallete[i * 4 + 2]/4) >> 4) << 8) +
+			 					   (((currentPallete[i * 4 + 1]/4) >> 4) << 4) + ((currentPallete[i * 4 + 0]/4) >> 4));
+			}
+			fadeInStatus[3] = 1;
 				viewLoad(s_pView);
 		}
-		if(screenDuration < 3000000)
+		if(screenDuration < 4200000 && !fadeInStatus[2])
 		{
-			ZeroPlane(s_pBuffer->pBack->Planes[1]);
+			for (int i = 0; i < 16; i++)
+			{
+			 	bitmapPalette[i] = ((((currentPallete[i * 4 + 2]/2) >> 4) << 8) +
+			 					   (((currentPallete[i * 4 + 1]/2) >> 4) << 4) + ((currentPallete[i * 4 + 0]/2) >> 4));
+			}
+				memcpy(s_pVPort->pPalette, bitmapPalette, 16 * sizeof(UWORD));
+			//CopyPlane(plane3W, s_pBuffer->pBack->Planes[2]);
 				viewLoad(s_pView);
+			fadeInStatus[2] = 1;
 		}
-		if(screenDuration < 2000000)
+		if(screenDuration < 3800000 && !fadeInStatus[1])
 		{
-			ZeroPlane(s_pBuffer->pBack->Planes[2]);
+			for (int i = 0; i < 16; i++)
+			{
+			 	bitmapPalette[i] = ((((currentPallete[i * 4 + 2]*3/4) >> 4) << 8) +
+			 					   (((currentPallete[i * 4 + 1]*3/4) >> 4) << 4) + ((currentPallete[i * 4 + 0]*3/4) >> 4));
+			}
+				memcpy(s_pVPort->pPalette, bitmapPalette, 16 * sizeof(UWORD));
+			//CopyPlane(plane2W, s_pBuffer->pBack->Planes[1]);
 				viewLoad(s_pView);
+			fadeInStatus[1] = 1;
 		}
-		if(screenDuration < 1000000)
+		if(screenDuration < 3400000 && !fadeInStatus[0])
 		{
-			ZeroPlane(s_pBuffer->pBack->Planes[3]);
+			for (int i = 0; i < 16; i++)
+			{
+			 	bitmapPalette[i] = (((currentPallete[i * 4 + 2] >> 4) << 8) +
+			 					   ((currentPallete[i * 4 + 1] >> 4) << 4) + (currentPallete[i * 4 + 0] >> 4));
+			}
+				memcpy(s_pVPort->pPalette, bitmapPalette, 16 * sizeof(UWORD));
+			//CopyPlane(plane1W, s_pBuffer->pBack->Planes[0]);
 			viewLoad(s_pView);
+			fadeInStatus[0] = 1;
+		}
+
+		if(screenDuration < 1600000 && !fadeOutStatus[0])
+		{
+			for (int i = 0; i < 16; i++)
+			{
+			 	bitmapPalette[i] = ((((currentPallete[i * 4 + 2]*3/4) >> 4) << 8) +
+			 					   (((currentPallete[i * 4 + 1]*3/4) >> 4) << 4) + ((currentPallete[i * 4 + 0]*3/4) >> 4));
+			}
+				memcpy(s_pVPort->pPalette, bitmapPalette, 16 * sizeof(UWORD));
+			//ZeroPlane(s_pBuffer->pBack->Planes[0]);
+			fadeOutStatus[0] = 1;
+				viewLoad(s_pView);
+		}
+		if(screenDuration < 1200000 && !fadeOutStatus[1])
+		{
+			for (int i = 0; i < 16; i++)
+			{
+			 	bitmapPalette[i] = ((((currentPallete[i * 4 + 2]/2) >> 4) << 8) +
+			 					   (((currentPallete[i * 4 + 1]/2) >> 4) << 4) + ((currentPallete[i * 4 + 0]/2) >> 4));
+			}
+				memcpy(s_pVPort->pPalette, bitmapPalette, 16 * sizeof(UWORD));
+			//ZeroPlane(s_pBuffer->pBack->Planes[1]);
+				viewLoad(s_pView);
+			fadeOutStatus[1] = 1;
+		}
+		if(screenDuration < 800000 && !fadeOutStatus[2])
+		{
+			for (int i = 0; i < 16; i++)
+			{
+			 	bitmapPalette[i] = ((((currentPallete[i * 4 + 2]/4) >> 4) << 8) +
+			 					   (((currentPallete[i * 4 + 1]/4) >> 4) << 4) + ((currentPallete[i * 4 + 0]/4) >> 4));
+			}
+				memcpy(s_pVPort->pPalette, bitmapPalette, 16 * sizeof(UWORD));
+			//ZeroPlane(s_pBuffer->pBack->Planes[2]);
+				viewLoad(s_pView);
+			fadeOutStatus[2] = 1;
+		}
+		if(screenDuration < 400000 && !fadeOutStatus[3])
+		{
+			for (int i = 0; i < 16; i++)
+			{
+			 	bitmapPalette[i] = 0;
+			}
+				memcpy(s_pVPort->pPalette, bitmapPalette, 16 * sizeof(UWORD));
+			//ZeroPlane(s_pBuffer->pBack->Planes[3]);
+			viewLoad(s_pView);
+			fadeOutStatus[3] = 1;
 		}
 
 		screenDuration -= deltaTime;
