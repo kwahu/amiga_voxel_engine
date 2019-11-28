@@ -149,7 +149,7 @@ void GenerateMap(UWORD (*map)[MAPSIZE])
 }
 void Recalculate()
 {
-	//CalculateRayCasts(rayCastXEven, rayCastYEven, XSIZEEVEN, YSIZEEVEN, 2);
+	CalculateRayCasts(rayCastXEven, rayCastYEven, XSIZEEVEN, YSIZEEVEN, 2);
 	CalculateRayCasts(rayCastXOdd, rayCastYOdd, XSIZEODD, YSIZEODD, 1);
 	deltaTime = 0;
 }
