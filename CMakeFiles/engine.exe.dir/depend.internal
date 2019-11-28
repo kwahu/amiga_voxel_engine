@@ -13,6 +13,7 @@ CMakeFiles/engine.exe.dir/src/draw_maps.c.obj
 CMakeFiles/engine.exe.dir/src/draw_screen.c.obj
  /work/src/draw_screen.c
  /work/src/engine.h
+ /work/src/settings_amiga.h
  deps/ace/include/ace/macros.h
  deps/ace/include/ace/managers/copper.h
  deps/ace/include/ace/managers/log.h
@@ -48,6 +49,7 @@ CMakeFiles/engine.exe.dir/src/main.c.obj
  /work/src/ray_cast_calculate.c
  /work/src/ray_casting.c
  /work/src/rendering_quality.c
+ /work/src/settings_amiga.h
  /work/src/setup_maps.c
  deps/ace/include/ace/generic/main.h
  deps/ace/include/ace/macros.h

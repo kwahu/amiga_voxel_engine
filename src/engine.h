@@ -17,7 +17,8 @@
 #define DEPTH 4
 #define COLORS 32
 
-
+#define XSIZEODD 120 + XTURNBUFFOR * 2
+#define XSIZEEVEN 80 + XTURNBUFFOR * 2
 
 
 #define MAPSIZE 128
@@ -50,11 +51,7 @@ UWORD plane2W[PLANEWIDTHWORD * PLANEHEIGHT]; //10k
 UWORD plane3W[PLANEWIDTHWORD * PLANEHEIGHT]; //10k
 UWORD plane4W[PLANEWIDTHWORD * PLANEHEIGHT]; //10k
 
-WORD rayCastXOdd[XSIZEODD][TERRAINDEPTH]; //51k
-WORD rayCastYOdd[YSIZEODD][TERRAINDEPTH]; //51k
 
-WORD rayCastXEven[XSIZEEVEN][TERRAINDEPTH]; //21k
-WORD rayCastYEven[YSIZEEVEN][TERRAINDEPTH]; //21k
 
 UBYTE debugValue, debugValue2, debugValue3, debugValue4, debugValue5, debugValue6, xFOV;
 BYTE debugValue8, debugValue9;
@@ -137,7 +134,7 @@ UBYTE dither3x2OddP4[COLORS * COLORS * COLORS];  //32k
 static LONG p1xf, p1yf, p1hf, p2xf, p2yf, p2hf;
 static UWORD p1x, p1y, p1h, p2x, p2y, p2h;
 static int interlace;
-static UBYTE renderingDepth = TERRAINDEPTH;
+
 static UBYTE screenIndex;
 static WORD cx, cy;
 static ULONG startTime, endTime, deltaTime, lastTime;

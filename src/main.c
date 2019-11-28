@@ -63,7 +63,7 @@ char sTime[10], sVelocity[5], sScore[5];
 
 void SetDefaulResolution()
 {
-	renderingDepth = 64;
+	renderingDepth = TERRAINDEPTH;
 	debugValue = 7;
 	debugValue2 = 2;
 	debugValue3 = 2;
@@ -552,10 +552,7 @@ void engineGsLoop(void)
 			ProcessQualityInput();
 		}
 
-		if (renderingDepth < 10)
-			renderingDepth = 10;
-		else if (renderingDepth > TERRAINDEPTH)
-			renderingDepth = TERRAINDEPTH;
+
 
 		xOffsetOdd = cx / 300;
 		xOffsetEven = cx / 450;
