@@ -274,8 +274,6 @@ void main_supervisor()
 	Setpalette(bitmapPalette);
     DrawBitmap8b(bitmap1, &bitmapHeader1);
 
-	screenDuration = 100;
-	screenIndex = 1;
 
 	paletteBitmap = LoadBitmapFile("data/palette.bmp", &paletteHeader, palettePalette);
 
@@ -324,8 +322,14 @@ void main_supervisor()
 	initDeltaTime();
 	printf("last \r\n");
 
-	Setpalette(bitmapPalette);
+	screenDuration = 5000000;
+	screenIndex = 1;
 
+	for(int i = 0; i < 4; i++)
+	{
+		fadeInStatus[i] = 1;
+		fadeOutStatus[i] = 0;
+	}
     while ( exitflag == 0)
     {
 		getDeltaTime();
