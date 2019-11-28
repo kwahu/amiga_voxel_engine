@@ -1,4 +1,5 @@
 #include "engine.h"
+#include "settings_amiga.h"
 
 void DrawBitmap4b(unsigned char *bLogo, BITMAPINFOHEADER *bhLogo)
 {

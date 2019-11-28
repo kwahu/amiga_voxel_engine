@@ -5,11 +5,11 @@ void RenderQuality()
     	
 if(debugValue == 1)
 {
-	ProcessRayCasts3x2(rayCastXOdd, rayCastYOdd,mapHigh,p1x,p1y,p1h,56,   4,1,12,YSIZEODD, xOffsetOdd);
+	ProcessRayCasts3x2(rayCastXOdd, rayCastYOdd,mapHigh,p1x,p1y,p1h,50,   4,1,12,YSIZEODD, xOffsetOdd);
 }
 else if(debugValue == 2)
 {
-	ProcessRayCasts3x2(rayCastXOdd, rayCastYOdd,mapHigh,p1x,p1y,p1h,48,   6,1,12,YSIZEODD, xOffsetOdd);
+	ProcessRayCasts3x2(rayCastXOdd, rayCastYOdd,mapHigh,p1x,p1y,p1h,44,   6,1,12,YSIZEODD, xOffsetOdd);
 }
 else if(debugValue == 3)
 {

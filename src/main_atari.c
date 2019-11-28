@@ -63,6 +63,11 @@ void framebuffer_set_palette_entry(int index,int red, int green, int blue) {
 
 uint16_t systemPalette[16];
 
+void Recalculate()
+{
+	CalculateRayCasts(rayCastXOdd, rayCastYOdd, XSIZEODD, YSIZEODD, 1);
+	deltaTime = 0;
+}
 
 void SetDefaulResolution()
 {
@@ -76,6 +81,7 @@ void SetDefaulResolution()
 		xFOV = 10;
 		Recalculate();
 }
+
 
 
 

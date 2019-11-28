@@ -10,6 +10,7 @@ CMakeFiles/engine.exe.dir/src/dithering.c.obj
 CMakeFiles/engine.exe.dir/src/draw_maps.c.obj
  /work/src/draw_maps.c
  /work/src/engine.h
+ /work/src/settings_amiga.h
 CMakeFiles/engine.exe.dir/src/draw_screen.c.obj
  /work/src/draw_screen.c
  /work/src/engine.h

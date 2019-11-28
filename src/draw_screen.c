@@ -181,101 +181,101 @@ void DrawPlayerScreen2x2(UBYTE *screen, UBYTE player, UBYTE depth, UBYTE startSc
 	}//line
 }
 */
-void DrawPlayerScreen8x8(UBYTE *screen, UBYTE player, UBYTE depth, UBYTE startScreen, UBYTE xCycles)
-{
-	UWORD sp,position,blockPosition;
-	UWORD address1, address2;
-	UBYTE *dither1, *dither2, *dither3, *dither4;
-	UBYTE *dither5, *dither6, *dither7, *dither8;
-	UWORD w1,w2,w3,w4,w5,w6,w7,w8;
-	UBYTE lastColor;
+// void DrawPlayerScreen8x8(UBYTE *screen, UBYTE player, UBYTE depth, UBYTE startScreen, UBYTE xCycles)
+// {
+// 	UWORD sp,position,blockPosition;
+// 	UWORD address1, address2;
+// 	UBYTE *dither1, *dither2, *dither3, *dither4;
+// 	UBYTE *dither5, *dither6, *dither7, *dither8;
+// 	UWORD w1,w2,w3,w4,w5,w6,w7,w8;
+// 	UBYTE lastColor;
 
-	dither1 = dither4x4EvenP1;
-	dither2 = dither4x4EvenP2;
-	dither3 = dither4x4EvenP3;
-	dither4 = dither4x4EvenP4;
+// 	dither1 = dither4x4EvenP1;
+// 	dither2 = dither4x4EvenP2;
+// 	dither3 = dither4x4EvenP3;
+// 	dither4 = dither4x4EvenP4;
 
-	dither5 = dither4x4OddP1;
-	dither6 = dither4x4OddP2;
-	dither7 = dither4x4OddP3;
-	dither8 = dither4x4OddP4;
+// 	dither5 = dither4x4OddP1;
+// 	dither6 = dither4x4OddP2;
+// 	dither7 = dither4x4OddP3;
+// 	dither8 = dither4x4OddP4;
 
-	sp = 0;//screen position
+// 	sp = 0;//screen position
 
 
-	if(player == 1)
-	{
+// 	if(player == 1)
+// 	{
 
-	}
-	else
-	{
+// 	}
+// 	else
+// 	{
 
-	}
-	if(depth == 1)
-	{
+// 	}
+// 	if(depth == 1)
+// 	{
 
-	}
-	else
-	{
+// 	}
+// 	else
+// 	{
 
-	}
+// 	}
 
-	//for each line
-	for(UBYTE y=0;y<YSIZEEVEN/2;y++)
-	{
-		//40 bytes * y + even/odd + player screen offset WORDs
-		position = y*20*8  + startScreen;
-		lastColor = screen[sp];
-		//draw the line with WORDs made up of 2 BYTEs each consisting 3 pixels
-		for(UBYTE x=0;x<xCycles;x++)
-		{
-			address1 = ((lastColor)<<5) + (screen[sp]);
-			address2 = ((screen[sp])<<5) + (screen[sp+1]);
-			lastColor = screen[sp+1];
+// 	//for each line
+// 	for(UBYTE y=0;y<YSIZEEVEN/2;y++)
+// 	{
+// 		//40 bytes * y + even/odd + player screen offset WORDs
+// 		position = y*20*8  + startScreen;
+// 		lastColor = screen[sp];
+// 		//draw the line with WORDs made up of 2 BYTEs each consisting 3 pixels
+// 		for(UBYTE x=0;x<xCycles;x++)
+// 		{
+// 			address1 = ((lastColor)<<5) + (screen[sp]);
+// 			address2 = ((screen[sp])<<5) + (screen[sp+1]);
+// 			lastColor = screen[sp+1];
 
-			w1 = (dither1[ address1 ]<<8) + dither1[ address2 ];
-			w2 = (dither2[ address1 ]<<8) + dither2[ address2 ];
-			w3 = (dither3[ address1 ]<<8) + dither3[ address2 ];
-			w4 = (dither4[ address1 ]<<8) + dither4[ address2 ];
+// 			w1 = (dither1[ address1 ]<<8) + dither1[ address2 ];
+// 			w2 = (dither2[ address1 ]<<8) + dither2[ address2 ];
+// 			w3 = (dither3[ address1 ]<<8) + dither3[ address2 ];
+// 			w4 = (dither4[ address1 ]<<8) + dither4[ address2 ];
 
-			w5 = (dither5[ address1 ]<<8) + dither5[ address2 ];
-			w6 = (dither6[ address1 ]<<8) + dither6[ address2 ];
-			w7 = (dither7[ address1 ]<<8) + dither7[ address2 ];
-			w8 = (dither8[ address1 ]<<8) + dither8[ address2 ];
+// 			w5 = (dither5[ address1 ]<<8) + dither5[ address2 ];
+// 			w6 = (dither6[ address1 ]<<8) + dither6[ address2 ];
+// 			w7 = (dither7[ address1 ]<<8) + dither7[ address2 ];
+// 			w8 = (dither8[ address1 ]<<8) + dither8[ address2 ];
 
-			blockPosition=position;plane1W[blockPosition]=w1;plane2W[blockPosition]=w2;plane3W[blockPosition]=w3;plane4W[blockPosition]=w4;
-			blockPosition=position+20;plane1W[blockPosition]=w5;plane2W[blockPosition]=w6;plane3W[blockPosition]=w7;plane4W[blockPosition]=w8;
-			blockPosition=position+40;plane1W[blockPosition]=w1;plane2W[blockPosition]=w2;plane3W[blockPosition]=w3;plane4W[blockPosition]=w4;
-			blockPosition=position+60;plane1W[blockPosition]=w5;plane2W[blockPosition]=w6;plane3W[blockPosition]=w7;plane4W[blockPosition]=w8;
-			blockPosition=position+80;plane1W[blockPosition]=w1;plane2W[blockPosition]=w2;plane3W[blockPosition]=w3;plane4W[blockPosition]=w4;
-			blockPosition=position+100;plane1W[blockPosition]=w5;plane2W[blockPosition]=w6;plane3W[blockPosition]=w7;plane4W[blockPosition]=w8;
-			blockPosition=position+120;plane1W[blockPosition]=w1;plane2W[blockPosition]=w2;plane3W[blockPosition]=w3;plane4W[blockPosition]=w4;
-			blockPosition=position+140;plane1W[blockPosition]=w5;plane2W[blockPosition]=w6;plane3W[blockPosition]=w7;plane4W[blockPosition]=w8;
+// 			blockPosition=position;plane1W[blockPosition]=w1;plane2W[blockPosition]=w2;plane3W[blockPosition]=w3;plane4W[blockPosition]=w4;
+// 			blockPosition=position+20;plane1W[blockPosition]=w5;plane2W[blockPosition]=w6;plane3W[blockPosition]=w7;plane4W[blockPosition]=w8;
+// 			blockPosition=position+40;plane1W[blockPosition]=w1;plane2W[blockPosition]=w2;plane3W[blockPosition]=w3;plane4W[blockPosition]=w4;
+// 			blockPosition=position+60;plane1W[blockPosition]=w5;plane2W[blockPosition]=w6;plane3W[blockPosition]=w7;plane4W[blockPosition]=w8;
+// 			blockPosition=position+80;plane1W[blockPosition]=w1;plane2W[blockPosition]=w2;plane3W[blockPosition]=w3;plane4W[blockPosition]=w4;
+// 			blockPosition=position+100;plane1W[blockPosition]=w5;plane2W[blockPosition]=w6;plane3W[blockPosition]=w7;plane4W[blockPosition]=w8;
+// 			blockPosition=position+120;plane1W[blockPosition]=w1;plane2W[blockPosition]=w2;plane3W[blockPosition]=w3;plane4W[blockPosition]=w4;
+// 			blockPosition=position+140;plane1W[blockPosition]=w5;plane2W[blockPosition]=w6;plane3W[blockPosition]=w7;plane4W[blockPosition]=w8;
 
-			position++; //go to next WORD
-			sp+=2; //go to the next 2 points
-		}
-	}//line
-}
+// 			position++; //go to next WORD
+// 			sp+=2; //go to the next 2 points
+// 		}
+// 	}//line
+// }
 
-void DrawPlayerScreen8x8Slow(UBYTE *screen, UBYTE player, UBYTE depth, UBYTE startScreen, UBYTE xCycles)
-{
-	UWORD sp,position,blockPosition;
-	UWORD address1, address2;
-	UWORD *dither1, *dither2, *dither3, *dither4;
-	UWORD *dither5, *dither6, *dither7, *dither8;
-	UWORD w1,w2,w3,w4,w5,w6,w7,w8;
-	UBYTE a,b;
-	UBYTE lastColor, currentColor;
-	UWORD colors;
-	UWORD *screenW;
+// void DrawPlayerScreen8x8Slow(UBYTE *screen, UBYTE player, UBYTE depth, UBYTE startScreen, UBYTE xCycles)
+// {
+// 	UWORD sp,position,blockPosition;
+// 	UWORD address1, address2;
+// 	UWORD *dither1, *dither2, *dither3, *dither4;
+// 	UWORD *dither5, *dither6, *dither7, *dither8;
+// 	UWORD w1,w2,w3,w4,w5,w6,w7,w8;
+// 	UBYTE a,b;
+// 	UBYTE lastColor, currentColor;
+// 	UWORD colors;
+// 	UWORD *screenW;
 
-	dither1 = dither8x8EvenP1;
-	dither2 = dither8x8EvenP2;
-	dither3 = dither8x8EvenP3;
-	dither4 = dither8x8EvenP4;
+// 	dither1 = dither8x8EvenP1;
+// 	dither2 = dither8x8EvenP2;
+// 	dither3 = dither8x8EvenP3;
+// 	dither4 = dither8x8EvenP4;
 
-	screenW = screen;
+// 	screenW = screen;
 
 /*
 	dither5 = dither4x4OddP1;
@@ -283,49 +283,49 @@ void DrawPlayerScreen8x8Slow(UBYTE *screen, UBYTE player, UBYTE depth, UBYTE sta
 	dither7 = dither4x4OddP3;
 	dither8 = dither4x4OddP4;*/
 
-	sp = 0;//screen position
+	// sp = 0;//screen position
 
 
-	if(player == 1)
-	{
+	// if(player == 1)
+	// {
 
-	}
-	else
-	{
+	// }
+	// else
+	// {
 
-	}
-	if(depth == 1)
-	{
+	// }
+	// if(depth == 1)
+	// {
 
-	}
-	else
-	{
+	// }
+	// else
+	// {
 
-	}
+	// }
 
-	//for each line
-	for(UBYTE y=0;y<32;y++)
-	{
-		//40 bytes * y + even/odd + player screen offset WORDs
-		position = y*20*8  + startScreen;
-		//lastColor = screen[sp];
+	// //for each line
+	// for(UBYTE y=0;y<32;y++)
+	// {
+	// 	//40 bytes * y + even/odd + player screen offset WORDs
+	// 	position = y*20*8  + startScreen;
+	// 	//lastColor = screen[sp];
 
-		//draw the line with WORDs made up of 2 BYTEs each consisting 3 pixels
-		for(UBYTE x=0;x<xCycles;x++)
-		{
-			colors = screenW[sp];
+	// 	//draw the line with WORDs made up of 2 BYTEs each consisting 3 pixels
+	// 	for(UBYTE x=0;x<xCycles;x++)
+	// 	{
+	// 		colors = screenW[sp];
 
-			//address1 = (screen[sp]<<5)+screen[sp+1];
-			//address1 = ((lastColor)<<5) + (currentColor);
-			//lastColor = screen[sp+1];
-			//address2 = ((currentColor)<<5) + (lastColor);
+	// 		//address1 = (screen[sp]<<5)+screen[sp+1];
+	// 		//address1 = ((lastColor)<<5) + (currentColor);
+	// 		//lastColor = screen[sp+1];
+	// 		//address2 = ((currentColor)<<5) + (lastColor);
 
 
-			address1 = ((colors>>8)<<5)+(UBYTE)(colors);
-			w1 = dither1[ address1];
-			w2 = dither2[ address1];
-			w3 = dither3[ address1];
-			w4 = dither4[ address1];
+	// 		address1 = ((colors>>8)<<5)+(UBYTE)(colors);
+	// 		w1 = dither1[ address1];
+	// 		w2 = dither2[ address1];
+	// 		w3 = dither3[ address1];
+	// 		w4 = dither4[ address1];
 		/*	w1 = (colors & 1)*0x00FF;
 			colors = colors >> 1;
 			w2 = (colors & 1)*0x00FF;
@@ -409,20 +409,20 @@ void DrawPlayerScreen8x8Slow(UBYTE *screen, UBYTE player, UBYTE depth, UBYTE sta
 			//w7 = (dither7[ address1 ]<<8) + dither7[ address2 ];
 			//w8 = (dither8[ address1 ]<<8) + dither8[ address2 ];
 			//if(plane1W[position] != w1)
-			{
-			blockPosition=position;plane1W[blockPosition]=w1;plane2W[blockPosition]=w2;plane3W[blockPosition]=w3;plane4W[blockPosition]=w4;
+// 			{
+// 			blockPosition=position;plane1W[blockPosition]=w1;plane2W[blockPosition]=w2;plane3W[blockPosition]=w3;plane4W[blockPosition]=w4;
 
-			blockPosition=position+20;plane1W[blockPosition]=w1;plane2W[blockPosition]=w2;plane3W[blockPosition]=w3;plane4W[blockPosition]=w4;
-			blockPosition=position+40;plane1W[blockPosition]=w1;plane2W[blockPosition]=w2;plane3W[blockPosition]=w3;plane4W[blockPosition]=w4;
-			blockPosition=position+60;plane1W[blockPosition]=w1;plane2W[blockPosition]=w2;plane3W[blockPosition]=w3;plane4W[blockPosition]=w4;
-			blockPosition=position+80;plane1W[blockPosition]=w1;plane2W[blockPosition]=w2;plane3W[blockPosition]=w3;plane4W[blockPosition]=w4;
-			blockPosition=position+100;plane1W[blockPosition]=w1;plane2W[blockPosition]=w2;plane3W[blockPosition]=w3;plane4W[blockPosition]=w4;
-			blockPosition=position+120;plane1W[blockPosition]=w1;plane2W[blockPosition]=w2;plane3W[blockPosition]=w3;plane4W[blockPosition]=w4;
-			blockPosition=position+140;plane1W[blockPosition]=w1;plane2W[blockPosition]=w2;plane3W[blockPosition]=w3;plane4W[blockPosition]=w4;
-			}
-			position++; //go to next WORD
-			sp++; //go to the next 2 points
-		}
+// 			blockPosition=position+20;plane1W[blockPosition]=w1;plane2W[blockPosition]=w2;plane3W[blockPosition]=w3;plane4W[blockPosition]=w4;
+// 			blockPosition=position+40;plane1W[blockPosition]=w1;plane2W[blockPosition]=w2;plane3W[blockPosition]=w3;plane4W[blockPosition]=w4;
+// 			blockPosition=position+60;plane1W[blockPosition]=w1;plane2W[blockPosition]=w2;plane3W[blockPosition]=w3;plane4W[blockPosition]=w4;
+// 			blockPosition=position+80;plane1W[blockPosition]=w1;plane2W[blockPosition]=w2;plane3W[blockPosition]=w3;plane4W[blockPosition]=w4;
+// 			blockPosition=position+100;plane1W[blockPosition]=w1;plane2W[blockPosition]=w2;plane3W[blockPosition]=w3;plane4W[blockPosition]=w4;
+// 			blockPosition=position+120;plane1W[blockPosition]=w1;plane2W[blockPosition]=w2;plane3W[blockPosition]=w3;plane4W[blockPosition]=w4;
+// 			blockPosition=position+140;plane1W[blockPosition]=w1;plane2W[blockPosition]=w2;plane3W[blockPosition]=w3;plane4W[blockPosition]=w4;
+// 			}
+// 			position++; //go to next WORD
+// 			sp++; //go to the next 2 points
+// 		}
 
-	}//line
-}
+// 	}//line
+// }

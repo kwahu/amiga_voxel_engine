@@ -21,41 +21,7 @@ void DrawPlayerScreen3x2(UBYTE *screen, UBYTE player, UBYTE depth, UBYTE startSc
 	UWORD sp,position,blockPosition;
 	UWORD address1, address2;
 
-//	UWORD startOffset;
-	//UWORD evenOffset;
-	UBYTE *dither1, *dither2, *dither3, *dither4;
-	UBYTE *dither5, *dither6, *dither7, *dither8;
-
-	if(player == 1)
-	{
-
-	}
-	else
-	{
-
-	}
-	if(depth == 1)
-	{
-
-	}
-	else
-	{
-
-	}
-
-
-
-	dither1 = dither3x2EvenP1;
-	dither2 = dither3x2EvenP2;
-	dither3 = dither3x2EvenP3;
-	dither4 = dither3x2EvenP4;
-
-	dither5 = dither3x2OddP1;
-	dither6 = dither3x2OddP2;
-	dither7 = dither3x2OddP3;
-	dither8 = dither3x2OddP4;
-
-sp = 0;
+	sp = 0;
 
 	//for each line
 	for(UBYTE y=0;y<YSIZEODD;y++)
@@ -71,15 +37,15 @@ sp = 0;
 
 			//fetch propper BYTEs and write with WORDs to plane buffers
 			blockPosition=position;
-			planes[blockPosition] = (dither1[ address1 ]<<8) + dither1[ address2 ];
-			planes[blockPosition+1] = (dither2[ address1 ]<<8) + dither2[ address2 ];
-			planes[blockPosition+2] = (dither3[ address1 ]<<8) + dither3[ address2 ];
-			planes[blockPosition+3] = (dither4[ address1 ]<<8) + dither4[ address2 ];
+			planes[blockPosition] = (dither3x2EvenP1[ address1 ]<<8) + dither3x2EvenP1[ address2 ];
+			planes[blockPosition+1] = (dither3x2EvenP2[ address1 ]<<8) + dither3x2EvenP2[ address2 ];
+			planes[blockPosition+2] = (dither3x2EvenP3[ address1 ]<<8) + dither3x2EvenP3[ address2 ];
+			planes[blockPosition+3] = (dither3x2EvenP4[ address1 ]<<8) + dither3x2EvenP4[ address2 ];
 			blockPosition=position+80;
-			planes[blockPosition] = (dither5[ address1 ]<<8) + dither5[ address2 ];
-			planes[blockPosition+1] = (dither6[ address1 ]<<8) + dither6[ address2 ];
-			planes[blockPosition+2] = (dither7[ address1 ]<<8) + dither7[ address2 ];
-			planes[blockPosition+3] = (dither8[ address1 ]<<8) + dither8[ address2 ];
+			// planes[blockPosition] = (dither5[ address1 ]<<8) + dither5[ address2 ];
+			// planes[blockPosition+1] = (dither6[ address1 ]<<8) + dither6[ address2 ];
+			// planes[blockPosition+2] = (dither7[ address1 ]<<8) + dither7[ address2 ];
+			// planes[blockPosition+3] = (dither8[ address1 ]<<8) + dither8[ address2 ];
 
 			position+=4; //go to next WORD
 
@@ -91,20 +57,9 @@ void DrawPlayerScreen4x4(UBYTE *screen, UBYTE player, UBYTE depth, UBYTE startSc
 {
 	UWORD sp,position,blockPosition;
 	UWORD address1, address2;
-	UBYTE *dither1, *dither2, *dither3, *dither4;
-	UBYTE *dither5, *dither6, *dither7, *dither8;
 	UWORD w1,w2,w3,w4,w5,w6,w7,w8;
 	UBYTE val1, val2;
 
-	dither1 = dither4x4EvenP1;
-	dither2 = dither4x4EvenP2;
-	dither3 = dither4x4EvenP3;
-	dither4 = dither4x4EvenP4;
-
-	dither5 = dither4x4OddP1;
-	dither6 = dither4x4OddP2;
-	dither7 = dither4x4OddP3;
-	dither8 = dither4x4OddP4;
 
 	sp = 0;//screen position
 	if(player == 1)
@@ -155,15 +110,15 @@ void DrawPlayerScreen4x4(UBYTE *screen, UBYTE player, UBYTE depth, UBYTE startSc
 			w4 = (val1<<8) + val2;
 			w8 = ( ((val1 << 1) | (val1 >> 15))<<8 ) + ( (val2 << 1) | (val2 >> 15) );*/
 
-			w1 = (dither1[ address1 ]<<8) + dither1[ address2 ];
-			w2 = (dither2[ address1 ]<<8) + dither2[ address2 ];
-			w3 = (dither3[ address1 ]<<8) + dither3[ address2 ];
-			w4 = (dither4[ address1 ]<<8) + dither4[ address2 ];
+			w1 = (dither4x4EvenP1[ address1 ]<<8) + dither4x4EvenP1[ address2 ];
+			w2 = (dither4x4EvenP2[ address1 ]<<8) + dither4x4EvenP2[ address2 ];
+			w3 = (dither4x4EvenP3[ address1 ]<<8) + dither4x4EvenP3[ address2 ];
+			w4 = (dither4x4EvenP4[ address1 ]<<8) + dither4x4EvenP4[ address2 ];
 
-			w5 = (dither5[ address1 ]<<8) + dither5[ address2 ];
-			w6 = (dither6[ address1 ]<<8) + dither6[ address2 ];
-			w7 = (dither7[ address1 ]<<8) + dither7[ address2 ];
-			w8 = (dither8[ address1 ]<<8) + dither8[ address2 ];
+			// w5 = (dither5[ address1 ]<<8) + dither5[ address2 ];
+			// w6 = (dither6[ address1 ]<<8) + dither6[ address2 ];
+			// w7 = (dither7[ address1 ]<<8) + dither7[ address2 ];
+			// w8 = (dither8[ address1 ]<<8) + dither8[ address2 ];
 
 			blockPosition=position;
 			planes[blockPosition]=w1;
@@ -171,20 +126,20 @@ void DrawPlayerScreen4x4(UBYTE *screen, UBYTE player, UBYTE depth, UBYTE startSc
 			planes[blockPosition]=w3;
 			planes[blockPosition]=w4;
 			blockPosition=position+20;
-			planes[blockPosition]=w5;
-			planes[blockPosition]=w6;
-			planes[blockPosition]=w7;
-			planes[blockPosition]=w8;
+			// planes[blockPosition]=w5;
+			// planes[blockPosition]=w6;
+			// planes[blockPosition]=w7;
+			// planes[blockPosition]=w8;
 			blockPosition=position+40;
 			planes[blockPosition]=w1;
 			planes[blockPosition]=w2;
 			planes[blockPosition]=w3;
 			planes[blockPosition]=w4;
 			blockPosition=position+60;
-			planes[blockPosition]=w5;
-			planes[blockPosition]=w6;
-			planes[blockPosition]=w7;
-			planes[blockPosition]=w8;
+			// planes[blockPosition]=w5;
+			// planes[blockPosition]=w6;
+			// planes[blockPosition]=w7;
+			// planes[blockPosition]=w8;
 
 			position++; //go to next WORD
 			sp+=4; //go to the next 2 points
@@ -270,20 +225,9 @@ void DrawPlayerScreen8x8(UBYTE *screen, UBYTE player, UBYTE depth, UBYTE startSc
 {
 	UWORD sp,position,blockPosition;
 	UWORD address1, address2;
-	UBYTE *dither1, *dither2, *dither3, *dither4;
-	UBYTE *dither5, *dither6, *dither7, *dither8;
 	UWORD w1,w2,w3,w4,w5,w6,w7,w8;
 	UBYTE lastColor;
 
-	dither1 = dither4x4EvenP1;
-	dither2 = dither4x4EvenP2;
-	dither3 = dither4x4EvenP3;
-	dither4 = dither4x4EvenP4;
-
-	dither5 = dither4x4OddP1;
-	dither6 = dither4x4OddP2;
-	dither7 = dither4x4OddP3;
-	dither8 = dither4x4OddP4;
 
 	sp = 0;//screen position
 
@@ -318,24 +262,24 @@ void DrawPlayerScreen8x8(UBYTE *screen, UBYTE player, UBYTE depth, UBYTE startSc
 			address2 = ((screen[sp])<<5) + (screen[sp+1]);
 			lastColor = screen[sp+1];
 
-			w1 = (dither1[ address1 ]<<8) + dither1[ address2 ];
-			w2 = (dither2[ address1 ]<<8) + dither2[ address2 ];
-			w3 = (dither3[ address1 ]<<8) + dither3[ address2 ];
-			w4 = (dither4[ address1 ]<<8) + dither4[ address2 ];
+			w1 = (dither4x4EvenP1[ address1 ]<<8) + dither4x4EvenP1[ address2 ];
+			w2 = (dither4x4EvenP2[ address1 ]<<8) + dither4x4EvenP2[ address2 ];
+			w3 = (dither4x4EvenP3[ address1 ]<<8) + dither4x4EvenP3[ address2 ];
+			w4 = (dither4x4EvenP4[ address1 ]<<8) + dither4x4EvenP4[ address2 ];
 
-			w5 = (dither5[ address1 ]<<8) + dither5[ address2 ];
-			w6 = (dither6[ address1 ]<<8) + dither6[ address2 ];
-			w7 = (dither7[ address1 ]<<8) + dither7[ address2 ];
-			w8 = (dither8[ address1 ]<<8) + dither8[ address2 ];
+			// w5 = (dither5[ address1 ]<<8) + dither5[ address2 ];
+			// w6 = (dither6[ address1 ]<<8) + dither6[ address2 ];
+			// w7 = (dither7[ address1 ]<<8) + dither7[ address2 ];
+			// w8 = (dither8[ address1 ]<<8) + dither8[ address2 ];
 
 			blockPosition=position;planes[blockPosition]=w1;planes[blockPosition]=w2;planes[blockPosition]=w3;planes[blockPosition]=w4;
-			blockPosition=position+20;planes[blockPosition]=w5;planes[blockPosition]=w6;planes[blockPosition]=w7;planes[blockPosition]=w8;
+		//	blockPosition=position+20;planes[blockPosition]=w5;planes[blockPosition]=w6;planes[blockPosition]=w7;planes[blockPosition]=w8;
 			blockPosition=position+40;planes[blockPosition]=w1;planes[blockPosition]=w2;planes[blockPosition]=w3;planes[blockPosition]=w4;
-			blockPosition=position+60;planes[blockPosition]=w5;planes[blockPosition]=w6;planes[blockPosition]=w7;planes[blockPosition]=w8;
+		//	blockPosition=position+60;planes[blockPosition]=w5;planes[blockPosition]=w6;planes[blockPosition]=w7;planes[blockPosition]=w8;
 			blockPosition=position+80;planes[blockPosition]=w1;planes[blockPosition]=w2;planes[blockPosition]=w3;planes[blockPosition]=w4;
-			blockPosition=position+100;planes[blockPosition]=w5;planes[blockPosition]=w6;planes[blockPosition]=w7;planes[blockPosition]=w8;
+		//	blockPosition=position+100;planes[blockPosition]=w5;planes[blockPosition]=w6;planes[blockPosition]=w7;planes[blockPosition]=w8;
 			blockPosition=position+120;planes[blockPosition]=w1;planes[blockPosition]=w2;planes[blockPosition]=w3;planes[blockPosition]=w4;
-			blockPosition=position+140;planes[blockPosition]=w5;planes[blockPosition]=w6;planes[blockPosition]=w7;planes[blockPosition]=w8;
+		//	blockPosition=position+140;planes[blockPosition]=w5;planes[blockPosition]=w6;planes[blockPosition]=w7;planes[blockPosition]=w8;
 
 			position++; //go to next WORD
 			sp+=2; //go to the next 2 points

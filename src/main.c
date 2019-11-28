@@ -61,18 +61,28 @@ char sPixel[32][10];
 char sPlayerX[5], sPlayerY[5], sPlayerH[5];
 char sTime[10], sVelocity[5], sScore[5];
 
+void Recalculate()
+{
+	CalculateRayCasts(rayCastXEven, rayCastYEven, XSIZEEVEN, YSIZEEVEN, 1); //było 2
+	CalculateRayCasts(rayCastXOdd, rayCastYOdd, XSIZEODD, YSIZEODD, 1);
+	deltaTime = 0;
+}
+
 void SetDefaulResolution()
 {
-	renderingDepth = TERRAINDEPTH;
-	debugValue = 7;
-	debugValue2 = 2;
-	debugValue3 = 2;
-	debugValue4 = 1;
+		renderingDepth = 16;
+		debugValue = 2;
+		debugValue2 = 1;
+		debugValue3 = 10;
+		debugValue4 = 2;
+
 
 	debugValue6 = 4;
 	xFOV = 10;
 	Recalculate();
 }
+
+
 
 
 void ConvertIntToChar(int number, char *test)
@@ -306,7 +316,7 @@ void engineGsCreate(void)
 
 	SetupMaps();
 
-	GenerateWordDither8x8();
+	//GenerateWordDither8x8();
 	GenerateColorBytesNoDither4x4();
 	GenerateColorBytesDither3x2();
 

@@ -219,10 +219,10 @@ void ProcessRayCasts3x2(WORD (*rayCastX)[TERRAINDEPTH], WORD (*rayCastY)[TERRAIN
 				plane3W[position] = (dither3x2EvenP3[ address1 ]<<8) + dither3x2EvenP3[ address2 ];
 				plane4W[position] = (dither3x2EvenP4[ address1 ]<<8) + dither3x2EvenP4[ address2 ];
 				position-=20;
-				plane1W[position] = (dither3x2OddP1[ address1 ]<<8) + dither3x2OddP1[ address2 ];
-				plane2W[position] = (dither3x2OddP2[ address1 ]<<8) + dither3x2OddP2[ address2 ];
-				plane3W[position] = (dither3x2OddP3[ address1 ]<<8) + dither3x2OddP3[ address2 ];
-				plane4W[position] = (dither3x2OddP4[ address1 ]<<8) + dither3x2OddP4[ address2 ];
+				// plane1W[position] = (dither3x2OddP1[ address1 ]<<8) + dither3x2OddP1[ address2 ];
+				// plane2W[position] = (dither3x2OddP2[ address1 ]<<8) + dither3x2OddP2[ address2 ];
+				// plane3W[position] = (dither3x2OddP3[ address1 ]<<8) + dither3x2OddP3[ address2 ];
+				// plane4W[position] = (dither3x2OddP4[ address1 ]<<8) + dither3x2OddP4[ address2 ];
 				position-=20;
 				sy++;
 			}

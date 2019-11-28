@@ -3,12 +3,7 @@
 
 #include <stdlib.h>
 
-#define ULONG 	uint32_t
-#define LONG	int32_t
-#define UWORD 	uint16_t
-#define WORD 	int16_t
-#define UBYTE  unsigned char
-#define BYTE	signed char
+
 
 
 #define PLANEHEIGHT 200
@@ -17,8 +12,6 @@
 #define DEPTH 4
 #define COLORS 32
 
-#define XSIZEODD 120 + XTURNBUFFOR * 2
-#define XSIZEEVEN 80 + XTURNBUFFOR * 2
 
 
 #define MAPSIZE 128
@@ -29,29 +22,10 @@ UBYTE colorMap[MAPSIZE][MAPSIZE];  //65k
 
 UWORD mapHigh[256][256]; //131k
 
-UWORD mapSource[11][MAPSIZE][MAPSIZE];  //131k
-// UWORD mapHigh1[MAPSIZE][MAPSIZE];  //131k
-// UWORD mapHigh2[MAPSIZE][MAPSIZE];  //131k
-// UWORD mapHigh3[MAPSIZE][MAPSIZE];  //131k
-// UWORD mapHigh4[MAPSIZE][MAPSIZE];  //131k
-// UWORD mapHigh5[MAPSIZE][MAPSIZE];  //131k
-// UWORD mapHigh6[MAPSIZE][MAPSIZE];  //131k
-// UWORD mapHigh7[MAPSIZE][MAPSIZE];  //131k
-// UWORD mapHigh8[MAPSIZE][MAPSIZE];  //131k
-// UWORD mapHigh9[MAPSIZE][MAPSIZE];  //131k
-// UWORD mapHigh10[MAPSIZE][MAPSIZE]; //131k
+UWORD mapSource[11][MAPSIZE][MAPSIZE];  
+
 UBYTE mapLoaded0, mapLoaded1, mapLoaded2, mapLoaded3, mapLoaded4, mapLoaded5, mapLoaded6,
     mapLoaded7, mapLoaded8, mapLoaded9, mapLoaded10;
-
-//ATARI
-uint16_t *planes;
-//AMIGA
-UWORD plane1W[PLANEWIDTHWORD * PLANEHEIGHT]; //10k
-UWORD plane2W[PLANEWIDTHWORD * PLANEHEIGHT]; //10k
-UWORD plane3W[PLANEWIDTHWORD * PLANEHEIGHT]; //10k
-UWORD plane4W[PLANEWIDTHWORD * PLANEHEIGHT]; //10k
-
-
 
 UBYTE debugValue, debugValue2, debugValue3, debugValue4, debugValue5, debugValue6, xFOV;
 BYTE debugValue8, debugValue9;
@@ -78,13 +52,13 @@ UWORD grayColors[16] =
 
 UWORD bitmapPalette[16];
 
-UBYTE screen8x8slow[32 * 30];
+// UBYTE screen8x8slow[32 * 30];
 
-UBYTE screen8x8a[8 * 32]; //0,256k
-UBYTE screen8x8b[8 * 32]; //0,256k
-UBYTE screen8x8c[8 * 32]; //0,256k
-UBYTE screen8x8d[8 * 32]; //0,256k
-UBYTE screen8x8e[8 * 32]; //0,256k
+// UBYTE screen8x8a[8 * 32]; //0,256k
+// UBYTE screen8x8b[8 * 32]; //0,256k
+// UBYTE screen8x8c[8 * 32]; //0,256k
+// UBYTE screen8x8d[8 * 32]; //0,256k
+// UBYTE screen8x8e[8 * 32]; //0,256k
 
 UBYTE screen4x4a[16 * 64]; //1k
 UBYTE screen4x4b[16 * 64]; //1k
@@ -104,32 +78,32 @@ UBYTE screen3x2c[24 * 128]; //3k
 UBYTE screen3x2d[24 * 128]; //3k
 UBYTE screen3x2e[24 * 128]; //3k
 
-UWORD dither8x8EvenP1[COLORS * COLORS]; //2k
-UWORD dither8x8EvenP2[COLORS * COLORS]; //2k
-UWORD dither8x8EvenP3[COLORS * COLORS]; //2k
-UWORD dither8x8EvenP4[COLORS * COLORS]; //2k
-UWORD dither8x8OddP1[COLORS * COLORS];  //2k
-UWORD dither8x8OddP2[COLORS * COLORS];  //2k
-UWORD dither8x8OddP3[COLORS * COLORS];  //2k
-UWORD dither8x8OddP4[COLORS * COLORS];  //2k
+// UWORD dither8x8EvenP1[COLORS * COLORS]; //2k
+// UWORD dither8x8EvenP2[COLORS * COLORS]; //2k
+// UWORD dither8x8EvenP3[COLORS * COLORS]; //2k
+// UWORD dither8x8EvenP4[COLORS * COLORS]; //2k
+// UWORD dither8x8OddP1[COLORS * COLORS];  //2k
+// UWORD dither8x8OddP2[COLORS * COLORS];  //2k
+// UWORD dither8x8OddP3[COLORS * COLORS];  //2k
+// UWORD dither8x8OddP4[COLORS * COLORS];  //2k
 
 UBYTE dither4x4EvenP1[COLORS * COLORS]; //1k
 UBYTE dither4x4EvenP2[COLORS * COLORS]; //1k
 UBYTE dither4x4EvenP3[COLORS * COLORS]; //1k
 UBYTE dither4x4EvenP4[COLORS * COLORS]; //1k
-UBYTE dither4x4OddP1[COLORS * COLORS];  //1k
-UBYTE dither4x4OddP2[COLORS * COLORS];  //1k
-UBYTE dither4x4OddP3[COLORS * COLORS];  //1k
-UBYTE dither4x4OddP4[COLORS * COLORS];  //1k
+// UBYTE dither4x4OddP1[COLORS * COLORS];  //1k
+// UBYTE dither4x4OddP2[COLORS * COLORS];  //1k
+// UBYTE dither4x4OddP3[COLORS * COLORS];  //1k
+// UBYTE dither4x4OddP4[COLORS * COLORS];  //1k
 
 UBYTE dither3x2EvenP1[COLORS * COLORS * COLORS]; //32k
 UBYTE dither3x2EvenP2[COLORS * COLORS * COLORS]; //32k
 UBYTE dither3x2EvenP3[COLORS * COLORS * COLORS]; //32k
 UBYTE dither3x2EvenP4[COLORS * COLORS * COLORS]; //32k
-UBYTE dither3x2OddP1[COLORS * COLORS * COLORS];  //32k
-UBYTE dither3x2OddP2[COLORS * COLORS * COLORS];  //32k
-UBYTE dither3x2OddP3[COLORS * COLORS * COLORS];  //32k
-UBYTE dither3x2OddP4[COLORS * COLORS * COLORS];  //32k
+// UBYTE dither3x2OddP1[COLORS * COLORS * COLORS];  //32k
+// UBYTE dither3x2OddP2[COLORS * COLORS * COLORS];  //32k
+// UBYTE dither3x2OddP3[COLORS * COLORS * COLORS];  //32k
+// UBYTE dither3x2OddP4[COLORS * COLORS * COLORS];  //32k
 
 static LONG p1xf, p1yf, p1hf, p2xf, p2yf, p2hf;
 static UWORD p1x, p1y, p1h, p2x, p2y, p2h;
