@@ -346,9 +346,9 @@ void engineGsLoop(void)
 	levelTime += deltaTime;
 	if (screenIndex > 0)
 	{
-		if (screenDuration > 2500000)
+		if (screenDuration > 5000000)
 		{
-			screenDuration = 2500000;
+			screenDuration = 5000000;
 			screenIndex = (screenIndex + 1) % 4;
 
 			switch (screenIndex)
@@ -389,6 +389,26 @@ void engineGsLoop(void)
 			}
 			break;
 			}
+		}
+		if(screenDuration < 4000000)
+		{
+			ZeroPlane(s_pBuffer->pBack->Planes[0]);
+				viewLoad(s_pView);
+		}
+		if(screenDuration < 3000000)
+		{
+			ZeroPlane(s_pBuffer->pBack->Planes[1]);
+				viewLoad(s_pView);
+		}
+		if(screenDuration < 2000000)
+		{
+			ZeroPlane(s_pBuffer->pBack->Planes[2]);
+				viewLoad(s_pView);
+		}
+		if(screenDuration < 1000000)
+		{
+			ZeroPlane(s_pBuffer->pBack->Planes[3]);
+			viewLoad(s_pView);
 		}
 
 		screenDuration -= deltaTime;
@@ -573,7 +593,7 @@ void engineGsLoop(void)
 	}
 
 	//ConvertIntToChar(bcLogo[0], sPlayerX);
-	//ConvertIntToChar(bcLogo[1], sPlayerY);
+	ConvertIntToChar(p1y, sPlayerY);
 	//ConvertIntToChar(bcLogo[2], sPlayerH);
 	//timerFormatPrec(sTime, startTime);
 	//ConvertIntToChar(bcLogo[3], sTime);
@@ -588,14 +608,14 @@ void engineGsLoop(void)
 	}*/
 
 	//fontFillTextBitMap(s_pMenuFont, pBitmapPlayerX, sPlayerX);
-	//fontFillTextBitMap(s_pMenuFont, pBitmapPlayerY, sPlayerY);
+	fontFillTextBitMap(s_pMenuFont, pBitmapPlayerY, sPlayerY);
 	//fontFillTextBitMap(s_pMenuFont, pBitmapPlayerH, sPlayerH);
 	//fontFillTextBitMap(s_pMenuFont, pBitmapTime, sTime);
 	//fontFillTextBitMap(s_pMenuFont, pBitmapVelocity, sVelocity);
 	//fontFillTextBitMap(s_pMenuFont, pBitmapScore, sScore);
 
 	//fontDrawTextBitMap(s_pBuffer->pBack, pBitmapPlayerX, 20, 225, 15, FONT_LEFT);
-	//fontDrawTextBitMap(s_pBuffer->pBack, pBitmapPlayerY, 40, 225, 15, FONT_LEFT);
+	fontDrawTextBitMap(s_pBuffer->pBack, pBitmapPlayerY, 40, 225, 15, FONT_LEFT);
 	//fontDrawTextBitMap(s_pBuffer->pBack, pBitmapPlayerH, 60, 225, 15, FONT_LEFT);
 	//fontDrawTextBitMap(s_pBuffer->pBack, pBitmapTime, 80, 225, 12, FONT_LEFT);
 	//fontDrawTextBitMap(s_pBuffer->pBack, pBitmapVelocity, 100, 225, 12, FONT_LEFT);
