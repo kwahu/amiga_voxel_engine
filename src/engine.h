@@ -18,11 +18,7 @@
 #define COLORS 32
 
 
-#define XTURNBUFFOR 55
-#define XSIZEODD 120 + XTURNBUFFOR * 2
-#define XSIZEEVEN 80 + XTURNBUFFOR * 2
-#define YSIZEODD 90
-#define YSIZEEVEN YSIZEODD / 2
+
 
 #define MAPSIZE 128
 #define MAPLENGTH 11

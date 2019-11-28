@@ -21,7 +21,7 @@
 #include "dithering.c"
 #include "ray_casting_atari.c"
 #include "draw_screen_atari.c"
-#include "rendering_quality.c"
+#include "rendering_quality_atari.c"
 #include "map_streaming.c"
 #include "input_handling_atari.c"
 
@@ -67,7 +67,7 @@ uint16_t systemPalette[16];
 void SetDefaulResolution()
 {
 		renderingDepth = TERRAINDEPTH;
-		debugValue = 7;
+		debugValue = 8;
 		debugValue2 = 2;
 		debugValue3 = 2;
 		debugValue4 = 1;
@@ -168,7 +168,7 @@ void main_supervisor()
 	IKBD_Install();
 	//IKBD_MouseOff();
 
-	Setpalette(grayColors);
+	//Setpalette(grayColors);
 	//DrawColorMap(mapHigh);
 
 	initDeltaTime();

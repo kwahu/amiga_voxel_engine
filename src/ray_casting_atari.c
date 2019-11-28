@@ -205,10 +205,10 @@ void ProcessRayCasts3x2(WORD (*rayCastX)[TERRAINDEPTH], WORD (*rayCastY)[TERRAIN
 	UBYTE sx,sy,mist;
 	UWORD tz,tzz[6];
 	UWORD position,address1,address2;
-	UBYTE threshold1 = TERRAINDEPTH/4;
-	UBYTE threshold2 = TERRAINDEPTH/2;
-	UBYTE threshold3 = TERRAINDEPTH - TERRAINDEPTH/4;
-
+	UBYTE threshold1 = TERRAINDEPTH/2;
+	UBYTE threshold2 = TERRAINDEPTH - TERRAINDEPTH/4;
+	//UBYTE threshold3 = TERRAINDEPTH;
+	UWORD word;
 
 	UBYTE verticalSteps;
 
@@ -223,11 +223,11 @@ void ProcessRayCasts3x2(WORD (*rayCastX)[TERRAINDEPTH], WORD (*rayCastY)[TERRAIN
 	{
 		//start from the bottom
 		sy = 0;
-		position = ySize*20*2*4 + iVert*4 + tableXStart/6*4 + 80*12;
+		position = ySize*20*2*4 + iVert*4 + tableXStart/6*4;//+ 80*12;
 		
 		//init values for this vertical line
 		tzz[0]=zStart;tzz[1]=zStart;tzz[2]=zStart;
-		tzz[3]=zStart;tzz[4]=zStart;tzz[5]=zStart;
+		//tzz[3]=zStart;tzz[4]=zStart;tzz[5]=zStart;
 		tz = zStart;
 
 		//process this vertical line
@@ -235,52 +235,162 @@ void ProcessRayCasts3x2(WORD (*rayCastX)[TERRAINDEPTH], WORD (*rayCastY)[TERRAIN
 		{
 			 if(tz < threshold1)			
 			 {
-				 tz = ProcessWord1(1,sx,sy,&tz,tzz,px,py,ph,&address1,&address2,rayCastX, rayCastY, map);
-				 verticalSteps = 4;
+				tz = ProcessWord1(1,sx,sy,&tz,tzz,px,py,ph,&address1,&address2,rayCastX, rayCastY, map);
+
+				word = (dither3x2EvenP1[ address1 ]<<8) + dither3x2EvenP1[ address2 ];
+				planes[position] = word;
+				planes[position-160] = word;
+				planes[position-320] = word;
+				word = (word << 1)|(word & 1);
+				planes[position-80] = word;
+				planes[position-240] = word;
+				planes[position-400] = word;
+				word = (dither3x2EvenP2[ address1 ]<<8) + dither3x2EvenP2[ address2 ];
+				planes[position+1] = word;
+				planes[position-160+1] = word;
+				planes[position-320+1] = word;
+				word = (word << 1)|(word & 1);
+				planes[position-80+1] = word;
+				planes[position-240+1] = word;
+				planes[position-400+1] = word;
+				word = (dither3x2EvenP3[ address1 ]<<8) + dither3x2EvenP3[ address2 ];
+				planes[position+2] = word;
+				planes[position-160+2] = word;
+				planes[position-320+2] = word;
+				word = (word << 1)|(word & 1);
+				planes[position-80+2] = word;
+				planes[position-240+2] = word;
+				planes[position-400+2] = word;
+				word = (dither3x2EvenP4[ address1 ]<<8) + dither3x2EvenP4[ address2 ];
+				planes[position+3] = word;
+				planes[position-160+3] = word;
+				planes[position-320+3] = word;
+				word = (word << 1)|(word & 1);
+				planes[position-80+3] = word;
+				planes[position-240+3] = word;
+				planes[position-400+3] = word;
+				position -= 480;
+
+				sy+=3;
 			 }
 			else if(tz < threshold2)			
 			 {
-				 tz = ProcessWord2(2,sx,sy,&tz,tzz,px,py,ph,&address1,&address2,rayCastX, rayCastY, map);
-				 verticalSteps = 4;
+				tz = ProcessWord2(2,sx,sy,&tz,tzz,px,py,ph,&address1,&address2,rayCastX, rayCastY, map);
+				word = (dither3x2EvenP1[ address1 ]<<8) + dither3x2EvenP1[ address2 ];
+				planes[position] = word;
+				planes[position-160] = word;
+				planes[position-320] = word;
+				word = (word << 1)|(word & 1);
+				planes[position-80] = word;
+				planes[position-240] = word;
+				planes[position-400] = word;
+				word = (dither3x2EvenP2[ address1 ]<<8) + dither3x2EvenP2[ address2 ];
+				planes[position+1] = word;
+				planes[position-160+1] = word;
+				planes[position-320+1] = word;
+				word = (word << 1)|(word & 1);
+				planes[position-80+1] = word;
+				planes[position-240+1] = word;
+				planes[position-400+1] = word;
+				word = (dither3x2EvenP3[ address1 ]<<8) + dither3x2EvenP3[ address2 ];
+				planes[position+2] = word;
+				planes[position-160+2] = word;
+				planes[position-320+2] = word;
+				word = (word << 1)|(word & 1);
+				planes[position-80+2] = word;
+				planes[position-240+2] = word;
+				planes[position-400+2] = word;
+				word = (dither3x2EvenP4[ address1 ]<<8) + dither3x2EvenP4[ address2 ];
+				planes[position+3] = word;
+				planes[position-160+3] = word;
+				planes[position-320+3] = word;
+				word = (word << 1)|(word & 1);
+				planes[position-80+3] = word;
+				planes[position-240+3] = word;
+				planes[position-400+3] = word;
+				position -= 480;
+
+				sy+=3;
 			 }
-			else if(tz < threshold3)			
+			else if(tz < TERRAINDEPTH)			
 			 {
-				 tz = ProcessWord3(3,sx,sy,&tz,tzz,px,py,ph,&address1,&address2,rayCastX, rayCastY, map);
-				 verticalSteps = 4;
+				tz = ProcessWord3(3,sx,sy,&tz,tzz,px,py,ph,&address1,&address2,rayCastX, rayCastY, map);
+				word = (dither3x2EvenP1[ address1 ]<<8) + dither3x2EvenP1[ address2 ];
+				planes[position] = word;
+				planes[position-160] = word;
+				planes[position-320] = word;
+				word = (word << 1)|(word & 1);
+				planes[position-80] = word;
+				planes[position-240] = word;
+				planes[position-400] = word;
+				word = (dither3x2EvenP2[ address1 ]<<8) + dither3x2EvenP2[ address2 ];
+				planes[position+1] = word;
+				planes[position-160+1] = word;
+				planes[position-320+1] = word;
+				word = (word << 1)|(word & 1);
+				planes[position-80+1] = word;
+				planes[position-240+1] = word;
+				planes[position-400+1] = word;
+				word = (dither3x2EvenP3[ address1 ]<<8) + dither3x2EvenP3[ address2 ];
+				planes[position+2] = word;
+				planes[position-160+2] = word;
+				planes[position-320+2] = word;
+				word = (word << 1)|(word & 1);
+				planes[position-80+2] = word;
+				planes[position-240+2] = word;
+				planes[position-400+2] = word;
+				word = (dither3x2EvenP4[ address1 ]<<8) + dither3x2EvenP4[ address2 ];
+				planes[position+3] = word;
+				planes[position-160+3] = word;
+				planes[position-320+3] = word;
+				word = (word << 1)|(word & 1);
+				planes[position-80+3] = word;
+				planes[position-240+3] = word;
+				planes[position-400+3] = word;
+				position -= 480;
+
+				sy+=3;
 			 }
-			 else if(tz < TERRAINDEPTH)		
+			//  else if(tz < TERRAINDEPTH)		
+			//  {
+			// 	 tz = ProcessWord6(6,sx,sy,&tz,tzz,px,py,ph,&address1,&address2,rayCastX, rayCastY, map);
+			// 	 verticalSteps = 2;
+			//  }
+			 else 	
 			 {
-				 tz = ProcessWord6(6,sx,sy,&tz,tzz,px,py,ph,&address1,&address2,rayCastX, rayCastY, map);
-				 verticalSteps = 2;
+				address1 = 0b0011110111101111;
+				address2 = 0b0011110111101111;
+
+				word = (dither3x2EvenP1[ address1 ]<<8) + dither3x2EvenP1[ address2 ];
+				planes[position] = word;
+				planes[position-160] = word;
+				word = (word << 1)|(word >> (16 - 1));
+				planes[position-80] = word;
+				planes[position-240] = word;
+				//position -= 80;
+				word = (dither3x2EvenP2[ address1 ]<<8) + dither3x2EvenP2[ address2 ];
+				planes[position+1] = word;
+				planes[position-160+1] = word;
+				word = (word << 1)|(word >> (16 - 1));
+				planes[position-80+1] = word;
+				planes[position-240+1] = word;
+				//position -= 80;
+				word = (dither3x2EvenP3[ address1 ]<<8) + dither3x2EvenP3[ address2 ];
+				planes[position+2] = word;
+				planes[position-160+2] = word;
+				word = (word << 1)|(word >> (16 - 1));
+				planes[position-80+2] = word;
+				planes[position-240+2] = word;
+				//position -= 80;
+				word = (dither3x2EvenP4[ address1 ]<<8) + dither3x2EvenP4[ address2 ];
+				planes[position+3] = word;
+				planes[position-160+3] = word;
+				word = (word << 1)|(word >> (16 - 1));
+				planes[position-80+3] = word;
+				planes[position-240+3] = word;
+				position -= 320;
+				sy+=2;
 			 }
-			 else
-			 {
-				 address1 = 0b0011110111101111;
-				 address2 = 0b0011110111101111;
-				 verticalSteps = 1;
-			 }
-			 
-			 
-			// else if(tzz[0] < q2)	ProcessWord(2,sx,sy,&tz,&tzz,px,py,ph,&address1,&address2,rayCastX, rayCastY, map);
-			// else if(tzz[0] < q3)	ProcessWord(3,sx,sy,&tz,&tzz,px,py,ph,&address1,&address2,rayCastX, rayCastY, map);
-			 //else				ProcessWord(6,sx,sy,&tz,&tzz,px,py,ph,&address1,&address2,rayCastX, rayCastY, map);
-			//ProcessWord(1,sx,sy,&tz,&tzz,px,py,ph,&address1,&address2,rayCastX, rayCastY, map);
-			//draw on screen a WORD = 16 pixels
-			for(int i=0;i<verticalSteps;i++)
-			{
-			
-			planes[position] = (dither3x2EvenP1[ address1 ]<<8) + dither3x2EvenP1[ address2 ];
-			planes[position+1] = (dither3x2EvenP2[ address1 ]<<8) + dither3x2EvenP2[ address2 ];
-			planes[position+2] = (dither3x2EvenP3[ address1 ]<<8) + dither3x2EvenP3[ address2 ];
-			planes[position+3] = (dither3x2EvenP4[ address1 ]<<8) + dither3x2EvenP4[ address2 ];
-			position-=80;
-			planes[position] = (dither3x2OddP1[ address1 ]<<8) + dither3x2OddP1[ address2 ];
-			planes[position+1] = (dither3x2OddP2[ address1 ]<<8) + dither3x2OddP2[ address2 ];
-			planes[position+2] = (dither3x2OddP3[ address1 ]<<8) + dither3x2OddP3[ address2 ];
-			planes[position+3] = (dither3x2OddP4[ address1 ]<<8) + dither3x2OddP4[ address2 ];
-			position-=80;
-				sy++;
-			}
 			//go step higher in the raycast table
 		}
 		sx += 6;//go to the next vertical line

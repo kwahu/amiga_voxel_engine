@@ -9,57 +9,57 @@ void ProcessQualityInputAtari()
 
 	if(IKBD_Keyboard[KEY_1] && debugValue!=1)
 	{
-		renderingDepth = TERRAINDEPTH/4;
-		debugValue=1;
-		debugValue2 = 1;
-		debugValue3 = 10;
-		debugValue4 = 2;
-		Recalculate();
+		renderingDepth = TERRAINDEPTH;
+		debugValue = 1;
+		debugValue2 = 2;
+		debugValue3 = 4;
+		debugValue4 = 1;
+		DrawBitmap8b(bitmap1, &bitmapHeader1);
 	}
 	if(IKBD_Keyboard[KEY_2] && debugValue!=2)
 	{
-		renderingDepth = TERRAINDEPTH/4;
-		debugValue=2;
-		debugValue2 = 1;
-		debugValue3 = 10;
-		debugValue4 = 2;
-		Recalculate();
+		renderingDepth = TERRAINDEPTH;
+		debugValue = 2;
+		debugValue2 = 2;
+		debugValue3 = 4;
+		debugValue4 = 1;
+		DrawBitmap8b(bitmap1, &bitmapHeader1);
 	}
 	if(IKBD_Keyboard[KEY_3] && debugValue!=3)
 	{
-		renderingDepth = TERRAINDEPTH/4;
-		debugValue=3;
-		debugValue2 = 1;
-		debugValue3 = 10;
-		debugValue4 = 2;
-		Recalculate();
+		renderingDepth = TERRAINDEPTH;
+		debugValue = 3;
+		debugValue2 = 2;
+		debugValue3 = 4;
+		debugValue4 = 1;
+		DrawBitmap8b(bitmap1, &bitmapHeader1);
 	}
 	if(IKBD_Keyboard[KEY_4] && debugValue!=4)
 	{
-		renderingDepth = TERRAINDEPTH/2;
-		debugValue=4;
+		renderingDepth = TERRAINDEPTH;
+		debugValue = 4;
 		debugValue2 = 2;
-		debugValue3 = 2;
+		debugValue3 = 4;
 		debugValue4 = 1;
-		Recalculate();
+		DrawBitmap8b(bitmap1, &bitmapHeader1);
 	}
 	if(IKBD_Keyboard[KEY_5] && debugValue!=5)
 	{
-		renderingDepth = TERRAINDEPTH/2;
-		debugValue=5;
+		renderingDepth = TERRAINDEPTH;
+		debugValue = 5;
 		debugValue2 = 2;
-		debugValue3 = 2;
+		debugValue3 = 4;
 		debugValue4 = 1;
-		Recalculate();
+		DrawBitmap8b(bitmap1, &bitmapHeader1);
 	}
 	if(IKBD_Keyboard[KEY_6] && debugValue!=6)
 	{
-		renderingDepth = TERRAINDEPTH/2;
-		debugValue=6;
+		renderingDepth = TERRAINDEPTH;
+		debugValue = 6;
 		debugValue2 = 2;
-		debugValue3 = 2;
+		debugValue3 = 4;
 		debugValue4 = 1;
-		Recalculate();
+		DrawBitmap8b(bitmap1, &bitmapHeader1);
 	}
 	if(IKBD_Keyboard[KEY_7] && debugValue!=7)
 	{
@@ -68,14 +68,9 @@ void ProcessQualityInputAtari()
 		debugValue2 = 2;
 		debugValue3 = 4;
 		debugValue4 = 1;
-		// debugValue=7;     
-		// debugValue2 = 7;
-		// debugValue3 = 1;
-		// debugValue4 = 0;
-		if(debugValue != 8 && debugValue != 7)
-			Recalculate();
+		DrawBitmap8b(bitmap1, &bitmapHeader1);
 	}
-	if (IKBD_Keyboard[KEY_8] )
+	if (IKBD_Keyboard[KEY_8] && debugValue!=8 )
 	{
 		renderingDepth = TERRAINDEPTH;
 		debugValue = 8;
