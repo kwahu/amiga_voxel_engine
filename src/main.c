@@ -459,9 +459,9 @@ void engineGsCreate(void)
 	// Load font
 	s_pMenuFont = fontCreate("data/silkscreen.fnt");
 
-	p1xf = 100 * 100;
+	p1xf = 40 * 100;
 	p1yf = 0;
-	p1hf = 200 * 100;
+	p1hf = 20 * 100;
 
 	p2x = 0;
 	p2y = 0;

@@ -42,10 +42,10 @@ void DrawPlayerScreen3x2(UBYTE *screen, UBYTE player, UBYTE depth, UBYTE startSc
 			planes[blockPosition+2] = (dither3x2EvenP3[ address1 ]<<8) + dither3x2EvenP3[ address2 ];
 			planes[blockPosition+3] = (dither3x2EvenP4[ address1 ]<<8) + dither3x2EvenP4[ address2 ];
 			blockPosition=position+80;
-			// planes[blockPosition] = (dither5[ address1 ]<<8) + dither5[ address2 ];
-			// planes[blockPosition+1] = (dither6[ address1 ]<<8) + dither6[ address2 ];
-			// planes[blockPosition+2] = (dither7[ address1 ]<<8) + dither7[ address2 ];
-			// planes[blockPosition+3] = (dither8[ address1 ]<<8) + dither8[ address2 ];
+			planes[blockPosition] = (dither3x2EvenP1[ address1 ]<<8) + dither3x2EvenP1[ address2 ];
+			planes[blockPosition+1] = (dither3x2EvenP2[ address1 ]<<8) + dither3x2EvenP2[ address2 ];
+			planes[blockPosition+2] = (dither3x2EvenP3[ address1 ]<<8) + dither3x2EvenP3[ address2 ];
+			planes[blockPosition+3] = (dither3x2EvenP4[ address1 ]<<8) + dither3x2EvenP4[ address2 ];
 
 			position+=4; //go to next WORD
 

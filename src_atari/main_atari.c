@@ -370,12 +370,12 @@ void main_supervisor()
 				//PRINT("ESC\r\n");
 				exitflag = 1;
 			}
-			if(IKBD_Keyboard[IKBD_KEY_UP]) p1h += 1;
-			if(IKBD_Keyboard[IKBD_KEY_DOWN]) p1h -= 1;
+			//if(IKBD_Keyboard[IKBD_KEY_UP]) p1h += 1;
+			//if(IKBD_Keyboard[IKBD_KEY_DOWN]) p1h -= 1;
 			//if(IKBD_Keyboard[IKBD_KEY_RIGHT]) p1x += 1;
 			//if(IKBD_Keyboard[IKBD_KEY_LEFT]) p1x -= 1;
-			if(IKBD_Keyboard[IKBD_KEY_CONTROL]) p1y += 1;
-			if(IKBD_Keyboard[IKBD_KEY_ALT]) p1y -= 1;
+			//if(IKBD_Keyboard[IKBD_KEY_CONTROL]) p1y += 1;
+			//if(IKBD_Keyboard[IKBD_KEY_ALT]) p1y -= 1;
 			
 			
 		}
