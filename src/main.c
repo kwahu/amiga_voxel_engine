@@ -67,6 +67,8 @@ UBYTE hardwareSelection = 0;
 
 UBYTE gamePaletteSet = 0;
 
+UWORD screenOffset = 28;//(256 - YSIZEODD*2)/2 * 20;
+
 
 void switchIntroScreen()
 {
@@ -79,7 +81,7 @@ void switchIntroScreen()
 		bitmap1 = LoadBitmapFile("data/logo2.bmp", &bitmapHeader1, bitmapPalette1);
 		systemUnuse();
 		
-		DrawBitmap4b(bitmap1, &bitmapHeader1);
+		DrawBitmap4b(bitmap1, &bitmapHeader1, screenOffset);
 		
 		for(int i = 0; i < 4; i++)
 		{
@@ -96,7 +98,7 @@ void switchIntroScreen()
 		systemUse();
 		bitmap1 = LoadBitmapFile("data/logo3.bmp", &bitmapHeader1, bitmapPalette1);
 		systemUnuse();
-		DrawBitmap4b(bitmap1, &bitmapHeader1);
+		DrawBitmap4b(bitmap1, &bitmapHeader1, screenOffset);
 		
 		for(int i = 0; i < 4; i++)
 		{
@@ -396,8 +398,6 @@ void ConvertByteToChar(UBYTE number, char *test)
 
 void SetGamePaletter()
 {
-	
-
 	//process paletter from an image
 	for (int i = 0; i < 16; i++)
 	{
@@ -406,7 +406,6 @@ void SetGamePaletter()
 	}
 
 	memcpy(s_pVPort->pPalette, bitmapPalette, 16 * sizeof(UWORD));
-
 	viewLoad(s_pView);
 }
 
@@ -428,6 +427,7 @@ void engineGsCreate(void)
 								   TAG_DONE);
 
 	bitmap1 = LoadBitmapFile("data/logo1.bmp", &bitmapHeader1, bitmapPalette1);
+	bitmap4 = LoadBitmapFile("data/menu1.bmp", &bitmapHeader4, bitmapPalette4);
 	paletteBitmap = LoadBitmapFile("data/palette.bmp", &paletteHeader, palettePalette);
 
 	//process paletter from an image
@@ -443,25 +443,15 @@ void engineGsCreate(void)
 		fadeInStatus[i] = 1;
 		fadeOutStatus[i] = 0;
 	}
-
 	memcpy(s_pVPort->pPalette, bitmapPalette, 16 * sizeof(UWORD));
-
-	
-
 	viewLoad(s_pView);
-
-	//DrawBitmap4b(bitmap1, &bitmapHeader1);
-	//vPortWaitForEnd(s_pVPort);
-	//CopyFastToChipW(s_pBuffer->pBack);
 	ULONG blitTime = timerGetPrec();
-
-	
 	// Load font
 	s_pMenuFont = fontCreate("data/silkscreen.fnt");
 
-	p1xf = 40 * 100;
+	p1xf = 60 * 100;
 	p1yf = 0;
-	p1hf = 20 * 100;
+	p1hf = 10 * 100;
 
 	p2x = 0;
 	p2y = 0;
@@ -471,10 +461,8 @@ void engineGsCreate(void)
 
 	SetupMaps();
 
-	//GenerateWordDither8x8();
 	GenerateColorBytesNoDither4x4();
 	GenerateColorBytesDither3x2();
-
 
 	pBitmapPlayerX = fontCreateTextBitMapFromStr(s_pMenuFont, "1234567890");
 	pBitmapPlayerY = fontCreateTextBitMapFromStr(s_pMenuFont, "1234567890");
@@ -483,7 +471,6 @@ void engineGsCreate(void)
 	pBitmapVelocity = fontCreateTextBitMapFromStr(s_pMenuFont, "1234567890");
 	pBitmapScore = fontCreateTextBitMapFromStr(s_pMenuFont, "1234567890");
 	
-
 	for (int i = 0; i < 32; i++)
 		pixel[i] = fontCreateTextBitMapFromStr(s_pMenuFont, "1234567890");
 
@@ -499,10 +486,8 @@ void engineGsCreate(void)
 
 	//*********************************** SELECT HARDWARE ***********************************************
 	informationText = fontCreateTextBitMapFromStr(s_pMenuFont, "KEY 1 = A500  KEY 2 = A1200 KEY 3 = A3000");
-	//fontFillTextBitMap(s_pMenuFont, informationText, sPlayerY);
 	fontDrawTextBitMap(s_pBuffer->pBack, informationText, 50, PLANEHEIGHT/2, 3, FONT_LEFT);
-	//vPortWaitForEnd(s_pVPort);
-	//CopyFastToChipW(s_pBuffer->pBack);
+
 	while(hardwareSelection == 0) //A500
 	{
 		if (keyCheck(KEY_1))
@@ -591,17 +576,34 @@ void engineGsLoop(void)
 			//restart
 			if ((p1h - 3) < (UBYTE)(mapHigh[(UBYTE)(p1x)][(UBYTE)(p1y + 15)]))
 			{
-				p1xf = 64 * 100;
+				DrawBitmap4b(bitmap4, &bitmapHeader4, screenOffset);
+				memcpy(s_pVPort->pPalette, bitmapPalette, 16 * sizeof(UWORD));
+				viewLoad(s_pView);
+				vPortWaitForEnd(s_pVPort);
+				CopyFastToChipW(s_pBuffer->pBack);
+
+				//wait 2 seconds
+				int counter = 10;
+				while(counter > 0)
+				{
+					vPortWaitForEnd(s_pVPort);
+					counter --;
+				}
+
+				p1xf = 60 * 100;
 				p1yf = 0;
-				p1hf = 50 * 100;
+				p1hf = 20 * 100;
+				
 				velocity = 0;
 				acceleration = 0;
 				points = 0;
-				CopyMapWord(mapSource[0], mapHigh);
-				lastOverwrittenLine = 0;
 				cx = 0;
 				cy = 0;
 				levelTime = 0;
+				deltaTime = 0;
+				lastOverwrittenLine = 0;
+
+				CopyMapWord(mapSource[0], mapHigh);
 			}
 
 			ProcessQualityInput();

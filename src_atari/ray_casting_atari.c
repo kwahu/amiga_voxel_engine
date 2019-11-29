@@ -1,49 +1,5 @@
 #include "../src/engine.h"
 
-UBYTE ProcessWord(UBYTE rounds, UBYTE sx, UBYTE sy, UWORD *_tz, UWORD *tzz, UBYTE px, UBYTE py,UBYTE ph,
-UWORD *address1, UWORD *address2, 
-WORD (*rayCastX)[TERRAINDEPTH], WORD (*rayCastY)[TERRAINDEPTH], UWORD (*map)[256])
-{
-	UWORD mapValue;
-	WORD slope;
-	UBYTE c[6];
-	UBYTE th;
-	UBYTE tz;
-
-	//process 1,2,3 or 6 rounds to find colors for this WORD = 16 pixels
-	for(UBYTE iHor=0;iHor<rounds;iHor++)
-	{
-		
-		tz = tzz[iHor];//set current depth - tz
-		while(tz < TERRAINDEPTH)//check depth step by step
-		{
-			mapValue = map[ (UBYTE)( px + rayCastX[sx][tz] ) ][ (UBYTE)( py + tz<<debugValue4 ) ];//read color + height
-			th = mapValue;//take just the height
-			slope = th - (ph + rayCastY[sy][tz]);//check if read height is higher than what we expect from the raycast table
-			if(slope > 0)
-			{
-				c[iHor] = (mapValue >> 8);// + ((slope/4) & 1);
-				tzz[iHor] = tz;//save the depth we've arrived at
-				break;
-			}
-			else
-			{	
-				tz++;//go step in depth if no height hit
-			}
-		}
-		if(tz == TERRAINDEPTH) c[iHor] = 0; //draw sky if too deep
-
-		sx = sx + iHor;
-	}
-	switch(rounds)
-	{
-		case 1: *address1 = (c[0]<<10) + (c[0]<<5) + (c[0]); *address2 = *address1;break;
-		case 2: *address1 = (c[0]<<10) + (c[0]<<5) + (c[0]); *address2 = (c[1]<<10) + (c[1]<<5) + (c[1]);break;
-		case 3: *address1 = (c[0]<<10) + (c[0]<<5) + (c[1]); *address2 = (c[1]<<10) + (c[2]<<5) + (c[2]);break;
-		default: *address1 = (c[0]<<10) + (c[1]<<5) + (c[2]); *address2 = (c[3]<<10) + (c[4]<<5) + (c[5]);
-	}
-	return tz;
-}
 UBYTE ProcessWord1(UBYTE rounds, UBYTE sx, UBYTE sy, UWORD *_tz, UWORD *tzz, UBYTE px, UBYTE py,UBYTE ph,
 UWORD *address1, UWORD *address2, 
 WORD (*rayCastX)[TERRAINDEPTH], WORD (*rayCastY)[TERRAINDEPTH], UWORD (*map)[256])
@@ -66,7 +22,7 @@ WORD (*rayCastX)[TERRAINDEPTH], WORD (*rayCastY)[TERRAINDEPTH], UWORD (*map)[256
 			slope = th - (ph + rayCastY[sy][tz]);//check if read height is higher than what we expect from the raycast table
 			if(slope > 0)
 			{
-				c = (mapValue >> 8);// + ((slope/4) & 1);
+				c = (mapValue >> 8) + ((slope/16) & 1);
 				tzz[iHor] = tz;//save the depth we've arrived at
 				break;
 			}
@@ -75,7 +31,7 @@ WORD (*rayCastX)[TERRAINDEPTH], WORD (*rayCastY)[TERRAINDEPTH], UWORD (*map)[256
 				tz++;//go step in depth if no height hit
 			}
 		}
-		if(tz == TERRAINDEPTH) c = 31; //draw sky if too deep
+		if(tz == TERRAINDEPTH) c = 34 - ph/32 - sy/8; //draw sky if too deep
 	}
 	*address1 = (c<<10) + (c<<5) + (c); *address2 = *address1;
 	
@@ -105,7 +61,7 @@ WORD (*rayCastX)[TERRAINDEPTH], WORD (*rayCastY)[TERRAINDEPTH], UWORD (*map)[256
 			slope = th - (ph + rayCastY[sy][tz]);//check if read height is higher than what we expect from the raycast table
 			if(slope > 0)
 			{
-				c[iHor] = (mapValue >> 8);// + ((slope/4) & 1);
+				c[iHor] = (mapValue >> 8) + ((slope/16) & 1);
 				tzz[iHor] = tz;//save the depth we've arrived at
 				break;
 			}
@@ -114,7 +70,7 @@ WORD (*rayCastX)[TERRAINDEPTH], WORD (*rayCastY)[TERRAINDEPTH], UWORD (*map)[256
 				tz++;//go step in depth if no height hit
 			}
 		}
-		if(tz == TERRAINDEPTH) c[iHor] = 31; //draw sky if too deep
+		if(tz == TERRAINDEPTH) c[iHor] = 34 - ph/32 -sy/8; //draw sky if too deep
 		sx = sx + 3;
 	}
 	*address1 = (c[0]<<10) + (c[0]<<5) + (c[0]); *address2 = (c[1]<<10) + (c[1]<<5) + (c[1]);
@@ -143,7 +99,7 @@ WORD (*rayCastX)[TERRAINDEPTH], WORD (*rayCastY)[TERRAINDEPTH], UWORD (*map)[256
 			slope = th - (ph + rayCastY[sy][tz]);//check if read height is higher than what we expect from the raycast table
 			if(slope > 0)
 			{
-				c[iHor] = (mapValue >> 8);// + ((slope/4) & 1);
+				c[iHor] = (mapValue >> 8) + ((slope/16) & 1);
 				tzz[iHor] = tz;//save the depth we've arrived at
 				break;
 			}
@@ -152,7 +108,8 @@ WORD (*rayCastX)[TERRAINDEPTH], WORD (*rayCastY)[TERRAINDEPTH], UWORD (*map)[256
 				tz++;//go step in depth if no height hit
 			}
 		}
-		if(tz == TERRAINDEPTH) c[iHor] = 31; //draw sky if too deep
+		if(tz == TERRAINDEPTH) c[iHor] = 34 - ph/32 -sy/8; //draw sky if too deep
+
 		sx = sx + 2;
 	}
 	*address1 = (c[0]<<10) + (c[0]<<5) + (c[1]); *address2 = (c[1]<<10) + (c[2]<<5) + (c[2]);
@@ -190,7 +147,7 @@ WORD (*rayCastX)[TERRAINDEPTH], WORD (*rayCastY)[TERRAINDEPTH], UWORD (*map)[256
 				tz++;//go step in depth if no height hit
 			}
 		}
-		if(tz == TERRAINDEPTH) c[iHor] = 15; //draw sky if too deep
+		if(tz == TERRAINDEPTH) c[iHor] = 34 - ph/32 -sy/8;; //draw sky if too deep
 
 		sx += 1;
 	}
@@ -210,6 +167,8 @@ void ProcessRayCasts3x2(WORD (*rayCastX)[TERRAINDEPTH], WORD (*rayCastY)[TERRAIN
 	UBYTE threshold2 = TERRAINDEPTH - TERRAINDEPTH/4;
 	//UBYTE threshold3 = TERRAINDEPTH;
 	UWORD word;
+	UBYTE color;
+	UWORD positionStart =  ySize*20*2*4 + tableXStart/6*4;
 
 	UBYTE verticalSteps;
 
@@ -225,7 +184,7 @@ void ProcessRayCasts3x2(WORD (*rayCastX)[TERRAINDEPTH], WORD (*rayCastY)[TERRAIN
 	{
 		//start from the bottom
 		sy = 0;
-		position = ySize*20*2*4 + iVert*4 + tableXStart/6*4;//+ 80*12;
+		position = positionStart + iVert*4 ;//+ 80*12;
 		
 		//init values for this vertical line
 		tzz[0]=zStart;tzz[1]=zStart;tzz[2]=zStart;
@@ -360,31 +319,32 @@ void ProcessRayCasts3x2(WORD (*rayCastX)[TERRAINDEPTH], WORD (*rayCastY)[TERRAIN
 			//  }
 			 else 	
 			 {
-				address1 = 0b0111111111111111;
-				address2 = 0b0111111111111111;
+				color = 34 - ph/32 -sy/8;
+				address1 = (color<<10) + (color<<5) + (color);
+	
 
-				word = (dither3x2EvenP1[ address1 ]<<8) + dither3x2EvenP1[ address2 ];
+				word = (dither3x2EvenP1[ address1 ]<<8) + dither3x2EvenP1[ address1 ];
 				planes[position] = word;
 				planes[position-160] = word;
 				word = (word << 1)|((word>>1) & 1);
 				planes[position-80] = word;
 				planes[position-240] = word;
 				//position -= 80;
-				word = (dither3x2EvenP2[ address1 ]<<8) + dither3x2EvenP2[ address2 ];
+				word = (dither3x2EvenP2[ address1 ]<<8) + dither3x2EvenP2[ address1 ];
 				planes[position+1] = word;
 				planes[position-160+1] = word;
 				word = (word << 1)|((word>>1) & 1);
 				planes[position-80+1] = word;
 				planes[position-240+1] = word;
 				//position -= 80;
-				word = (dither3x2EvenP3[ address1 ]<<8) + dither3x2EvenP3[ address2 ];
+				word = (dither3x2EvenP3[ address1 ]<<8) + dither3x2EvenP3[ address1 ];
 				planes[position+2] = word;
 				planes[position-160+2] = word;
 				word = (word << 1)|((word>>1) & 1);
 				planes[position-80+2] = word;
 				planes[position-240+2] = word;
 				//position -= 80;
-				word = (dither3x2EvenP4[ address1 ]<<8) + dither3x2EvenP4[ address2 ];
+				word = (dither3x2EvenP4[ address1 ]<<8) + dither3x2EvenP4[ address1 ];
 				planes[position+3] = word;
 				planes[position-160+3] = word;
 				word = (word << 1)|((word>>1) & 1);

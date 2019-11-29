@@ -71,7 +71,7 @@ UBYTE tableStepSizeX, UBYTE tableStepSizeY, UBYTE tableStepNumber, UBYTE xCycles
 			//	sy = YSIZE;
 			//else
 			{
-				screen[position] = ph/32 + 0 +sy/8;
+				screen[position] =  32 - ph/32 -sy/8;
 				sy+=tableStepSizeY;
 				position-=currentScreenYStepSize;
 			}
