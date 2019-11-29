@@ -81,7 +81,7 @@ void switchIntroScreen()
 		bitmap1 = LoadBitmapFile("data/logo2.bmp", &bitmapHeader1, bitmapPalette1);
 		systemUnuse();
 		
-		DrawBitmap4b(bitmap1, &bitmapHeader1, screenOffset);
+		DrawBitmap4bCenter(bitmap1, &bitmapHeader1);
 		
 		for(int i = 0; i < 4; i++)
 		{
@@ -98,7 +98,7 @@ void switchIntroScreen()
 		systemUse();
 		bitmap1 = LoadBitmapFile("data/logo3.bmp", &bitmapHeader1, bitmapPalette1);
 		systemUnuse();
-		DrawBitmap4b(bitmap1, &bitmapHeader1, screenOffset);
+		DrawBitmap4bCenter(bitmap1, &bitmapHeader1);
 		
 		for(int i = 0; i < 4; i++)
 		{
@@ -576,7 +576,7 @@ void engineGsLoop(void)
 			//restart
 			if ((p1h - 3) < (UBYTE)(mapHigh[(UBYTE)(p1x)][(UBYTE)(p1y + 15)]))
 			{
-				DrawBitmap4b(bitmap4, &bitmapHeader4, screenOffset);
+				DrawBitmap4bCenter(bitmap4, &bitmapHeader4);
 				memcpy(s_pVPort->pPalette, bitmapPalette, 16 * sizeof(UWORD));
 				viewLoad(s_pView);
 				vPortWaitForEnd(s_pVPort);
