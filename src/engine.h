@@ -74,6 +74,7 @@ UWORD p1x, p1y, p1h, p2x, p2y, p2h;
 static int interlace;
 ULONG velocity = 0;
 LONG acceleration = 0;
+ULONG points = 0;
 
 static UBYTE screenIndex;
 static WORD cx, cy;

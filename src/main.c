@@ -59,7 +59,7 @@ tTextBitMap *pBitmapTime, *pBitmapVelocity, *pBitmapScore;
 tTextBitMap *pixel[32];
 char sPixel[32][10];
 char sPlayerX[5], sPlayerY[5], sPlayerH[5];
-char sTime[10], sVelocity[5], sScore[5];
+char sTime[10], sVelocity[8], sScore[5];
 char fadeInStatus[4], fadeOutStatus[4];
 unsigned char *currentPallete;
 
@@ -588,6 +588,8 @@ void engineGsLoop(void)
 				p1yf = 0;
 				p1hf = 50 * 100;
 				velocity = 0;
+				acceleration = 0;
+				points = 0;
 				CopyMapWord(mapSource[0], mapHigh);
 				lastOverwrittenLine = 0;
 				cx = 0;
@@ -620,7 +622,7 @@ void engineGsLoop(void)
 	//ConvertIntToChar(bcLogo[2], sPlayerH);
 	//timerFormatPrec(sTime, startTime);
 	//ConvertIntToChar(bcLogo[3], sTime);
-	//ConvertIntToChar(velocity, sVelocity);
+	ConvertIntToChar(points, sVelocity);
 	//ConvertIntToChar(acceleration, sScore);
 
 	/*for (int i = 0; i < 16; i++)
@@ -634,14 +636,14 @@ void engineGsLoop(void)
 	//fontFillTextBitMap(s_pMenuFont, pBitmapPlayerY, sPlayerY);
 	//fontFillTextBitMap(s_pMenuFont, pBitmapPlayerH, sPlayerH);
 	//fontFillTextBitMap(s_pMenuFont, pBitmapTime, sTime);
-	//fontFillTextBitMap(s_pMenuFont, pBitmapVelocity, sVelocity);
+	fontFillTextBitMap(s_pMenuFont, pBitmapVelocity, sVelocity);
 	//fontFillTextBitMap(s_pMenuFont, pBitmapScore, sScore);
 
 	//fontDrawTextBitMap(s_pBuffer->pBack, pBitmapPlayerX, 00, 225, 15, FONT_LEFT);
 	//fontDrawTextBitMap(s_pBuffer->pBack, pBitmapPlayerY, 40, 225, 15, FONT_LEFT);
 	//fontDrawTextBitMap(s_pBuffer->pBack, pBitmapPlayerH, 60, 225, 15, FONT_LEFT);
 	//fontDrawTextBitMap(s_pBuffer->pBack, pBitmapTime, 80, 225, 12, FONT_LEFT);
-	//fontDrawTextBitMap(s_pBuffer->pBack, pBitmapVelocity, 100, 225, 12, FONT_LEFT);
+	fontDrawTextBitMap(s_pBuffer->pBack, pBitmapVelocity, 100, 225, 12, FONT_LEFT);
 	//fontDrawTextBitMap(s_pBuffer->pBack, pBitmapScore, 120, 225, 12, FONT_LEFT);
 
 	interlace++;

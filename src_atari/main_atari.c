@@ -386,6 +386,9 @@ void main_supervisor()
 				p1xf = 64 * 100;
 				p1yf = 0;
 				p1hf = 50 * 100;
+				velocity = 0;
+				acceleration = 0;
+				points = 0;
 				CopyMapWord(mapSource[0], mapHigh);
 				lastOverwrittenLine = 0;
 				cx = 0;
