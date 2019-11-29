@@ -96,7 +96,8 @@ void switchIntroScreen()
 	{
 		bitmap1 = LoadBitmapFile("data/logo2.bmp", &bitmapHeader1, bitmapPalette1);
 		
-		DrawBitmap4b(bitmap1, &bitmapHeader1);
+		ClearScreen();
+		DrawBitmap4bCenter(bitmap1, &bitmapHeader1);
 		
 		for(int i = 0; i < 4; i++)
 		{
@@ -109,7 +110,8 @@ void switchIntroScreen()
 	{
 		bitmap1 = LoadBitmapFile("data/logo3.bmp", &bitmapHeader1, bitmapPalette1);
 		
-		DrawBitmap4b(bitmap1, &bitmapHeader1);
+		ClearScreen();
+		DrawBitmap4bCenter(bitmap1, &bitmapHeader1);
 		
 		for(int i = 0; i < 4; i++)
 		{
@@ -272,7 +274,8 @@ void main_supervisor()
 	}
 
 	Setpalette(bitmapPalette);
-    DrawBitmap4b(bitmap1, &bitmapHeader1);
+	ClearScreen();
+    DrawBitmap4bCenter(bitmap1, &bitmapHeader1);
 
 
 	paletteBitmap = LoadBitmapFile("data/palette.bmp", &paletteHeader, palettePalette);

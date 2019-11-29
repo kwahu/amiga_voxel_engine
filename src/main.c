@@ -81,7 +81,7 @@ void switchIntroScreen()
 		bitmap1 = LoadBitmapFile("data/logo2.bmp", &bitmapHeader1, bitmapPalette1);
 		systemUnuse();
 		
-		DrawBitmap4b(bitmap1, &bitmapHeader1, screenOffset);
+		DrawBitmap4bCenter(bitmap1, &bitmapHeader1, screenOffset);
 		
 		for(int i = 0; i < 4; i++)
 		{
@@ -98,7 +98,7 @@ void switchIntroScreen()
 		systemUse();
 		bitmap1 = LoadBitmapFile("data/logo3.bmp", &bitmapHeader1, bitmapPalette1);
 		systemUnuse();
-		DrawBitmap4b(bitmap1, &bitmapHeader1, screenOffset);
+		DrawBitmap4bCenter(bitmap1, &bitmapHeader1, screenOffset);
 		
 		for(int i = 0; i < 4; i++)
 		{
@@ -532,7 +532,7 @@ void engineGsCreate(void)
 	}
 	//*********************************** SELECT HARDWARE ***********************************************
 
-	DrawBitmap4b(bitmap1, &bitmapHeader1, screenOffset);
+	DrawBitmap4bCenter(bitmap1, &bitmapHeader1, screenOffset);
 	
 	viewLoad(s_pView);
 	vPortWaitForEnd(s_pVPort);
