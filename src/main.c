@@ -81,7 +81,7 @@ void switchIntroScreen()
 		bitmap1 = LoadBitmapFile("data/logo2.bmp", &bitmapHeader1, bitmapPalette1);
 		systemUnuse();
 		
-		DrawBitmap4bCenter(bitmap1, &bitmapHeader1);
+		DrawBitmap4b(bitmap1, &bitmapHeader1, screenOffset);
 		
 		for(int i = 0; i < 4; i++)
 		{
@@ -98,7 +98,7 @@ void switchIntroScreen()
 		systemUse();
 		bitmap1 = LoadBitmapFile("data/logo3.bmp", &bitmapHeader1, bitmapPalette1);
 		systemUnuse();
-		DrawBitmap4bCenter(bitmap1, &bitmapHeader1);
+		DrawBitmap4b(bitmap1, &bitmapHeader1, screenOffset);
 		
 		for(int i = 0; i < 4; i++)
 		{
@@ -117,6 +117,7 @@ void switchIntroScreen()
 			bitmapPalette[i] = ((palettePalette[i * 4 + 2] >> 4) << 8) +
 								((palettePalette[i * 4 + 1] >> 4) << 4) + (palettePalette[i * 4 + 0] >> 4);
 		}
+		currentPallete = bitmapPalette4;
 		memcpy(s_pVPort->pPalette, bitmapPalette, 16 * sizeof(UWORD));
 		viewLoad(s_pView);
 	}
@@ -445,7 +446,6 @@ void engineGsCreate(void)
 	}
 	memcpy(s_pVPort->pPalette, bitmapPalette, 16 * sizeof(UWORD));
 	viewLoad(s_pView);
-	ULONG blitTime = timerGetPrec();
 	// Load font
 	s_pMenuFont = fontCreate("data/silkscreen.fnt");
 
@@ -532,8 +532,17 @@ void engineGsCreate(void)
 	}
 	//*********************************** SELECT HARDWARE ***********************************************
 
+	DrawBitmap4b(bitmap1, &bitmapHeader1, screenOffset);
+	
+	viewLoad(s_pView);
+	vPortWaitForEnd(s_pVPort);
+	CopyFastToChipW(s_pBuffer->pBack);
+
 	lastTime = timerGetPrec();
-	screenDuration = 1600000;
+	screenDuration = 10000000;
+
+
+
 	//memcpy(s_pVPort->pPalette, kolory2, 16 * sizeof(UWORD));
 }
 
@@ -564,66 +573,78 @@ void engineGsLoop(void)
 	{
 
 		if (keyCheck(KEY_ESCAPE))
+		{
+			gameClose();
+		}
+
+
+
+		ProcessPlayerInput();
+		OverwriteMap(); //this is how we go through many different maps, we just overwrite the main array with new content
+
+		//restart
+		if ((p1h - 3) < (UBYTE)(mapHigh[(UBYTE)(p1x)][(UBYTE)(p1y + 15)]))
+		{
+			for (int i = 0; i < 16; i++)
 			{
-				gameClose();
+				bitmapPalette[i] = ((currentPallete[i * 4 + 2] >> 4) << 8) +
+									((currentPallete[i * 4 + 1] >> 4) << 4) + (currentPallete[i * 4 + 0] >> 4);
 			}
+			memcpy(s_pVPort->pPalette, bitmapPalette, 16 * sizeof(UWORD));
+			DrawBitmap4b(bitmap4, &bitmapHeader4, screenOffset);
+			viewLoad(s_pView);
+			vPortWaitForEnd(s_pVPort);
+			CopyFastToChipW(s_pBuffer->pBack);
 
-	
-
-			ProcessPlayerInput();
-			OverwriteMap(); //this is how we go through many different maps, we just overwrite the main array with new content
-
-			//restart
-			if ((p1h - 3) < (UBYTE)(mapHigh[(UBYTE)(p1x)][(UBYTE)(p1y + 15)]))
+			//wait 2 seconds
+			int counter = 100;
+			while(counter > 0)
 			{
-				DrawBitmap4bCenter(bitmap4, &bitmapHeader4);
-				memcpy(s_pVPort->pPalette, bitmapPalette, 16 * sizeof(UWORD));
-				viewLoad(s_pView);
 				vPortWaitForEnd(s_pVPort);
-				CopyFastToChipW(s_pBuffer->pBack);
-
-				//wait 2 seconds
-				int counter = 10;
-				while(counter > 0)
-				{
-					vPortWaitForEnd(s_pVPort);
-					counter --;
-				}
-
-				p1xf = 60 * 100;
-				p1yf = 0;
-				p1hf = 20 * 100;
-				
-				velocity = 0;
-				acceleration = 0;
-				points = 0;
-				cx = 0;
-				cy = 0;
-				levelTime = 0;
-				deltaTime = 0;
-				lastOverwrittenLine = 0;
-
-				CopyMapWord(mapSource[0], mapHigh);
+				counter --;
 			}
 
+			p1xf = 60 * 100;
+			p1yf = 0;
+			p1hf = 20 * 100;
+			
+			velocity = 0;
+			acceleration = 0;
+			points = 0;
+			cx = 0;
+			cy = 0;
+			levelTime = 0;
+			deltaTime = 0;
+			lastOverwrittenLine = 0;
+
+			CopyMapWord(mapSource[0], mapHigh);
+			lastTime = timerGetPrec();
+			SetGamePaletter();
+		}
+		else
+		{
+			
 			ProcessQualityInput();
-		
+			
 
 
 
-		xOffsetOdd = cx / 300;
-		xOffsetEven = cx / 450;
+			xOffsetOdd = cx / 300;
+			xOffsetEven = cx / 450;
 
-		RenderQuality();
+			RenderQuality();
 
 		//draw crosshair
 		DrawPixel((160 + (cx / 150)) / 16, 110 + (cy / 200) + 4, 0);
 		DrawPixel((160 + (cx / 150)) / 16, 110 + (cy / 200) - 4, 0);
 
-		//DrawBitmap8b(bitmap1, &bitmapHeader1);
+			//DrawBitmap8b(bitmap1, &bitmapHeader1);
 
-		vPortWaitForEnd(s_pVPort);
-		CopyFastToChipW(s_pBuffer->pBack);
+			vPortWaitForEnd(s_pVPort);
+			CopyFastToChipW(s_pBuffer->pBack);
+		}
+		
+
 	}
 
 	//ConvertIntToChar((lastOverwrittenLine / 256 + 1) % MAPLENGTH, sPlayerX);

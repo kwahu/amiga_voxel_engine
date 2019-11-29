@@ -1,4 +1,4 @@
-# Install script for directory: /work/deps/ace
+# Install script for directory: /cygdrive/e/amiga/amiga_voxel_engine/deps/ace
 
 # Set the install prefix
 if(NOT DEFINED CMAKE_INSTALL_PREFIX)
@@ -12,7 +12,7 @@ if(NOT DEFINED CMAKE_INSTALL_CONFIG_NAME)
     string(REGEX REPLACE "^[^A-Za-z0-9_]+" ""
            CMAKE_INSTALL_CONFIG_NAME "${BUILD_TYPE}")
   else()
-    set(CMAKE_INSTALL_CONFIG_NAME "Release")
+    set(CMAKE_INSTALL_CONFIG_NAME "")
   endif()
   message(STATUS "Install configuration: \"${CMAKE_INSTALL_CONFIG_NAME}\"")
 endif()
@@ -33,73 +33,73 @@ if(NOT DEFINED CMAKE_CROSSCOMPILING)
 endif()
 
 if("x${CMAKE_INSTALL_COMPONENT}x" STREQUAL "xUnspecifiedx" OR NOT CMAKE_INSTALL_COMPONENT)
-  file(INSTALL DESTINATION "${CMAKE_INSTALL_PREFIX}/lib" TYPE STATIC_LIBRARY FILES "/work/ace/libace.a")
+  file(INSTALL DESTINATION "${CMAKE_INSTALL_PREFIX}/lib" TYPE STATIC_LIBRARY FILES "/cygdrive/e/amiga/amiga_voxel_engine/ace/libace.a")
 endif()
 
 if("x${CMAKE_INSTALL_COMPONENT}x" STREQUAL "xUnspecifiedx" OR NOT CMAKE_INSTALL_COMPONENT)
   file(INSTALL DESTINATION "${CMAKE_INSTALL_PREFIX}/include/ace" TYPE FILE FILES
-    "/work/deps/ace/include/ace/macros.h"
-    "/work/deps/ace/include/ace/types.h"
+    "/cygdrive/e/amiga/amiga_voxel_engine/deps/ace/include/ace/macros.h"
+    "/cygdrive/e/amiga/amiga_voxel_engine/deps/ace/include/ace/types.h"
     )
 endif()
 
 if("x${CMAKE_INSTALL_COMPONENT}x" STREQUAL "xUnspecifiedx" OR NOT CMAKE_INSTALL_COMPONENT)
   file(INSTALL DESTINATION "${CMAKE_INSTALL_PREFIX}/include/ace/generic" TYPE FILE FILES
-    "/work/deps/ace/include/ace/generic/main.h"
-    "/work/deps/ace/include/ace/generic/screen.h"
+    "/cygdrive/e/amiga/amiga_voxel_engine/deps/ace/include/ace/generic/main.h"
+    "/cygdrive/e/amiga/amiga_voxel_engine/deps/ace/include/ace/generic/screen.h"
     )
 endif()
 
 if("x${CMAKE_INSTALL_COMPONENT}x" STREQUAL "xUnspecifiedx" OR NOT CMAKE_INSTALL_COMPONENT)
   file(INSTALL DESTINATION "${CMAKE_INSTALL_PREFIX}/include/ace/utils" TYPE FILE FILES
-    "/work/deps/ace/include/ace/utils/bitmap.h"
-    "/work/deps/ace/include/ace/utils/bmframe.h"
-    "/work/deps/ace/include/ace/utils/chunky.h"
-    "/work/deps/ace/include/ace/utils/custom.h"
-    "/work/deps/ace/include/ace/utils/dir.h"
-    "/work/deps/ace/include/ace/utils/endian.h"
-    "/work/deps/ace/include/ace/utils/extview.h"
-    "/work/deps/ace/include/ace/utils/file.h"
-    "/work/deps/ace/include/ace/utils/font.h"
-    "/work/deps/ace/include/ace/utils/palette.h"
-    "/work/deps/ace/include/ace/utils/tag.h"
+    "/cygdrive/e/amiga/amiga_voxel_engine/deps/ace/include/ace/utils/bitmap.h"
+    "/cygdrive/e/amiga/amiga_voxel_engine/deps/ace/include/ace/utils/bmframe.h"
+    "/cygdrive/e/amiga/amiga_voxel_engine/deps/ace/include/ace/utils/chunky.h"
+    "/cygdrive/e/amiga/amiga_voxel_engine/deps/ace/include/ace/utils/custom.h"
+    "/cygdrive/e/amiga/amiga_voxel_engine/deps/ace/include/ace/utils/dir.h"
+    "/cygdrive/e/amiga/amiga_voxel_engine/deps/ace/include/ace/utils/endian.h"
+    "/cygdrive/e/amiga/amiga_voxel_engine/deps/ace/include/ace/utils/extview.h"
+    "/cygdrive/e/amiga/amiga_voxel_engine/deps/ace/include/ace/utils/file.h"
+    "/cygdrive/e/amiga/amiga_voxel_engine/deps/ace/include/ace/utils/font.h"
+    "/cygdrive/e/amiga/amiga_voxel_engine/deps/ace/include/ace/utils/palette.h"
+    "/cygdrive/e/amiga/amiga_voxel_engine/deps/ace/include/ace/utils/tag.h"
     )
 endif()
 
 if("x${CMAKE_INSTALL_COMPONENT}x" STREQUAL "xUnspecifiedx" OR NOT CMAKE_INSTALL_COMPONENT)
   file(INSTALL DESTINATION "${CMAKE_INSTALL_PREFIX}/include/ace/managers" TYPE FILE FILES
-    "/work/deps/ace/include/ace/managers/audio.h"
-    "/work/deps/ace/include/ace/managers/blit.h"
-    "/work/deps/ace/include/ace/managers/copper.h"
-    "/work/deps/ace/include/ace/managers/game.h"
-    "/work/deps/ace/include/ace/managers/joy.h"
-    "/work/deps/ace/include/ace/managers/key.h"
-    "/work/deps/ace/include/ace/managers/log.h"
-    "/work/deps/ace/include/ace/managers/memory.h"
-    "/work/deps/ace/include/ace/managers/mouse.h"
-    "/work/deps/ace/include/ace/managers/rand.h"
-    "/work/deps/ace/include/ace/managers/system.h"
-    "/work/deps/ace/include/ace/managers/timer.h"
+    "/cygdrive/e/amiga/amiga_voxel_engine/deps/ace/include/ace/managers/audio.h"
+    "/cygdrive/e/amiga/amiga_voxel_engine/deps/ace/include/ace/managers/blit.h"
+    "/cygdrive/e/amiga/amiga_voxel_engine/deps/ace/include/ace/managers/copper.h"
+    "/cygdrive/e/amiga/amiga_voxel_engine/deps/ace/include/ace/managers/game.h"
+    "/cygdrive/e/amiga/amiga_voxel_engine/deps/ace/include/ace/managers/joy.h"
+    "/cygdrive/e/amiga/amiga_voxel_engine/deps/ace/include/ace/managers/key.h"
+    "/cygdrive/e/amiga/amiga_voxel_engine/deps/ace/include/ace/managers/log.h"
+    "/cygdrive/e/amiga/amiga_voxel_engine/deps/ace/include/ace/managers/memory.h"
+    "/cygdrive/e/amiga/amiga_voxel_engine/deps/ace/include/ace/managers/mouse.h"
+    "/cygdrive/e/amiga/amiga_voxel_engine/deps/ace/include/ace/managers/rand.h"
+    "/cygdrive/e/amiga/amiga_voxel_engine/deps/ace/include/ace/managers/system.h"
+    "/cygdrive/e/amiga/amiga_voxel_engine/deps/ace/include/ace/managers/timer.h"
     )
 endif()
 
 if("x${CMAKE_INSTALL_COMPONENT}x" STREQUAL "xUnspecifiedx" OR NOT CMAKE_INSTALL_COMPONENT)
   file(INSTALL DESTINATION "${CMAKE_INSTALL_PREFIX}/include/ace/managers/viewport" TYPE FILE FILES
-    "/work/deps/ace/include/ace/managers/viewport/camera.h"
-    "/work/deps/ace/include/ace/managers/viewport/scrollbuffer.h"
-    "/work/deps/ace/include/ace/managers/viewport/simplebuffer.h"
-    "/work/deps/ace/include/ace/managers/viewport/tilebuffer.h"
+    "/cygdrive/e/amiga/amiga_voxel_engine/deps/ace/include/ace/managers/viewport/camera.h"
+    "/cygdrive/e/amiga/amiga_voxel_engine/deps/ace/include/ace/managers/viewport/scrollbuffer.h"
+    "/cygdrive/e/amiga/amiga_voxel_engine/deps/ace/include/ace/managers/viewport/simplebuffer.h"
+    "/cygdrive/e/amiga/amiga_voxel_engine/deps/ace/include/ace/managers/viewport/tilebuffer.h"
     )
 endif()
 
 if("x${CMAKE_INSTALL_COMPONENT}x" STREQUAL "xUnspecifiedx" OR NOT CMAKE_INSTALL_COMPONENT)
   file(INSTALL DESTINATION "${CMAKE_INSTALL_PREFIX}/include/fixmath" TYPE FILE FILES
-    "/work/deps/ace/include/fixmath/fix16.h"
-    "/work/deps/ace/include/fixmath/fix16_trig_sin_lut.h"
-    "/work/deps/ace/include/fixmath/fixmath.h"
-    "/work/deps/ace/include/fixmath/fract32.h"
-    "/work/deps/ace/include/fixmath/int64.h"
-    "/work/deps/ace/include/fixmath/uint32.h"
+    "/cygdrive/e/amiga/amiga_voxel_engine/deps/ace/include/fixmath/fix16.h"
+    "/cygdrive/e/amiga/amiga_voxel_engine/deps/ace/include/fixmath/fix16_trig_sin_lut.h"
+    "/cygdrive/e/amiga/amiga_voxel_engine/deps/ace/include/fixmath/fixmath.h"
+    "/cygdrive/e/amiga/amiga_voxel_engine/deps/ace/include/fixmath/fract32.h"
+    "/cygdrive/e/amiga/amiga_voxel_engine/deps/ace/include/fixmath/int64.h"
+    "/cygdrive/e/amiga/amiga_voxel_engine/deps/ace/include/fixmath/uint32.h"
     )
 endif()
 

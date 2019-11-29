@@ -6,7 +6,7 @@
 
 #IncludeRegexTransform: 
 
-/work/deps/ace/src/ace/managers/audio.c
+/cygdrive/e/amiga/amiga_voxel_engine/deps/ace/src/ace/managers/audio.c
 ace/managers/audio.h
 -
 ace/managers/memory.h
@@ -18,13 +18,13 @@ ace/utils/custom.h
 ace/managers/system.h
 -
 
-/work/deps/ace/src/ace/managers/blit.c
+/cygdrive/e/amiga/amiga_voxel_engine/deps/ace/src/ace/managers/blit.c
 ace/managers/blit.h
 -
 ace/managers/system.h
 -
 
-/work/deps/ace/src/ace/managers/copper.c
+/cygdrive/e/amiga/amiga_voxel_engine/deps/ace/src/ace/managers/copper.c
 ace/managers/copper.h
 -
 stdarg.h
@@ -36,13 +36,13 @@ ace/utils/tag.h
 limits.h
 -
 
-/work/deps/ace/src/ace/managers/game.c
+/cygdrive/e/amiga/amiga_voxel_engine/deps/ace/src/ace/managers/game.c
 ace/managers/game.h
 -
 ace/managers/system.h
 -
 
-/work/deps/ace/src/ace/managers/joy.c
+/cygdrive/e/amiga/amiga_voxel_engine/deps/ace/src/ace/managers/joy.c
 ace/managers/joy.h
 -
 ace/managers/log.h
@@ -54,7 +54,7 @@ resources/misc.h
 clib/misc_protos.h
 -
 
-/work/deps/ace/src/ace/managers/key.c
+/cygdrive/e/amiga/amiga_voxel_engine/deps/ace/src/ace/managers/key.c
 ace/managers/key.h
 -
 ace/managers/log.h
@@ -68,7 +68,7 @@ ace/utils/custom.h
 hardware/intbits.h
 -
 
-/work/deps/ace/src/ace/managers/log.c
+/cygdrive/e/amiga/amiga_voxel_engine/deps/ace/src/ace/managers/log.c
 ace/managers/log.h
 -
 string.h
@@ -78,7 +78,7 @@ ace/macros.h
 ace/managers/system.h
 -
 
-/work/deps/ace/src/ace/managers/memory.c
+/cygdrive/e/amiga/amiga_voxel_engine/deps/ace/src/ace/managers/memory.c
 ace/managers/memory.h
 -
 ace/managers/system.h
@@ -88,7 +88,7 @@ ace/utils/file.h
 clib/exec_protos.h
 -
 
-/work/deps/ace/src/ace/managers/mouse.c
+/cygdrive/e/amiga/amiga_voxel_engine/deps/ace/src/ace/managers/mouse.c
 ace/managers/mouse.h
 -
 ace/managers/log.h
@@ -98,11 +98,11 @@ ace/utils/custom.h
 ace/generic/screen.h
 -
 
-/work/deps/ace/src/ace/managers/rand.c
+/cygdrive/e/amiga/amiga_voxel_engine/deps/ace/src/ace/managers/rand.c
 ace/managers/rand.h
 -
 
-/work/deps/ace/src/ace/managers/system.c
+/cygdrive/e/amiga/amiga_voxel_engine/deps/ace/src/ace/managers/system.c
 ace/managers/system.h
 -
 stdlib.h
@@ -126,7 +126,7 @@ exec/execbase.h
 proto/exec.h
 -
 
-/work/deps/ace/src/ace/managers/timer.c
+/cygdrive/e/amiga/amiga_voxel_engine/deps/ace/src/ace/managers/timer.c
 ace/managers/timer.h
 -
 ace/managers/log.h
@@ -134,13 +134,13 @@ ace/managers/log.h
 ace/managers/system.h
 -
 
-/work/deps/ace/src/ace/managers/viewport/camera.c
+/cygdrive/e/amiga/amiga_voxel_engine/deps/ace/src/ace/managers/viewport/camera.c
 ace/managers/viewport/camera.h
 -
 ace/macros.h
 -
 
-/work/deps/ace/src/ace/managers/viewport/scrollbuffer.c
+/cygdrive/e/amiga/amiga_voxel_engine/deps/ace/src/ace/managers/viewport/scrollbuffer.c
 ace/managers/viewport/scrollbuffer.h
 -
 ace/utils/tag.h
@@ -148,7 +148,7 @@ ace/utils/tag.h
 limits.h
 -
 
-/work/deps/ace/src/ace/managers/viewport/simplebuffer.c
+/cygdrive/e/amiga/amiga_voxel_engine/deps/ace/src/ace/managers/viewport/simplebuffer.c
 ace/managers/viewport/simplebuffer.h
 -
 ace/utils/tag.h
@@ -156,7 +156,7 @@ ace/utils/tag.h
 ace/utils/extview.h
 -
 
-/work/deps/ace/src/ace/managers/viewport/tilebuffer.c
+/cygdrive/e/amiga/amiga_voxel_engine/deps/ace/src/ace/managers/viewport/tilebuffer.c
 ace/managers/viewport/tilebuffer.h
 -
 ace/macros.h
@@ -166,7 +166,7 @@ ace/managers/blit.h
 ace/utils/tag.h
 -
 
-/work/deps/ace/src/ace/utils/bitmap.c
+/cygdrive/e/amiga/amiga_voxel_engine/deps/ace/src/ace/utils/bitmap.c
 ace/utils/bitmap.h
 -
 ace/managers/blit.h
@@ -184,11 +184,11 @@ ace/utils/chunky.h
 ace/utils/custom.h
 -
 
-/work/deps/ace/src/ace/utils/bmframe.c
+/cygdrive/e/amiga/amiga_voxel_engine/deps/ace/src/ace/utils/bmframe.c
 ace/utils/bmframe.h
 -
 
-/work/deps/ace/src/ace/utils/chunky.c
+/cygdrive/e/amiga/amiga_voxel_engine/deps/ace/src/ace/utils/chunky.c
 ace/types.h
 -
 ace/managers/log.h
@@ -200,13 +200,13 @@ ace/utils/bitmap.h
 fixmath/fix16.h
 -
 
-/work/deps/ace/src/ace/utils/custom.c
+/cygdrive/e/amiga/amiga_voxel_engine/deps/ace/src/ace/utils/custom.c
 ace/utils/custom.h
 -
 stddef.h
 -
 
-/work/deps/ace/src/ace/utils/dir.c
+/cygdrive/e/amiga/amiga_voxel_engine/deps/ace/src/ace/utils/dir.c
 ace/utils/dir.h
 -
 string.h
@@ -220,7 +220,7 @@ ace/managers/memory.h
 ace/managers/log.h
 -
 
-/work/deps/ace/src/ace/utils/extview.c
+/cygdrive/e/amiga/amiga_voxel_engine/deps/ace/src/ace/utils/extview.c
 ace/utils/extview.h
 -
 limits.h
@@ -232,7 +232,7 @@ ace/utils/tag.h
 ace/generic/screen.h
 -
 
-/work/deps/ace/src/ace/utils/file.c
+/cygdrive/e/amiga/amiga_voxel_engine/deps/ace/src/ace/utils/file.c
 ace/utils/file.h
 -
 stdarg.h
@@ -246,13 +246,13 @@ ace/managers/system.h
 ace/managers/log.h
 -
 
-/work/deps/ace/src/ace/utils/font.c
+/cygdrive/e/amiga/amiga_voxel_engine/deps/ace/src/ace/utils/font.c
 ace/utils/font.h
 -
 ace/utils/file.h
 -
 
-/work/deps/ace/src/ace/utils/palette.c
+/cygdrive/e/amiga/amiga_voxel_engine/deps/ace/src/ace/utils/palette.c
 ace/utils/palette.h
 -
 ace/managers/blit.h
@@ -262,29 +262,29 @@ ace/utils/bitmap.h
 ace/utils/file.h
 -
 
-/work/deps/ace/src/ace/utils/tag.c
+/cygdrive/e/amiga/amiga_voxel_engine/deps/ace/src/ace/utils/tag.c
 ace/utils/tag.h
 -
 ace/managers/log.h
 -
 
-/work/deps/ace/src/fixmath/fix16.c
+/cygdrive/e/amiga/amiga_voxel_engine/deps/ace/src/fixmath/fix16.c
 fixmath/fix16.h
 -
 fixmath/int64.h
 -
 
-/work/deps/ace/src/fixmath/fix16_exp.c
+/cygdrive/e/amiga/amiga_voxel_engine/deps/ace/src/fixmath/fix16_exp.c
 fixmath/fix16.h
 -
 stdbool.h
 -
 
-/work/deps/ace/src/fixmath/fix16_sqrt.c
+/cygdrive/e/amiga/amiga_voxel_engine/deps/ace/src/fixmath/fix16_sqrt.c
 fixmath/fix16.h
 -
 
-/work/deps/ace/src/fixmath/fix16_str.c
+/cygdrive/e/amiga/amiga_voxel_engine/deps/ace/src/fixmath/fix16_str.c
 fixmath/fix16.h
 -
 stdbool.h
@@ -292,7 +292,7 @@ stdbool.h
 ctype.h
 -
 
-/work/deps/ace/src/fixmath/fix16_trig.c
+/cygdrive/e/amiga/amiga_voxel_engine/deps/ace/src/fixmath/fix16_trig.c
 limits.h
 -
 fixmath/fix16.h
@@ -300,11 +300,11 @@ fixmath/fix16.h
 fixmath/fix16_trig_sin_lut.h
 -
 
-/work/deps/ace/src/fixmath/fract32.c
+/cygdrive/e/amiga/amiga_voxel_engine/deps/ace/src/fixmath/fract32.c
 fixmath/fract32.h
 -
 
-/work/deps/ace/src/fixmath/uint32.c
+/cygdrive/e/amiga/amiga_voxel_engine/deps/ace/src/fixmath/uint32.c
 fixmath/uint32.h
 -
 
