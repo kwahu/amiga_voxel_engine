@@ -450,9 +450,9 @@ void engineGsCreate(void)
 
 	viewLoad(s_pView);
 
-	DrawBitmap4b(bitmap1, &bitmapHeader1);
-	vPortWaitForEnd(s_pVPort);
-	CopyFastToChipW(s_pBuffer->pBack);
+	//DrawBitmap4b(bitmap1, &bitmapHeader1);
+	//vPortWaitForEnd(s_pVPort);
+	//CopyFastToChipW(s_pBuffer->pBack);
 	ULONG blitTime = timerGetPrec();
 
 	
@@ -564,9 +564,9 @@ void engineGsLoop(void)
 	levelTime += deltaTime;
 	if (screenIndex > 0)
 	{
-		if(screenDuration > 5000000)
+		if(screenDuration > 10000000)
 		{
-			screenDuration = 5000000;
+			screenDuration = 10000000;
 			screenIndex = (screenIndex + 1) % 4;
 			switchIntroScreen();
 		}
