@@ -81,7 +81,8 @@ void switchIntroScreen()
 		bitmap1 = LoadBitmapFile("data/logo2.bmp", &bitmapHeader1, bitmapPalette1);
 		systemUnuse();
 		
-		DrawBitmap4bCenter(bitmap1, &bitmapHeader1, screenOffset);
+		ClearBuffor();
+		DrawBitmap4bCenter(bitmap1, &bitmapHeader1);
 		
 		for(int i = 0; i < 4; i++)
 		{
@@ -98,7 +99,8 @@ void switchIntroScreen()
 		systemUse();
 		bitmap1 = LoadBitmapFile("data/logo3.bmp", &bitmapHeader1, bitmapPalette1);
 		systemUnuse();
-		DrawBitmap4bCenter(bitmap1, &bitmapHeader1, screenOffset);
+		ClearBuffor();
+		DrawBitmap4bCenter(bitmap1, &bitmapHeader1);
 		
 		for(int i = 0; i < 4; i++)
 		{
@@ -531,8 +533,8 @@ void engineGsCreate(void)
 		}
 	}
 	//*********************************** SELECT HARDWARE ***********************************************
-
-	DrawBitmap4bCenter(bitmap1, &bitmapHeader1, screenOffset);
+	ClearBuffor();
+	DrawBitmap4bCenter(bitmap1, &bitmapHeader1);
 	
 	viewLoad(s_pView);
 	vPortWaitForEnd(s_pVPort);
@@ -591,7 +593,7 @@ void engineGsLoop(void)
 									((currentPallete[i * 4 + 1] >> 4) << 4) + (currentPallete[i * 4 + 0] >> 4);
 			}
 			memcpy(s_pVPort->pPalette, bitmapPalette, 16 * sizeof(UWORD));
-			DrawBitmap4b(bitmap4, &bitmapHeader4, screenOffset);
+			DrawBitmap4bCenter(bitmap4, &bitmapHeader4);
 			viewLoad(s_pView);
 			vPortWaitForEnd(s_pVPort);
 			CopyFastToChipW(s_pBuffer->pBack);

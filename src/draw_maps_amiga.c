@@ -1,6 +1,18 @@
 #include "engine.h"
 #include "settings_amiga.h"
 
+void ClearBuffor()
+{
+	for(UWORD p = 0; p< 20*256;p++)
+	{
+		plane1W[p] = 0;
+		plane2W[p] = 0;
+		plane3W[p] = 0;
+		plane4W[p] = 0;
+	}
+		
+}
+
 void DrawBitmap4b(unsigned char *bLogo, BITMAPINFOHEADER *bhLogo, UWORD offsety)
 {
 	UWORD position;
