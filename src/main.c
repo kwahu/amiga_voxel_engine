@@ -733,14 +733,14 @@ void engineGsLoop(void)
 							pBitmapInfo[5] = fontCreateTextBitMapFromStr(s_pMenuFont, "to power ship's propulsion engines");
 							pBitmapInfo[6] = fontCreateTextBitMapFromStr(s_pMenuFont, "and accelerate it. Remember, the");
 							pBitmapInfo[7] = fontCreateTextBitMapFromStr(s_pMenuFont, "lower you fly, the faster you go.");
-							fontDrawTextBitMap(s_pBuffer->pBack, pBitmapInfo[0], 110, 70, 12, FONT_LEFT);
-							fontDrawTextBitMap(s_pBuffer->pBack, pBitmapInfo[1], 110, 76, 12, FONT_LEFT);
-							fontDrawTextBitMap(s_pBuffer->pBack, pBitmapInfo[2], 110, 82, 12, FONT_LEFT);
-							fontDrawTextBitMap(s_pBuffer->pBack, pBitmapInfo[3], 110, 88, 12, FONT_LEFT);
-							fontDrawTextBitMap(s_pBuffer->pBack, pBitmapInfo[4], 110, 94, 12, FONT_LEFT);
-							fontDrawTextBitMap(s_pBuffer->pBack, pBitmapInfo[5], 110, 100, 12, FONT_LEFT);
-							fontDrawTextBitMap(s_pBuffer->pBack, pBitmapInfo[6], 110, 106, 12, FONT_LEFT);
-							fontDrawTextBitMap(s_pBuffer->pBack, pBitmapInfo[7], 110, 112, 12, FONT_LEFT);
+							fontDrawTextBitMap(s_pBuffer->pBack, pBitmapInfo[0], 110, 70, 6, FONT_LEFT);
+							fontDrawTextBitMap(s_pBuffer->pBack, pBitmapInfo[1], 110, 76, 6, FONT_LEFT);
+							fontDrawTextBitMap(s_pBuffer->pBack, pBitmapInfo[2], 110, 82, 6, FONT_LEFT);
+							fontDrawTextBitMap(s_pBuffer->pBack, pBitmapInfo[3], 110, 88, 6, FONT_LEFT);
+							fontDrawTextBitMap(s_pBuffer->pBack, pBitmapInfo[4], 110, 94, 6, FONT_LEFT);
+							fontDrawTextBitMap(s_pBuffer->pBack, pBitmapInfo[5], 110, 100, 6, FONT_LEFT);
+							fontDrawTextBitMap(s_pBuffer->pBack, pBitmapInfo[6], 110, 106, 6, FONT_LEFT);
+							fontDrawTextBitMap(s_pBuffer->pBack, pBitmapInfo[7], 110, 112, 6, FONT_LEFT);
 						} break;
 						case 4:
 						{
@@ -790,7 +790,13 @@ void engineGsLoop(void)
 			viewLoad(s_pView);
 			vPortWaitForEnd(s_pVPort);
 			CopyFastToChipW(s_pBuffer->pBack);
-
+			pBitmapInfo[0] = fontCreateTextBitMapFromStr(s_pMenuFont, "You are dead!");
+			pBitmapInfo[1] = fontCreateTextBitMapFromStr(s_pMenuFont, "The Revolt won't have any use of");
+			pBitmapInfo[2] = fontCreateTextBitMapFromStr(s_pMenuFont, "you in this state!");
+			fontDrawTextBitMap(s_pBuffer->pBack, pBitmapInfo[0], 110, 70, 6, FONT_LEFT);
+			fontDrawTextBitMap(s_pBuffer->pBack, pBitmapInfo[1], 110, 76, 6, FONT_LEFT);
+			fontDrawTextBitMap(s_pBuffer->pBack, pBitmapInfo[2], 110, 82, 6, FONT_LEFT);
+											
 			joyProcess();
 			//wait 2 seconds
 			while(!joyCheck(JOY1_FIRE))
@@ -815,6 +821,11 @@ void engineGsLoop(void)
 			CopyMapWord(mapSource[0], mapHigh);
 			lastTime = timerGetPrec();
 			
+			for(int i = 0; i < 3; ++i)
+			{
+				free(pBitmapInfo[i]);
+			}
+
 			ClearBuffor();
 			SetGamePaletter();
 			viewLoad(s_pView);
