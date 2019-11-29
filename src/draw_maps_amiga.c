@@ -1,19 +1,16 @@
 #include "engine.h"
 #include "settings_amiga.h"
 
-void DrawBitmap4b(unsigned char *bLogo, BITMAPINFOHEADER *bhLogo)
+void DrawBitmap4b(unsigned char *bLogo, BITMAPINFOHEADER *bhLogo, UWORD offsety)
 {
 	UWORD position;
 	unsigned char b1, b2, b3, b4, b5, b6, b7, b8, b9, b10, b11, b12, b13, b14, b15, b16;
 	unsigned char byte;
 	ULONG xx, yy;
-	UBYTE offsety;
-	UWORD startOffset;
 
-	offsety = 0;
-	startOffset = 0;
 
-	position = startOffset;
+
+	//position = startOffset;
 
 	for (ULONG y = bhLogo->biHeight; y > 0; y--)
 	{
