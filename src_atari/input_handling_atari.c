@@ -96,8 +96,8 @@ void ProcessPlayerInputAtari()
 		if(keyCheck(KEY_RALT))p1hf+=deltaTime/10000*3;
 		if(keyCheck(KEY_CONTROL))p1hf-=deltaTime/10000*3;*/
 
-		if((IKBD_STICK1 & IKBD_JOY_RIGHT) || IKBD_Keyboard[KEY_RIGHT]) {	cx+=deltaTime/100; }
- 		else if((IKBD_STICK1 & IKBD_JOY_LEFT) || IKBD_Keyboard[KEY_LEFT]) {		cx-=deltaTime/100; }
+		if((IKBD_STICK1 & IKBD_JOY_RIGHT) || IKBD_Keyboard[KEY_RIGHT]) {	cx+=deltaTime/60; }
+ 		else if((IKBD_STICK1 & IKBD_JOY_LEFT) || IKBD_Keyboard[KEY_LEFT]) {		cx-=deltaTime/60; }
 		else if(cx!=0) {cx = cx - cx/((LONG)(deltaTime)/1000);}
 
 		if(cx > 0x4000) cx = 0x4000;
@@ -106,17 +106,23 @@ void ProcessPlayerInputAtari()
 		if(cy > 0x2000) cy = 0x2000;
 		else if(cy < -0x2000) cy = -0x2000;
 
- 		if((IKBD_STICK1 & IKBD_JOY_DOWN) || IKBD_Keyboard[KEY_DOWN]) {		cy+=deltaTime/100; }
- 		else if((IKBD_STICK1 & IKBD_JOY_UP) || IKBD_Keyboard[KEY_UP]) {			cy-=deltaTime/100; }
+ 		if((IKBD_STICK1 & IKBD_JOY_DOWN) || IKBD_Keyboard[KEY_DOWN]) {		cy+=deltaTime/60; }
+ 		else if((IKBD_STICK1 & IKBD_JOY_UP) || IKBD_Keyboard[KEY_UP]) {			cy-=deltaTime/60; }
 		else if(cy!=0) {cy = cy - cy/((LONG)(deltaTime)/1000);}
 
- 		if((IKBD_STICK1 & IKBD_JOY_FIRE ) || IKBD_Keyboard[KEY_CTRL]) 
-		 {		p1yf+=deltaTime/2000;}
+		ULONG lowerDelta = (deltaTime/10000);
+
+		acceleration = (300 - ((p1h - 3) - (UBYTE)(mapHigh[(UBYTE)(p1x)][(UBYTE)(p1y + 15)]))) - lowerDelta*velocity/10;
+
+
+		velocity = velocity + lowerDelta*(acceleration/64);
+
+		p1yf += lowerDelta*velocity/64;
 
 
 
-		p1xf += (LONG)(deltaTime/10000) * cx/2000;
-		p1hf -= (LONG)(deltaTime/10000) * cy/1000;
+		p1xf += (LONG)lowerDelta * cx/2000;
+		p1hf -= (LONG)lowerDelta * cy/1000;
 
 		if(p1hf > 7000) p1hf = 7000;//block going above hills
 		if(p1hf<100) p1hf = 100;//block going below ground

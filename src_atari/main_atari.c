@@ -133,7 +133,7 @@ void switchIntroScreen()
 
 void animateIntro()
 {
-	if(screenDuration < 4600000 && !fadeInStatus[3])
+	if(screenDuration < 3200000 && !fadeInStatus[3])
 	{
 		for (int i = 0; i < 16; i++)
 		{
@@ -143,7 +143,7 @@ void animateIntro()
 		Setpalette(bitmapPalette);
 		fadeInStatus[3] = 1;
 	}
-	if(screenDuration < 4200000 && !fadeInStatus[2])
+	if(screenDuration < 3000000 && !fadeInStatus[2])
 	{
 		for (int i = 0; i < 16; i++)
 		{
@@ -153,7 +153,7 @@ void animateIntro()
 		Setpalette(bitmapPalette);
 		fadeInStatus[2] = 1;
 	}
-	if(screenDuration < 3800000 && !fadeInStatus[1])
+	if(screenDuration < 2800000 && !fadeInStatus[1])
 	{
 		for (int i = 0; i < 16; i++)
 		{
@@ -163,7 +163,7 @@ void animateIntro()
 		Setpalette(bitmapPalette);
 		fadeInStatus[1] = 1;
 	}
-	if(screenDuration < 3400000 && !fadeInStatus[0])
+	if(screenDuration < 2600000 && !fadeInStatus[0])
 	{
 		for (int i = 0; i < 16; i++)
 		{
@@ -174,7 +174,7 @@ void animateIntro()
 		fadeInStatus[0] = 1;
 	}
 
-	if(screenDuration < 1600000 && !fadeOutStatus[0])
+	if(screenDuration < 800000 && !fadeOutStatus[0])
 	{
 		for (int i = 0; i < 16; i++)
 		{
@@ -184,7 +184,7 @@ void animateIntro()
 		Setpalette(bitmapPalette);
 		fadeOutStatus[0] = 1;
 	}
-	if(screenDuration < 1200000 && !fadeOutStatus[1])
+	if(screenDuration < 600000 && !fadeOutStatus[1])
 	{
 		for (int i = 0; i < 16; i++)
 		{
@@ -194,7 +194,7 @@ void animateIntro()
 		Setpalette(bitmapPalette);
 		fadeOutStatus[1] = 1;
 	}
-	if(screenDuration < 800000 && !fadeOutStatus[2])
+	if(screenDuration < 400000 && !fadeOutStatus[2])
 	{
 		for (int i = 0; i < 16; i++)
 		{
@@ -204,7 +204,7 @@ void animateIntro()
 		Setpalette(bitmapPalette);
 		fadeOutStatus[2] = 1;
 	}
-	if(screenDuration < 400000 && !fadeOutStatus[3])
+	if(screenDuration < 200000 && !fadeOutStatus[3])
 	{
 		for (int i = 0; i < 16; i++)
 		{
@@ -322,7 +322,7 @@ void main_supervisor()
 	initDeltaTime();
 	printf("\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n");
 
-	screenDuration = 5000000;
+	screenDuration = 3500000;
 	screenIndex = 1;
 
 	for(int i = 0; i < 4; i++)
@@ -335,9 +335,9 @@ void main_supervisor()
 		getDeltaTime();
 		if(screenIndex > 0)
 		{
-			if(screenDuration > 5000000)
+			if(screenDuration > 3500000)
 			{
-				screenDuration = 5000000;
+				screenDuration = 3500000;
 				screenIndex = (screenIndex + 1) % 4;
 				switchIntroScreen();
 			}
