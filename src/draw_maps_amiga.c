@@ -15,10 +15,10 @@ void DrawBitmap4b(unsigned char *bLogo, BITMAPINFOHEADER *bhLogo)
 
 	position = startOffset;
 
-	for (ULONG y = 0; y < bhLogo->biHeight; y++)
+	for (ULONG y = bhLogo->biHeight; y > 0; y--)
 	{
-		yy = (y - offsety) * bhLogo->biWidth / 2;
-		position = (y - offsety) * PLANEWIDTH / 2;
+		yy = (y - 1 - offsety) * bhLogo->biWidth/2;
+		position = (bhLogo->biHeight - (y - offsety)) * PLANEWIDTHWORD;
 
 		for (ULONG x = 0; x < bhLogo->biWidth / 16; x++)
 		{

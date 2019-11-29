@@ -114,7 +114,7 @@ WORD (*rayCastX)[TERRAINDEPTH], WORD (*rayCastY)[TERRAINDEPTH], UWORD (*map)[256
 		{
 			//mx = ( px + rayCastX[sxx][tz] );
 			//my = ( py + tz );
-			mapValue = map[ (UBYTE)( px + rayCastX[sxx][tz] ) ][ (UBYTE)( py + tz ) ];//read color + height
+			mapValue = map[ (UBYTE)( px + rayCastX[sxx][tz] ) ][ (UBYTE)( py + (tz<<debugValue4) ) ];//read color + height
 			th = mapValue;//take just the height
 			//check if read height is higher than what we expect from the raycast table
 			slope = th - (ph + rayCastY[sy][tz]);

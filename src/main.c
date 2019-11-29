@@ -79,7 +79,7 @@ void switchIntroScreen()
 		bitmap1 = LoadBitmapFile("data/logo2.bmp", &bitmapHeader1, bitmapPalette1);
 		systemUnuse();
 		
-		DrawBitmap8b(bitmap1, &bitmapHeader1);
+		DrawBitmap4b(bitmap1, &bitmapHeader1);
 		
 		for(int i = 0; i < 4; i++)
 		{
@@ -96,7 +96,7 @@ void switchIntroScreen()
 		systemUse();
 		bitmap1 = LoadBitmapFile("data/logo3.bmp", &bitmapHeader1, bitmapPalette1);
 		systemUnuse();
-		DrawBitmap8b(bitmap1, &bitmapHeader1);
+		DrawBitmap4b(bitmap1, &bitmapHeader1);
 		
 		for(int i = 0; i < 4; i++)
 		{
@@ -450,7 +450,7 @@ void engineGsCreate(void)
 
 	viewLoad(s_pView);
 
-	DrawBitmap8b(bitmap1, &bitmapHeader1);
+	DrawBitmap4b(bitmap1, &bitmapHeader1);
 	vPortWaitForEnd(s_pVPort);
 	CopyFastToChipW(s_pBuffer->pBack);
 	ULONG blitTime = timerGetPrec();
@@ -496,6 +496,8 @@ void engineGsCreate(void)
 	joyOpen(0);
 	systemUnuse();
 
+
+	//*********************************** SELECT HARDWARE ***********************************************
 	informationText = fontCreateTextBitMapFromStr(s_pMenuFont, "KEY 1 = A500  KEY 2 = A1200 KEY 3 = A3000");
 	//fontFillTextBitMap(s_pMenuFont, informationText, sPlayerY);
 	fontDrawTextBitMap(s_pBuffer->pBack, informationText, 50, PLANEHEIGHT/2, 3, FONT_LEFT);
@@ -516,17 +518,20 @@ void engineGsCreate(void)
 			RecalculateOdd();
 			hardwareSelection = 1;
 		}
-		if (keyCheck(KEY_2) && debugValue != 2) //A1200
+		if (keyCheck(KEY_2)) //A1200
 		{
 			renderingDepth = 16;
 			debugValue = 2;
 			debugValue2 = 1;
 			debugValue3 = 10;
 			debugValue4 = 2;
+
+						debugValue6 = 4;
+			xFOV = 10;
 			RecalculateEven();
 			hardwareSelection = 2;
 		}
-		if (keyCheck(KEY_3) && debugValue != 3) //A3000
+		if (keyCheck(KEY_3)) //A3000
 		{
 			renderingDepth = 64;
 			debugValue = 6;
@@ -540,6 +545,8 @@ void engineGsCreate(void)
 			hardwareSelection = 3;
 		}
 	}
+	//*********************************** SELECT HARDWARE ***********************************************
+
 	endTime = timerGetPrec();
 	screenDuration = 5000000;
 	//memcpy(s_pVPort->pPalette, kolory2, 16 * sizeof(UWORD));
