@@ -124,7 +124,7 @@ void switchIntroScreen()
 
 void animateIntro()
 {
-	if(screenDuration < 4600000 && !fadeInStatus[3])
+	if(screenDuration < 9600000 && !fadeInStatus[3])
 	{
 		for (int i = 0; i < 16; i++)
 		{
@@ -135,7 +135,7 @@ void animateIntro()
 		viewLoad(s_pView);
 		fadeInStatus[3] = 1;
 	}
-	if(screenDuration < 4200000 && !fadeInStatus[2])
+	if(screenDuration < 9200000 && !fadeInStatus[2])
 	{
 		for (int i = 0; i < 16; i++)
 		{
@@ -146,7 +146,7 @@ void animateIntro()
 		viewLoad(s_pView);
 		fadeInStatus[2] = 1;
 	}
-	if(screenDuration < 3800000 && !fadeInStatus[1])
+	if(screenDuration < 8800000 && !fadeInStatus[1])
 	{
 		for (int i = 0; i < 16; i++)
 		{
@@ -157,7 +157,7 @@ void animateIntro()
 		viewLoad(s_pView);
 		fadeInStatus[1] = 1;
 	}
-	if(screenDuration < 3400000 && !fadeInStatus[0])
+	if(screenDuration < 8400000 && !fadeInStatus[0])
 	{
 		for (int i = 0; i < 16; i++)
 		{
@@ -547,8 +547,8 @@ void engineGsCreate(void)
 	}
 	//*********************************** SELECT HARDWARE ***********************************************
 
-	endTime = timerGetPrec();
-	screenDuration = 5000000;
+	lastTime = timerGetPrec();
+	screenDuration = 1600000;
 	//memcpy(s_pVPort->pPalette, kolory2, 16 * sizeof(UWORD));
 }
 
