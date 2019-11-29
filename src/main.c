@@ -620,7 +620,7 @@ void engineGsLoop(void)
 		DrawPixel((160 + (cx / 150)) / 16, YSIZEODD + (cy / 100) + 4, 0);
 		DrawPixel((160 + (cx / 150)) / 16, YSIZEODD + (cy / 100) - 4, 0);
 
-		DrawBitmap8b(bitmap1, &bitmapHeader1);
+		//DrawBitmap8b(bitmap1, &bitmapHeader1);
 
 		vPortWaitForEnd(s_pVPort);
 		CopyFastToChipW(s_pBuffer->pBack);

@@ -286,27 +286,18 @@ void main_supervisor()
 	
 	
 	//*************************************************
-		p1xf = 40*100;
-		p1yf = 0;
-		p1hf = 20*100;
+	p1xf = 40*100;
+	p1yf = 0;
+	p1hf = 20*100;
 
 	p2x = 0;
 	p2y = 0;
 	p2h = 10;
 
 	lastOverwrittenLine = 0;
-
-
-	printf("LOADING MAPS\r\n");
 	SetupMaps();
-
-	//GenerateWordDither8x8();
-	//GenerateColorBytesNoDither4x4();
-	printf("GENERATING DITHER\r\n");
 	GenerateColorBytesDither3x2();
 
-
-	printf("CALCULATING RAY TABLES\r\n");
 	SetDefaulResolution();
     //*****************************************
     
