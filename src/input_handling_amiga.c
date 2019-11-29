@@ -121,7 +121,8 @@ void ProcessPlayerInput()
 
 	if (joyCheck(JOY1_DOWN))
 	{
-		cy += deltaTime / 10;
+		cy += deltaTime / 60;
+		//cy += deltaTime / 10;
 	}
 	else if (joyCheck(JOY1_UP))
 	{

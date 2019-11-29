@@ -96,9 +96,12 @@ void ProcessPlayerInputAtari()
 		if(keyCheck(KEY_RALT))p1hf+=deltaTime/10000*3;
 		if(keyCheck(KEY_CONTROL))p1hf-=deltaTime/10000*3;*/
 
-		if((IKBD_STICK1 & IKBD_JOY_RIGHT) || IKBD_Keyboard[KEY_RIGHT]) {	cx+=deltaTime/60; }
- 		else if((IKBD_STICK1 & IKBD_JOY_LEFT) || IKBD_Keyboard[KEY_LEFT]) {		cx-=deltaTime/60; }
-		else if(cx!=0) {cx = cx - cx/((LONG)(deltaTime)/1000);}
+		//int denom = 1000;
+		int denom = 666;
+
+		if((IKBD_STICK1 & IKBD_JOY_RIGHT) || IKBD_Keyboard[KEY_RIGHT]) {	cx+=deltaTime/40; }
+ 		else if((IKBD_STICK1 & IKBD_JOY_LEFT) || IKBD_Keyboard[KEY_LEFT]) {		cx-=deltaTime/40; }
+		else if(cx!=0) {cx = cx - cx/((LONG)(deltaTime)/denom);}
 
 		if(cx > 0x4000) cx = 0x4000;
 		else if(cx < -0x4000) cx = -0x4000;
@@ -106,22 +109,22 @@ void ProcessPlayerInputAtari()
 		if(cy > 0x2000) cy = 0x2000;
 		else if(cy < -0x2000) cy = -0x2000;
 
- 		if((IKBD_STICK1 & IKBD_JOY_DOWN) || IKBD_Keyboard[KEY_DOWN]) {		cy+=deltaTime/60; }
- 		else if((IKBD_STICK1 & IKBD_JOY_UP) || IKBD_Keyboard[KEY_UP]) {			cy-=deltaTime/60; }
-		else if(cy!=0) {cy = cy - cy/((LONG)(deltaTime)/1000);}
+ 		if((IKBD_STICK1 & IKBD_JOY_DOWN) || IKBD_Keyboard[KEY_DOWN]) {		cy+=deltaTime/40; }
+ 		else if((IKBD_STICK1 & IKBD_JOY_UP) || IKBD_Keyboard[KEY_UP]) {			cy-=deltaTime/40; }
+		else if(cy!=0) {cy = cy - cy/((LONG)(deltaTime)/denom);}
 
-		ULONG lowerDelta = (deltaTime/10000);
+		ULONG lowerDelta = (deltaTime/(denom*10));
 
-		acceleration = (300 - ((p1h - 3) - (UBYTE)(mapHigh[(UBYTE)(p1x)][(UBYTE)(p1y + 15)]))) - lowerDelta*velocity/10;
-		LONG addedpoints = (deltaTime/10000)*(128 - ((p1h - 3) - (UBYTE)(mapHigh[(UBYTE)(p1x)][(UBYTE)(p1y + 15)])));
+		acceleration = (256 - ((p1h - 3) - (UBYTE)(mapHigh[(UBYTE)(p1x)][(UBYTE)(p1y + 15)]))) - lowerDelta*velocity/32;
+		LONG addedpoints = (lowerDelta)*(128 - ((p1h - 3) - (UBYTE)(mapHigh[(UBYTE)(p1x)][(UBYTE)(p1y + 15)])));
 		if(addedpoints > 0)
 		{
 			points += addedpoints;
 		}
 
-		velocity = velocity + lowerDelta*(acceleration/64);
+		velocity = velocity + lowerDelta*(acceleration/48);
 
-		p1yf += lowerDelta*velocity/64;
+		p1yf += lowerDelta*velocity/128;
 
 
 
