@@ -361,6 +361,7 @@ void main_supervisor()
 			DrawPixel((160 + (cx / 150)) / 16, YSIZEODD + (cy / 100) - 4, 0);
 				
 			printf("%d	%d\r", p1y, (p1y / 256 + 1) % MAPLENGTH);
+			printf("%d\r", points);
 			fflush(stdout);
 			//IKBD_Flush();
 			Vsync();
