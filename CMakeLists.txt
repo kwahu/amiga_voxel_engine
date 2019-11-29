@@ -12,11 +12,9 @@ endif()
 set(CMAKE_C_STANDARD 11)
 set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -DAMIGA -Wall -Wextra -fomit-frame-pointer")
 set(CMAKE_C_FLAGS_DEBUG "${CMAKE_C_FLAGS_DEBUG} -DACE_DEBUG")
+file(GLOB_RECURSE SOURCES src/*.c)
+file(GLOB_RECURSE HEADERS src/*.h)
 
-file(GLOB_RECURSE SOURCES src/*[^atari].c)
-file(GLOB_RECURSE HEADERS src/*[^atari].h)
-
-list(REMOVE_ITEM SOURCES src/main_atari.c)
 include_directories(
 	${PROJECT_SOURCE_DIR}/src
 )
@@ -37,4 +35,3 @@ set(TARGET_NAME ${PROJECT_NAME_LOWER}.exe)
 
 add_executable(${TARGET_NAME} ${SOURCES} ${HEADERS})
 target_link_libraries(${TARGET_NAME} ace)
-

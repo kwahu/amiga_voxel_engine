@@ -135,7 +135,7 @@ void switchIntroScreen()
 
 void animateIntro()
 {
-	if(screenDuration < 3200000 && !fadeInStatus[3])
+	if(screenDuration < 6800000 && !fadeInStatus[3])
 	{
 		for (int i = 0; i < 16; i++)
 		{
@@ -145,7 +145,7 @@ void animateIntro()
 		Setpalette(bitmapPalette);
 		fadeInStatus[3] = 1;
 	}
-	if(screenDuration < 3000000 && !fadeInStatus[2])
+	if(screenDuration < 6600000 && !fadeInStatus[2])
 	{
 		for (int i = 0; i < 16; i++)
 		{
@@ -155,7 +155,7 @@ void animateIntro()
 		Setpalette(bitmapPalette);
 		fadeInStatus[2] = 1;
 	}
-	if(screenDuration < 2800000 && !fadeInStatus[1])
+	if(screenDuration < 6400000 && !fadeInStatus[1])
 	{
 		for (int i = 0; i < 16; i++)
 		{
@@ -165,7 +165,7 @@ void animateIntro()
 		Setpalette(bitmapPalette);
 		fadeInStatus[1] = 1;
 	}
-	if(screenDuration < 2600000 && !fadeInStatus[0])
+	if(screenDuration < 6200000 && !fadeInStatus[0])
 	{
 		for (int i = 0; i < 16; i++)
 		{
@@ -263,7 +263,8 @@ void main_supervisor()
     framebuffer_open();
     VsetMode(0x80|2|0x20);
     bitmap1 = LoadBitmapFile("data/logo1.bmp",&bitmapHeader1, bitmapPalette1);
-
+	bitmap4 = LoadBitmapFile("data/menu1.bmp", &bitmapHeader4, bitmapPalette4);
+	
 	planes = framebuffer_get_pointer();
    
    	//process paletter from an image
@@ -289,9 +290,10 @@ void main_supervisor()
 	
 	
 	//*************************************************
-	p1xf = 40*100;
+	
+	p1xf = 64 * 100;
 	p1yf = 0;
-	p1hf = 20*100;
+	p1hf = 50 * 100;
 
 	p2x = 0;
 	p2y = 0;
@@ -316,7 +318,7 @@ void main_supervisor()
 	initDeltaTime();
 	printf("\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n");
 
-	screenDuration = 3500000;
+	screenDuration = 7000000;
 	screenIndex = 1;
 
 	for(int i = 0; i < 4; i++)
@@ -329,9 +331,9 @@ void main_supervisor()
 		getDeltaTime();
 		if(screenIndex > 0)
 		{
-			if(screenDuration > 3500000)
+			if(screenDuration > 7000000)
 			{
-				screenDuration = 3500000;
+				screenDuration = 7000000;
 				screenIndex = (screenIndex + 1) % 4;
 				switchIntroScreen();
 			}
@@ -372,12 +374,19 @@ void main_supervisor()
 			//if(IKBD_Keyboard[IKBD_KEY_CONTROL]) p1y += 1;
 			//if(IKBD_Keyboard[IKBD_KEY_ALT]) p1y -= 1;
 			
-			
-		}
-		
+
 			//restart
 			if ((p1h - 3) < (UBYTE)(mapHigh[(UBYTE)(p1x)][(UBYTE)(p1y + 15)]))
 			{
+   				DrawBitmap4b(bitmap4, &bitmapHeader4);
+				for(int i=0;i<16;i++)
+				{
+					bitmapPalette[i] = ((bitmapPalette4[i*4+2]>>5) << 8) +
+					((bitmapPalette4[i*4+1]>>5) << 4) + (bitmapPalette4[i*4+0]>>5);
+				}
+
+				Setpalette(bitmapPalette);
+
 				p1xf = 64 * 100;
 				p1yf = 0;
 				p1hf = 50 * 100;
@@ -389,7 +398,33 @@ void main_supervisor()
 				cx = 0;
 				cy = 0;
 				levelTime = 0;
+
+				startTime = timerGetPrec();
+				lastTime = timerGetPrec();
+
+				ULONG screenTime = 3333333;
+				while (screenTime <= 3333333)
+				{
+					startTime = timerGetPrec();
+					screenTime -= startTime - lastTime;
+					lastTime = startTime;
+				} 
+
+
+
+				for(int i=0;i<16;i++)
+				{
+					bitmapPalette[i] = ((palettePalette[i*4+2]>>5) << 8) +
+					((palettePalette[i*4+1]>>5) << 4) + (palettePalette[i*4+0]>>5);
+				}
+
+				Setpalette(bitmapPalette);
+
 			}
+			
+		}
+		
+			
 	   endTime = timerGetPrec();
     }
 	free(bitmap1);
