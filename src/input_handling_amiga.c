@@ -98,11 +98,11 @@ void ProcessPlayerInput()
 
 	if (joyCheck(JOY1_RIGHT))
 	{
-		cx += deltaTime / 60;
+		cx += deltaTime / 150;
 	}
 	else if (joyCheck(JOY1_LEFT))
 	{
-		cx -= deltaTime / 60;
+		cx -= deltaTime / 150;
 	}
 	else if (cx != 0)
 	{

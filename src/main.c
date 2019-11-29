@@ -485,7 +485,7 @@ void engineGsCreate(void)
 
 
 	//*********************************** SELECT HARDWARE ***********************************************
-	informationText = fontCreateTextBitMapFromStr(s_pMenuFont, "KEY 1 = A500  KEY 2 = A1200 KEY 3 = A3000");
+	informationText = fontCreateTextBitMapFromStr(s_pMenuFont, "KEY 1 = A500   KEY 2 = A1200   KEY 3 = A3000");
 	fontDrawTextBitMap(s_pBuffer->pBack, informationText, 50, PLANEHEIGHT/2, 3, FONT_LEFT);
 
 	while(hardwareSelection == 0) //A500
@@ -634,9 +634,9 @@ void engineGsLoop(void)
 
 			RenderQuality();
 
-			//draw crosshair
-			DrawPixel((160 + (cx / 150)) / 16, YSIZEODD + (cy / 100) + 4, 0);
-			DrawPixel((160 + (cx / 150)) / 16, YSIZEODD + (cy / 100) - 4, 0);
+		//draw crosshair
+		DrawPixel((160 + (cx / 150)) / 16, 110 + (cy / 200) + 4, 0);
+		DrawPixel((160 + (cx / 150)) / 16, 110 + (cy / 200) - 4, 0);
 
 			//DrawBitmap8b(bitmap1, &bitmapHeader1);
 
@@ -701,6 +701,8 @@ void engineGsDestroy(void)
 	free(bitmap1);
 	free(bitmap2);
 	free(bitmap3);
+	free(bitmap4);
+	
 	free(paletteBitmap);
 
 	printf("%s", szAvg);
