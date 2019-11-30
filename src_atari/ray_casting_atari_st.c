@@ -1,4 +1,5 @@
 #include "../src/engine.h"
+#include "settings_atari.h"
 
 UBYTE ProcessWord1ST(UBYTE rounds, UBYTE sx, UBYTE sy, UWORD *_tz, UWORD *tzz, UBYTE px, UBYTE py,UBYTE ph,
 UWORD *address1, UWORD *address2, 
@@ -30,7 +31,7 @@ WORD (*rayCastX)[TERRAINDEPTH], WORD (*rayCastY)[TERRAINDEPTH], UWORD (*map)[256
 		}
 	}
 
-	if(c == 99) c = 34  - sy/8; //draw sky if too deep
+	if(c == 99) c = skyColor - ph/32 - sy/8; //draw sky if too deep
 	*address1 = (c<<10) + (c<<5) + (c); *address2 = *address1;
 	
 	
@@ -73,8 +74,8 @@ WORD (*rayCastX)[TERRAINDEPTH], WORD (*rayCastY)[TERRAINDEPTH], UWORD (*map)[256
 		
 		sx += 3;
 	}
-	if(c[0] == 99) c[0] = 34  - sy/8; //draw sky if too deep
-	if(c[1] == 99) c[1] = 34  - sy/8; //draw sky if too deep
+	if(c[0] == 99) c[0] = skyColor - ph/32 - sy/8; //draw sky if too deep
+	if(c[1] == 99) c[1] = skyColor - ph/32 - sy/8; //draw sky if too deep
 	*address1 = (c[0]<<10) + (c[0]<<5) + (c[0]); *address2 = (c[1]<<10) + (c[1]<<5) + (c[1]);
 
 	return tz;
@@ -116,9 +117,9 @@ WORD (*rayCastX)[TERRAINDEPTH], WORD (*rayCastY)[TERRAINDEPTH], UWORD (*map)[256
 		}
 		sx +=2;
 	}
-	if(c[0] == 99) c[0] = 34  - sy/8; //draw sky if too deep
-	if(c[1] == 99) c[1] = 34  - sy/8; //draw sky if too deep
-	if(c[2] == 99) c[2] = 34  - sy/8; //draw sky if too deep
+	if(c[0] == 99) c[0] = skyColor - ph/32 - sy/8; //draw sky if too deep
+	if(c[1] == 99) c[1] = skyColor - ph/32 - sy/8; //draw sky if too deep
+	if(c[2] == 99) c[2] = skyColor - ph/32 - sy/8; //draw sky if too deep
 	*address1 = (c[0]<<10) + (c[0]<<5) + (c[1]); *address2 = (c[1]<<10) + (c[2]<<5) + (c[2]);
 
 	return tz;
@@ -137,7 +138,7 @@ void ProcessRayCastsST(WORD (*rayCastX)[TERRAINDEPTH], WORD (*rayCastY)[TERRAIND
 
 	UWORD word;
 	UBYTE color;
-	UWORD positionStart =  ySize*20*2*4 + tableXStart/6*4;
+	UWORD positionStart =  ySize*20*4*4 + tableXStart/6*4;
 
 	UBYTE verticalSteps;
 
@@ -197,7 +198,7 @@ void ProcessRayCastsST(WORD (*rayCastX)[TERRAINDEPTH], WORD (*rayCastY)[TERRAIND
 				planes[position-480+3] = word;
 				position -= 640;
 
-				sy+=4;
+				sy+=2;
 			 }
 			else if(tz < threshold2)			
 			 {
@@ -225,7 +226,7 @@ void ProcessRayCastsST(WORD (*rayCastX)[TERRAINDEPTH], WORD (*rayCastY)[TERRAIND
 				planes[position-480+3] = word;
 				position -= 640;
 
-				sy+=4;
+				sy+=2;
 			 }
 			else if(tz < TERRAINDEPTH)			
 			 {
@@ -253,11 +254,11 @@ void ProcessRayCastsST(WORD (*rayCastX)[TERRAINDEPTH], WORD (*rayCastY)[TERRAIND
 				planes[position-480+3] = word;
 				position -= 640;
 
-				sy+=4;
+				sy+=2;
 			 }
 			 else 	
 			 {
-				color = 34 - ph/32 -sy/8;
+				color = skyColor - ph/32 -sy/8;
 				address1 = (color<<10) + (color<<5) + (color);
 	
 				byte = dither3x2EvenP1[ address1 ];
@@ -286,7 +287,7 @@ void ProcessRayCastsST(WORD (*rayCastX)[TERRAINDEPTH], WORD (*rayCastY)[TERRAIND
 				planes[position-480+3] = word;
 				position -= 640;
 
-				sy+=4;
+				sy+=2;
 
 			 }
 			//go step higher in the raycast table

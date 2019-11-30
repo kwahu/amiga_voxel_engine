@@ -106,8 +106,8 @@ void ProcessPlayerInputAtari()
 		//int denom = 1000;
 		int denom = 1;//666;
 
-		if((IKBD_STICK1 & IKBD_JOY_RIGHT) || IKBD_Keyboard[KEY_RIGHT]) {	cx+=deltaTime; }
- 		else if((IKBD_STICK1 & IKBD_JOY_LEFT) || IKBD_Keyboard[KEY_LEFT]) {		cx-=deltaTime; }
+		if((IKBD_STICK1 & IKBD_JOY_RIGHT) || IKBD_Keyboard[KEY_RIGHT]) {	cx+=deltaTime*2; }
+ 		else if((IKBD_STICK1 & IKBD_JOY_LEFT) || IKBD_Keyboard[KEY_LEFT]) {		cx-=deltaTime*2; }
 		else if(cx!=0) {cx = cx - cx/((LONG)(deltaTime)/denom);}
 
 		if(cx > 0x4000) cx = 0x4000;

@@ -156,9 +156,8 @@ void ProcessRayCasts3x2(WORD (*rayCastX)[TERRAINDEPTH], WORD (*rayCastY)[TERRAIN
 
 	UBYTE iInit, iVert;
 	UBYTE q1,q2,q3,q4;
-	q1 = renderingDepth/4;
-	q2 = q1*2;
-	q3 = q1*3;
+	q1 = renderingDepth/2;
+	q2 = renderingDepth - renderingDepth/4; 
 
 	//start with the buffor + vertical stripe start + turning amount
 	sx = XTURNBUFFOR + tableXStart + xOffset;
@@ -179,26 +178,26 @@ void ProcessRayCasts3x2(WORD (*rayCastX)[TERRAINDEPTH], WORD (*rayCastY)[TERRAIN
 		//process this vertical line
 		while(sy < ySize)
 		{
-			 if(tz < 30)			
+			 if(tz < q1)			
 			 {
 				 tz = ProcessWord(1,sx,sy,&tz,&tzz,px,py,ph,&address1,&address2,rayCastX, rayCastY, map);
 				 verticalSteps = 4;
 			 }
-			else if(tz < 40)			
+			else if(tz < q2)			
 			 {
 				 tz = ProcessWord(2,sx,sy,&tz,&tzz,px,py,ph,&address1,&address2,rayCastX, rayCastY, map);
 				 verticalSteps = 4;
 			 }
-			else if(tz < 50)			
+			else if(tz < renderingDepth)			
 			 {
 				 tz = ProcessWord(3,sx,sy,&tz,&tzz,px,py,ph,&address1,&address2,rayCastX, rayCastY, map);
 				 verticalSteps = 2;
 			 }
-			 else if(tz < 64)		
-			 {
-				 tz = ProcessWord(6,sx,sy,&tz,&tzz,px,py,ph,&address1,&address2,rayCastX, rayCastY, map);
-				 verticalSteps = 2;
-			 }
+			//  else if(tz < 64)		
+			//  {
+			// 	 tz = ProcessWord(6,sx,sy,&tz,&tzz,px,py,ph,&address1,&address2,rayCastX, rayCastY, map);
+			// 	 verticalSteps = 2;
+			//  }
 			 else
 			 {
 				 address1 = 0b0011110111101111;
@@ -232,7 +231,7 @@ void ProcessRayCasts3x2(WORD (*rayCastX)[TERRAINDEPTH], WORD (*rayCastY)[TERRAIN
 	}
 }
 
-
+ 
 
 void ProcessRayCasts16(UBYTE *screen, WORD (*rayCastX)[TERRAINDEPTH], WORD (*rayCastY)[TERRAINDEPTH], UWORD (*map)[MAPSIZE],
 UBYTE px, UBYTE py, UBYTE ph, UBYTE tableXStart,
