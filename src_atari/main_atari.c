@@ -143,7 +143,7 @@ void switchIntroScreen()
 
 void animateIntro()
 {
-	if(screenDuration < 6800000 && !fadeInStatus[3])
+	if(screenDuration < 3900 && !fadeInStatus[3])
 	{
 		for (int i = 0; i < 16; i++)
 		{
@@ -153,7 +153,7 @@ void animateIntro()
 		Setpalette(bitmapPalette);
 		fadeInStatus[3] = 1;
 	}
-	if(screenDuration < 6600000 && !fadeInStatus[2])
+	if(screenDuration < 3800 && !fadeInStatus[2])
 	{
 		for (int i = 0; i < 16; i++)
 		{
@@ -163,7 +163,7 @@ void animateIntro()
 		Setpalette(bitmapPalette);
 		fadeInStatus[2] = 1;
 	}
-	if(screenDuration < 6400000 && !fadeInStatus[1])
+	if(screenDuration < 3700 && !fadeInStatus[1])
 	{
 		for (int i = 0; i < 16; i++)
 		{
@@ -173,7 +173,7 @@ void animateIntro()
 		Setpalette(bitmapPalette);
 		fadeInStatus[1] = 1;
 	}
-	if(screenDuration < 6200000 && !fadeInStatus[0])
+	if(screenDuration < 3600 && !fadeInStatus[0])
 	{
 		for (int i = 0; i < 16; i++)
 		{
@@ -184,7 +184,7 @@ void animateIntro()
 		fadeInStatus[0] = 1;
 	}
 
-	if(screenDuration < 800000 && !fadeOutStatus[0])
+	if(screenDuration < 400 && !fadeOutStatus[0])
 	{
 		for (int i = 0; i < 16; i++)
 		{
@@ -194,7 +194,7 @@ void animateIntro()
 		Setpalette(bitmapPalette);
 		fadeOutStatus[0] = 1;
 	}
-	if(screenDuration < 600000 && !fadeOutStatus[1])
+	if(screenDuration < 300 && !fadeOutStatus[1])
 	{
 		for (int i = 0; i < 16; i++)
 		{
@@ -204,7 +204,7 @@ void animateIntro()
 		Setpalette(bitmapPalette);
 		fadeOutStatus[1] = 1;
 	}
-	if(screenDuration < 400000 && !fadeOutStatus[2])
+	if(screenDuration < 200 && !fadeOutStatus[2])
 	{
 		for (int i = 0; i < 16; i++)
 		{
@@ -214,7 +214,7 @@ void animateIntro()
 		Setpalette(bitmapPalette);
 		fadeOutStatus[2] = 1;
 	}
-	if(screenDuration < 200000 && !fadeOutStatus[3])
+	if(screenDuration < 100 && !fadeOutStatus[3])
 	{
 		for (int i = 0; i < 16; i++)
 		{
@@ -346,39 +346,38 @@ void main_supervisor()
 	//Setpalette(grayColors);
 	//DrawColorMap(mapHigh);
 
-	initDeltaTime();
 	printf("\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n");
 
-	screenDuration = 7000000;
+	screenDuration = 4000;
 	screenIndex = 1;
 
+	initDeltaTime();
 	for(int i = 0; i < 4; i++)
 	{
 		fadeInStatus[i] = 1;
 		fadeOutStatus[i] = 0;
 	}
 
-	ClearScreen();
     while ( exitflag == 0)
     {
 
 
 		getDeltaTime();
-		// if(screenIndex > 0)
-		// {
-		// 	if(screenDuration > 7000000)
-		// 	{
-		// 		screenDuration = 7000000;
-		// 		screenIndex = (screenIndex + 1) % 4;
-		// 		switchIntroScreen();
-		// 	}
+		if(screenIndex > 0)
+		{
+			if(screenDuration > 4000)
+			{
+				screenDuration = 4000;
+				screenIndex = (screenIndex + 1) % 4;
+				switchIntroScreen();
+			}
 
-		// 	animateIntro();
+			animateIntro();
 
 
-		// 	screenDuration -= deltaTime;
-		// }
-		// else
+			screenDuration -= deltaTime;
+		}
+		else
 		{
 			
 			// if(infoScreen == 0)

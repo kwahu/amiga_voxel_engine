@@ -54,13 +54,13 @@ void genericDestroy(void)
 
 static tAvg *s_pAvgTime;
 
-tTextBitMap *pBitmapPlayerX, *pBitmapPlayerY, *pBitmapPlayerH, *informationText;
-tTextBitMap *pBitmapTime, *pBitmapVelocity, *pBitmapScore, *pBitmapInfo[10];
+tTextBitMap *pBitmapHeightLabel, *pBitmapHeight, *pBitmapTime, *pBitmapTimeLabel, *informationText;
+tTextBitMap *pBitmapVelocityLabel, *pBitmapVelocity, *pBitmapScore, *pBitmapScoreLabel, *pBitmapInfo[10];
 
 tTextBitMap *pixel[32];
 char sPixel[32][10];
 char sPlayerX[5], sPlayerY[5], sPlayerH[5];
-char sTime[10], sVelocity[8], sScore[5];
+char sTime[8], sVelocity[5], sScore[8];
 char fadeInStatus[4], fadeOutStatus[4];
 
 unsigned char *currentPallete;
@@ -79,6 +79,7 @@ void switchIntroScreen()
 	{
 	case 2:
 	{
+		free(bitmap1);
 		systemUse();
 		bitmap1 = LoadBitmapFile("data/logo2.bmp", &bitmapHeader1, bitmapPalette1);
 		systemUnuse();
@@ -98,6 +99,7 @@ void switchIntroScreen()
 	break;
 	case 3:
 	{
+		free(bitmap1);
 		systemUse();
 		bitmap1 = LoadBitmapFile("data/logo3.bmp", &bitmapHeader1, bitmapPalette1);
 		systemUnuse();
@@ -116,8 +118,9 @@ void switchIntroScreen()
 	break;
 	case 0:
 	{
+		free(bitmap1);
 		systemUse();
-		bitmap1 = LoadBitmapFile("data/menu1.bmp", &bitmapHeader1, bitmapPalette1);
+		bitmap1 = LoadBitmapFile("data/menu0.bmp", &bitmapHeader1, bitmapPalette1);
 		systemUnuse();
 		ClearBuffor();
 		DrawBitmap4bCenter(bitmap1, &bitmapHeader1);
@@ -132,6 +135,8 @@ void switchIntroScreen()
 		viewLoad(s_pView);
 		vPortWaitForEnd(s_pVPort);
 		CopyFastToChipW(s_pBuffer->pBack);
+
+		
 	}
 	break;
 	}
@@ -475,19 +480,21 @@ void engineGsCreate(void)
 	GenerateColorBytesNoDither4x4();
 	GenerateColorBytesDither3x2();
 
-	pBitmapPlayerX = fontCreateTextBitMapFromStr(s_pMenuFont, "1234567890");
-	pBitmapPlayerY = fontCreateTextBitMapFromStr(s_pMenuFont, "1234567890");
-	pBitmapPlayerH = fontCreateTextBitMapFromStr(s_pMenuFont, "1234567890");
-	pBitmapTime = fontCreateTextBitMapFromStr(s_pMenuFont, "1234567890");
-	pBitmapVelocity = fontCreateTextBitMapFromStr(s_pMenuFont, "1234567890");
-	pBitmapScore = fontCreateTextBitMapFromStr(s_pMenuFont, "1234567890");
+	//pBitmapPlayerX = fontCreateTextBitMapFromStr(s_pMenuFont, "1234567890");
+	//pBitmapPlayerY = fontCreateTextBitMapFromStr(s_pMenuFont, "1234567890");
+	//pBitmapPlayerH = fontCreateTextBitMapFromStr(s_pMenuFont, "1234567890");
+	//pBitmapTime = fontCreateTextBitMapFromStr(s_pMenuFont, "1234567890");
+	pBitmapVelocity = fontCreateTextBitMapFromStr(s_pMenuFont, "1234");
+	pBitmapScore = fontCreateTextBitMapFromStr(s_pMenuFont, "1234567");
+	pBitmapTime = fontCreateTextBitMapFromStr(s_pMenuFont, "1234567");
+	pBitmapHeight = fontCreateTextBitMapFromStr(s_pMenuFont, "1234");
 	for(UBYTE i = 0; i < 10; ++i)
 	{
 		//pBitmapInfo[i] = fontCreateTextBitMapFromStr(s_pMenuFont, "123456789012345678901234567890123456789012345678");
 	}
 
-	for (int i = 0; i < 32; i++)
-		pixel[i] = fontCreateTextBitMapFromStr(s_pMenuFont, "1234567890");
+	//for (int i = 0; i < 32; i++)
+	//	pixel[i] = fontCreateTextBitMapFromStr(s_pMenuFont, "1234567890");
 
 	s_pAvgTime = logAvgCreate("perf", 100);
 	levelTime = 0;
@@ -545,6 +552,7 @@ void engineGsCreate(void)
 			hardwareSelection = 3;
 		}
 	}
+	fontDestroyTextBitMap(informationText);
 	//*********************************** SELECT HARDWARE ***********************************************
 	ClearBuffor();
 	DrawBitmap4bCenter(bitmap1, &bitmapHeader1);
@@ -573,6 +581,7 @@ void engineGsLoop(void)
 	levelTime += deltaTime;
 	if (screenIndex == 0)   //turned off
 	{
+		levelTime = 0;
 		if(screenDuration > 10000000)
 		{
 			screenDuration = 10000000;
@@ -583,6 +592,7 @@ void engineGsLoop(void)
 		animateIntro();
 
 		screenDuration -= deltaTime;
+		
 	}
 	else
 	{
@@ -623,8 +633,13 @@ void engineGsLoop(void)
 						{
 							for(int i = 0; i < 9; ++i)
 							{
-								free(pBitmapInfo[i]);
+								fontDestroyTextBitMap(pBitmapInfo[i]);
 							}
+							
+							free(bitmap1);
+							systemUse();
+							bitmap1 = LoadBitmapFile("data/menu1.bmp", &bitmapHeader1, bitmapPalette1);
+							systemUnuse();
 							ClearBuffor();
 							DrawBitmap4bCenter(bitmap1, &bitmapHeader1);
 							
@@ -664,8 +679,9 @@ void engineGsLoop(void)
 						{
 							for(int i = 0; i < 9; ++i)
 							{
-								free(pBitmapInfo[i]);
+								fontDestroyTextBitMap(pBitmapInfo[i]);
 							}
+							
 							ClearBuffor();
 							DrawBitmap4bCenter(bitmap1, &bitmapHeader1);
 							
@@ -705,9 +721,10 @@ void engineGsLoop(void)
 						{
 							for(int i = 0; i < 9; ++i)
 							{
-								free(pBitmapInfo[i]);
+								fontDestroyTextBitMap(pBitmapInfo[i]);
 							}
 
+							free(bitmap1);
 							systemUse();
 							bitmap1 = LoadBitmapFile("data/menu2.bmp", &bitmapHeader1, bitmapPalette1);
 							systemUnuse();
@@ -748,7 +765,7 @@ void engineGsLoop(void)
 						{
 							for(int i = 0; i < 8; ++i)
 							{
-								free(pBitmapInfo[i]);
+								fontDestroyTextBitMap(pBitmapInfo[i]);
 							}
 							ClearBuffor();
 							SetGamePaletter();
@@ -759,6 +776,13 @@ void engineGsLoop(void)
 							lastTime = timerGetPrec();
 							startTime = timerGetPrec();
 							deltaTime = 0;
+							levelTime = 0;
+
+							
+							pBitmapVelocityLabel = fontCreateTextBitMapFromStr(s_pMenuFont, "SPEED");
+							pBitmapScoreLabel = fontCreateTextBitMapFromStr(s_pMenuFont, "SCORE");
+							pBitmapTimeLabel = fontCreateTextBitMapFromStr(s_pMenuFont, "TIME");
+							pBitmapHeightLabel = fontCreateTextBitMapFromStr(s_pMenuFont, "REL HEIGHT");
 						} break;
 					}
 				}
@@ -825,7 +849,7 @@ void engineGsLoop(void)
 			
 			for(int i = 0; i < 3; ++i)
 			{
-				free(pBitmapInfo[i]);
+				fontDestroyTextBitMap(pBitmapInfo[i]);
 			}
 
 			ClearBuffor();
@@ -865,8 +889,11 @@ void engineGsLoop(void)
 	//ConvertIntToChar(bcLogo[2], sPlayerH);
 	//timerFormatPrec(sTime, startTime);
 	//ConvertIntToChar(bcLogo[3], sTime);
-	ConvertIntToChar(points, sVelocity);
-	ConvertIntToChar(velocity, sScore);
+	ConvertIntToChar(points, sScore);
+	ConvertIntToChar(velocity, sVelocity);
+	ConvertIntToChar(levelTime/2500, sTime);
+	ConvertIntToChar(relativeHeight, sPlayerH);
+	
 
 	/*for (int i = 0; i < 16; i++)
 	{
@@ -877,17 +904,23 @@ void engineGsLoop(void)
 
 	//fontFillTextBitMap(s_pMenuFont, pBitmapPlayerX, sPlayerX);
 	//fontFillTextBitMap(s_pMenuFont, pBitmapPlayerY, sPlayerY);
-	//fontFillTextBitMap(s_pMenuFont, pBitmapPlayerH, sPlayerH);
-	//fontFillTextBitMap(s_pMenuFont, pBitmapTime, sTime);
-	fontFillTextBitMap(s_pMenuFont, pBitmapVelocity, sVelocity);
 	fontFillTextBitMap(s_pMenuFont, pBitmapScore, sScore);
+	fontFillTextBitMap(s_pMenuFont, pBitmapVelocity, sVelocity);
+	fontFillTextBitMap(s_pMenuFont, pBitmapTime, sTime);
+	fontFillTextBitMap(s_pMenuFont, pBitmapHeight, sPlayerH);
 
 	//fontDrawTextBitMap(s_pBuffer->pBack, pBitmapPlayerX, 00, 225, 15, FONT_LEFT);
 	//fontDrawTextBitMap(s_pBuffer->pBack, pBitmapPlayerY, 40, 225, 15, FONT_LEFT);
 	//fontDrawTextBitMap(s_pBuffer->pBack, pBitmapPlayerH, 60, 225, 15, FONT_LEFT);
 	//fontDrawTextBitMap(s_pBuffer->pBack, pBitmapTime, 80, 225, 12, FONT_LEFT);
-	fontDrawTextBitMap(s_pBuffer->pBack, pBitmapVelocity, 100, 225, 12, FONT_LEFT);
-	fontDrawTextBitMap(s_pBuffer->pBack, pBitmapScore, 150, 225, 12, FONT_LEFT);
+	fontDrawTextBitMap(s_pBuffer->pBack, pBitmapVelocityLabel, 75, 225, 12, FONT_LEFT);
+	fontDrawTextBitMap(s_pBuffer->pBack, pBitmapScoreLabel, 0, 225, 12, FONT_LEFT);
+	fontDrawTextBitMap(s_pBuffer->pBack, pBitmapHeightLabel, 150, 225, 12, FONT_LEFT);
+	fontDrawTextBitMap(s_pBuffer->pBack, pBitmapTimeLabel, 250, 225, 12, FONT_LEFT);
+	fontDrawTextBitMap(s_pBuffer->pBack, pBitmapVelocity, 110, 225, 12, FONT_LEFT);
+	fontDrawTextBitMap(s_pBuffer->pBack, pBitmapScore, 35, 225, 12, FONT_LEFT);
+	fontDrawTextBitMap(s_pBuffer->pBack, pBitmapHeight, 200, 225, 12, FONT_LEFT);
+	fontDrawTextBitMap(s_pBuffer->pBack, pBitmapTime, 275, 225, 12, FONT_LEFT);
 
 	interlace++;
 	if (interlace == 4)
@@ -906,15 +939,19 @@ void engineGsDestroy(void)
 	fontDestroy(s_pMenuFont);
 	viewDestroy(s_pView);
 
-	fontDestroyTextBitMap(pBitmapPlayerX);
-	fontDestroyTextBitMap(pBitmapPlayerY);
+	fontDestroyTextBitMap(pBitmapVelocity);
+	fontDestroyTextBitMap(pBitmapScore);
+	fontDestroyTextBitMap(pBitmapTime);
+	fontDestroyTextBitMap(pBitmapHeight);
+
+	fontDestroyTextBitMap(pBitmapVelocityLabel);
+	fontDestroyTextBitMap(pBitmapScoreLabel);
+	fontDestroyTextBitMap(pBitmapTimeLabel);
+	fontDestroyTextBitMap(pBitmapHeightLabel);
 
 	char szAvg[15];
 	timerFormatPrec(szAvg, endTime - startTime);
 	free(bitmap1);
-	free(bitmap2);
-	free(bitmap3);
-	free(bitmap4);
 	
 	free(paletteBitmap);
 
