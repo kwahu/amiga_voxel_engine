@@ -115,12 +115,6 @@ void switchIntroScreen()
 		CopyFastToChipW(s_pBuffer->pBack);
 	}
 	break;
-	case 0:
-	{
-
-		
-	}
-	break;
 	}
 }
 
@@ -793,7 +787,7 @@ void engineGsLoop(void)
 							pBitmapVelocityLabel = fontCreateTextBitMapFromStr(s_pMenuFont, "SPEED");
 							pBitmapScoreLabel = fontCreateTextBitMapFromStr(s_pMenuFont, "SCORE");
 							pBitmapTimeLabel = fontCreateTextBitMapFromStr(s_pMenuFont, "TIME");
-							pBitmapHeightLabel = fontCreateTextBitMapFromStr(s_pMenuFont, "REL HEIGHT");
+							pBitmapHeightLabel = fontCreateTextBitMapFromStr(s_pMenuFont, "RELATIVE HEIGHT");
 						} break;
 					}
 				}
@@ -1000,12 +994,12 @@ void engineGsLoop(void)
 	//fontDrawTextBitMap(s_pBuffer->pBack, pBitmapTime, 80, 225, 12, FONT_LEFT);
 	fontDrawTextBitMap(s_pBuffer->pBack, pBitmapVelocityLabel, 75, 225, 12, FONT_LEFT|FONT_COOKIE);
 	fontDrawTextBitMap(s_pBuffer->pBack, pBitmapScoreLabel, 0, 225, 12, FONT_LEFT|FONT_COOKIE);
-	fontDrawTextBitMap(s_pBuffer->pBack, pBitmapHeightLabel, 150, 225, 12, FONT_LEFT|FONT_COOKIE);
-	fontDrawTextBitMap(s_pBuffer->pBack, pBitmapTimeLabel, 250, 225, 12, FONT_LEFT|FONT_COOKIE);
-	fontDrawTextBitMap(s_pBuffer->pBack, pBitmapVelocity, 90, 225, 12, FONT_LEFT|FONT_COOKIE);
+	fontDrawTextBitMap(s_pBuffer->pBack, pBitmapHeightLabel, 135, 225, 12, FONT_LEFT|FONT_COOKIE);
+	fontDrawTextBitMap(s_pBuffer->pBack, pBitmapTimeLabel, 230, 225, 12, FONT_LEFT|FONT_COOKIE);
+	fontDrawTextBitMap(s_pBuffer->pBack, pBitmapVelocity, 95, 225, 12, FONT_LEFT|FONT_COOKIE);
 	fontDrawTextBitMap(s_pBuffer->pBack, pBitmapScore, 35, 225, 12, FONT_LEFT|FONT_COOKIE);
-	fontDrawTextBitMap(s_pBuffer->pBack, pBitmapHeight, 180, 225, 12, FONT_LEFT|FONT_COOKIE);
-	fontDrawTextBitMap(s_pBuffer->pBack, pBitmapTime, 275, 225, 12, FONT_LEFT|FONT_COOKIE);
+	fontDrawTextBitMap(s_pBuffer->pBack, pBitmapHeight, 190, 225, 12, FONT_LEFT|FONT_COOKIE);
+	fontDrawTextBitMap(s_pBuffer->pBack, pBitmapTime, 250, 225, 12, FONT_LEFT|FONT_COOKIE);
 
 	interlace++;
 	if (interlace == 4)
