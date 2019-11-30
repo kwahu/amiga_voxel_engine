@@ -1,7 +1,6 @@
 #include "../src/engine.h"
-#include "settings_atari.h"
 
-UBYTE ProcessWord1ST(UBYTE rounds, UBYTE sx, UBYTE sy, UWORD *_tz, UWORD *tzz, UBYTE px, UBYTE py,UBYTE ph,
+UBYTE ProcessWord1v6(UBYTE rounds, UBYTE sx, UBYTE sy, UWORD *_tz, UWORD *tzz, UBYTE px, UBYTE py,UBYTE ph,
 UWORD *address1, UWORD *address2, 
 WORD (*rayCastX)[TERRAINDEPTH], WORD (*rayCastY)[TERRAINDEPTH], UWORD (*map)[256])
 {
@@ -37,7 +36,7 @@ WORD (*rayCastX)[TERRAINDEPTH], WORD (*rayCastY)[TERRAINDEPTH], UWORD (*map)[256
 	
 	return tz;
 }
-UBYTE ProcessWord2ST(UBYTE rounds, UBYTE sx, UBYTE sy, UWORD *_tz, UWORD *tzz, UBYTE px, UBYTE py,UBYTE ph,
+UBYTE ProcessWord2v6(UBYTE rounds, UBYTE sx, UBYTE sy, UWORD *_tz, UWORD *tzz, UBYTE px, UBYTE py,UBYTE ph,
 UWORD *address1, UWORD *address2, 
 WORD (*rayCastX)[TERRAINDEPTH], WORD (*rayCastY)[TERRAINDEPTH], UWORD (*map)[256])
 {
@@ -80,7 +79,7 @@ WORD (*rayCastX)[TERRAINDEPTH], WORD (*rayCastY)[TERRAINDEPTH], UWORD (*map)[256
 
 	return tz;
 }
-UBYTE ProcessWord3ST(UBYTE rounds, UBYTE sx, UBYTE sy, UWORD *_tz, UWORD *tzz, UBYTE px, UBYTE py,UBYTE ph,
+UBYTE ProcessWord3v6(UBYTE rounds, UBYTE sx, UBYTE sy, UWORD *_tz, UWORD *tzz, UBYTE px, UBYTE py,UBYTE ph,
 UWORD *address1, UWORD *address2, 
 WORD (*rayCastX)[TERRAINDEPTH], WORD (*rayCastY)[TERRAINDEPTH], UWORD (*map)[256])
 {
@@ -125,7 +124,7 @@ WORD (*rayCastX)[TERRAINDEPTH], WORD (*rayCastY)[TERRAINDEPTH], UWORD (*map)[256
 	return tz;
 }
 
-void ProcessRayCastsST(WORD (*rayCastX)[TERRAINDEPTH], WORD (*rayCastY)[TERRAINDEPTH], UWORD (*map)[256],
+void ProcessRayCastsProgressiveAtari(WORD (*rayCastX)[TERRAINDEPTH], WORD (*rayCastY)[TERRAINDEPTH], UWORD (*map)[256],
 	UBYTE px, UBYTE py, UBYTE ph, 
 	UBYTE tableXStart, UBYTE xCycles, UBYTE zStep, UBYTE zStart, 
 	UBYTE ySize, BYTE xOffset)
@@ -168,7 +167,7 @@ void ProcessRayCastsST(WORD (*rayCastX)[TERRAINDEPTH], WORD (*rayCastY)[TERRAIND
 		{
 			 if(tz < threshold1)			
 			 {
-				tz = ProcessWord1ST(1,sx,sy,&tz,tzz,px,py,ph,&address1,&address2,rayCastX, rayCastY, map);
+				tz = ProcessWord1v6(1,sx,sy,&tz,tzz,px,py,ph,&address1,&address2,rayCastX, rayCastY, map);
 				byte = dither3x2EvenP1[ address1 ];
 				word = (byte<<8) + byte;
 				planes[position] = word;
@@ -202,7 +201,7 @@ void ProcessRayCastsST(WORD (*rayCastX)[TERRAINDEPTH], WORD (*rayCastY)[TERRAIND
 			 }
 			else if(tz < threshold2)			
 			 {
-				tz = ProcessWord2ST(2,sx,sy,&tz,tzz,px,py,ph,&address1,&address2,rayCastX, rayCastY, map);
+				tz = ProcessWord2v6(2,sx,sy,&tz,tzz,px,py,ph,&address1,&address2,rayCastX, rayCastY, map);
 
 				word = (dither3x2EvenP1[ address1 ]<<8) + dither3x2EvenP1[ address2 ];
 				planes[position] = word;
@@ -230,7 +229,177 @@ void ProcessRayCastsST(WORD (*rayCastX)[TERRAINDEPTH], WORD (*rayCastY)[TERRAIND
 			 }
 			else if(tz < TERRAINDEPTH)			
 			 {
-				tz = ProcessWord3ST(3,sx,sy,&tz,tzz,px,py,ph,&address1,&address2,rayCastX, rayCastY, map);
+				tz = ProcessWord3v6(3,sx,sy,&tz,tzz,px,py,ph,&address1,&address2,rayCastX, rayCastY, map);
+
+				word = (dither3x2EvenP1[ address1 ]<<8) + dither3x2EvenP1[ address2 ];
+				planes[position] = word;
+				planes[position-160] = word;
+				planes[position-320] = word;
+				planes[position-480] = word;
+				word = (dither3x2EvenP2[ address1 ]<<8) + dither3x2EvenP2[ address2 ];
+				planes[position+1] = word;
+				planes[position-160+1] = word;
+				planes[position-320+1] = word;
+				planes[position-480+1] = word;
+				word = (dither3x2EvenP3[ address1 ]<<8) + dither3x2EvenP3[ address2 ];
+				planes[position+2] = word;
+				planes[position-160+2] = word;
+				planes[position-320+2] = word;
+				planes[position-480+2] = word;
+				word = (dither3x2EvenP4[ address1 ]<<8) + dither3x2EvenP4[ address2 ];
+				planes[position+3] = word;
+				planes[position-160+3] = word;
+				planes[position-320+3] = word;
+				planes[position-480+3] = word;
+				position -= 640;
+
+				sy+=2;
+			 }
+			 else 	
+			 {
+				color = skyColor - ph/32 -sy/8;
+				address1 = (color<<10) + (color<<5) + (color);
+	
+				byte = dither3x2EvenP1[ address1 ];
+				word = (byte<<8) + byte;
+				planes[position] = word;
+				planes[position-160] = word;
+				planes[position-320] = word;
+				planes[position-480] = word;
+				byte = dither3x2EvenP2[ address1 ];
+				word = (byte<<8) + byte;
+				planes[position+1] = word;
+				planes[position-160+1] = word;
+				planes[position-320+1] = word;
+				planes[position-480+1] = word;
+				byte = dither3x2EvenP3[ address1 ];
+				word = (byte<<8) + byte;
+				planes[position+2] = word;
+				planes[position-160+2] = word;
+				planes[position-320+2] = word;
+				planes[position-480+2] = word;
+				byte = dither3x2EvenP4[ address1 ];
+				word = (byte<<8) + byte;
+				planes[position+3] = word;
+				planes[position-160+3] = word;
+				planes[position-320+3] = word;
+				planes[position-480+3] = word;
+				position -= 640;
+
+				sy+=2;
+
+			 }
+			//go step higher in the raycast table
+		}
+		sx += 6;//go to the next vertical line
+	}
+}
+void ProcessRayCastsProgressiveAmiga(WORD (*rayCastX)[TERRAINDEPTH], WORD (*rayCastY)[TERRAINDEPTH], UWORD (*map)[256],
+	UBYTE px, UBYTE py, UBYTE ph, 
+	UBYTE tableXStart, UBYTE xCycles, UBYTE zStep, UBYTE zStart, 
+	UBYTE ySize, BYTE xOffset)
+{
+	UBYTE sx,sy,mist;
+	UWORD tz,tzz[6];
+	UWORD position,address1,address2;
+	UBYTE threshold1 = TERRAINDEPTH/2;
+	UBYTE threshold2 = TERRAINDEPTH - TERRAINDEPTH/4;
+
+	UWORD word;
+	UBYTE color;
+	UWORD positionStart =  ySize*20*4*4 + tableXStart/6*4;
+
+	UBYTE verticalSteps;
+
+	UBYTE iInit, iVert;
+
+	UBYTE byte;
+
+	//start with the buffor + vertical stripe start + turning amount
+	sx = XTURNBUFFOR + tableXStart + xOffset;
+	//currentScreenYStepSize = xCycles;
+
+
+	//for each vertical line
+	for(iVert=0;iVert<xCycles;iVert++)
+	{
+		//start from the bottom
+		sy = 0;
+		position = positionStart + iVert*4 ;//+ 80*12;
+		
+		//init values for this vertical line
+		tzz[0]=zStart;tzz[1]=zStart;tzz[2]=zStart;
+		//tzz[3]=zStart;tzz[4]=zStart;tzz[5]=zStart;
+		tz = zStart;
+
+		//process this vertical line
+		while(sy < ySize)
+		{
+			 if(tz < threshold1)			
+			 {
+				tz = ProcessWord1v6(1,sx,sy,&tz,tzz,px,py,ph,&address1,&address2,rayCastX, rayCastY, map);
+				byte = dither3x2EvenP1[ address1 ];
+				word = (byte<<8) + byte;
+				planes[position] = word;
+				planes[position-160] = word;
+				planes[position-320] = word;
+				planes[position-480] = word;
+
+				byte = dither3x2EvenP2[ address1 ];
+				word = (byte<<8) + byte;
+				planes[position+1] = word;
+				planes[position-160+1] = word;
+				planes[position-320+1] = word;
+				planes[position-480+1] = word;
+
+				byte = dither3x2EvenP3[ address1 ];
+				word = (byte<<8) + byte;
+				planes[position+2] = word;
+				planes[position-160+2] = word;
+				planes[position-320+2] = word;
+				planes[position-480+2] = word;
+
+				byte = dither3x2EvenP4[ address1 ];
+				word = (byte<<8) + byte;
+				planes[position+3] = word;
+				planes[position-160+3] = word;
+				planes[position-320+3] = word;
+				planes[position-480+3] = word;
+				position -= 640;
+
+				sy+=2;
+			 }
+			else if(tz < threshold2)			
+			 {
+				tz = ProcessWord2v6(2,sx,sy,&tz,tzz,px,py,ph,&address1,&address2,rayCastX, rayCastY, map);
+
+				word = (dither3x2EvenP1[ address1 ]<<8) + dither3x2EvenP1[ address2 ];
+				planes[position] = word;
+				planes[position-160] = word;
+				planes[position-320] = word;
+				planes[position-480] = word;
+				word = (dither3x2EvenP2[ address1 ]<<8) + dither3x2EvenP2[ address2 ];
+				planes[position+1] = word;
+				planes[position-160+1] = word;
+				planes[position-320+1] = word;
+				planes[position-480+1] = word;
+				word = (dither3x2EvenP3[ address1 ]<<8) + dither3x2EvenP3[ address2 ];
+				planes[position+2] = word;
+				planes[position-160+2] = word;
+				planes[position-320+2] = word;
+				planes[position-480+2] = word;
+				word = (dither3x2EvenP4[ address1 ]<<8) + dither3x2EvenP4[ address2 ];
+				planes[position+3] = word;
+				planes[position-160+3] = word;
+				planes[position-320+3] = word;
+				planes[position-480+3] = word;
+				position -= 640;
+
+				sy+=2;
+			 }
+			else if(tz < TERRAINDEPTH)			
+			 {
+				tz = ProcessWord3v6(3,sx,sy,&tz,tzz,px,py,ph,&address1,&address2,rayCastX, rayCastY, map);
 
 				word = (dither3x2EvenP1[ address1 ]<<8) + dither3x2EvenP1[ address2 ];
 				planes[position] = word;

@@ -28,4 +28,3 @@ UBYTE renderingDepth = TERRAINDEPTH;
 //ATARI
 uint16_t *planes;
 
-UBYTE skyColor = 33;

@@ -115,7 +115,6 @@ else if(debugValue == 7)
 }
 else if(debugValue == 8)
 {
-	ProcessRayCasts3x2(rayCastXOdd, rayCastYOdd,mapHigh,p1x,p1y,p1h,0,   20,1,12,YSIZEODD, xOffsetOdd);
-
+	ProcessRayCastsProgressiveAmiga(rayCastXOdd, rayCastYOdd,mapHigh,p1x,p1y,p1h,0,   20,1,12,YSIZEODD, xOffsetOdd);
 }
 }

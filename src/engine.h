@@ -113,6 +113,8 @@ BITMAPINFOHEADER bitmapHeader1, bitmapHeader2, bitmapHeader3, bitmapHeader4, pal
 unsigned char *bitmap1, *bitmap2, *bitmap3, *bitmap4, *paletteBitmap;
 unsigned char bitmapPalette1[16 * 4], bitmapPalette2[16 * 4], bitmapPalette3[16 * 4], bitmapPalette4[16 * 4], palettePalette[16 * 4];
 
+UBYTE skyColor = 33;
+
 void engineGsCreate(void);
 
 void engineGsLoop(void);

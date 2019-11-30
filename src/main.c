@@ -5,6 +5,7 @@
 #include "settings_amiga.h"
 #include "engine.h"
 #include "ray_casting_amiga.c"
+#include "ray_casting_progressive.c"
 #include "ray_cast_calculate.c"
 #include "draw_screen_amiga.c"
 //#include "mipmaps.c"
