@@ -663,18 +663,18 @@ void engineGsLoop(void)
 							pBitmapInfo[3] = fontCreateTextBitMapFromStr(s_pMenuFont, "planet, renaming it the Kingdom.");
 							pBitmapInfo[4] = fontCreateTextBitMapFromStr(s_pMenuFont, "The harsh environment was one problem, the");
 							pBitmapInfo[5] = fontCreateTextBitMapFromStr(s_pMenuFont, "ideological differences were the other.");
-							pBitmapInfo[6] = fontCreateTextBitMapFromStr(s_pMenuFont, "People of the Kingdom fell prey to their");
-							pBitmapInfo[7] = fontCreateTextBitMapFromStr(s_pMenuFont, "nature, which pushed them to the open conflict");
-							pBitmapInfo[8] = fontCreateTextBitMapFromStr(s_pMenuFont, "betweenthe Reign, and the Revolt.");
-							fontDrawTextBitMap(s_pBuffer->pBack, pBitmapInfo[0], 4, 30, 14, FONT_LEFT|FONT_COOKIE);
-							fontDrawTextBitMap(s_pBuffer->pBack, pBitmapInfo[1], 4, 36, 14, FONT_LEFT|FONT_COOKIE);
-							fontDrawTextBitMap(s_pBuffer->pBack, pBitmapInfo[2], 4, 42, 14, FONT_LEFT|FONT_COOKIE);
-							fontDrawTextBitMap(s_pBuffer->pBack, pBitmapInfo[3], 4, 48, 14, FONT_LEFT|FONT_COOKIE);
-							fontDrawTextBitMap(s_pBuffer->pBack, pBitmapInfo[4], 4, 54, 14, FONT_LEFT|FONT_COOKIE);
-							fontDrawTextBitMap(s_pBuffer->pBack, pBitmapInfo[5], 4, 60, 14, FONT_LEFT|FONT_COOKIE);
-							fontDrawTextBitMap(s_pBuffer->pBack, pBitmapInfo[6], 4, 66, 14, FONT_LEFT|FONT_COOKIE);
-							fontDrawTextBitMap(s_pBuffer->pBack, pBitmapInfo[7], 4, 72, 14, FONT_LEFT|FONT_COOKIE);
-							fontDrawTextBitMap(s_pBuffer->pBack, pBitmapInfo[8], 4, 78, 14, FONT_LEFT|FONT_COOKIE);
+							pBitmapInfo[6] = fontCreateTextBitMapFromStr(s_pMenuFont, "People of the Kingdom fell prey to their nature,");
+							pBitmapInfo[7] = fontCreateTextBitMapFromStr(s_pMenuFont, "which pushed them to the open conflict");
+							pBitmapInfo[8] = fontCreateTextBitMapFromStr(s_pMenuFont, "between the Reign, and the Revolt.");
+							fontDrawTextBitMap(s_pBuffer->pBack, pBitmapInfo[0], 2, 30, 14, FONT_LEFT|FONT_COOKIE);
+							fontDrawTextBitMap(s_pBuffer->pBack, pBitmapInfo[1], 2, 36, 14, FONT_LEFT|FONT_COOKIE);
+							fontDrawTextBitMap(s_pBuffer->pBack, pBitmapInfo[2], 2, 42, 14, FONT_LEFT|FONT_COOKIE);
+							fontDrawTextBitMap(s_pBuffer->pBack, pBitmapInfo[3], 2, 48, 14, FONT_LEFT|FONT_COOKIE);
+							fontDrawTextBitMap(s_pBuffer->pBack, pBitmapInfo[4], 2, 54, 14, FONT_LEFT|FONT_COOKIE);
+							fontDrawTextBitMap(s_pBuffer->pBack, pBitmapInfo[5], 2, 60, 14, FONT_LEFT|FONT_COOKIE);
+							fontDrawTextBitMap(s_pBuffer->pBack, pBitmapInfo[6], 2, 66, 14, FONT_LEFT|FONT_COOKIE);
+							fontDrawTextBitMap(s_pBuffer->pBack, pBitmapInfo[7], 2, 72, 14, FONT_LEFT|FONT_COOKIE);
+							fontDrawTextBitMap(s_pBuffer->pBack, pBitmapInfo[8], 2, 78, 14, FONT_LEFT|FONT_COOKIE);
 
 							FireDown = 1;
 						} break;
@@ -706,20 +706,20 @@ void engineGsLoop(void)
 							pBitmapInfo[4] = fontCreateTextBitMapFromStr(s_pMenuFont, "the military units of the Revolt.");
 							pBitmapInfo[5] = fontCreateTextBitMapFromStr(s_pMenuFont, "As Carriers can move freely only in the deep");
 							pBitmapInfo[6] = fontCreateTextBitMapFromStr(s_pMenuFont, "canyons covering the planet, the Revolt wants");
-							pBitmapInfo[7] = fontCreateTextBitMapFromStr(s_pMenuFont, "you to prove your abilities and loyalty by");
-							pBitmapInfo[8] = fontCreateTextBitMapFromStr(s_pMenuFont, "beating the route leading through narrow");
-							pBitmapInfo[9] = fontCreateTextBitMapFromStr(s_pMenuFont, "valleys in the best time possible...");
+							pBitmapInfo[7] = fontCreateTextBitMapFromStr(s_pMenuFont, "you to prove your abilities and loyalty");
+							pBitmapInfo[8] = fontCreateTextBitMapFromStr(s_pMenuFont, "by beating the route leading through");
+							pBitmapInfo[9] = fontCreateTextBitMapFromStr(s_pMenuFont, "narrow valleys as fast as possible...");
 							
-							fontDrawTextBitMap(s_pBuffer->pBack, pBitmapInfo[0], 4, 30, 14, FONT_LEFT|FONT_COOKIE);
-							fontDrawTextBitMap(s_pBuffer->pBack, pBitmapInfo[1], 4, 36, 14, FONT_LEFT|FONT_COOKIE);
-							fontDrawTextBitMap(s_pBuffer->pBack, pBitmapInfo[2], 4, 42, 14, FONT_LEFT|FONT_COOKIE);
-							fontDrawTextBitMap(s_pBuffer->pBack, pBitmapInfo[3], 4, 48, 14, FONT_LEFT|FONT_COOKIE);
-							fontDrawTextBitMap(s_pBuffer->pBack, pBitmapInfo[4], 4, 54, 14, FONT_LEFT|FONT_COOKIE);
-							fontDrawTextBitMap(s_pBuffer->pBack, pBitmapInfo[5], 4, 60, 14, FONT_LEFT|FONT_COOKIE);
-							fontDrawTextBitMap(s_pBuffer->pBack, pBitmapInfo[6], 4, 66, 14, FONT_LEFT|FONT_COOKIE);
-							fontDrawTextBitMap(s_pBuffer->pBack, pBitmapInfo[7], 4, 72, 14, FONT_LEFT|FONT_COOKIE);
-							fontDrawTextBitMap(s_pBuffer->pBack, pBitmapInfo[8], 4, 78, 14, FONT_LEFT|FONT_COOKIE);
-							fontDrawTextBitMap(s_pBuffer->pBack, pBitmapInfo[9], 4, 84, 14, FONT_LEFT|FONT_COOKIE);
+							fontDrawTextBitMap(s_pBuffer->pBack, pBitmapInfo[0], 2, 30, 14, FONT_LEFT|FONT_COOKIE);
+							fontDrawTextBitMap(s_pBuffer->pBack, pBitmapInfo[1], 2, 36, 14, FONT_LEFT|FONT_COOKIE);
+							fontDrawTextBitMap(s_pBuffer->pBack, pBitmapInfo[2], 2, 42, 14, FONT_LEFT|FONT_COOKIE);
+							fontDrawTextBitMap(s_pBuffer->pBack, pBitmapInfo[3], 2, 48, 14, FONT_LEFT|FONT_COOKIE);
+							fontDrawTextBitMap(s_pBuffer->pBack, pBitmapInfo[4], 2, 54, 14, FONT_LEFT|FONT_COOKIE);
+							fontDrawTextBitMap(s_pBuffer->pBack, pBitmapInfo[5], 2, 60, 14, FONT_LEFT|FONT_COOKIE);
+							fontDrawTextBitMap(s_pBuffer->pBack, pBitmapInfo[6], 2, 66, 14, FONT_LEFT|FONT_COOKIE);
+							fontDrawTextBitMap(s_pBuffer->pBack, pBitmapInfo[7], 2, 72, 14, FONT_LEFT|FONT_COOKIE);
+							fontDrawTextBitMap(s_pBuffer->pBack, pBitmapInfo[8], 2, 78, 14, FONT_LEFT|FONT_COOKIE);
+							fontDrawTextBitMap(s_pBuffer->pBack, pBitmapInfo[9], 2, 84, 14, FONT_LEFT|FONT_COOKIE);
 
 							FireDown = 1;
 						} break;
@@ -928,9 +928,9 @@ void engineGsLoop(void)
 	fontDrawTextBitMap(s_pBuffer->pBack, pBitmapScoreLabel, 0, 225, 12, FONT_LEFT|FONT_COOKIE);
 	fontDrawTextBitMap(s_pBuffer->pBack, pBitmapHeightLabel, 150, 225, 12, FONT_LEFT|FONT_COOKIE);
 	fontDrawTextBitMap(s_pBuffer->pBack, pBitmapTimeLabel, 250, 225, 12, FONT_LEFT|FONT_COOKIE);
-	fontDrawTextBitMap(s_pBuffer->pBack, pBitmapVelocity, 100, 225, 12, FONT_LEFT|FONT_COOKIE);
-	fontDrawTextBitMap(s_pBuffer->pBack, pBitmapScore, 25, 225, 12, FONT_LEFT|FONT_COOKIE);
-	fontDrawTextBitMap(s_pBuffer->pBack, pBitmapHeight, 200, 225, 12, FONT_LEFT|FONT_COOKIE);
+	fontDrawTextBitMap(s_pBuffer->pBack, pBitmapVelocity, 90, 225, 12, FONT_LEFT|FONT_COOKIE);
+	fontDrawTextBitMap(s_pBuffer->pBack, pBitmapScore, 35, 225, 12, FONT_LEFT|FONT_COOKIE);
+	fontDrawTextBitMap(s_pBuffer->pBack, pBitmapHeight, 180, 225, 12, FONT_LEFT|FONT_COOKIE);
 	fontDrawTextBitMap(s_pBuffer->pBack, pBitmapTime, 275, 225, 12, FONT_LEFT|FONT_COOKIE);
 
 	interlace++;
