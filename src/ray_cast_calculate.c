@@ -20,7 +20,7 @@ void CalculateRayCasts(WORD (*rayCastX)[TERRAINDEPTH], WORD (*rayCastY)[TERRAIND
 	WORD sxxx;
 	WORD xMiddle = xSize/2;
 	WORD yMiddle = ySize/2;
-	WORD stepModifier = debugValue6*4;
+
 
 	tzz = 1;
 	for(int tz=1;tz<renderingDepth;tz++)
@@ -37,7 +37,7 @@ void CalculateRayCasts(WORD (*rayCastX)[TERRAINDEPTH], WORD (*rayCastY)[TERRAIND
 			CopyFastToChipW(s_pBuffer->pBack);
 		#endif
 		//high - 2 - 8
-		tzz += debugValue3+tz/debugValue2;//+tz/16; //increase step with the distance from camera
+		tzz += calculationDepthStep + tz / calculationDepthDivider; //+tz/16; //increase step with the distance from camera
 		for(int sx=-xMiddle;sx<xMiddle;sx++)
 		{
 			sxx = (sx * tzz)/stepModifier; //make smaller steps

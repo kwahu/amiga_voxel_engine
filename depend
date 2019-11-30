@@ -46,7 +46,8 @@ main_atari.o: src_atari/main_atari.c \
  src_atari/draw_maps_atari.c src_atari/draw_sprite_atari.c \
  src_atari/../src/ray_cast_calculate.c src_atari/../src/bitmap_filters.c \
  src_atari/../src/setup_maps.c src_atari/../src/dithering.c \
- src_atari/ray_casting_atari_st.c src_atari/ray_casting_atari_falcon.c \
+ src_atari/../src/ray_casting_progressive.c \
+ src_atari/../src/../src/engine.h src_atari/ray_casting_atari_falcon.c \
  src_atari/draw_screen_atari.c src_atari/rendering_quality_atari.c \
  src_atari/../src/map_streaming.c src_atari/input_handling_atari.c \
  src_atari/key_map_atari.h src_atari/../ikbd/ikbd.h

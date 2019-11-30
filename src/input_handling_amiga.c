@@ -11,73 +11,74 @@ void ProcessQualityInput()
 	{
 		renderingDepth = 16;
 		debugValue = 1;
-		debugValue2 = 1;
-		debugValue3 = 10;
-		debugValue4 = 2;
+		calculationDepthDivider = 1;
+		calculationDepthStep = 10;
+		renderingDepthStep = 2;
 	//	Recalculate();
 	}
 	if (keyCheck(KEY_2) && debugValue != 2)
 	{
 		renderingDepth = 16;
 		debugValue = 2;
-		debugValue2 = 1;
-		debugValue3 = 10;
-		debugValue4 = 2;
+		calculationDepthDivider = 1;
+		calculationDepthStep = 10;
+		renderingDepthStep = 2;
 	//	Recalculate();
 	}
 	if (keyCheck(KEY_3) && debugValue != 3)
 	{
 		renderingDepth = 16;
 		debugValue = 3;
-		debugValue2 = 1;
-		debugValue3 = 10;
-		debugValue4 = 2;
+		calculationDepthDivider = 1;
+		calculationDepthStep = 10;
+		renderingDepthStep = 2;
 	//	Recalculate();
 	}
 	if (keyCheck(KEY_4) && debugValue != 4)
 	{
 		renderingDepth = 32;
 		debugValue = 4;
-		debugValue2 = 2;
-		debugValue3 = 2;
-		debugValue4 = 1;
-	//	Recalculate();
+		calculationDepthDivider = 2;
+		calculationDepthStep = 2;
+		renderingDepthStep = 1;
+		RecalculateEven();
 	}
 	if (keyCheck(KEY_5) && debugValue != 5)
 	{
 		renderingDepth = 32;
 		debugValue = 5;
-		debugValue2 = 2;
-		debugValue3 = 2;
-		debugValue4 = 1;
+		calculationDepthDivider = 2;
+		calculationDepthStep = 2;
+		renderingDepthStep = 1;
 	//	Recalculate();
 	}
 	if (keyCheck(KEY_6) && debugValue != 6)
 	{
-		renderingDepth = 32;
+		renderingDepth = 64;
 		debugValue = 6;
-		debugValue2 = 2;
-		debugValue3 = 2;
-		debugValue4 = 1;
+		calculationDepthDivider = 2;
+		calculationDepthStep = 2;
+		renderingDepthStep = 1;
 		RecalculateOdd();
 	}
 	if (keyCheck(KEY_7) && debugValue != 7 )
 	{
 		renderingDepth = 64;
 		debugValue = 6;
-		debugValue2 = 2;
-		debugValue3 = 2;
-		debugValue4 = 1;
-		// debugValue = 7;
-		// debugValue2 = 7;
-		// debugValue3 = 1;
-		// debugValue4 = 0;
-		if(debugValue != 8 && debugValue != 7)
-			RecalculateOdd();
+		calculationDepthDivider = 2;
+		calculationDepthStep = 2;
+		renderingDepthStep = 1;
+		RecalculateOdd();
 	}
-	if (keyCheck(KEY_8) )
+	if (keyCheck(KEY_8) && debugValue != 8 )
 	{
+		renderingDepth = 32;
 		debugValue = 8;
+			calculationDepthDivider = 2;
+			calculationDepthStep = 2;
+			//renderingDepthStep = 2;
+		ClearBuffor();
+		RecalculateOdd();
 	}
 
 }

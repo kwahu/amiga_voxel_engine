@@ -22,7 +22,7 @@
 #include "../src/bitmap_filters.c"
 #include "../src/setup_maps.c"
 #include "../src/dithering.c"
-#include "ray_casting_atari_st.c"
+#include "../src/ray_casting_progressive.c"
 #include "ray_casting_atari_falcon.c"
 #include "draw_screen_atari.c"
 #include "rendering_quality_atari.c"
@@ -79,11 +79,11 @@ void SetDefaulResolution()
 {
 		renderingDepth = TERRAINDEPTH;
 		//debugValue = 8;
-		debugValue2 = 2;
-		debugValue3 = 2;
-		debugValue4 = 1;
+		calculationDepthDivider = 2;
+		calculationDepthStep = 2;
+		renderingDepthStep = 1;
 
-		debugValue6 = 4;
+		stepModifier = 16;
 		xFOV = 10;
 		Recalculate();
 }
@@ -456,9 +456,9 @@ void main_supervisor()
 
 			//draw crosshair
 			//draw only even lines 
-			crossHairX = ( (160 + (cx / 10)) / 16 )/2;
+			crossHairX = ( (160 + (cx / 10)) / 16 );
 			crossHairY = ( YSIZEODD*2 + (cy / 5) )/2;
-			DrawPixel( crossHairX*2, crossHairY*2 + 4, 0);
+			DrawPixel( crossHairX, crossHairY*2 + 4, 0);
 			DrawPixel( crossHairX*2, crossHairY*2 - 4, 0);
 				
 			printf("%d	%d\r", p1y, (p1y / 256 + 1) % MAPLENGTH);

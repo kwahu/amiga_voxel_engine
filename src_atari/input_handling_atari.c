@@ -11,9 +11,9 @@ void ProcessQualityInputAtari()
 	{
 		renderingDepth = TERRAINDEPTH;
 		debugValue = 1;
-		debugValue2 = 2;
-		debugValue3 = 4;
-		debugValue4 = 1;
+		calculationDepthDivider = 2;
+		calculationDepthStep = 4;
+		renderingDepthStep = 1;
 		ClearScreen();
 		//DrawBitmap8b(bitmap1, &bitmapHeader1);
 	}
@@ -21,9 +21,9 @@ void ProcessQualityInputAtari()
 	{
 		renderingDepth = TERRAINDEPTH;
 		debugValue = 2;
-		debugValue2 = 2;
-		debugValue3 = 4;
-		debugValue4 = 1;
+		calculationDepthDivider = 2;
+		calculationDepthStep = 4;
+		renderingDepthStep = 1;
 		ClearScreen();
 		//DrawBitmap8b(bitmap1, &bitmapHeader1);
 	}
@@ -31,9 +31,9 @@ void ProcessQualityInputAtari()
 	{
 		renderingDepth = TERRAINDEPTH;
 		debugValue = 3;
-		debugValue2 = 2;
-		debugValue3 = 4;
-		debugValue4 = 1;
+		calculationDepthDivider = 2;
+		calculationDepthStep = 4;
+		renderingDepthStep = 1;
 		ClearScreen();
 		//DrawBitmap8b(bitmap1, &bitmapHeader1);
 	}
@@ -41,9 +41,9 @@ void ProcessQualityInputAtari()
 	{
 		renderingDepth = TERRAINDEPTH;
 		debugValue = 4;
-		debugValue2 = 2;
-		debugValue3 = 4;
-		debugValue4 = 1;
+		calculationDepthDivider = 2;
+		calculationDepthStep = 4;
+		renderingDepthStep = 1;
 		ClearScreen();
 		//DrawBitmap8b(bitmap1, &bitmapHeader1);
 	}
@@ -51,9 +51,9 @@ void ProcessQualityInputAtari()
 	{
 		renderingDepth = TERRAINDEPTH;
 		debugValue = 5;
-		debugValue2 = 2;
-		debugValue3 = 4;
-		debugValue4 = 1;
+		calculationDepthDivider = 2;
+		calculationDepthStep = 4;
+		renderingDepthStep = 1;
 		ClearScreen();
 		//DrawBitmap8b(bitmap1, &bitmapHeader1);
 	}
@@ -61,9 +61,9 @@ void ProcessQualityInputAtari()
 	{
 		renderingDepth = TERRAINDEPTH;
 		debugValue = 6;
-		debugValue2 = 2;
-		debugValue3 = 4;
-		debugValue4 = 1;
+		calculationDepthDivider = 2;
+		calculationDepthStep = 4;
+		renderingDepthStep = 1;
 		ClearScreen();
 		//DrawBitmap8b(bitmap1, &bitmapHeader1);
 	}
@@ -71,9 +71,9 @@ void ProcessQualityInputAtari()
 	{
 		renderingDepth = TERRAINDEPTH;
 		debugValue = 7;
-		debugValue2 = 2;
-		debugValue3 = 2;
-		debugValue4 = 1;
+		calculationDepthDivider = 2;
+		calculationDepthStep = 2;
+		renderingDepthStep = 1;
 		ClearScreen();
 		//DrawBitmap8b(bitmap1, &bitmapHeader1);
 	}
@@ -81,9 +81,9 @@ void ProcessQualityInputAtari()
 	{
 		renderingDepth = TERRAINDEPTH;
 		debugValue = 8;
-		debugValue2 = 2;
-		debugValue3 = 2;
-		debugValue4 = 1;
+		calculationDepthDivider = 2;
+		calculationDepthStep = 2;
+		renderingDepthStep = 1;
 	}
 
 

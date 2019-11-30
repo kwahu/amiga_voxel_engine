@@ -4,8 +4,9 @@
 
 #include "settings_amiga.h"
 #include "engine.h"
-#include "ray_casting_amiga.c"
 #include "ray_casting_progressive.c"
+#include "ray_casting_amiga.c"
+
 #include "ray_cast_calculate.c"
 #include "draw_screen_amiga.c"
 //#include "mipmaps.c"
@@ -62,6 +63,7 @@ char sPixel[32][10];
 char sPlayerX[5], sPlayerY[5], sPlayerH[5];
 char sTime[8], sVelocity[5], sScore[8];
 char fadeInStatus[4], fadeOutStatus[4];
+UWORD crossHairX, crossHairY;
 
 unsigned char *currentPallete;
 
@@ -244,6 +246,11 @@ void RecalculateOdd()
 {
 	CalculateRayCasts(rayCastXOdd, rayCastYOdd, XSIZEODD, YSIZEODD, 1);
 	deltaTime = 0;
+}
+void Recalculate()
+{
+	CalculateRayCasts(rayCastXEven, rayCastYEven, XSIZEEVEN, YSIZEEVEN, 2); //było 2
+	CalculateRayCasts(rayCastXOdd, rayCastYOdd, XSIZEODD, YSIZEODD, 1);
 }
 
 void ConvertIntToChar(int number, char *test)
@@ -515,26 +522,26 @@ void engineGsCreate(void)
 		if (keyCheck(KEY_1))
 		{
 			renderingDepth = 16;
-			debugValue = 8;
-			debugValue2 = 2;
-			debugValue3 = 2;
-			debugValue4 = 4;
+			debugValue = 1;
+			calculationDepthDivider = 2;
+			calculationDepthStep = 4;
+			renderingDepthStep = 2;
 
-			debugValue6 = 4;
+			stepModifier = 16;
 			xFOV = 10;
-			RecalculateOdd();
+			RecalculateEven();
 			hardwareSelection = 1;
 		}
 		if (keyCheck(KEY_2)) //A1200
 		{
 			renderingDepth = 32;
 			debugValue = 4;
-			debugValue2 = 2;
-			debugValue3 = 2;
-			debugValue4 = 2;
+			calculationDepthDivider = 2;
+			calculationDepthStep = 2;
+			renderingDepthStep = 2;
 
-			debugValue6 = 4;
-			xFOV = 20;
+			stepModifier = 16;
+			xFOV = 10;
 			RecalculateEven();
 			hardwareSelection = 2;
 		}
@@ -542,16 +549,17 @@ void engineGsCreate(void)
 		{
 			renderingDepth = 64;
 			debugValue = 6;
-			debugValue2 = 2;
-			debugValue3 = 2;
-			debugValue4 = 1;
+			calculationDepthDivider = 2;
+			calculationDepthStep = 2;
+			renderingDepthStep = 1;
 
-			debugValue6 = 4;
+			stepModifier = 16;
 			xFOV = 10;
 			RecalculateOdd();
 			hardwareSelection = 3;
 		}
 	}
+	hardwareSelection = 0;
 	fontDestroyTextBitMap(informationText);
 	//*********************************** SELECT HARDWARE ***********************************************
 	ClearBuffor();
@@ -799,7 +807,7 @@ void engineGsLoop(void)
 		}
 
 
-
+		deltaTime = 0;
 		ProcessPlayerInput();
 		OverwriteMap(); //this is how we go through many different maps, we just overwrite the main array with new content
 
@@ -872,13 +880,50 @@ void engineGsLoop(void)
 			RenderQuality();
 
 		//draw crosshair
-		DrawPixel((160 + (cx / 150)) / 16, 110 + (cy / 200) + 4, 0);
-		DrawPixel((160 + (cx / 150)) / 16, 110 + (cy / 200) - 4, 0);
+					//draw only even lines 
+			crossHairX = ( (160 + (cx / 150)) / 16 );
+			crossHairY = ( 110 + (cy / 200) )/2;
+			DrawPixel( crossHairX, crossHairY*2 + 4, 0);
+			DrawPixel( crossHairX, crossHairY*2 - 4, 0);
 
 			//DrawBitmap8b(bitmap1, &bitmapHeader1);
 
 			vPortWaitForEnd(s_pVPort);
 			CopyFastToChipW(s_pBuffer->pBack);
+
+
+		if(keyCheck(KEY_Q)){calculationDepthDivider=1;Recalculate();}
+	if(keyCheck(KEY_W)){calculationDepthDivider=2;Recalculate();}
+	if(keyCheck(KEY_E)){calculationDepthDivider=3;Recalculate();}
+	if(keyCheck(KEY_R)){calculationDepthDivider=4;Recalculate();}
+	if(keyCheck(KEY_T)){calculationDepthDivider=5;Recalculate();}
+	if(keyCheck(KEY_Y)){calculationDepthDivider=6;Recalculate();}
+	if(keyCheck(KEY_U)){calculationDepthDivider=7;Recalculate();}
+	if(keyCheck(KEY_I)){calculationDepthDivider=8;Recalculate();}
+	if(keyCheck(KEY_O)){calculationDepthDivider=9;Recalculate();}
+	if(keyCheck(KEY_P)){calculationDepthDivider=10;Recalculate();}
+
+	if(keyCheck(KEY_A)){calculationDepthStep=1;Recalculate();}
+	if(keyCheck(KEY_S)){calculationDepthStep=2;Recalculate();}
+	if(keyCheck(KEY_D)){calculationDepthStep=3;Recalculate();}
+	if(keyCheck(KEY_F)){calculationDepthStep=4;Recalculate();}
+	if(keyCheck(KEY_G)){calculationDepthStep=5;Recalculate();}
+	if(keyCheck(KEY_H)){calculationDepthStep=6;Recalculate();}
+	if(keyCheck(KEY_J)){calculationDepthStep=7;Recalculate();}
+	if(keyCheck(KEY_K)){calculationDepthStep=8;Recalculate();}
+	if(keyCheck(KEY_L)){calculationDepthStep=9;Recalculate();}
+	if(keyCheck(KEY_SEMICOLON)){calculationDepthStep=10;Recalculate();}
+
+	if(keyCheck(KEY_Z)){renderingDepthStep=1;}
+	if(keyCheck(KEY_X)){renderingDepthStep=2;}
+	if(keyCheck(KEY_C)){renderingDepthStep=3;}
+	if(keyCheck(KEY_V)){renderingDepthStep=4;}
+	if(keyCheck(KEY_B)){renderingDepthStep=5;}
+	if(keyCheck(KEY_N)){renderingDepthStep=6;}
+	if(keyCheck(KEY_M)){renderingDepthStep=7;}
+	if(keyCheck(KEY_COMMA)){renderingDepthStep=8;}
+	if(keyCheck(KEY_PERIOD)){renderingDepthStep=9;}
+	if(keyCheck(KEY_SLASH)){renderingDepthStep=10;}
 		}
 		
 
@@ -980,37 +1025,6 @@ else
 	systemSetDma(DMAB_BLITHOG  , 1);
 }*/
 
-/*
-	if(keyCheck(KEY_Q)){debugValue2=1;Recalculate();}
-	if(keyCheck(KEY_W)){debugValue2=2;Recalculate();}
-	if(keyCheck(KEY_E)){debugValue2=3;Recalculate();}
-	if(keyCheck(KEY_R)){debugValue2=4;Recalculate();}
-	if(keyCheck(KEY_T)){debugValue2=5;Recalculate();}
-	if(keyCheck(KEY_Y)){debugValue2=6;Recalculate();}
-	if(keyCheck(KEY_U)){debugValue2=7;Recalculate();}
-	if(keyCheck(KEY_I)){debugValue2=8;Recalculate();}
-	if(keyCheck(KEY_O)){debugValue2=9;Recalculate();}
-	if(keyCheck(KEY_P)){debugValue2=10;Recalculate();}
 
-	if(keyCheck(KEY_A)){debugValue3=1;Recalculate();}
-	if(keyCheck(KEY_S)){debugValue3=2;Recalculate();}
-	if(keyCheck(KEY_D)){debugValue3=3;Recalculate();}
-	if(keyCheck(KEY_F)){debugValue3=4;Recalculate();}
-	if(keyCheck(KEY_G)){debugValue3=5;Recalculate();}
-	if(keyCheck(KEY_H)){debugValue3=6;Recalculate();}
-	if(keyCheck(KEY_J)){debugValue3=7;Recalculate();}
-	if(keyCheck(KEY_K)){debugValue3=8;Recalculate();}
-	if(keyCheck(KEY_L)){debugValue3=9;Recalculate();}
-	if(keyCheck(KEY_SEMICOLON)){debugValue3=10;Recalculate();}
-
-	if(keyCheck(KEY_Z)){debugValue4=1;Recalculate();}
-	if(keyCheck(KEY_X)){debugValue4=2;Recalculate();}
-	if(keyCheck(KEY_C)){debugValue4=3;Recalculate();}
-	if(keyCheck(KEY_V)){debugValue4=4;Recalculate();}
-	if(keyCheck(KEY_B)){debugValue4=5;Recalculate();}
-	if(keyCheck(KEY_N)){debugValue4=6;Recalculate();}
-	if(keyCheck(KEY_M)){debugValue4=7;Recalculate();}
-	if(keyCheck(KEY_COMMA)){debugValue4=8;Recalculate();}
-	if(keyCheck(KEY_PERIOD)){debugValue4=9;Recalculate();}
-	if(keyCheck(KEY_SLASH)){debugValue4=10;Recalculate();}
-	*/
+	
+	

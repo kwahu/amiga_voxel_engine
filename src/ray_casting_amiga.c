@@ -1,6 +1,186 @@
 #include "engine.h"
 #include "settings_amiga.h"
 
+void ProcessRayCastsProgressiveAmiga(WORD (*rayCastX)[TERRAINDEPTH], WORD (*rayCastY)[TERRAINDEPTH], UWORD (*map)[256],
+	UBYTE px, UBYTE py, UBYTE ph, 
+	UBYTE tableXStart, UBYTE xCycles, UBYTE zStep, UBYTE zStart, 
+	UBYTE ySize, BYTE xOffset)
+{
+	UBYTE sx,sy,mist;
+	UWORD tz,tzz[6];
+	UWORD position,address1,address2;
+	UBYTE threshold1 = TERRAINDEPTH/2;
+	UBYTE threshold2 = TERRAINDEPTH - TERRAINDEPTH/4;
+
+	UWORD word;
+	UBYTE color;
+	//UWORD positionStart =  (ySize-1)*20 + tableXStart/6;
+
+	UBYTE verticalSteps;
+
+	UBYTE iInit, iVert;
+
+	UBYTE byte;
+
+	//start with the buffor + vertical stripe start + turning amount
+	sx = XTURNBUFFOR + tableXStart + xOffset;
+	//currentScreenYStepSize = xCycles;
+
+
+	//for each vertical line
+	for(iVert=0;iVert<xCycles;iVert++)
+	{
+		//start from the bottom
+		sy = 0;
+		position = ySize*40 + iVert + tableXStart;
+		//position = positionStart + iVert ;//+ 80*12;
+		
+		//init values for this vertical line
+		tzz[0]=zStart;tzz[1]=zStart;tzz[2]=zStart;
+		//tzz[3]=zStart;tzz[4]=zStart;tzz[5]=zStart;
+		tz = zStart;
+
+		//process this vertical line
+		while(sy < ySize)
+		{
+			 if(tz < threshold1)			
+			 {
+				tz = ProcessWord1v6(1,sx,sy,&tz,tzz,px,py,ph,&address1,&address2,rayCastX, rayCastY, map);
+				byte = dither3x2EvenP1[ address1 ];
+				word = (byte<<8) + byte;
+				plane1W[position] = word;
+				plane1W[position-40] = word;
+				plane1W[position-80] = word;
+				plane1W[position-120] = word;
+
+
+				byte = dither3x2EvenP2[ address1 ];
+				word = (byte<<8) + byte;
+				plane2W[position] = word;
+				plane2W[position-40] = word;
+				plane2W[position-80] = word;
+				plane2W[position-120] = word;
+
+
+				byte = dither3x2EvenP3[ address1 ];
+				word = (byte<<8) + byte;
+				plane3W[position] = word;
+				plane3W[position-40] = word;
+				plane3W[position-80] = word;
+				plane3W[position-120] = word;
+
+
+				byte = dither3x2EvenP4[ address1 ];
+				word = (byte<<8) + byte;
+				plane4W[position] = word;
+				plane4W[position-40] = word;
+				plane4W[position-80] = word;
+				plane4W[position-120] = word;
+				position -= 160;
+
+				sy+=4;
+			 }
+			else if(tz < threshold2)			
+			 {
+				tz = ProcessWord2v6(2,sx,sy,&tz,tzz,px,py,ph,&address1,&address2,rayCastX, rayCastY, map);
+
+				word = (dither3x2EvenP1[ address1 ]<<8) + dither3x2EvenP1[ address2 ];
+				plane1W[position] = word;
+				plane1W[position-40] = word;
+				plane1W[position-80] = word;
+				plane1W[position-120] = word;
+
+				word = (dither3x2EvenP2[ address1 ]<<8) + dither3x2EvenP2[ address2 ];
+				plane2W[position] = word;
+				plane2W[position-40] = word;
+				plane2W[position-80] = word;
+				plane2W[position-120] = word;
+				word = (dither3x2EvenP3[ address1 ]<<8) + dither3x2EvenP3[ address2 ];
+				plane3W[position] = word;
+				plane3W[position-40] = word;
+				plane3W[position-80] = word;
+				plane3W[position-120] = word;
+				word = (dither3x2EvenP4[ address1 ]<<8) + dither3x2EvenP4[ address2 ];
+				plane4W[position] = word;
+				plane4W[position-40] = word;
+				plane4W[position-80] = word;
+				plane4W[position-120] = word;
+				position -= 160;
+
+				sy+=4;
+			 }
+			else if(tz < TERRAINDEPTH)			
+			 {
+				tz = ProcessWord3v6(3,sx,sy,&tz,tzz,px,py,ph,&address1,&address2,rayCastX, rayCastY, map);
+
+				word = (dither3x2EvenP1[ address1 ]<<8) + dither3x2EvenP1[ address2 ];
+				plane1W[position] = word;
+				plane1W[position-40] = word;
+				plane1W[position-80] = word;
+				plane1W[position-120] = word;
+
+				word = (dither3x2EvenP2[ address1 ]<<8) + dither3x2EvenP2[ address2 ];
+				plane2W[position] = word;
+				plane2W[position-40] = word;
+				plane2W[position-80] = word;
+				plane2W[position-120] = word;
+				word = (dither3x2EvenP3[ address1 ]<<8) + dither3x2EvenP3[ address2 ];
+				plane3W[position] = word;
+				plane3W[position-40] = word;
+				plane3W[position-80] = word;
+				plane3W[position-120] = word;
+				word = (dither3x2EvenP4[ address1 ]<<8) + dither3x2EvenP4[ address2 ];
+				plane4W[position] = word;
+				plane4W[position-40] = word;
+				plane4W[position-80] = word;
+				plane4W[position-120] = word;
+				position -= 160;
+
+				sy+=4;
+			 }
+			 else 	
+			 {
+				color = skyColor - ph/32 -sy/8;
+				address1 = (color<<10) + (color<<5) + (color);
+	
+				byte = dither3x2EvenP1[ address1 ];
+				word = (byte<<8) + byte;
+				plane1W[position] = word;
+				plane1W[position-40] = word;
+				plane1W[position-80] = word;
+				plane1W[position-120] = word;
+
+				byte = dither3x2EvenP2[ address1 ];
+				word = (byte<<8) + byte;
+				plane2W[position] = word;
+				plane2W[position-40] = word;
+				plane2W[position-80] = word;
+				plane2W[position-120] = word;
+
+				byte = dither3x2EvenP3[ address1 ];
+				word = (byte<<8) + byte;
+				plane3W[position] = word;
+				plane3W[position-40] = word;
+				plane3W[position-80] = word;
+				plane3W[position-120] = word;
+
+				byte = dither3x2EvenP4[ address1 ];
+				word = (byte<<8) + byte;
+				plane4W[position] = word;
+				plane4W[position-40] = word;
+				plane4W[position-80] = word;
+				plane4W[position-120] = word;
+				position -= 160;
+
+				sy+=4;
+
+			 }
+			//go step higher in the raycast table
+		}
+		sx += 6;//go to the next vertical line
+	}
+}
+
 void ProcessRayCastsFull(UBYTE *screen, WORD (*rayCastX)[TERRAINDEPTH], WORD (*rayCastY)[TERRAINDEPTH], UWORD (*map)[256],
 UBYTE px, UBYTE py, UBYTE ph, UBYTE tableXStart,
 UBYTE tableStepSizeX, UBYTE tableStepSizeY, UBYTE tableStepNumber, UBYTE xCycles, UBYTE zStep, UBYTE zStart, UBYTE ySize, BYTE xOffset)
@@ -37,7 +217,7 @@ UBYTE tableStepSizeX, UBYTE tableStepSizeY, UBYTE tableStepNumber, UBYTE xCycles
 			//take x from the height map based on the raycast path step
 			mx = (px + rayCastX[sx][tz]);
 			//take y from tbe height map based on the depth step
-			my = (py + (tz<<debugValue4));
+			my = (py + (tz<<renderingDepthStep));
 			mapValue = map[ mx ][ my ];//read color + height
 			th = mapValue;//take just the height
 
@@ -114,7 +294,7 @@ WORD (*rayCastX)[TERRAINDEPTH], WORD (*rayCastY)[TERRAINDEPTH], UWORD (*map)[256
 		{
 			//mx = ( px + rayCastX[sxx][tz] );
 			//my = ( py + tz );
-			mapValue = map[ (UBYTE)( px + rayCastX[sxx][tz] ) ][ (UBYTE)( py + (tz<<debugValue4) ) ];//read color + height
+			mapValue = map[ (UBYTE)( px + rayCastX[sxx][tz] ) ][ (UBYTE)( py + (tz<<renderingDepthStep) ) ];//read color + height
 			th = mapValue;//take just the height
 			//check if read height is higher than what we expect from the raycast table
 			slope = th - (ph + rayCastY[sy][tz]);
@@ -269,7 +449,7 @@ UBYTE tableStepSizeX, UBYTE tableStepSizeY, UBYTE tableStepNumber, UBYTE xCycles
 			//take x from the height map based on the raycast path step
 			mx = (px + rayCastX[sx][tz]);
 			//take y from tbe height map based on the depth step
-			my = (py + (tz<<debugValue4));
+			my = (py + (tz<<renderingDepthStep));
 			mapValue = map[ mx ][ my ];//read color + height
 			th = mapValue;//take just the height
 

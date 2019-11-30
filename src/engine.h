@@ -22,7 +22,7 @@ UWORD mapSource[11][MAPSIZE][MAPSIZE];  //360k
 UBYTE mapLoaded0, mapLoaded1, mapLoaded2, mapLoaded3, mapLoaded4, mapLoaded5, mapLoaded6,
     mapLoaded7, mapLoaded8, mapLoaded9, mapLoaded10;
 
-UBYTE debugValue, debugValue2, debugValue3, debugValue4, debugValue5, debugValue6, xFOV;
+UBYTE debugValue, calculationDepthDivider, calculationDepthStep, renderingDepthStep, debugValue5, stepModifier, xFOV;
 BYTE debugValue8, debugValue9;
 
 //sand dunes theme
