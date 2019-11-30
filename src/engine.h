@@ -75,6 +75,7 @@ static int interlace;
 ULONG velocity = 0;
 LONG acceleration = 0;
 ULONG points = 0;
+ULONG relativeHeight = 0;
 
 static UBYTE screenIndex;
 static WORD cx, cy;
@@ -110,7 +111,7 @@ typedef struct tagBITMAPINFOHEADER
 } BITMAPINFOHEADER;
 
 BITMAPINFOHEADER bitmapHeader1, bitmapHeader2, bitmapHeader3, bitmapHeader4, paletteHeader;
-unsigned char *bitmap1, *bitmap2, *bitmap3, *bitmap4, *paletteBitmap;
+unsigned char *bitmap1, *paletteBitmap;
 unsigned char bitmapPalette1[16 * 4], bitmapPalette2[16 * 4], bitmapPalette3[16 * 4], bitmapPalette4[16 * 4], palettePalette[16 * 4];
 
 void engineGsCreate(void);
