@@ -813,7 +813,7 @@ void engineGsLoop(void)
 		}
 
 
-		deltaTime = 0;
+	//	deltaTime = 0;
 		ProcessPlayerInput();
 		OverwriteMap(); //this is how we go through many different maps, we just overwrite the main array with new content
 
