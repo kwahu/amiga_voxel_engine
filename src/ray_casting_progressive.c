@@ -307,7 +307,7 @@ void ProcessRayCastsProgressiveAmiga(WORD (*rayCastX)[TERRAINDEPTH], WORD (*rayC
 
 	UWORD word;
 	UBYTE color;
-	UWORD positionStart =  ySize*20*4*4 + tableXStart/6*4;
+	UWORD positionStart =  ySize*20 + tableXStart/6;
 
 	UBYTE verticalSteps;
 
@@ -325,7 +325,7 @@ void ProcessRayCastsProgressiveAmiga(WORD (*rayCastX)[TERRAINDEPTH], WORD (*rayC
 	{
 		//start from the bottom
 		sy = 0;
-		position = positionStart + iVert*4 ;//+ 80*12;
+		position = positionStart + iVert ;//+ 80*12;
 		
 		//init values for this vertical line
 		tzz[0]=zStart;tzz[1]=zStart;tzz[2]=zStart;
@@ -340,32 +340,35 @@ void ProcessRayCastsProgressiveAmiga(WORD (*rayCastX)[TERRAINDEPTH], WORD (*rayC
 				tz = ProcessWord1v6(1,sx,sy,&tz,tzz,px,py,ph,&address1,&address2,rayCastX, rayCastY, map);
 				byte = dither3x2EvenP1[ address1 ];
 				word = (byte<<8) + byte;
-				planes[position] = word;
-				planes[position-160] = word;
-				planes[position-320] = word;
-				planes[position-480] = word;
+				plane1W[position] = word;
+				plane1W[position-40] = word;
+				plane1W[position-80] = word;
+				plane1W[position-120] = word;
+
 
 				byte = dither3x2EvenP2[ address1 ];
 				word = (byte<<8) + byte;
-				planes[position+1] = word;
-				planes[position-160+1] = word;
-				planes[position-320+1] = word;
-				planes[position-480+1] = word;
+				plane2W[position] = word;
+				plane2W[position-40] = word;
+				plane2W[position-80] = word;
+				plane2W[position-120] = word;
+
 
 				byte = dither3x2EvenP3[ address1 ];
 				word = (byte<<8) + byte;
-				planes[position+2] = word;
-				planes[position-160+2] = word;
-				planes[position-320+2] = word;
-				planes[position-480+2] = word;
+				plane3W[position] = word;
+				plane3W[position-40] = word;
+				plane3W[position-80] = word;
+				plane3W[position-120] = word;
+
 
 				byte = dither3x2EvenP4[ address1 ];
 				word = (byte<<8) + byte;
-				planes[position+3] = word;
-				planes[position-160+3] = word;
-				planes[position-320+3] = word;
-				planes[position-480+3] = word;
-				position -= 640;
+				plane4W[position] = word;
+				plane4W[position-40] = word;
+				plane4W[position-80] = word;
+				plane4W[position-120] = word;
+				position -= 160;
 
 				sy+=2;
 			 }
@@ -374,26 +377,27 @@ void ProcessRayCastsProgressiveAmiga(WORD (*rayCastX)[TERRAINDEPTH], WORD (*rayC
 				tz = ProcessWord2v6(2,sx,sy,&tz,tzz,px,py,ph,&address1,&address2,rayCastX, rayCastY, map);
 
 				word = (dither3x2EvenP1[ address1 ]<<8) + dither3x2EvenP1[ address2 ];
-				planes[position] = word;
-				planes[position-160] = word;
-				planes[position-320] = word;
-				planes[position-480] = word;
+				plane1W[position] = word;
+				plane1W[position-40] = word;
+				plane1W[position-80] = word;
+				plane1W[position-120] = word;
+
 				word = (dither3x2EvenP2[ address1 ]<<8) + dither3x2EvenP2[ address2 ];
-				planes[position+1] = word;
-				planes[position-160+1] = word;
-				planes[position-320+1] = word;
-				planes[position-480+1] = word;
+				plane2W[position] = word;
+				plane2W[position-40] = word;
+				plane2W[position-80] = word;
+				plane2W[position-120] = word;
 				word = (dither3x2EvenP3[ address1 ]<<8) + dither3x2EvenP3[ address2 ];
-				planes[position+2] = word;
-				planes[position-160+2] = word;
-				planes[position-320+2] = word;
-				planes[position-480+2] = word;
+				plane3W[position] = word;
+				plane3W[position-40] = word;
+				plane3W[position-80] = word;
+				plane3W[position-120] = word;
 				word = (dither3x2EvenP4[ address1 ]<<8) + dither3x2EvenP4[ address2 ];
-				planes[position+3] = word;
-				planes[position-160+3] = word;
-				planes[position-320+3] = word;
-				planes[position-480+3] = word;
-				position -= 640;
+				plane4W[position] = word;
+				plane4W[position-40] = word;
+				plane4W[position-80] = word;
+				plane4W[position-120] = word;
+				position -= 160;
 
 				sy+=2;
 			 }
@@ -402,26 +406,27 @@ void ProcessRayCastsProgressiveAmiga(WORD (*rayCastX)[TERRAINDEPTH], WORD (*rayC
 				tz = ProcessWord3v6(3,sx,sy,&tz,tzz,px,py,ph,&address1,&address2,rayCastX, rayCastY, map);
 
 				word = (dither3x2EvenP1[ address1 ]<<8) + dither3x2EvenP1[ address2 ];
-				planes[position] = word;
-				planes[position-160] = word;
-				planes[position-320] = word;
-				planes[position-480] = word;
+				plane1W[position] = word;
+				plane1W[position-40] = word;
+				plane1W[position-80] = word;
+				plane1W[position-120] = word;
+
 				word = (dither3x2EvenP2[ address1 ]<<8) + dither3x2EvenP2[ address2 ];
-				planes[position+1] = word;
-				planes[position-160+1] = word;
-				planes[position-320+1] = word;
-				planes[position-480+1] = word;
+				plane2W[position] = word;
+				plane2W[position-40] = word;
+				plane2W[position-80] = word;
+				plane2W[position-120] = word;
 				word = (dither3x2EvenP3[ address1 ]<<8) + dither3x2EvenP3[ address2 ];
-				planes[position+2] = word;
-				planes[position-160+2] = word;
-				planes[position-320+2] = word;
-				planes[position-480+2] = word;
+				plane3W[position] = word;
+				plane3W[position-40] = word;
+				plane3W[position-80] = word;
+				plane3W[position-120] = word;
 				word = (dither3x2EvenP4[ address1 ]<<8) + dither3x2EvenP4[ address2 ];
-				planes[position+3] = word;
-				planes[position-160+3] = word;
-				planes[position-320+3] = word;
-				planes[position-480+3] = word;
-				position -= 640;
+				plane4W[position] = word;
+				plane4W[position-40] = word;
+				plane4W[position-80] = word;
+				plane4W[position-120] = word;
+				position -= 160;
 
 				sy+=2;
 			 }
