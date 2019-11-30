@@ -949,7 +949,7 @@ void engineGsLoop(void)
 		else
 		{
 			
-			ProcessQualityInput();
+		//	ProcessQualityInput();
 			
 
 
@@ -972,38 +972,38 @@ void engineGsLoop(void)
 			CopyFastToChipW(s_pBuffer->pBack);
 
 
-		if(keyCheck(KEY_Q)){calculationDepthDivider=1;Recalculate();}
-	if(keyCheck(KEY_W)){calculationDepthDivider=2;Recalculate();}
-	if(keyCheck(KEY_E)){calculationDepthDivider=3;Recalculate();}
-	if(keyCheck(KEY_R)){calculationDepthDivider=4;Recalculate();}
-	if(keyCheck(KEY_T)){calculationDepthDivider=5;Recalculate();}
-	if(keyCheck(KEY_Y)){calculationDepthDivider=6;Recalculate();}
-	if(keyCheck(KEY_U)){calculationDepthDivider=7;Recalculate();}
-	if(keyCheck(KEY_I)){calculationDepthDivider=8;Recalculate();}
-	if(keyCheck(KEY_O)){calculationDepthDivider=9;Recalculate();}
-	if(keyCheck(KEY_P)){calculationDepthDivider=10;Recalculate();}
+	// 	if(keyCheck(KEY_Q)){calculationDepthDivider=1;Recalculate();}
+	// if(keyCheck(KEY_W)){calculationDepthDivider=2;Recalculate();}
+	// if(keyCheck(KEY_E)){calculationDepthDivider=3;Recalculate();}
+	// if(keyCheck(KEY_R)){calculationDepthDivider=4;Recalculate();}
+	// if(keyCheck(KEY_T)){calculationDepthDivider=5;Recalculate();}
+	// if(keyCheck(KEY_Y)){calculationDepthDivider=6;Recalculate();}
+	// if(keyCheck(KEY_U)){calculationDepthDivider=7;Recalculate();}
+	// if(keyCheck(KEY_I)){calculationDepthDivider=8;Recalculate();}
+	// if(keyCheck(KEY_O)){calculationDepthDivider=9;Recalculate();}
+	// if(keyCheck(KEY_P)){calculationDepthDivider=10;Recalculate();}
 
-	if(keyCheck(KEY_A)){calculationDepthStep=1;Recalculate();}
-	if(keyCheck(KEY_S)){calculationDepthStep=2;Recalculate();}
-	if(keyCheck(KEY_D)){calculationDepthStep=3;Recalculate();}
-	if(keyCheck(KEY_F)){calculationDepthStep=4;Recalculate();}
-	if(keyCheck(KEY_G)){calculationDepthStep=5;Recalculate();}
-	if(keyCheck(KEY_H)){calculationDepthStep=6;Recalculate();}
-	if(keyCheck(KEY_J)){calculationDepthStep=7;Recalculate();}
-	if(keyCheck(KEY_K)){calculationDepthStep=8;Recalculate();}
-	if(keyCheck(KEY_L)){calculationDepthStep=9;Recalculate();}
-	if(keyCheck(KEY_SEMICOLON)){calculationDepthStep=10;Recalculate();}
+	// if(keyCheck(KEY_A)){calculationDepthStep=1;Recalculate();}
+	// if(keyCheck(KEY_S)){calculationDepthStep=2;Recalculate();}
+	// if(keyCheck(KEY_D)){calculationDepthStep=3;Recalculate();}
+	// if(keyCheck(KEY_F)){calculationDepthStep=4;Recalculate();}
+	// if(keyCheck(KEY_G)){calculationDepthStep=5;Recalculate();}
+	// if(keyCheck(KEY_H)){calculationDepthStep=6;Recalculate();}
+	// if(keyCheck(KEY_J)){calculationDepthStep=7;Recalculate();}
+	// if(keyCheck(KEY_K)){calculationDepthStep=8;Recalculate();}
+	// if(keyCheck(KEY_L)){calculationDepthStep=9;Recalculate();}
+	// if(keyCheck(KEY_SEMICOLON)){calculationDepthStep=10;Recalculate();}
 
-	if(keyCheck(KEY_Z)){renderingDepthStep=1;}
-	if(keyCheck(KEY_X)){renderingDepthStep=2;}
-	if(keyCheck(KEY_C)){renderingDepthStep=3;}
-	if(keyCheck(KEY_V)){renderingDepthStep=4;}
-	if(keyCheck(KEY_B)){renderingDepthStep=5;}
-	if(keyCheck(KEY_N)){renderingDepthStep=6;}
-	if(keyCheck(KEY_M)){renderingDepthStep=7;}
-	if(keyCheck(KEY_COMMA)){renderingDepthStep=8;}
-	if(keyCheck(KEY_PERIOD)){renderingDepthStep=9;}
-	if(keyCheck(KEY_SLASH)){renderingDepthStep=10;}
+	// if(keyCheck(KEY_Z)){renderingDepthStep=1;}
+	// if(keyCheck(KEY_X)){renderingDepthStep=2;}
+	// if(keyCheck(KEY_C)){renderingDepthStep=3;}
+	// if(keyCheck(KEY_V)){renderingDepthStep=4;}
+	// if(keyCheck(KEY_B)){renderingDepthStep=5;}
+	// if(keyCheck(KEY_N)){renderingDepthStep=6;}
+	// if(keyCheck(KEY_M)){renderingDepthStep=7;}
+	// if(keyCheck(KEY_COMMA)){renderingDepthStep=8;}
+	// if(keyCheck(KEY_PERIOD)){renderingDepthStep=9;}
+	// if(keyCheck(KEY_SLASH)){renderingDepthStep=10;}
 		}
 		
 
