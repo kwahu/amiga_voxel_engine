@@ -81,6 +81,7 @@ static WORD cx, cy;
 static ULONG startTime, endTime, deltaTime, lastTime;
 static ULONG levelTime;
 static ULONG screenDuration;
+static UBYTE infoScreen = 0;
 UWORD lastOverwrittenLine;
 static BYTE xOffsetEven, xOffsetOdd; //camera rotation offsett when turning
 

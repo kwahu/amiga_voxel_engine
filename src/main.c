@@ -65,7 +65,6 @@ char fadeInStatus[4], fadeOutStatus[4];
 unsigned char *currentPallete;
 
 UBYTE hardwareSelection = 0;
-UBYTE infoScreen = 0;
 
 UBYTE gamePaletteSet = 0;
 
@@ -741,6 +740,8 @@ void engineGsLoop(void)
 							fontDrawTextBitMap(s_pBuffer->pBack, pBitmapInfo[5], 110, 100, 6, FONT_LEFT);
 							fontDrawTextBitMap(s_pBuffer->pBack, pBitmapInfo[6], 110, 106, 6, FONT_LEFT);
 							fontDrawTextBitMap(s_pBuffer->pBack, pBitmapInfo[7], 110, 112, 6, FONT_LEFT);
+
+							FireDown = 1;
 						} break;
 						case 4:
 						{
@@ -864,7 +865,7 @@ void engineGsLoop(void)
 	//timerFormatPrec(sTime, startTime);
 	//ConvertIntToChar(bcLogo[3], sTime);
 	ConvertIntToChar(points, sVelocity);
-	//ConvertIntToChar(acceleration, sScore);
+	ConvertIntToChar(velocity, sScore);
 
 	/*for (int i = 0; i < 16; i++)
 	{
@@ -878,14 +879,14 @@ void engineGsLoop(void)
 	//fontFillTextBitMap(s_pMenuFont, pBitmapPlayerH, sPlayerH);
 	//fontFillTextBitMap(s_pMenuFont, pBitmapTime, sTime);
 	fontFillTextBitMap(s_pMenuFont, pBitmapVelocity, sVelocity);
-	//fontFillTextBitMap(s_pMenuFont, pBitmapScore, sScore);
+	fontFillTextBitMap(s_pMenuFont, pBitmapScore, sScore);
 
 	//fontDrawTextBitMap(s_pBuffer->pBack, pBitmapPlayerX, 00, 225, 15, FONT_LEFT);
 	//fontDrawTextBitMap(s_pBuffer->pBack, pBitmapPlayerY, 40, 225, 15, FONT_LEFT);
 	//fontDrawTextBitMap(s_pBuffer->pBack, pBitmapPlayerH, 60, 225, 15, FONT_LEFT);
 	//fontDrawTextBitMap(s_pBuffer->pBack, pBitmapTime, 80, 225, 12, FONT_LEFT);
 	fontDrawTextBitMap(s_pBuffer->pBack, pBitmapVelocity, 100, 225, 12, FONT_LEFT);
-	//fontDrawTextBitMap(s_pBuffer->pBack, pBitmapScore, 120, 225, 12, FONT_LEFT);
+	fontDrawTextBitMap(s_pBuffer->pBack, pBitmapScore, 150, 225, 12, FONT_LEFT);
 
 	interlace++;
 	if (interlace == 4)
