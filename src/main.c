@@ -598,7 +598,7 @@ void engineGsLoop(void)
 			memcpy(s_pVPort->pPalette, bitmapPalette, 16 * sizeof(UWORD));
 			
 			viewLoad(s_pView);
-			vPortWaitForEnd(s_pVPort);
+			//vPortWaitForEnd(s_pVPort);
 			CopyFastToChipW(s_pBuffer->pBack);
 
 			UBYTE infoIndex = 0;
@@ -657,7 +657,7 @@ void engineGsLoop(void)
 							memcpy(s_pVPort->pPalette, bitmapPalette, 16 * sizeof(UWORD));
 							
 							viewLoad(s_pView);
-							vPortWaitForEnd(s_pVPort);
+							//vPortWaitForEnd(s_pVPort);
 							CopyFastToChipW(s_pBuffer->pBack);
 
 							pBitmapInfo[0] = fontCreateTextBitMapFromStr(s_pMenuFont, "After setting off the Earth in enormous");
@@ -699,7 +699,7 @@ void engineGsLoop(void)
 							memcpy(s_pVPort->pPalette, bitmapPalette, 16 * sizeof(UWORD));
 							
 							viewLoad(s_pView);
-							vPortWaitForEnd(s_pVPort);
+							//vPortWaitForEnd(s_pVPort);
 							CopyFastToChipW(s_pBuffer->pBack);
 
 							pBitmapInfo[0] = fontCreateTextBitMapFromStr(s_pMenuFont, "You are Nix, the pilot of Icarus, who feels");
@@ -748,7 +748,7 @@ void engineGsLoop(void)
 							memcpy(s_pVPort->pPalette, bitmapPalette, 16 * sizeof(UWORD));
 							
 							viewLoad(s_pView);
-							vPortWaitForEnd(s_pVPort);
+							//vPortWaitForEnd(s_pVPort);
 							CopyFastToChipW(s_pBuffer->pBack);
 
 							pBitmapInfo[0] = fontCreateTextBitMapFromStr(s_pMenuFont, "The ship's Anti-G engine uses the");
@@ -784,7 +784,7 @@ void engineGsLoop(void)
 							ClearBuffor();
 							SetGamePaletter();
 							viewLoad(s_pView);
-							vPortWaitForEnd(s_pVPort);
+							//vPortWaitForEnd(s_pVPort);
 							CopyFastToChipW(s_pBuffer->pBack);
 							infoScreen = 1;
 							lastTime = timerGetPrec();
@@ -828,7 +828,7 @@ void engineGsLoop(void)
 			memcpy(s_pVPort->pPalette, bitmapPalette, 16 * sizeof(UWORD));
 			DrawBitmap4bCenter(bitmap1, &bitmapHeader1);
 			viewLoad(s_pView);
-			vPortWaitForEnd(s_pVPort);
+			//vPortWaitForEnd(s_pVPort);
 			CopyFastToChipW(s_pBuffer->pBack);
 
 			UBYTE lines = 0;
@@ -943,7 +943,7 @@ void engineGsLoop(void)
 			ClearBuffor();
 			SetGamePaletter();
 			viewLoad(s_pView);
-			vPortWaitForEnd(s_pVPort);
+			//vPortWaitForEnd(s_pVPort);
 			CopyFastToChipW(s_pBuffer->pBack);
 		}
 		else

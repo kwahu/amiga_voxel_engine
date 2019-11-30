@@ -465,7 +465,7 @@ void main_supervisor()
 			printf("%d  %d\r", points, velocity);
 			fflush(stdout);
 			//IKBD_Flush();
-			//Vsync();
+			Vsync();
 			//IKBD_ReadMouse();
 			if(IKBD_Keyboard[IKBD_KEY_ESC])
 			{
