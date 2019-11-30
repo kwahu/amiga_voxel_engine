@@ -4,7 +4,7 @@
 void RenderQuality()
 {
     	
-if(debugValue == 1)
+if(renderingType == 1)
 {
 	//ProcessRayCastsFull(screen4x4a,rayCastXEven, rayCastYEven,mapHigh,p1x,p1y,p1h,	0,  1, 1, 0, 16,2,12,YSIZEEVEN, xOffsetEven);
 	ProcessRayCastsFull(screen4x4b,rayCastXEven, rayCastYEven,mapHigh,p1x,p1y,p1h,	16, 1, 1, 0, 16,2,1,YSIZEEVEN, xOffsetEven);
@@ -18,7 +18,7 @@ if(debugValue == 1)
 	DrawPlayerScreen4x4(screen4x4d,1,0,12,4);
 	// DrawPlayerScreen4x4(screen4x4e,1,0,16,4);
 }
-else if(debugValue == 2)
+else if(renderingType == 2)
 {
 
 	ProcessRayCasts16(screen4x4a,rayCastXEven, rayCastYEven,mapHigh,p1x,p1y,p1h,	0,  1, 1, 0, 16,4,1,YSIZEEVEN, xOffsetEven);
@@ -33,7 +33,7 @@ else if(debugValue == 2)
 	DrawPlayerScreen4x4(screen4x4d,1,0,12,4);
 	DrawPlayerScreen4x4(screen4x4e,1,0,16,4);
 }
-else if(debugValue == 3)
+else if(renderingType == 3)
 {
 
 
@@ -49,7 +49,7 @@ else if(debugValue == 3)
 	DrawPlayerScreen4x4(screen4x4d,1,0,12,4);
 	DrawPlayerScreen4x4(screen4x4e,1,0,16,4);
 }
-else if(debugValue == 4)
+else if(renderingType == 4)
 {
 
 
@@ -65,7 +65,7 @@ else if(debugValue == 4)
 	DrawPlayerScreen4x4(screen4x4d,1,0,12,4);
 	DrawPlayerScreen4x4(screen4x4e,1,0,16,4);
 }
-else if(debugValue == 5)
+else if(renderingType == 5)
 {
 
 
@@ -81,7 +81,7 @@ else if(debugValue == 5)
 	DrawPlayerScreen3x2(screen3x2d,1,0,12,4);
 	DrawPlayerScreen4x4(screen4x4e,1,0,16,4);
 }
-else if(debugValue == 6)
+else if(renderingType == 6)
 {
 	ProcessRayCastsFull(screen3x2a,rayCastXOdd, rayCastYOdd,mapHigh,p1x,p1y,p1h,	0,  1, 1, 0, 24,2,12,YSIZEODD, xOffsetOdd);
 	ProcessRayCastsFull(screen3x2b,rayCastXOdd, rayCastYOdd,mapHigh,p1x,p1y,p1h,	24, 1, 1, 0, 24,2,12,YSIZEODD, xOffsetOdd);
@@ -95,7 +95,7 @@ else if(debugValue == 6)
 	DrawPlayerScreen3x2(screen3x2d,1,0,12,4);
 	DrawPlayerScreen3x2(screen3x2e,1,0,16,4);
 }
-else if(debugValue == 7)
+else if(renderingType == 7)
 {
 
 
@@ -111,7 +111,7 @@ else if(debugValue == 7)
 	DrawPlayerScreen3x2(screen3x2d,1,0,12,4);
 	DrawPlayerScreen3x2(screen3x2e,1,0,16,4);
 }
-else if(debugValue == 8)
+else if(renderingType == 8)
 {
 	ProcessRayCastsProgressiveAmiga(rayCastXOdd, rayCastYOdd,mapHigh,p1x,p1y,p1h,0,   20,1,1,YSIZEODD, xOffsetOdd);
 }

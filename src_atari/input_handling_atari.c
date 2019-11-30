@@ -7,80 +7,80 @@ void ProcessQualityInputAtari()
 {
 	
 
-	if(IKBD_Keyboard[KEY_1] && debugValue!=1)
+	if(IKBD_Keyboard[KEY_1] && renderingType!=1)
 	{
 		renderingDepth = TERRAINDEPTH;
-		debugValue = 1;
+		renderingType = 1;
 		calculationDepthDivider = 2;
 		calculationDepthStep = 4;
 		renderingDepthStep = 1;
 		ClearScreen();
 		//DrawBitmap8b(bitmap1, &bitmapHeader1);
 	}
-	if(IKBD_Keyboard[KEY_2] && debugValue!=2)
+	if(IKBD_Keyboard[KEY_2] && renderingType!=2)
 	{
 		renderingDepth = TERRAINDEPTH;
-		debugValue = 2;
+		renderingType = 2;
 		calculationDepthDivider = 2;
 		calculationDepthStep = 4;
 		renderingDepthStep = 1;
 		ClearScreen();
 		//DrawBitmap8b(bitmap1, &bitmapHeader1);
 	}
-	if(IKBD_Keyboard[KEY_3] && debugValue!=3)
+	if(IKBD_Keyboard[KEY_3] && renderingType!=3)
 	{
 		renderingDepth = TERRAINDEPTH;
-		debugValue = 3;
+		renderingType = 3;
 		calculationDepthDivider = 2;
 		calculationDepthStep = 4;
 		renderingDepthStep = 1;
 		ClearScreen();
 		//DrawBitmap8b(bitmap1, &bitmapHeader1);
 	}
-	if(IKBD_Keyboard[KEY_4] && debugValue!=4)
+	if(IKBD_Keyboard[KEY_4] && renderingType!=4)
 	{
 		renderingDepth = TERRAINDEPTH;
-		debugValue = 4;
+		renderingType = 4;
 		calculationDepthDivider = 2;
 		calculationDepthStep = 4;
 		renderingDepthStep = 1;
 		ClearScreen();
 		//DrawBitmap8b(bitmap1, &bitmapHeader1);
 	}
-	if(IKBD_Keyboard[KEY_5] && debugValue!=5)
+	if(IKBD_Keyboard[KEY_5] && renderingType!=5)
 	{
 		renderingDepth = TERRAINDEPTH;
-		debugValue = 5;
+		renderingType = 5;
 		calculationDepthDivider = 2;
 		calculationDepthStep = 4;
 		renderingDepthStep = 1;
 		ClearScreen();
 		//DrawBitmap8b(bitmap1, &bitmapHeader1);
 	}
-	if(IKBD_Keyboard[KEY_6] && debugValue!=6)
+	if(IKBD_Keyboard[KEY_6] && renderingType!=6)
 	{
 		renderingDepth = TERRAINDEPTH;
-		debugValue = 6;
+		renderingType = 6;
 		calculationDepthDivider = 2;
 		calculationDepthStep = 4;
 		renderingDepthStep = 1;
 		ClearScreen();
 		//DrawBitmap8b(bitmap1, &bitmapHeader1);
 	}
-	if(IKBD_Keyboard[KEY_7] && debugValue!=7)
+	if(IKBD_Keyboard[KEY_7] && renderingType!=7)
 	{
 		renderingDepth = TERRAINDEPTH;
-		debugValue = 7;
+		renderingType = 7;
 		calculationDepthDivider = 2;
 		calculationDepthStep = 2;
 		renderingDepthStep = 1;
 		ClearScreen();
 		//DrawBitmap8b(bitmap1, &bitmapHeader1);
 	}
-	if (IKBD_Keyboard[KEY_8] && debugValue!=8 )
+	if (IKBD_Keyboard[KEY_8] && renderingType!=8 )
 	{
 		renderingDepth = TERRAINDEPTH;
-		debugValue = 8;
+		renderingType = 8;
 		calculationDepthDivider = 2;
 		calculationDepthStep = 2;
 		renderingDepthStep = 1;

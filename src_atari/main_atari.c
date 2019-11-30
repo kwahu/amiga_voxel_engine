@@ -78,7 +78,7 @@ void Recalculate()
 void SetDefaulResolution()
 {
 		renderingDepth = TERRAINDEPTH;
-		//debugValue = 8;
+		//renderingType = 8;
 		calculationDepthDivider = 2;
 		calculationDepthStep = 2;
 		renderingDepthStep = 1;
@@ -280,12 +280,12 @@ void main_supervisor()
 	{
 		if (IKBD_Keyboard[KEY_1])
 		{
-			debugValue = 4;
+			renderingType = 4;
 			hardwareSelection = 1;
 		}
 		if (IKBD_Keyboard[KEY_2]) 
 		{
-			debugValue = 8;
+			renderingType = 8;
 			hardwareSelection = 2;
 		}
 	}

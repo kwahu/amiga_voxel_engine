@@ -263,8 +263,7 @@ void DrawBitmap8b(unsigned char *bLogo, BITMAPINFOHEADER *bhLogo)
 		for (ULONG x = 0; x < bhLogo->biWidth / 16; x++)
 		{
 			xx = x * 16;
-			//if(yy%3 == 1) xx += debugValue8;
-			//if(yy%3 == 0) xx += debugValue9;
+
 
 			b1 = bLogo[xx + yy];
 			b2 = bLogo[xx + 1 + yy];

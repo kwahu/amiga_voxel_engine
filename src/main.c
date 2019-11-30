@@ -499,7 +499,7 @@ void engineGsCreate(void)
 		if (keyCheck(KEY_1))
 		{
 			renderingDepth = 16;
-			debugValue = 1;
+			renderingType = 1;
 			calculationDepthDivider = 2;
 			calculationDepthStep = 4;
 			renderingDepthStep = 2;
@@ -512,7 +512,7 @@ void engineGsCreate(void)
 		if (keyCheck(KEY_2)) //A1200
 		{
 			renderingDepth = 32;
-			debugValue = 4;
+			renderingType = 4;
 			calculationDepthDivider = 2;
 			calculationDepthStep = 2;
 			renderingDepthStep = 2;
@@ -525,7 +525,7 @@ void engineGsCreate(void)
 		if (keyCheck(KEY_3)) //A3000
 		{
 			renderingDepth = 64;
-			debugValue = 6;
+			renderingType = 6;
 			calculationDepthDivider = 2;
 			calculationDepthStep = 2;
 			renderingDepthStep = 1;
@@ -1086,7 +1086,7 @@ void engineGsDestroy(void)
 }
 
 /*
-if(debugValue == 9)
+if(renderingType == 9)
 {
 	 systemSetDma(DMAB_RASTER, 0);
 	 systemSetDma(DMAB_DISK, 0);
