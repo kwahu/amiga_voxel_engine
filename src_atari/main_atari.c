@@ -22,7 +22,8 @@
 #include "../src/bitmap_filters.c"
 #include "../src/setup_maps.c"
 #include "../src/dithering.c"
-#include "ray_casting_atari.c"
+#include "ray_casting_atari_st.c"
+#include "ray_casting_atari_falcon.c"
 #include "draw_screen_atari.c"
 #include "rendering_quality_atari.c"
 #include "../src/map_streaming.c"
@@ -75,7 +76,7 @@ void Recalculate()
 void SetDefaulResolution()
 {
 		renderingDepth = TERRAINDEPTH;
-		debugValue = 8;
+		//debugValue = 8;
 		debugValue2 = 2;
 		debugValue3 = 2;
 		debugValue4 = 1;
@@ -236,6 +237,7 @@ void animateIntro()
 
 WORD app_handle;
 WORD *wcell, *hcell, *wbox, *hbox;
+UBYTE hardwareSelection = 0;
 
 void readPalette(uint16_t *systemPalette)
 {
@@ -262,6 +264,29 @@ void main_supervisor()
 	Setpalette(systemPalette);
     framebuffer_open();
     VsetMode(0x80|2|0x20);
+	IKBD_Install();
+
+	//*************************************** SELECT HARDWARE
+	printf("KEY 1 ATARI ST     KEY 2 ATARI FALCON / TT\r\n");
+	printf("Change quality at any time KEYS 1-8\r\n");
+	while(hardwareSelection == 0)
+	{
+		if (IKBD_Keyboard[KEY_1])
+		{
+			debugValue = 4;
+			hardwareSelection = 1;
+		}
+		if (IKBD_Keyboard[KEY_2]) 
+		{
+			debugValue = 8;
+			hardwareSelection = 2;
+		}
+	}
+	//*************************************** SELECT HARDWARE
+
+
+
+
     bitmap1 = LoadBitmapFile("data/logo1.bmp",&bitmapHeader1, bitmapPalette1);
 	bitmap4 = LoadBitmapFile("data/menu1.bmp", &bitmapHeader4, bitmapPalette4);
 	
@@ -309,7 +334,7 @@ void main_supervisor()
 	uint8_t exitflag = 0;
 	uint8_t idx,joy_id,joy[2];
 
-	IKBD_Install();
+	
 	//IKBD_MouseOff();
 
 	//Setpalette(grayColors);
@@ -326,24 +351,26 @@ void main_supervisor()
 		fadeInStatus[i] = 1;
 		fadeOutStatus[i] = 0;
 	}
+
+	ClearScreen();
     while ( exitflag == 0)
     {
 		getDeltaTime();
-		if(screenIndex > 0)
-		{
-			if(screenDuration > 7000000)
-			{
-				screenDuration = 7000000;
-				screenIndex = (screenIndex + 1) % 4;
-				switchIntroScreen();
-			}
+		// if(screenIndex > 0)
+		// {
+		// 	if(screenDuration > 7000000)
+		// 	{
+		// 		screenDuration = 7000000;
+		// 		screenIndex = (screenIndex + 1) % 4;
+		// 		switchIntroScreen();
+		// 	}
 
-			animateIntro();
+		// 	animateIntro();
 
 
-			screenDuration -= deltaTime;
-		}
-		else
+		// 	screenDuration -= deltaTime;
+		// }
+		// else
 		{
 			
 			ProcessQualityInputAtari();
@@ -356,11 +383,11 @@ void main_supervisor()
 			DrawPixel((160 + (cx / 150)) / 16, YSIZEODD + (cy / 100) + 4, 0);
 			DrawPixel((160 + (cx / 150)) / 16, YSIZEODD + (cy / 100) - 4, 0);
 				
-			printf("%d	%d\r", p1y, (p1y / 256 + 1) % MAPLENGTH);
-			printf("%d\r", points);
+			printf("%ld %ld\r", deltaTime, timerGetPrec());
+			//printf("%d\r", points);
 			fflush(stdout);
 			//IKBD_Flush();
-			Vsync();
+			//Vsync();
 			//IKBD_ReadMouse();
 			if(IKBD_Keyboard[IKBD_KEY_ESC])
 			{
@@ -378,7 +405,7 @@ void main_supervisor()
 			//restart
 			if ((p1h - 3) < (UBYTE)(mapHigh[(UBYTE)(p1x)][(UBYTE)(p1y + 15)]))
 			{
-   				DrawBitmap4b(bitmap4, &bitmapHeader4);
+   				DrawBitmap4bCenter(bitmap4, &bitmapHeader4);
 				for(int i=0;i<16;i++)
 				{
 					bitmapPalette[i] = ((bitmapPalette4[i*4+2]>>5) << 8) +
@@ -402,12 +429,11 @@ void main_supervisor()
 				startTime = timerGetPrec();
 				lastTime = timerGetPrec();
 
-				ULONG screenTime = 3333333;
-				while (screenTime <= 3333333)
+				ULONG screenTime = 0;
+				while (screenTime < 1000)
 				{
-					startTime = timerGetPrec();
-					screenTime -= startTime - lastTime;
-					lastTime = startTime;
+					getDeltaTime();
+					screenTime += deltaTime;
 				} 
 
 
@@ -417,7 +443,7 @@ void main_supervisor()
 					bitmapPalette[i] = ((palettePalette[i*4+2]>>5) << 8) +
 					((palettePalette[i*4+1]>>5) << 4) + (palettePalette[i*4+0]>>5);
 				}
-
+				ClearScreen();
 				Setpalette(bitmapPalette);
 
 			}

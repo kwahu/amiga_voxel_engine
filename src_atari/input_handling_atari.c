@@ -14,7 +14,8 @@ void ProcessQualityInputAtari()
 		debugValue2 = 2;
 		debugValue3 = 4;
 		debugValue4 = 1;
-		DrawBitmap8b(bitmap1, &bitmapHeader1);
+		ClearScreen();
+		//DrawBitmap8b(bitmap1, &bitmapHeader1);
 	}
 	if(IKBD_Keyboard[KEY_2] && debugValue!=2)
 	{
@@ -23,7 +24,8 @@ void ProcessQualityInputAtari()
 		debugValue2 = 2;
 		debugValue3 = 4;
 		debugValue4 = 1;
-		DrawBitmap8b(bitmap1, &bitmapHeader1);
+		ClearScreen();
+		//DrawBitmap8b(bitmap1, &bitmapHeader1);
 	}
 	if(IKBD_Keyboard[KEY_3] && debugValue!=3)
 	{
@@ -32,7 +34,8 @@ void ProcessQualityInputAtari()
 		debugValue2 = 2;
 		debugValue3 = 4;
 		debugValue4 = 1;
-		DrawBitmap8b(bitmap1, &bitmapHeader1);
+		ClearScreen();
+		//DrawBitmap8b(bitmap1, &bitmapHeader1);
 	}
 	if(IKBD_Keyboard[KEY_4] && debugValue!=4)
 	{
@@ -41,7 +44,8 @@ void ProcessQualityInputAtari()
 		debugValue2 = 2;
 		debugValue3 = 4;
 		debugValue4 = 1;
-		DrawBitmap8b(bitmap1, &bitmapHeader1);
+		ClearScreen();
+		//DrawBitmap8b(bitmap1, &bitmapHeader1);
 	}
 	if(IKBD_Keyboard[KEY_5] && debugValue!=5)
 	{
@@ -50,7 +54,8 @@ void ProcessQualityInputAtari()
 		debugValue2 = 2;
 		debugValue3 = 4;
 		debugValue4 = 1;
-		DrawBitmap8b(bitmap1, &bitmapHeader1);
+		ClearScreen();
+		//DrawBitmap8b(bitmap1, &bitmapHeader1);
 	}
 	if(IKBD_Keyboard[KEY_6] && debugValue!=6)
 	{
@@ -59,7 +64,8 @@ void ProcessQualityInputAtari()
 		debugValue2 = 2;
 		debugValue3 = 4;
 		debugValue4 = 1;
-		DrawBitmap8b(bitmap1, &bitmapHeader1);
+		ClearScreen();
+		//DrawBitmap8b(bitmap1, &bitmapHeader1);
 	}
 	if(IKBD_Keyboard[KEY_7] && debugValue!=7)
 	{
@@ -68,7 +74,8 @@ void ProcessQualityInputAtari()
 		debugValue2 = 2;
 		debugValue3 = 2;
 		debugValue4 = 1;
-		DrawBitmap8b(bitmap1, &bitmapHeader1);
+		ClearScreen();
+		//DrawBitmap8b(bitmap1, &bitmapHeader1);
 	}
 	if (IKBD_Keyboard[KEY_8] && debugValue!=8 )
 	{
@@ -97,10 +104,10 @@ void ProcessPlayerInputAtari()
 		if(keyCheck(KEY_CONTROL))p1hf-=deltaTime/10000*3;*/
 
 		//int denom = 1000;
-		int denom = 666;
+		int denom = 1;//666;
 
-		if((IKBD_STICK1 & IKBD_JOY_RIGHT) || IKBD_Keyboard[KEY_RIGHT]) {	cx+=deltaTime/40; }
- 		else if((IKBD_STICK1 & IKBD_JOY_LEFT) || IKBD_Keyboard[KEY_LEFT]) {		cx-=deltaTime/40; }
+		if((IKBD_STICK1 & IKBD_JOY_RIGHT) || IKBD_Keyboard[KEY_RIGHT]) {	cx+=deltaTime; }
+ 		else if((IKBD_STICK1 & IKBD_JOY_LEFT) || IKBD_Keyboard[KEY_LEFT]) {		cx-=deltaTime; }
 		else if(cx!=0) {cx = cx - cx/((LONG)(deltaTime)/denom);}
 
 		if(cx > 0x4000) cx = 0x4000;
@@ -109,8 +116,8 @@ void ProcessPlayerInputAtari()
 		if(cy > 0x2000) cy = 0x2000;
 		else if(cy < -0x2000) cy = -0x2000;
 
- 		if((IKBD_STICK1 & IKBD_JOY_DOWN) || IKBD_Keyboard[KEY_DOWN]) {		cy+=deltaTime/40; }
- 		else if((IKBD_STICK1 & IKBD_JOY_UP) || IKBD_Keyboard[KEY_UP]) {			cy-=deltaTime/40; }
+ 		if((IKBD_STICK1 & IKBD_JOY_DOWN) || IKBD_Keyboard[KEY_DOWN]) {		cy+=deltaTime; }
+ 		else if((IKBD_STICK1 & IKBD_JOY_UP) || IKBD_Keyboard[KEY_UP]) {			cy-=deltaTime; }
 		else if(cy!=0) {cy = cy - cy/((LONG)(deltaTime)/denom);}
 
 		ULONG lowerDelta = (deltaTime/(denom*10));
@@ -128,16 +135,16 @@ void ProcessPlayerInputAtari()
 
 
 
-		p1xf += (LONG)lowerDelta * cx/2000;
-		p1hf -= (LONG)lowerDelta * cy/1000;
+		p1xf += (LONG)lowerDelta * cx/50;
+		p1hf -= (LONG)lowerDelta * cy/20;
 
 		if(p1hf > 7000) p1hf = 7000;//block going above hills
 		if(p1hf<100) p1hf = 100;//block going below ground
 
 		//p1yf+=deltaTime/4000;//(800 + (p1hf - (UBYTE)(mapHigh[p1xf/32][p1yf/32])*32 ) );
 
-		xOffsetOdd = cx/300;
-		xOffsetEven = cx/450;
+		xOffsetOdd = cx/30;
+		xOffsetEven = cx/45;
 
 
 	p1y = p1yf/32;
