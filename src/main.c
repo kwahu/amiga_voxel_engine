@@ -735,7 +735,7 @@ void engineGsLoop(void)
 
 							free(bitmap1);
 							systemUse();
-							bitmap1 = LoadBitmapFile("data/menu2.bmp", &bitmapHeader1, bitmapPalette1);
+							bitmap1 = LoadBitmapFile("data/message.bmp", &bitmapHeader1, bitmapPalette1);
 							systemUnuse();
 							ClearBuffor();
 							DrawBitmap4bCenter(bitmap1, &bitmapHeader1);
