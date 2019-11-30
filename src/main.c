@@ -126,7 +126,7 @@ void switchIntroScreen()
 
 void animateIntro()
 {
-	if(screenDuration < 9600000 && !fadeInStatus[3])
+	if(screenDuration < 7400000 && !fadeInStatus[3])
 	{
 		for (int i = 0; i < 16; i++)
 		{
@@ -137,7 +137,7 @@ void animateIntro()
 		viewLoad(s_pView);
 		fadeInStatus[3] = 1;
 	}
-	if(screenDuration < 9200000 && !fadeInStatus[2])
+	if(screenDuration < 7300000 && !fadeInStatus[2])
 	{
 		for (int i = 0; i < 16; i++)
 		{
@@ -148,7 +148,7 @@ void animateIntro()
 		viewLoad(s_pView);
 		fadeInStatus[2] = 1;
 	}
-	if(screenDuration < 8800000 && !fadeInStatus[1])
+	if(screenDuration < 7200000 && !fadeInStatus[1])
 	{
 		for (int i = 0; i < 16; i++)
 		{
@@ -159,7 +159,7 @@ void animateIntro()
 		viewLoad(s_pView);
 		fadeInStatus[1] = 1;
 	}
-	if(screenDuration < 8400000 && !fadeInStatus[0])
+	if(screenDuration < 7100000 && !fadeInStatus[0])
 	{
 		for (int i = 0; i < 16; i++)
 		{
@@ -171,7 +171,7 @@ void animateIntro()
 		fadeInStatus[0] = 1;
 	}
 
-	if(screenDuration < 1600000 && !fadeOutStatus[0])
+	if(screenDuration < 400000 && !fadeOutStatus[0])
 	{
 		for (int i = 0; i < 16; i++)
 		{
@@ -182,7 +182,7 @@ void animateIntro()
 		viewLoad(s_pView);
 		fadeOutStatus[0] = 1;
 	}
-	if(screenDuration < 1200000 && !fadeOutStatus[1])
+	if(screenDuration < 300000 && !fadeOutStatus[1])
 	{
 		for (int i = 0; i < 16; i++)
 		{
@@ -193,7 +193,7 @@ void animateIntro()
 		viewLoad(s_pView);
 		fadeOutStatus[1] = 1;
 	}
-	if(screenDuration < 800000 && !fadeOutStatus[2])
+	if(screenDuration < 200000 && !fadeOutStatus[2])
 	{
 		for (int i = 0; i < 16; i++)
 		{
@@ -204,7 +204,7 @@ void animateIntro()
 		viewLoad(s_pView);
 		fadeOutStatus[2] = 1;
 	}
-	if(screenDuration < 400000 && !fadeOutStatus[3])
+	if(screenDuration < 100000 && !fadeOutStatus[3])
 	{
 		for (int i = 0; i < 16; i++)
 		{
@@ -544,7 +544,7 @@ void engineGsCreate(void)
 	CopyFastToChipW(s_pBuffer->pBack);
 
 	lastTime = timerGetPrec();
-	screenDuration = 10000000;
+	screenDuration = 7500000;
 
 
 
@@ -564,9 +564,9 @@ void engineGsLoop(void)
 	if (screenIndex > 0)   //turned off
 	{
 		levelTime = 0;
-		if(screenDuration > 10000000)
+		if(screenDuration > 7500000)
 		{
-			screenDuration = 10000000;
+			screenDuration = 7500000;
 			screenIndex = (screenIndex + 1) % 4;
 			switchIntroScreen();
 		}
@@ -827,13 +827,87 @@ void engineGsLoop(void)
 			viewLoad(s_pView);
 			vPortWaitForEnd(s_pVPort);
 			CopyFastToChipW(s_pBuffer->pBack);
-			pBitmapInfo[0] = fontCreateTextBitMapFromStr(s_pMenuFont, "You are dead!");
-			pBitmapInfo[1] = fontCreateTextBitMapFromStr(s_pMenuFont, "The Revolt won't have any use of");
-			pBitmapInfo[2] = fontCreateTextBitMapFromStr(s_pMenuFont, "you in this state!");
-			fontDrawTextBitMap(s_pBuffer->pBack, pBitmapInfo[0], 100, 70, 4, FONT_LEFT|FONT_COOKIE);
-			fontDrawTextBitMap(s_pBuffer->pBack, pBitmapInfo[1], 100, 76, 4, FONT_LEFT|FONT_COOKIE);
-			fontDrawTextBitMap(s_pBuffer->pBack, pBitmapInfo[2], 100, 82, 4, FONT_LEFT|FONT_COOKIE);
-											
+
+			UBYTE lines = 0;
+
+			if(levelTime & 1)
+			{
+				pBitmapInfo[0] = fontCreateTextBitMapFromStr(s_pMenuFont, "You are dead!");
+				pBitmapInfo[1] = fontCreateTextBitMapFromStr(s_pMenuFont, "The Revolt won't have any use of");
+				pBitmapInfo[2] = fontCreateTextBitMapFromStr(s_pMenuFont, "you in this state!");
+				lines = 3;
+			}
+			else
+			{
+				switch((levelTime >> 1) % 10)
+				{
+					case 0:
+					{
+						pBitmapInfo[0] = fontCreateTextBitMapFromStr(s_pMenuFont, "Whoops");
+						pBitmapInfo[1] = fontCreateTextBitMapFromStr(s_pMenuFont, "This had to hurt");
+						lines = 2;
+				
+					} break;
+					case 1:
+					{
+						pBitmapInfo[0] = fontCreateTextBitMapFromStr(s_pMenuFont, "Maybe piloting the aircraft");
+						pBitmapInfo[1] = fontCreateTextBitMapFromStr(s_pMenuFont, "wasn't your strongest trait");
+						lines = 2;
+					} break;
+					case 2:
+					{
+						pBitmapInfo[0] = fontCreateTextBitMapFromStr(s_pMenuFont, "Hope you had your");
+						pBitmapInfo[1] = fontCreateTextBitMapFromStr(s_pMenuFont, "seatbelts fastened");
+						lines = 2;
+					} break;
+					case 3:
+					{
+						pBitmapInfo[0] = fontCreateTextBitMapFromStr(s_pMenuFont, "You died.");
+						pBitmapInfo[1] = fontCreateTextBitMapFromStr(s_pMenuFont, "But don't worry, your problems");
+						pBitmapInfo[2] = fontCreateTextBitMapFromStr(s_pMenuFont, "are over, forever");
+						lines = 3;
+					} break;
+					case 4:
+					{
+						pBitmapInfo[0] = fontCreateTextBitMapFromStr(s_pMenuFont, "Who taught you to fly?");
+						lines = 1;
+					} break;
+					case 5:
+					{
+						pBitmapInfo[0] = fontCreateTextBitMapFromStr(s_pMenuFont, "Here lies Nix.");
+						pBitmapInfo[1] = fontCreateTextBitMapFromStr(s_pMenuFont, "Good friend, but a terrible pilot");
+						lines = 2;
+					} break;
+					case 6:
+					{
+						pBitmapInfo[0] = fontCreateTextBitMapFromStr(s_pMenuFont, "Tis but a scratch!");
+						lines = 1;
+					} break;
+					case 7:
+					{
+						pBitmapInfo[0] = fontCreateTextBitMapFromStr(s_pMenuFont, "Wasted!");
+						lines = 1;
+					} break;
+					case 8:
+					{
+						pBitmapInfo[0] = fontCreateTextBitMapFromStr(s_pMenuFont, "This is the best you can do?");
+						pBitmapInfo[1] = fontCreateTextBitMapFromStr(s_pMenuFont, "I've seen better");
+						lines = 2;
+					} break;
+					case 9:
+					{
+						pBitmapInfo[0] = fontCreateTextBitMapFromStr(s_pMenuFont, "Rest in peace, Nix");
+						lines = 1;
+					} break;
+				}
+			}
+			
+			UBYTE y = 70;
+			for(int i = 0; i < lines; ++i)
+			{	
+				fontDrawTextBitMap(s_pBuffer->pBack, pBitmapInfo[i], 100, y, 4, FONT_LEFT|FONT_COOKIE);
+				y += 6;
+			}
 			joyProcess();
 			//wait 2 seconds
 			while(!joyCheck(JOY1_FIRE))
@@ -858,7 +932,7 @@ void engineGsLoop(void)
 			CopyMapWord(mapSource[0], mapHigh);
 			lastTime = timerGetPrec();
 			
-			for(int i = 0; i < 3; ++i)
+			for(int i = 0; i < lines; ++i)
 			{
 				fontDestroyTextBitMap(pBitmapInfo[i]);
 			}
