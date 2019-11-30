@@ -40,6 +40,8 @@
 uint16_t *physBase;
 uint16_t *logBase;
 
+UWORD crossHairX, crossHairY;
+
 void framebuffer_open() {
     physBase=Physbase();
     logBase=Logbase();//physBase-0x4000;
@@ -379,73 +381,73 @@ void main_supervisor()
 		// else
 		{
 			
-			if(infoScreen == 0)
-			{
-				UBYTE infoIndex = 0;
-				UBYTE FireDown = 0;
+			// if(infoScreen == 0)
+			// {
+			// 	UBYTE infoIndex = 0;
+			// 	UBYTE FireDown = 0;
 
-				while(!infoScreen)
-				{
-					if(IKBD_Keyboard[KEY_DOWN] && !FireDown)
-					{
-						infoIndex += 1;
+			// 	while(!infoScreen)
+			// 	{
+			// 		if(IKBD_Keyboard[KEY_DOWN] && !FireDown)
+			// 		{
+			// 			infoIndex += 1;
 						
-						switch(infoIndex)
-						{
-							case 1:
-							{
+			// 			switch(infoIndex)
+			// 			{
+			// 				case 1:
+			// 				{
 										
-								ClearScreen();
-								DrawBitmap4bCenter(bitmap1, &bitmapHeader1);
+			// 					ClearScreen();
+			// 					DrawBitmap4bCenter(bitmap1, &bitmapHeader1);
 								
-								FireDown = 1;
-							} break;
-							case 2:
-							{
+			// 					FireDown = 1;
+			// 				} break;
+			// 				case 2:
+			// 				{
 									
-								ClearScreen();
-								DrawBitmap4bCenter(bitmap1, &bitmapHeader1);
+			// 					ClearScreen();
+			// 					DrawBitmap4bCenter(bitmap1, &bitmapHeader1);
 								
-								FireDown = 1;
-							} break;
-							case 3:
-							{
-								bitmap1 = LoadBitmapFile("data/menu2.bmp", &bitmapHeader1, bitmapPalette1);
+			// 					FireDown = 1;
+			// 				} break;
+			// 				case 3:
+			// 				{
+			// 					bitmap1 = LoadBitmapFile("data/menu2.bmp", &bitmapHeader1, bitmapPalette1);
 										
-								ClearScreen();
-								DrawBitmap4bCenter(bitmap1, &bitmapHeader1);
-								for (int i = 0; i < 16; i++)
-								{
-									bitmapPalette[i] = ((bitmapPalette1[i * 4 + 2] >> 5) << 8) +
-														((bitmapPalette1[i * 4 + 1] >> 5) << 4) + (bitmapPalette1[i * 4 + 0] >> 5);
-								}
-								Setpalette(bitmapPalette);
+			// 					ClearScreen();
+			// 					DrawBitmap4bCenter(bitmap1, &bitmapHeader1);
+			// 					for (int i = 0; i < 16; i++)
+			// 					{
+			// 						bitmapPalette[i] = ((bitmapPalette1[i * 4 + 2] >> 5) << 8) +
+			// 											((bitmapPalette1[i * 4 + 1] >> 5) << 4) + (bitmapPalette1[i * 4 + 0] >> 5);
+			// 					}
+			// 					Setpalette(bitmapPalette);
 
-								FireDown = 1;
+			// 					FireDown = 1;
 
-							} break;
-							case 4:
-							{
-								ClearScreen();
-								for (int i = 0; i < 16; i++)
-								{
-									bitmapPalette[i] = ((palettePalette[i * 4 + 2] >> 5) << 8) +
-														((palettePalette[i * 4 + 1] >> 5) << 4) + (palettePalette[i * 4 + 0] >> 5);
-								}
-								Setpalette(bitmapPalette);
-								infoScreen = 1;
-								lastTime = timerGetPrec();
-								startTime = timerGetPrec();
-								deltaTime = 0;
-							} break;
-						}
-					}
-					else if(FireDown && !IKBD_Keyboard[KEY_DOWN])
-					{
-						FireDown = 0;
-					}
-				}
-			}
+			// 				} break;
+			// 				case 4:
+			// 				{
+			// 					ClearScreen();
+			// 					for (int i = 0; i < 16; i++)
+			// 					{
+			// 						bitmapPalette[i] = ((palettePalette[i * 4 + 2] >> 5) << 8) +
+			// 											((palettePalette[i * 4 + 1] >> 5) << 4) + (palettePalette[i * 4 + 0] >> 5);
+			// 					}
+			// 					Setpalette(bitmapPalette);
+			// 					infoScreen = 1;
+			// 					lastTime = timerGetPrec();
+			// 					startTime = timerGetPrec();
+			// 					deltaTime = 0;
+			// 				} break;
+			// 			}
+			// 		}
+			// 		else if(FireDown && !IKBD_Keyboard[KEY_DOWN])
+			// 		{
+			// 			FireDown = 0;
+			// 		}
+			// 	}
+			// }
 
 			ProcessQualityInputAtari();
 			ProcessPlayerInputAtari();
@@ -454,8 +456,11 @@ void main_supervisor()
 			RenderQuality();
 
 			//draw crosshair
-			DrawPixel((160 + (cx / 150)) / 16, YSIZEODD + (cy / 100) + 4, 0);
-			DrawPixel((160 + (cx / 150)) / 16, YSIZEODD + (cy / 100) - 4, 0);
+			//draw only even lines 
+			crossHairX = ( (160 + (cx / 10)) / 16 )/2;
+			crossHairY = ( YSIZEODD*2 + (cy / 5) )/2;
+			DrawPixel( crossHairX*2, crossHairY*2 + 4, 0);
+			DrawPixel( crossHairX*2, crossHairY*2 - 4, 0);
 				
 			printf("%d	%d\r", p1y, (p1y / 256 + 1) % MAPLENGTH);
 			printf("%d  %d\r", points, velocity);
@@ -501,7 +506,7 @@ void main_supervisor()
 				levelTime = 0;
 
 
-				while(!IKBD_Keyboard[KEY_DOWN])
+				while(!IKBD_STICK1 & IKBD_JOY_FIRE)
 				{
 
 				}

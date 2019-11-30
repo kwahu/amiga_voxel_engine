@@ -12,9 +12,9 @@
 #define XSIZEODD 120 + XTURNBUFFOR * 2
 #define XSIZEEVEN 80 + XTURNBUFFOR * 2
 
-#define XTURNBUFFOR 40
+#define XTURNBUFFOR 55
 
-#define YSIZEODD 90
+#define YSIZEODD 40
 #define YSIZEEVEN YSIZEODD / 2
 
 WORD rayCastXOdd[XSIZEODD][TERRAINDEPTH]; //51k
@@ -27,3 +27,5 @@ UBYTE renderingDepth = TERRAINDEPTH;
 
 //ATARI
 uint16_t *planes;
+
+UBYTE skyColor = 33;
