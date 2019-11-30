@@ -123,10 +123,15 @@ void switchIntroScreen()
 	break;
 	case 0:
 	{
+		bitmap1 = LoadBitmapFile("data/menu1.bmp", &bitmapHeader1, bitmapPalette1);
+		
+		ClearScreen();
+		DrawBitmap4bCenter(bitmap1, &bitmapHeader1);
+		
 		for (int i = 0; i < 16; i++)
 		{
-			bitmapPalette[i] = ((palettePalette[i * 4 + 2] >> 5) << 8) +
-								((palettePalette[i * 4 + 1] >> 5) << 4) + (palettePalette[i * 4 + 0] >> 5);
+			bitmapPalette[i] = ((bitmapPalette1[i * 4 + 2] >> 5) << 8) +
+								((bitmapPalette1[i * 4 + 1] >> 5) << 4) + (bitmapPalette1[i * 4 + 0] >> 5);
 		}
 		Setpalette(bitmapPalette);
 	}
@@ -288,7 +293,6 @@ void main_supervisor()
 
 
     bitmap1 = LoadBitmapFile("data/logo1.bmp",&bitmapHeader1, bitmapPalette1);
-	bitmap4 = LoadBitmapFile("data/menu1.bmp", &bitmapHeader4, bitmapPalette4);
 	
 	planes = framebuffer_get_pointer();
    
@@ -355,6 +359,8 @@ void main_supervisor()
 	ClearScreen();
     while ( exitflag == 0)
     {
+
+
 		getDeltaTime();
 		// if(screenIndex > 0)
 		// {
@@ -373,6 +379,74 @@ void main_supervisor()
 		// else
 		{
 			
+			if(infoScreen == 0)
+			{
+				UBYTE infoIndex = 0;
+				UBYTE FireDown = 0;
+
+				while(!infoScreen)
+				{
+					if(IKBD_Keyboard[KEY_DOWN] && !FireDown)
+					{
+						infoIndex += 1;
+						
+						switch(infoIndex)
+						{
+							case 1:
+							{
+										
+								ClearScreen();
+								DrawBitmap4bCenter(bitmap1, &bitmapHeader1);
+								
+								FireDown = 1;
+							} break;
+							case 2:
+							{
+									
+								ClearScreen();
+								DrawBitmap4bCenter(bitmap1, &bitmapHeader1);
+								
+								FireDown = 1;
+							} break;
+							case 3:
+							{
+								bitmap1 = LoadBitmapFile("data/menu2.bmp", &bitmapHeader1, bitmapPalette1);
+										
+								ClearScreen();
+								DrawBitmap4bCenter(bitmap1, &bitmapHeader1);
+								for (int i = 0; i < 16; i++)
+								{
+									bitmapPalette[i] = ((bitmapPalette1[i * 4 + 2] >> 5) << 8) +
+														((bitmapPalette1[i * 4 + 1] >> 5) << 4) + (bitmapPalette1[i * 4 + 0] >> 5);
+								}
+								Setpalette(bitmapPalette);
+
+								FireDown = 1;
+
+							} break;
+							case 4:
+							{
+								ClearScreen();
+								for (int i = 0; i < 16; i++)
+								{
+									bitmapPalette[i] = ((palettePalette[i * 4 + 2] >> 5) << 8) +
+														((palettePalette[i * 4 + 1] >> 5) << 4) + (palettePalette[i * 4 + 0] >> 5);
+								}
+								Setpalette(bitmapPalette);
+								infoScreen = 1;
+								lastTime = timerGetPrec();
+								startTime = timerGetPrec();
+								deltaTime = 0;
+							} break;
+						}
+					}
+					else if(FireDown && !IKBD_Keyboard[KEY_DOWN])
+					{
+						FireDown = 0;
+					}
+				}
+			}
+
 			ProcessQualityInputAtari();
 			ProcessPlayerInputAtari();
 			OverwriteMap();
@@ -383,8 +457,8 @@ void main_supervisor()
 			DrawPixel((160 + (cx / 150)) / 16, YSIZEODD + (cy / 100) + 4, 0);
 			DrawPixel((160 + (cx / 150)) / 16, YSIZEODD + (cy / 100) - 4, 0);
 				
-			printf("%ld %ld\r", deltaTime, timerGetPrec());
-			//printf("%d\r", points);
+			printf("%d	%d\r", p1y, (p1y / 256 + 1) % MAPLENGTH);
+			printf("%d  %d\r", points, velocity);
 			fflush(stdout);
 			//IKBD_Flush();
 			//Vsync();
@@ -405,11 +479,11 @@ void main_supervisor()
 			//restart
 			if ((p1h - 3) < (UBYTE)(mapHigh[(UBYTE)(p1x)][(UBYTE)(p1y + 15)]))
 			{
-   				DrawBitmap4bCenter(bitmap4, &bitmapHeader4);
+   				DrawBitmap4bCenter(bitmap1, &bitmapHeader1);
 				for(int i=0;i<16;i++)
 				{
-					bitmapPalette[i] = ((bitmapPalette4[i*4+2]>>5) << 8) +
-					((bitmapPalette4[i*4+1]>>5) << 4) + (bitmapPalette4[i*4+0]>>5);
+					bitmapPalette[i] = ((bitmapPalette1[i*4+2]>>5) << 8) +
+					((bitmapPalette1[i*4+1]>>5) << 4) + (bitmapPalette1[i*4+0]>>5);
 				}
 
 				Setpalette(bitmapPalette);
@@ -426,15 +500,12 @@ void main_supervisor()
 				cy = 0;
 				levelTime = 0;
 
-				startTime = timerGetPrec();
-				lastTime = timerGetPrec();
 
-				ULONG screenTime = 0;
-				while (screenTime < 1000)
+				while(!IKBD_Keyboard[KEY_DOWN])
 				{
-					getDeltaTime();
-					screenTime += deltaTime;
-				} 
+
+				}
+				lastTime = timerGetPrec();
 
 
 
