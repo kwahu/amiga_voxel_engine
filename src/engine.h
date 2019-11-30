@@ -17,7 +17,7 @@ UBYTE colorMap[MAPSIZE][MAPSIZE];  //16k
 
 UWORD mapHigh[256][256]; //131k
 
-UWORD mapSource[11][MAPSIZE][MAPSIZE];  //180k
+UWORD mapSource[11][MAPSIZE][MAPSIZE];  //360k
 
 UBYTE mapLoaded0, mapLoaded1, mapLoaded2, mapLoaded3, mapLoaded4, mapLoaded5, mapLoaded6,
     mapLoaded7, mapLoaded8, mapLoaded9, mapLoaded10;
