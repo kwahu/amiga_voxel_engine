@@ -122,7 +122,8 @@ void ProcessPlayerInputAtari()
 
 		ULONG lowerDelta = (deltaTime/(denom*10));
 
-		acceleration = (256 - ((p1h - 3) - (UBYTE)(mapHigh[(UBYTE)(p1x)][(UBYTE)(p1y + 15)]))) - lowerDelta*velocity/32;
+		relativeHeight = ((p1h - 3) - (UBYTE)(mapHigh[(UBYTE)(p1x)][(UBYTE)(p1y + 15)]));
+		acceleration = lowerDelta*((256 - relativeHeight) - velocity/4);
 		LONG addedpoints = (lowerDelta)*(128 - ((p1h - 3) - (UBYTE)(mapHigh[(UBYTE)(p1x)][(UBYTE)(p1y + 15)])));
 		if(addedpoints > 0)
 		{
