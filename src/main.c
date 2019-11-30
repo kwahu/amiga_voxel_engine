@@ -506,11 +506,11 @@ void engineGsCreate(void)
 	{
 		if (keyCheck(KEY_1))
 		{
-			renderingDepth = TERRAINDEPTH;
+			renderingDepth = 16;
 			debugValue = 8;
 			debugValue2 = 2;
 			debugValue3 = 2;
-			debugValue4 = 1;
+			debugValue4 = 4;
 
 			debugValue6 = 4;
 			xFOV = 10;
@@ -519,14 +519,14 @@ void engineGsCreate(void)
 		}
 		if (keyCheck(KEY_2)) //A1200
 		{
-			renderingDepth = 16;
-			debugValue = 2;
-			debugValue2 = 1;
-			debugValue3 = 10;
+			renderingDepth = 32;
+			debugValue = 4;
+			debugValue2 = 2;
+			debugValue3 = 2;
 			debugValue4 = 2;
 
-						debugValue6 = 4;
-			xFOV = 10;
+			debugValue6 = 4;
+			xFOV = 20;
 			RecalculateEven();
 			hardwareSelection = 2;
 		}
@@ -570,7 +570,7 @@ void engineGsLoop(void)
 	deltaTime = startTime - lastTime;
 	lastTime = startTime;
 	levelTime += deltaTime;
-	if (screenIndex > 0)
+	if (screenIndex == 0)   //turned off
 	{
 		if(screenDuration > 10000000)
 		{
@@ -585,7 +585,7 @@ void engineGsLoop(void)
 	}
 	else
 	{
-		if(infoScreen == 0)
+		if(infoScreen != 0)  //turned off
 		{
 			UBYTE infoIndex = 0;
 			UBYTE FireDown = 0;
