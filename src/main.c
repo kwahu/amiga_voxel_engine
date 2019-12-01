@@ -230,10 +230,10 @@ void Recalculate()
 	CalculateRayCasts(rayCastXOdd, rayCastYOdd, XSIZEODD, YSIZEODD, 1);
 }
 
-void ConvertIntToChar(int number, char *test)
+void ConvertIntToChar(int number, char *test, int size)
 {
 	int temp;
-	int i = 5;
+	int i = size-2;
 	while (number != 0)
 	{
 		temp = number % 10;
@@ -278,6 +278,7 @@ void ConvertIntToChar(int number, char *test)
 		test[i] = ' ';
 		i--;
 	}
+	test[size-1] = 0;
 }
 
 void ConvertWordToChar(UWORD number, char *test)
@@ -563,6 +564,7 @@ void engineGsLoop(void)
 	logAvgBegin(s_pAvgTime);
 	joyProcess();
 	//	keyProcess();
+	
 	startTime = timerGetPrec();
 	deltaTime = startTime - lastTime;
 	lastTime = startTime;
@@ -580,7 +582,11 @@ void engineGsLoop(void)
 		animateIntro();
 
 		screenDuration -= deltaTime;
-		
+		if (keyCheck(KEY_ESCAPE))
+		{
+			gameClose();
+		}
+			
 	}
 	else
 	{
@@ -737,13 +743,15 @@ void engineGsLoop(void)
 				{
 					FireDown = 0;
 				}
+				
+				if (keyCheck(KEY_ESCAPE))
+				{
+					infoScreen = 1;
+					gameClose();
+				}
 			}
 		}
 
-		if (keyCheck(KEY_ESCAPE))
-		{
-			gameClose();
-		}
 
 
 	//	deltaTime = 0;
@@ -847,11 +855,23 @@ void engineGsLoop(void)
 				y += 6;
 			}
 			joyProcess();
+			UBYTE cont = 0;
 			//wait 2 seconds
-			while(!joyCheck(JOY1_FIRE))
+			while(!cont)
 			{
 
 				joyProcess();
+				if (keyCheck(KEY_ESCAPE))
+				{
+					gameClose();
+					cont = 1;
+				}
+				else if(joyCheck(JOY1_FIRE))
+				{
+					cont = 1;
+				}
+				
+				
 			}
 
 			p1xf = 60 * 100;
@@ -884,97 +904,298 @@ void engineGsLoop(void)
 		}
 		else if(endScreen)
 		{
-			
-			ClearBuffor();
-			for (int i = 0; i < 16; i++)
+			if(points < 1000000)
 			{
-				bitmapPalette[i] = ((bitmapPalette1[i * 4 + 2] >> 4) << 8) +
-									((bitmapPalette1[i * 4 + 1] >> 4) << 4) + (bitmapPalette1[i * 4 + 0] >> 4);
-			}
-			memcpy(s_pVPort->pPalette, bitmapPalette, 16 * sizeof(UWORD));
-			DrawBitmap4bCenter(bitmap1, &bitmapHeader1);
-			viewLoad(s_pView);
-			//vPortWaitForEnd(s_pVPort);
-			CopyFastToChipW(s_pBuffer->pBack);
+				ClearBuffor();
+				for (int i = 0; i < 16; i++)
+				{
+					bitmapPalette[i] = ((bitmapPalette1[i * 4 + 2] >> 4) << 8) +
+										((bitmapPalette1[i * 4 + 1] >> 4) << 4) + (bitmapPalette1[i * 4 + 0] >> 4);
+				}
+				memcpy(s_pVPort->pPalette, bitmapPalette, 16 * sizeof(UWORD));
+				DrawBitmap4bCenter(bitmap1, &bitmapHeader1);
+				viewLoad(s_pView);
+				//vPortWaitForEnd(s_pVPort);
+				CopyFastToChipW(s_pBuffer->pBack);
 
-			UBYTE lines = 0;
+				UBYTE lines = 0;
 
-			
-			switch((levelTime) % 4)
-			{
-				case 0:
-				{
-					pBitmapInfo[0] = fontCreateTextBitMapFromStr(s_pMenuFont, "Is this all you've got?");
-					pBitmapInfo[1] = fontCreateTextBitMapFromStr(s_pMenuFont, "You call yourself a pilot?");
-					lines = 2;
-			
-				} break;
-				case 1:
-				{
-					pBitmapInfo[0] = fontCreateTextBitMapFromStr(s_pMenuFont, "At this speed you wouldn't outrace");
-					pBitmapInfo[1] = fontCreateTextBitMapFromStr(s_pMenuFont, "a cargo ship!");
-					pBitmapInfo[2] = fontCreateTextBitMapFromStr(s_pMenuFont, "Get out and train!");
-					lines = 3;
-				} break;
-				case 2:
-				{
-					pBitmapInfo[0] = fontCreateTextBitMapFromStr(s_pMenuFont, "You wouldn't survive a second");
-					pBitmapInfo[1] = fontCreateTextBitMapFromStr(s_pMenuFont, "as a Carrier!");
-					pBitmapInfo[2] = fontCreateTextBitMapFromStr(s_pMenuFont, "Get lost!");
-					lines = 3;
-				} break;
-				case 3:
-				{
-					pBitmapInfo[0] = fontCreateTextBitMapFromStr(s_pMenuFont, "Well, about time!");
-					pBitmapInfo[1] = fontCreateTextBitMapFromStr(s_pMenuFont, "No stop wasting our time and scram!");
-					lines = 2;
-				} break;
 				
-			}
+				switch((levelTime) % 4)
+				{
+					case 0:
+					{
+						pBitmapInfo[0] = fontCreateTextBitMapFromStr(s_pMenuFont, "Is this all you've got?");
+						pBitmapInfo[1] = fontCreateTextBitMapFromStr(s_pMenuFont, "You call yourself a pilot?");
+						lines = 2;
+				
+					} break;
+					case 1:
+					{
+						pBitmapInfo[0] = fontCreateTextBitMapFromStr(s_pMenuFont, "At this speed you wouldn't outrace");
+						pBitmapInfo[1] = fontCreateTextBitMapFromStr(s_pMenuFont, "a cargo ship!");
+						pBitmapInfo[2] = fontCreateTextBitMapFromStr(s_pMenuFont, "Get out and train!");
+						lines = 3;
+					} break;
+					case 2:
+					{
+						pBitmapInfo[0] = fontCreateTextBitMapFromStr(s_pMenuFont, "You wouldn't survive a second");
+						pBitmapInfo[1] = fontCreateTextBitMapFromStr(s_pMenuFont, "as a Carrier!");
+						pBitmapInfo[2] = fontCreateTextBitMapFromStr(s_pMenuFont, "Get lost!");
+						lines = 3;
+					} break;
+					case 3:
+					{
+						pBitmapInfo[0] = fontCreateTextBitMapFromStr(s_pMenuFont, "Well, about time!");
+						pBitmapInfo[1] = fontCreateTextBitMapFromStr(s_pMenuFont, "No stop wasting our time and scram!");
+						lines = 2;
+					} break;
+					
+				}
 
 
-			UBYTE y = 70;
-			for(int i = 0; i < lines; ++i)
-			{	
-				fontDrawTextBitMap(s_pBuffer->pBack, pBitmapInfo[i], 100, y, 4, FONT_LEFT|FONT_COOKIE);
-				y += 6;
-			}
-			joyProcess();
-			//wait 2 seconds
-			while(!joyCheck(JOY1_FIRE))
-			{
-
+				UBYTE y = 70;
+				for(int i = 0; i < lines; ++i)
+				{	
+					fontDrawTextBitMap(s_pBuffer->pBack, pBitmapInfo[i], 100, y, 4, FONT_LEFT|FONT_COOKIE);
+					y += 6;
+				}
 				joyProcess();
+				UBYTE cont = 0;
+				//wait 2 seconds
+				while(!cont)
+				{
+
+					joyProcess();
+					if (keyCheck(KEY_ESCAPE))
+					{
+						gameClose();
+						cont = 1;
+					}
+					else if(joyCheck(JOY1_FIRE))
+					{
+						cont = 1;
+					}
+					
+					
+				}
+
+				p1xf = 60 * 100;
+				p1yf = 0;
+				p1hf = 20 * 100;
+				
+				velocity = 0;
+				acceleration = 0;
+				points = 0;
+				cx = 0;
+				cy = 0;
+				levelTime = 0;
+				deltaTime = 0;
+				lastOverwrittenLine = 0;
+				velocityDenom = 128;
+				endScreen = 0;
+
+				CopyMapWord(mapSource[0], mapHigh);
+				lastTime = timerGetPrec();
+				
+				for(int i = 0; i < lines; ++i)
+				{
+					fontDestroyTextBitMap(pBitmapInfo[i]);
+				}
+
+				ClearBuffor();
+				SetGamePaletter();
+				viewLoad(s_pView);
+				//vPortWaitForEnd(s_pVPort);
+				CopyFastToChipW(s_pBuffer->pBack);
 			}
-
-			p1xf = 60 * 100;
-			p1yf = 0;
-			p1hf = 20 * 100;
-			
-			velocity = 0;
-			acceleration = 0;
-			points = 0;
-			cx = 0;
-			cy = 0;
-			levelTime = 0;
-			deltaTime = 0;
-			lastOverwrittenLine = 0;
-			velocityDenom = 128;
-			endScreen = 0;
-
-			CopyMapWord(mapSource[0], mapHigh);
-			lastTime = timerGetPrec();
-			
-			for(int i = 0; i < lines; ++i)
+			else
 			{
-				fontDestroyTextBitMap(pBitmapInfo[i]);
-			}
+				free(bitmap1);
+				systemUse();
+				bitmap1 = LoadBitmapFile("data/finish", &bitmapHeader1, bitmapPalette1);
+				systemUnuse();
+				ClearBuffor();
+				DrawBitmap4bCenter(bitmap1, &bitmapHeader1);
+				
+				for (int i = 0; i < 16; i++)
+				{
+					bitmapPalette[i] = ((bitmapPalette1[i * 4 + 2] >> 4) << 8) +
+										((bitmapPalette1[i * 4 + 1] >> 4) << 4) + (bitmapPalette1[i * 4 + 0] >> 4);
+				}
+				memcpy(s_pVPort->pPalette, bitmapPalette, 16 * sizeof(UWORD));
+				
+				viewLoad(s_pView);
+				//vPortWaitForEnd(s_pVPort);
+				CopyFastToChipW(s_pBuffer->pBack);
 
-			ClearBuffor();
-			SetGamePaletter();
-			viewLoad(s_pView);
-			//vPortWaitForEnd(s_pVPort);
-			CopyFastToChipW(s_pBuffer->pBack);
+
+				ClearBuffor();
+				for (int i = 0; i < 16; i++)
+				{
+					bitmapPalette[i] = ((bitmapPalette1[i * 4 + 2] >> 4) << 8) +
+										((bitmapPalette1[i * 4 + 1] >> 4) << 4) + (bitmapPalette1[i * 4 + 0] >> 4);
+				}
+				memcpy(s_pVPort->pPalette, bitmapPalette, 16 * sizeof(UWORD));
+				DrawBitmap4bCenter(bitmap1, &bitmapHeader1);
+				viewLoad(s_pView);
+				//vPortWaitForEnd(s_pVPort);
+				CopyFastToChipW(s_pBuffer->pBack);
+
+				UBYTE lines = 0;
+
+				
+				switch((levelTime) % 12)
+				{
+					case 0:
+					{
+						pBitmapInfo[0] = fontCreateTextBitMapFromStr(s_pMenuFont, "Good job, pilot!");
+						pBitmapInfo[1] = fontCreateTextBitMapFromStr(s_pMenuFont, "You have proven yourself");
+						pBitmapInfo[2] = fontCreateTextBitMapFromStr(s_pMenuFont, "worthy of becoming a Carrier");
+						pBitmapInfo[3] = fontCreateTextBitMapFromStr(s_pMenuFont, "of the Revolt!");
+						lines = 4;
+				
+					} break;
+					case 1:
+					{
+						pBitmapInfo[0] = fontCreateTextBitMapFromStr(s_pMenuFont, "This is what I call flying!");
+						pBitmapInfo[1] = fontCreateTextBitMapFromStr(s_pMenuFont, "Great job!");
+						lines = 2;
+					} break;
+					case 2:
+					{
+						pBitmapInfo[0] = fontCreateTextBitMapFromStr(s_pMenuFont, "You're faster than a");
+						pBitmapInfo[1] = fontCreateTextBitMapFromStr(s_pMenuFont, "swooping Vertiraptor!");
+						lines = 2;
+					} break;
+					case 3:
+					{
+						pBitmapInfo[0] = fontCreateTextBitMapFromStr(s_pMenuFont, "Impressive!");
+						pBitmapInfo[1] = fontCreateTextBitMapFromStr(s_pMenuFont, "You surely know how to handle");
+						pBitmapInfo[2] = fontCreateTextBitMapFromStr(s_pMenuFont, "this baby!");
+						lines = 3;
+					} break;
+					case 4:
+					{
+						pBitmapInfo[0] = fontCreateTextBitMapFromStr(s_pMenuFont, "The Revolt is going to have");
+						pBitmapInfo[1] = fontCreateTextBitMapFromStr(s_pMenuFont, "great use of you, pilot!");
+						pBitmapInfo[2] = fontCreateTextBitMapFromStr(s_pMenuFont, "Welcome aboard!");
+						lines = 3;
+					} break;
+					case 5:
+					{
+						pBitmapInfo[0] = fontCreateTextBitMapFromStr(s_pMenuFont, "Those pilots serving the Reign");
+						pBitmapInfo[1] = fontCreateTextBitMapFromStr(s_pMenuFont, "are no match for you!");
+						pBitmapInfo[2] = fontCreateTextBitMapFromStr(s_pMenuFont, "Time to kick some ass, pilot!");
+						lines = 3;
+					} break;
+					case 6:
+					{
+						pBitmapInfo[0] = fontCreateTextBitMapFromStr(s_pMenuFont, "Congrats, you are in!");
+						pBitmapInfo[1] = fontCreateTextBitMapFromStr(s_pMenuFont, "Something tells me the Reign");
+						pBitmapInfo[2] = fontCreateTextBitMapFromStr(s_pMenuFont, "is going to remember your name");
+						pBitmapInfo[3] = fontCreateTextBitMapFromStr(s_pMenuFont, "real soon...");
+						lines = 4;
+					} break;
+					case 7:
+					{
+						pBitmapInfo[0] = fontCreateTextBitMapFromStr(s_pMenuFont, "This was crazy!");
+						pBitmapInfo[1] = fontCreateTextBitMapFromStr(s_pMenuFont, "With that speed, you can");
+						pBitmapInfo[2] = fontCreateTextBitMapFromStr(s_pMenuFont, "probably get out of the orbit!");
+						lines = 3;
+					} break;
+					case 8:
+					{
+						pBitmapInfo[0] = fontCreateTextBitMapFromStr(s_pMenuFont, "This is incredible!");
+						pBitmapInfo[1] = fontCreateTextBitMapFromStr(s_pMenuFont, "And you did it with a");
+						pBitmapInfo[2] = fontCreateTextBitMapFromStr(s_pMenuFont, "twin-engine drive!");
+						pBitmapInfo[3] = fontCreateTextBitMapFromStr(s_pMenuFont, "I've seen quad-engine crafts");
+						pBitmapInfo[4] = fontCreateTextBitMapFromStr(s_pMenuFont, "do worse!");
+						pBitmapInfo[5] = fontCreateTextBitMapFromStr(s_pMenuFont, "Respect, pilot!");
+						lines = 6;
+					} break;
+					case 9:
+					{
+						pBitmapInfo[0] = fontCreateTextBitMapFromStr(s_pMenuFont, "The Revolt will have good use");
+						pBitmapInfo[1] = fontCreateTextBitMapFromStr(s_pMenuFont, "of you, pilot!");
+						pBitmapInfo[2] = fontCreateTextBitMapFromStr(s_pMenuFont, "You're in!");
+						lines = 3;
+					} break;
+					case 10:
+					{
+						pBitmapInfo[0] = fontCreateTextBitMapFromStr(s_pMenuFont, "I haven't seen anyone fly like");
+						pBitmapInfo[1] = fontCreateTextBitMapFromStr(s_pMenuFont, "this since my younger days!");
+						pBitmapInfo[2] = fontCreateTextBitMapFromStr(s_pMenuFont, "Congrats!");
+						lines = 3;
+					} break;
+					case 11:
+					{
+						pBitmapInfo[0] = fontCreateTextBitMapFromStr(s_pMenuFont, "Great time!");
+						pBitmapInfo[1] = fontCreateTextBitMapFromStr(s_pMenuFont, "I hope you're ready to repeat");
+						pBitmapInfo[2] = fontCreateTextBitMapFromStr(s_pMenuFont, "it in the future, you're in!");
+						lines = 3;
+					} break;
+					
+				}
+
+
+				UBYTE y = 30;
+				for(int i = 0; i < lines; ++i)
+				{	
+					fontDrawTextBitMap(s_pBuffer->pBack, pBitmapInfo[i], 180, y, 0, FONT_LEFT|FONT_COOKIE);
+					y += 6;
+				}
+				joyProcess();
+				UBYTE cont = 0;
+				//wait 2 seconds
+				while(!cont)
+				{
+
+					joyProcess();
+					if (keyCheck(KEY_ESCAPE))
+					{
+						gameClose();
+						cont = 1;
+					}
+					else if(joyCheck(JOY1_FIRE))
+					{
+						cont = 1;
+					}
+					
+					
+				}
+
+				p1xf = 60 * 100;
+				p1yf = 0;
+				p1hf = 20 * 100;
+				
+				velocity = 0;
+				acceleration = 0;
+				points = 0;
+				cx = 0;
+				cy = 0;
+				levelTime = 0;
+				deltaTime = 0;
+				lastOverwrittenLine = 0;
+				velocityDenom = 128;
+				endScreen = 0;
+				infoScreen = 0;
+
+				CopyMapWord(mapSource[0], mapHigh);
+				lastTime = timerGetPrec();
+				
+				for(int i = 0; i < lines; ++i)
+				{
+					fontDestroyTextBitMap(pBitmapInfo[i]);
+				}
+
+				ClearBuffor();
+				SetGamePaletter();
+				viewLoad(s_pView);
+				//vPortWaitForEnd(s_pVPort);
+				CopyFastToChipW(s_pBuffer->pBack);
+			}
+			
 		}
 		else
 		{
@@ -1047,16 +1268,22 @@ void engineGsLoop(void)
 
 	}
 
+	if (keyCheck(KEY_ESCAPE))
+	{
+		gameClose();
+	}
+
 	//ConvertIntToChar((lastOverwrittenLine / 256 + 1) % MAPLENGTH, sPlayerX);
 	//ConvertIntToChar(p1y, sPlayerY);
 	//ConvertIntToChar(bcLogo[2], sPlayerH);
 	//timerFormatPrec(sTime, startTime);
 	//ConvertIntToChar(bcLogo[3], sTime);
-	ConvertIntToChar(points, sScore);
-	ConvertIntToChar(velocity, sVelocity);
-	ConvertIntToChar(levelTime/2500, sTime);
-	ConvertIntToChar(relativeHeight, sPlayerH);
+	ConvertIntToChar(points, sScore, 8);
+	ConvertIntToChar(velocity, sVelocity, 5);
+	ConvertIntToChar(levelTime/2500, sTime, 8);
+	ConvertIntToChar(relativeHeight, sPlayerH, 5);
 	
+
 
 	/*for (int i = 0; i < 16; i++)
 	{
@@ -1080,9 +1307,9 @@ void engineGsLoop(void)
 	fontDrawTextBitMap(s_pBuffer->pBack, pBitmapScoreLabel, 0, 225, 12, FONT_LEFT|FONT_COOKIE);
 	fontDrawTextBitMap(s_pBuffer->pBack, pBitmapHeightLabel, 135, 225, 12, FONT_LEFT|FONT_COOKIE);
 	fontDrawTextBitMap(s_pBuffer->pBack, pBitmapTimeLabel, 230, 225, 12, FONT_LEFT|FONT_COOKIE);
-	fontDrawTextBitMap(s_pBuffer->pBack, pBitmapVelocity, 95, 225, 12, FONT_LEFT|FONT_COOKIE);
+	fontDrawTextBitMap(s_pBuffer->pBack, pBitmapVelocity, 100, 225, 12, FONT_LEFT|FONT_COOKIE);
 	fontDrawTextBitMap(s_pBuffer->pBack, pBitmapScore, 35, 225, 12, FONT_LEFT|FONT_COOKIE);
-	fontDrawTextBitMap(s_pBuffer->pBack, pBitmapHeight, 190, 225, 12, FONT_LEFT|FONT_COOKIE);
+	fontDrawTextBitMap(s_pBuffer->pBack, pBitmapHeight, 195, 225, 12, FONT_LEFT|FONT_COOKIE);
 	fontDrawTextBitMap(s_pBuffer->pBack, pBitmapTime, 250, 225, 12, FONT_LEFT|FONT_COOKIE);
 
 	interlace++;
