@@ -72,10 +72,12 @@ UBYTE dither3x2EvenP4[COLORS * COLORS * COLORS]; //32k
 LONG p1xf, p1yf, p1hf, p2xf, p2yf, p2hf;
 UWORD p1x, p1y, p1h, p2x, p2y, p2h;
 static int interlace;
-ULONG velocity = 0;
+LONG velocity = 0;
 LONG acceleration = 0;
 ULONG points = 0;
 ULONG relativeHeight = 0;
+ULONG velocityDenom = 128;
+BYTE slowdownDelay = 0;
 
 static UBYTE screenIndex;
 static WORD cx, cy;
@@ -83,6 +85,7 @@ static ULONG startTime, endTime, deltaTime, lastTime;
 static ULONG levelTime;
 static ULONG screenDuration;
 static UBYTE infoScreen = 0;
+static UBYTE endScreen = 0;
 UWORD lastOverwrittenLine;
 static BYTE xOffsetEven, xOffsetOdd; //camera rotation offsett when turning
 

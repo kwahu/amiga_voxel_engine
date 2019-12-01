@@ -607,27 +607,6 @@ void engineGsLoop(void)
 			UBYTE infoIndex = 0;
 			UBYTE FireDown = 0;
 
-			pBitmapInfo[0] = fontCreateTextBitMapFromStr(s_pMenuFont, "In the distant future, on the distant,");
-			pBitmapInfo[1] = fontCreateTextBitMapFromStr(s_pMenuFont, "inhospitable planet, mankind engages in one");
-			pBitmapInfo[2] = fontCreateTextBitMapFromStr(s_pMenuFont, "thing it knows well - war.");
-			pBitmapInfo[3] = fontCreateTextBitMapFromStr(s_pMenuFont, "The tyrannical, corporate regime wants to");
-			pBitmapInfo[4] = fontCreateTextBitMapFromStr(s_pMenuFont, "enslave all inhabitants of the Kingdom - ");
-			pBitmapInfo[5] = fontCreateTextBitMapFromStr(s_pMenuFont, "humanity's new home.");
-			pBitmapInfo[6] = fontCreateTextBitMapFromStr(s_pMenuFont, "As a young smuggler aboard the aircraft Icarus");
-			pBitmapInfo[7] = fontCreateTextBitMapFromStr(s_pMenuFont, "you want to help the oppressed by joining the");
-			pBitmapInfo[8] = fontCreateTextBitMapFromStr(s_pMenuFont, "Revolt, but you need to prove your worth first");
-			pBitmapInfo[9] = fontCreateTextBitMapFromStr(s_pMenuFont, "by completing the infamous Death Run challenge");
-			
-			fontDrawTextBitMap(s_pBuffer->pBack, pBitmapInfo[0], 50, 30, 10, FONT_LEFT|FONT_COOKIE);
-			fontDrawTextBitMap(s_pBuffer->pBack, pBitmapInfo[1], 50, 36, 10, FONT_LEFT|FONT_COOKIE);
-			fontDrawTextBitMap(s_pBuffer->pBack, pBitmapInfo[2], 50, 42, 10, FONT_LEFT|FONT_COOKIE);
-			fontDrawTextBitMap(s_pBuffer->pBack, pBitmapInfo[3], 50, 48, 10, FONT_LEFT|FONT_COOKIE);
-			fontDrawTextBitMap(s_pBuffer->pBack, pBitmapInfo[4], 50, 54, 10, FONT_LEFT|FONT_COOKIE);
-			fontDrawTextBitMap(s_pBuffer->pBack, pBitmapInfo[5], 50, 60, 10, FONT_LEFT|FONT_COOKIE);
-			fontDrawTextBitMap(s_pBuffer->pBack, pBitmapInfo[6], 50, 66, 10, FONT_LEFT|FONT_COOKIE);
-			fontDrawTextBitMap(s_pBuffer->pBack, pBitmapInfo[7], 50, 72, 10, FONT_LEFT|FONT_COOKIE);
-			fontDrawTextBitMap(s_pBuffer->pBack, pBitmapInfo[8], 50, 78, 10, FONT_LEFT|FONT_COOKIE);
-			fontDrawTextBitMap(s_pBuffer->pBack, pBitmapInfo[9], 50, 84, 10, FONT_LEFT|FONT_COOKIE);
 
 			while(!infoScreen)
 			{
@@ -640,10 +619,6 @@ void engineGsLoop(void)
 					{
 						case 1:
 						{
-							for(int i = 0; i < 10; ++i)
-							{
-								fontDestroyTextBitMap(pBitmapInfo[i]);
-							}
 							
 							free(bitmap1);
 							systemUse();
@@ -663,34 +638,15 @@ void engineGsLoop(void)
 							//vPortWaitForEnd(s_pVPort);
 							CopyFastToChipW(s_pBuffer->pBack);
 
-							pBitmapInfo[0] = fontCreateTextBitMapFromStr(s_pMenuFont, "After setting off the Earth in enormous");
-							pBitmapInfo[1] = fontCreateTextBitMapFromStr(s_pMenuFont, "generation ships, humanity reached the nearest");
-							pBitmapInfo[2] = fontCreateTextBitMapFromStr(s_pMenuFont, "star system and colonized its' only suitable");
-							pBitmapInfo[3] = fontCreateTextBitMapFromStr(s_pMenuFont, "planet, renaming it the Kingdom.");
-							pBitmapInfo[4] = fontCreateTextBitMapFromStr(s_pMenuFont, "The harsh environment was one problem, the");
-							pBitmapInfo[5] = fontCreateTextBitMapFromStr(s_pMenuFont, "ideological differences were the other.");
-							pBitmapInfo[6] = fontCreateTextBitMapFromStr(s_pMenuFont, "People of the Kingdom fell prey to their nature,");
-							pBitmapInfo[7] = fontCreateTextBitMapFromStr(s_pMenuFont, "which pushed them to the open conflict");
-							pBitmapInfo[8] = fontCreateTextBitMapFromStr(s_pMenuFont, "between the Reign, and the Revolt.");
-							fontDrawTextBitMap(s_pBuffer->pBack, pBitmapInfo[0], 2, 30, 14, FONT_LEFT|FONT_COOKIE);
-							fontDrawTextBitMap(s_pBuffer->pBack, pBitmapInfo[1], 2, 36, 14, FONT_LEFT|FONT_COOKIE);
-							fontDrawTextBitMap(s_pBuffer->pBack, pBitmapInfo[2], 2, 42, 14, FONT_LEFT|FONT_COOKIE);
-							fontDrawTextBitMap(s_pBuffer->pBack, pBitmapInfo[3], 2, 48, 14, FONT_LEFT|FONT_COOKIE);
-							fontDrawTextBitMap(s_pBuffer->pBack, pBitmapInfo[4], 2, 54, 14, FONT_LEFT|FONT_COOKIE);
-							fontDrawTextBitMap(s_pBuffer->pBack, pBitmapInfo[5], 2, 60, 14, FONT_LEFT|FONT_COOKIE);
-							fontDrawTextBitMap(s_pBuffer->pBack, pBitmapInfo[6], 2, 66, 14, FONT_LEFT|FONT_COOKIE);
-							fontDrawTextBitMap(s_pBuffer->pBack, pBitmapInfo[7], 2, 72, 14, FONT_LEFT|FONT_COOKIE);
-							fontDrawTextBitMap(s_pBuffer->pBack, pBitmapInfo[8], 2, 78, 14, FONT_LEFT|FONT_COOKIE);
-
 							FireDown = 1;
 						} break;
 						case 2:
 						{
-							for(int i = 0; i < 9; ++i)
-							{
-								fontDestroyTextBitMap(pBitmapInfo[i]);
-							}
 							
+							free(bitmap1);
+							systemUse();
+							bitmap1 = LoadBitmapFile("data/menu2", &bitmapHeader1, bitmapPalette1);
+							systemUnuse();
 							ClearBuffor();
 							DrawBitmap4bCenter(bitmap1, &bitmapHeader1);
 							
@@ -705,36 +661,10 @@ void engineGsLoop(void)
 							//vPortWaitForEnd(s_pVPort);
 							CopyFastToChipW(s_pBuffer->pBack);
 
-							pBitmapInfo[0] = fontCreateTextBitMapFromStr(s_pMenuFont, "You are Nix, the pilot of Icarus, who feels");
-							pBitmapInfo[1] = fontCreateTextBitMapFromStr(s_pMenuFont, "the urge to help the Revolt in overthrowing");
-							pBitmapInfo[2] = fontCreateTextBitMapFromStr(s_pMenuFont, "the Reign.");
-							pBitmapInfo[3] = fontCreateTextBitMapFromStr(s_pMenuFont, "You want to become the Carrier, who supplies");
-							pBitmapInfo[4] = fontCreateTextBitMapFromStr(s_pMenuFont, "the military units of the Revolt.");
-							pBitmapInfo[5] = fontCreateTextBitMapFromStr(s_pMenuFont, "As Carriers can move freely only in the deep");
-							pBitmapInfo[6] = fontCreateTextBitMapFromStr(s_pMenuFont, "canyons covering the planet, the Revolt wants");
-							pBitmapInfo[7] = fontCreateTextBitMapFromStr(s_pMenuFont, "you to prove your abilities and loyalty");
-							pBitmapInfo[8] = fontCreateTextBitMapFromStr(s_pMenuFont, "by beating the route leading through");
-							pBitmapInfo[9] = fontCreateTextBitMapFromStr(s_pMenuFont, "narrow valleys as fast as possible...");
-							
-							fontDrawTextBitMap(s_pBuffer->pBack, pBitmapInfo[0], 2, 30, 14, FONT_LEFT|FONT_COOKIE);
-							fontDrawTextBitMap(s_pBuffer->pBack, pBitmapInfo[1], 2, 36, 14, FONT_LEFT|FONT_COOKIE);
-							fontDrawTextBitMap(s_pBuffer->pBack, pBitmapInfo[2], 2, 42, 14, FONT_LEFT|FONT_COOKIE);
-							fontDrawTextBitMap(s_pBuffer->pBack, pBitmapInfo[3], 2, 48, 14, FONT_LEFT|FONT_COOKIE);
-							fontDrawTextBitMap(s_pBuffer->pBack, pBitmapInfo[4], 2, 54, 14, FONT_LEFT|FONT_COOKIE);
-							fontDrawTextBitMap(s_pBuffer->pBack, pBitmapInfo[5], 2, 60, 14, FONT_LEFT|FONT_COOKIE);
-							fontDrawTextBitMap(s_pBuffer->pBack, pBitmapInfo[6], 2, 66, 14, FONT_LEFT|FONT_COOKIE);
-							fontDrawTextBitMap(s_pBuffer->pBack, pBitmapInfo[7], 2, 72, 14, FONT_LEFT|FONT_COOKIE);
-							fontDrawTextBitMap(s_pBuffer->pBack, pBitmapInfo[8], 2, 78, 14, FONT_LEFT|FONT_COOKIE);
-							fontDrawTextBitMap(s_pBuffer->pBack, pBitmapInfo[9], 2, 84, 14, FONT_LEFT|FONT_COOKIE);
-
 							FireDown = 1;
 						} break;
 						case 3:
 						{
-							for(int i = 0; i < 10; ++i)
-							{
-								fontDestroyTextBitMap(pBitmapInfo[i]);
-							}
 
 							free(bitmap1);
 							systemUse();
@@ -936,6 +866,101 @@ void engineGsLoop(void)
 			levelTime = 0;
 			deltaTime = 0;
 			lastOverwrittenLine = 0;
+			velocityDenom = 128;
+
+			CopyMapWord(mapSource[0], mapHigh);
+			lastTime = timerGetPrec();
+			
+			for(int i = 0; i < lines; ++i)
+			{
+				fontDestroyTextBitMap(pBitmapInfo[i]);
+			}
+
+			ClearBuffor();
+			SetGamePaletter();
+			viewLoad(s_pView);
+			//vPortWaitForEnd(s_pVPort);
+			CopyFastToChipW(s_pBuffer->pBack);
+		}
+		else if(endScreen)
+		{
+			
+			ClearBuffor();
+			for (int i = 0; i < 16; i++)
+			{
+				bitmapPalette[i] = ((bitmapPalette1[i * 4 + 2] >> 4) << 8) +
+									((bitmapPalette1[i * 4 + 1] >> 4) << 4) + (bitmapPalette1[i * 4 + 0] >> 4);
+			}
+			memcpy(s_pVPort->pPalette, bitmapPalette, 16 * sizeof(UWORD));
+			DrawBitmap4bCenter(bitmap1, &bitmapHeader1);
+			viewLoad(s_pView);
+			//vPortWaitForEnd(s_pVPort);
+			CopyFastToChipW(s_pBuffer->pBack);
+
+			UBYTE lines = 0;
+
+			
+			switch((levelTime) % 4)
+			{
+				case 0:
+				{
+					pBitmapInfo[0] = fontCreateTextBitMapFromStr(s_pMenuFont, "Is this all you've got?");
+					pBitmapInfo[1] = fontCreateTextBitMapFromStr(s_pMenuFont, "You call yourself a pilot?");
+					lines = 2;
+			
+				} break;
+				case 1:
+				{
+					pBitmapInfo[0] = fontCreateTextBitMapFromStr(s_pMenuFont, "At this speed you wouldn't outrace");
+					pBitmapInfo[1] = fontCreateTextBitMapFromStr(s_pMenuFont, "a cargo ship!");
+					pBitmapInfo[2] = fontCreateTextBitMapFromStr(s_pMenuFont, "Get out and train!");
+					lines = 3;
+				} break;
+				case 2:
+				{
+					pBitmapInfo[0] = fontCreateTextBitMapFromStr(s_pMenuFont, "You wouldn't survive a second");
+					pBitmapInfo[1] = fontCreateTextBitMapFromStr(s_pMenuFont, "as a Carrier!");
+					pBitmapInfo[2] = fontCreateTextBitMapFromStr(s_pMenuFont, "Get lost!");
+					lines = 3;
+				} break;
+				case 3:
+				{
+					pBitmapInfo[0] = fontCreateTextBitMapFromStr(s_pMenuFont, "Well, about time!");
+					pBitmapInfo[1] = fontCreateTextBitMapFromStr(s_pMenuFont, "No stop wasting our time and scram!");
+					lines = 2;
+				} break;
+				
+			}
+
+
+			UBYTE y = 70;
+			for(int i = 0; i < lines; ++i)
+			{	
+				fontDrawTextBitMap(s_pBuffer->pBack, pBitmapInfo[i], 100, y, 4, FONT_LEFT|FONT_COOKIE);
+				y += 6;
+			}
+			joyProcess();
+			//wait 2 seconds
+			while(!joyCheck(JOY1_FIRE))
+			{
+
+				joyProcess();
+			}
+
+			p1xf = 60 * 100;
+			p1yf = 0;
+			p1hf = 20 * 100;
+			
+			velocity = 0;
+			acceleration = 0;
+			points = 0;
+			cx = 0;
+			cy = 0;
+			levelTime = 0;
+			deltaTime = 0;
+			lastOverwrittenLine = 0;
+			velocityDenom = 128;
+			endScreen = 0;
 
 			CopyMapWord(mapSource[0], mapHigh);
 			lastTime = timerGetPrec();
@@ -956,7 +981,15 @@ void engineGsLoop(void)
 			
 		//	ProcessQualityInput();
 			
-
+			if(p1y > 11*256 && velocityDenom < 3*255)
+			{
+				velocityDenom = velocityDenom + 4;
+			}
+			else if(velocityDenom >= 3*255)
+			{
+				endScreen = 1;
+			}
+			
 
 
 			xOffsetOdd = cx / 300;
