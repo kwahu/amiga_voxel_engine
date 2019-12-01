@@ -146,6 +146,11 @@ void ProcessPlayerInput()
 
 	velocity = velocity + lowerDelta*(acceleration/48);
 
+	if(velocity > 1000)
+	{
+		velocity = 1000;
+	}
+
 	p1yf += lowerDelta*velocity/128;
 
 
