@@ -84,7 +84,6 @@ void SetDefaulResolution()
 		renderingDepthStep = 1;
 
 		stepModifier = 16;
-		xFOV = 10;
 		Recalculate();
 }
 
@@ -274,11 +273,15 @@ void main_supervisor()
 		{
 			renderingType = 4;
 			hardwareSelection = 1;
+			xFOV = 28;
+			yFOV = 14;
 		}
 		if (IKBD_Keyboard[KEY_2]) 
 		{
 			renderingType = 8;
 			hardwareSelection = 2;
+			xFOV = 25;
+			yFOV = 14;
 		}
 	}
 	//*************************************** SELECT HARDWARE

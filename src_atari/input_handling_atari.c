@@ -120,7 +120,7 @@ void ProcessPlayerInputAtari()
  		else if((IKBD_STICK1 & IKBD_JOY_UP) || IKBD_Keyboard[KEY_UP]) {			cy-=deltaTime; }
 		else if(cy!=0) {cy = cy - cy/((LONG)(deltaTime)/denom);}
 
-		ULONG lowerDelta = (deltaTime/(denom*10));
+		ULONG lowerDelta = (deltaTime/(denom*4));
 
 		relativeHeight = ((p1h - 3) - (UBYTE)(mapHigh[(UBYTE)(p1x)][(UBYTE)(p1y + 15)]));
 		acceleration = lowerDelta*((256 - relativeHeight) - velocity/4);

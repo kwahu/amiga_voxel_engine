@@ -6,13 +6,13 @@ void OverwriteMap()
 	UBYTE yy;
 	UBYTE yyplusone;
 
-	for (UWORD y = lastOverwrittenLine; y < p1y; y++)
+	for (UWORD x = 0; x < MAPSIZE; x++)
 	{
-		yy = (UBYTE)y ;
-		yyplusone = (yy+1);
-		mapNumber = (y / 256 + 1) % MAPLENGTH;
-		for (UWORD x = 0; x < MAPSIZE; x++)
+		for (UWORD y = lastOverwrittenLine; y < p1y; y++)
 		{
+			yy = (UBYTE)y ;
+			yyplusone = (yy+1);
+			mapNumber = (y / 256 + 1) % MAPLENGTH;
 			word = mapSource[mapNumber][x][yy/2];
 			mapHigh[x*2][yy] = word;
 			mapHigh[x*2+1][yy] = word;
