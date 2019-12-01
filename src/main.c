@@ -83,7 +83,7 @@ void switchIntroScreen()
 	{
 		free(bitmap1);
 		systemUse();
-		bitmap1 = LoadBitmapFile("data/logo2.bmp", &bitmapHeader1, bitmapPalette1);
+		bitmap1 = LoadBitmapFile("data/logo2", &bitmapHeader1, bitmapPalette1);
 		systemUnuse();
 		
 		ClearBuffor();
@@ -103,7 +103,7 @@ void switchIntroScreen()
 	{
 		free(bitmap1);
 		systemUse();
-		bitmap1 = LoadBitmapFile("data/logo3.bmp", &bitmapHeader1, bitmapPalette1);
+		bitmap1 = LoadBitmapFile("data/logo3", &bitmapHeader1, bitmapPalette1);
 		systemUnuse();
 		ClearBuffor();
 		DrawBitmap4bCenter(bitmap1, &bitmapHeader1);
@@ -428,8 +428,8 @@ void engineGsCreate(void)
 								   TAG_SIMPLEBUFFER_BITMAP_FLAGS, BMF_CLEAR,
 								   TAG_DONE);
 
-	bitmap1 = LoadBitmapFile("data/logo1.bmp", &bitmapHeader1, bitmapPalette1);
-	paletteBitmap = LoadBitmapFile("data/palette.bmp", &paletteHeader, palettePalette);
+	bitmap1 = LoadBitmapFile("data/logo1", &bitmapHeader1, bitmapPalette1);
+	paletteBitmap = LoadBitmapFile("data/palette", &paletteHeader, palettePalette);
 
 	//process paletter from an image
 	for (int i = 0; i < 16; i++)
@@ -505,7 +505,8 @@ void engineGsCreate(void)
 			renderingDepthStep = 2;
 
 			stepModifier = 16;
-			xFOV = 10;
+			xFOV = 32;
+			yFOV = 12;
 			RecalculateEven();
 			hardwareSelection = 1;
 		}
@@ -518,7 +519,8 @@ void engineGsCreate(void)
 			renderingDepthStep = 2;
 
 			stepModifier = 16;
-			xFOV = 10;
+			xFOV = 28;
+			yFOV = 10;
 			RecalculateEven();
 			hardwareSelection = 2;
 		}
@@ -532,6 +534,7 @@ void engineGsCreate(void)
 
 			stepModifier = 16;
 			xFOV = 10;
+			yFOV = 18;
 			RecalculateOdd();
 			hardwareSelection = 3;
 		}
@@ -585,7 +588,7 @@ void engineGsLoop(void)
 		{
 			free(bitmap1);
 			systemUse();
-			bitmap1 = LoadBitmapFile("data/menu0.bmp", &bitmapHeader1, bitmapPalette1);
+			bitmap1 = LoadBitmapFile("data/menu0", &bitmapHeader1, bitmapPalette1);
 			systemUnuse();
 			ClearBuffor();
 			DrawBitmap4bCenter(bitmap1, &bitmapHeader1);
@@ -644,7 +647,7 @@ void engineGsLoop(void)
 							
 							free(bitmap1);
 							systemUse();
-							bitmap1 = LoadBitmapFile("data/menu1.bmp", &bitmapHeader1, bitmapPalette1);
+							bitmap1 = LoadBitmapFile("data/menu1", &bitmapHeader1, bitmapPalette1);
 							systemUnuse();
 							ClearBuffor();
 							DrawBitmap4bCenter(bitmap1, &bitmapHeader1);
@@ -735,7 +738,7 @@ void engineGsLoop(void)
 
 							free(bitmap1);
 							systemUse();
-							bitmap1 = LoadBitmapFile("data/message.bmp", &bitmapHeader1, bitmapPalette1);
+							bitmap1 = LoadBitmapFile("data/message", &bitmapHeader1, bitmapPalette1);
 							systemUnuse();
 							ClearBuffor();
 							DrawBitmap4bCenter(bitmap1, &bitmapHeader1);
@@ -820,6 +823,8 @@ void engineGsLoop(void)
 		//restart
 		if ((p1h - 3) < (UBYTE)(mapHigh[(UBYTE)(p1x)][(UBYTE)(p1y + 15)]))
 		{
+			
+			ClearBuffor();
 			for (int i = 0; i < 16; i++)
 			{
 				bitmapPalette[i] = ((bitmapPalette1[i * 4 + 2] >> 4) << 8) +

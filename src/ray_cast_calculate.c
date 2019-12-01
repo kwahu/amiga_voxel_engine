@@ -16,7 +16,7 @@ void CalculateRayCasts(WORD (*rayCastX)[TERRAINDEPTH], WORD (*rayCastY)[TERRAIND
 	WORD syy;
 	WORD tzz; //depth step value
 	WORD fovX = xSize/xFOV; //width FOV
-	WORD fovY = 5; //height FOV
+	WORD fovY = ySize/yFOV;//5; //height FOV
 	WORD sxxx;
 	WORD xMiddle = xSize/2;
 	WORD yMiddle = ySize/2;

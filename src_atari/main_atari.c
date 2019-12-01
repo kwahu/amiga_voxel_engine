@@ -97,7 +97,8 @@ void switchIntroScreen()
 	{
 	case 2:
 	{
-		bitmap1 = LoadBitmapFile("data/logo2.bmp", &bitmapHeader1, bitmapPalette1);
+		free(bitmap1);
+		bitmap1 = LoadBitmapFile("data/logo2", &bitmapHeader1, bitmapPalette1);
 		
 		ClearScreen();
 		DrawBitmap4bCenter(bitmap1, &bitmapHeader1);
@@ -111,7 +112,8 @@ void switchIntroScreen()
 	break;
 	case 3:
 	{
-		bitmap1 = LoadBitmapFile("data/logo3.bmp", &bitmapHeader1, bitmapPalette1);
+		free(bitmap1);
+		bitmap1 = LoadBitmapFile("data/logo3", &bitmapHeader1, bitmapPalette1);
 		
 		ClearScreen();
 		DrawBitmap4bCenter(bitmap1, &bitmapHeader1);
@@ -125,17 +127,7 @@ void switchIntroScreen()
 	break;
 	case 0:
 	{
-		bitmap1 = LoadBitmapFile("data/menu1.bmp", &bitmapHeader1, bitmapPalette1);
 		
-		ClearScreen();
-		DrawBitmap4bCenter(bitmap1, &bitmapHeader1);
-		
-		for (int i = 0; i < 16; i++)
-		{
-			bitmapPalette[i] = ((bitmapPalette1[i * 4 + 2] >> 5) << 8) +
-								((bitmapPalette1[i * 4 + 1] >> 5) << 4) + (bitmapPalette1[i * 4 + 0] >> 5);
-		}
-		Setpalette(bitmapPalette);
 	}
 	break;
 	}
@@ -143,7 +135,7 @@ void switchIntroScreen()
 
 void animateIntro()
 {
-	if(screenDuration < 3900 && !fadeInStatus[3])
+	if(screenDuration < 2940 && !fadeInStatus[3])
 	{
 		for (int i = 0; i < 16; i++)
 		{
@@ -153,7 +145,7 @@ void animateIntro()
 		Setpalette(bitmapPalette);
 		fadeInStatus[3] = 1;
 	}
-	if(screenDuration < 3800 && !fadeInStatus[2])
+	if(screenDuration < 2880 && !fadeInStatus[2])
 	{
 		for (int i = 0; i < 16; i++)
 		{
@@ -163,7 +155,7 @@ void animateIntro()
 		Setpalette(bitmapPalette);
 		fadeInStatus[2] = 1;
 	}
-	if(screenDuration < 3700 && !fadeInStatus[1])
+	if(screenDuration < 2820 && !fadeInStatus[1])
 	{
 		for (int i = 0; i < 16; i++)
 		{
@@ -173,7 +165,7 @@ void animateIntro()
 		Setpalette(bitmapPalette);
 		fadeInStatus[1] = 1;
 	}
-	if(screenDuration < 3600 && !fadeInStatus[0])
+	if(screenDuration < 2740 && !fadeInStatus[0])
 	{
 		for (int i = 0; i < 16; i++)
 		{
@@ -184,7 +176,7 @@ void animateIntro()
 		fadeInStatus[0] = 1;
 	}
 
-	if(screenDuration < 400 && !fadeOutStatus[0])
+	if(screenDuration < 240 && !fadeOutStatus[0])
 	{
 		for (int i = 0; i < 16; i++)
 		{
@@ -194,7 +186,7 @@ void animateIntro()
 		Setpalette(bitmapPalette);
 		fadeOutStatus[0] = 1;
 	}
-	if(screenDuration < 300 && !fadeOutStatus[1])
+	if(screenDuration < 180 && !fadeOutStatus[1])
 	{
 		for (int i = 0; i < 16; i++)
 		{
@@ -204,7 +196,7 @@ void animateIntro()
 		Setpalette(bitmapPalette);
 		fadeOutStatus[1] = 1;
 	}
-	if(screenDuration < 200 && !fadeOutStatus[2])
+	if(screenDuration < 120 && !fadeOutStatus[2])
 	{
 		for (int i = 0; i < 16; i++)
 		{
@@ -214,7 +206,7 @@ void animateIntro()
 		Setpalette(bitmapPalette);
 		fadeOutStatus[2] = 1;
 	}
-	if(screenDuration < 100 && !fadeOutStatus[3])
+	if(screenDuration < 60 && !fadeOutStatus[3])
 	{
 		for (int i = 0; i < 16; i++)
 		{
@@ -294,7 +286,7 @@ void main_supervisor()
 
 
 
-    bitmap1 = LoadBitmapFile("data/logo1.bmp",&bitmapHeader1, bitmapPalette1);
+    bitmap1 = LoadBitmapFile("data/logo1",&bitmapHeader1, bitmapPalette1);
 	
 	planes = framebuffer_get_pointer();
    
@@ -310,7 +302,7 @@ void main_supervisor()
     DrawBitmap4bCenter(bitmap1, &bitmapHeader1);
 
 
-	paletteBitmap = LoadBitmapFile("data/palette.bmp", &paletteHeader, palettePalette);
+	paletteBitmap = LoadBitmapFile("data/palette", &paletteHeader, palettePalette);
 
 	//process paletter from an image
 	for(int i=0;i<16;i++)
@@ -348,7 +340,7 @@ void main_supervisor()
 
 	printf("\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n");
 
-	screenDuration = 4000;
+	screenDuration = 3000;
 	screenIndex = 1;
 
 	initDeltaTime();
@@ -365,9 +357,9 @@ void main_supervisor()
 		getDeltaTime();
 		if(screenIndex > 0)
 		{
-			if(screenDuration > 4000)
+			if(screenDuration > 3000)
 			{
-				screenDuration = 4000;
+				screenDuration = 3000;
 				screenIndex = (screenIndex + 1) % 4;
 				switchIntroScreen();
 			}
@@ -380,73 +372,104 @@ void main_supervisor()
 		else
 		{
 			
-			// if(infoScreen == 0)
-			// {
-			// 	UBYTE infoIndex = 0;
-			// 	UBYTE FireDown = 0;
+			if(infoScreen == 0)
+			{
+				free(bitmap1);
+				bitmap1 = LoadBitmapFile("data_atari/intro1_atari", &bitmapHeader1, bitmapPalette1);
+				
+				ClearScreen();
+				DrawBitmap4bCenter(bitmap1, &bitmapHeader1);
+				
+				for (int i = 0; i < 16; i++)
+				{
+					bitmapPalette[i] = ((bitmapPalette1[i * 4 + 2] >> 5) << 8) +
+										((bitmapPalette1[i * 4 + 1] >> 5) << 4) + (bitmapPalette1[i * 4 + 0] >> 5);
+				}
+				Setpalette(bitmapPalette);
 
-			// 	while(!infoScreen)
-			// 	{
-			// 		if(IKBD_Keyboard[KEY_DOWN] && !FireDown)
-			// 		{
-			// 			infoIndex += 1;
+				UBYTE infoIndex = 0;
+				UBYTE FireDown = 0;
+
+				while(!infoScreen)
+				{
+					if(((IKBD_STICK1 & IKBD_JOY_FIRE ) || IKBD_Keyboard[KEY_CTRL]) && !FireDown)
+					{
+						infoIndex += 1;
 						
-			// 			switch(infoIndex)
-			// 			{
-			// 				case 1:
-			// 				{
-										
-			// 					ClearScreen();
-			// 					DrawBitmap4bCenter(bitmap1, &bitmapHeader1);
+						switch(infoIndex)
+						{
+							case 1:
+							{
+								free(bitmap1);
+								bitmap1 = LoadBitmapFile("data_atari/intro2_atari", &bitmapHeader1, bitmapPalette1);
 								
-			// 					FireDown = 1;
-			// 				} break;
-			// 				case 2:
-			// 				{
-									
-			// 					ClearScreen();
-			// 					DrawBitmap4bCenter(bitmap1, &bitmapHeader1);
+								ClearScreen();
+								DrawBitmap4bCenter(bitmap1, &bitmapHeader1);
 								
-			// 					FireDown = 1;
-			// 				} break;
-			// 				case 3:
-			// 				{
-			// 					bitmap1 = LoadBitmapFile("data/menu2.bmp", &bitmapHeader1, bitmapPalette1);
-										
-			// 					ClearScreen();
-			// 					DrawBitmap4bCenter(bitmap1, &bitmapHeader1);
-			// 					for (int i = 0; i < 16; i++)
-			// 					{
-			// 						bitmapPalette[i] = ((bitmapPalette1[i * 4 + 2] >> 5) << 8) +
-			// 											((bitmapPalette1[i * 4 + 1] >> 5) << 4) + (bitmapPalette1[i * 4 + 0] >> 5);
-			// 					}
-			// 					Setpalette(bitmapPalette);
+								for (int i = 0; i < 16; i++)
+								{
+									bitmapPalette[i] = ((bitmapPalette1[i * 4 + 2] >> 5) << 8) +
+														((bitmapPalette1[i * 4 + 1] >> 5) << 4) + (bitmapPalette1[i * 4 + 0] >> 5);
+								}
+								Setpalette(bitmapPalette);
+								FireDown = 1;
+							} break;
+							case 2:
+							{
+								free(bitmap1);
+								bitmap1 = LoadBitmapFile("data_atari/intro3_atari", &bitmapHeader1, bitmapPalette1);
+								
+								ClearScreen();
+								DrawBitmap4bCenter(bitmap1, &bitmapHeader1);
+								
+								for (int i = 0; i < 16; i++)
+								{
+									bitmapPalette[i] = ((bitmapPalette1[i * 4 + 2] >> 5) << 8) +
+														((bitmapPalette1[i * 4 + 1] >> 5) << 4) + (bitmapPalette1[i * 4 + 0] >> 5);
+								}
+								Setpalette(bitmapPalette);
+								FireDown = 1;
+							} break;
+							case 3:
+							{
+								free(bitmap1);
+								bitmap1 = LoadBitmapFile("data_atari/menu1", &bitmapHeader1, bitmapPalette1);
+								
+								ClearScreen();
+								DrawBitmap4bCenter(bitmap1, &bitmapHeader1);
+								
+								for (int i = 0; i < 16; i++)
+								{
+									bitmapPalette[i] = ((bitmapPalette1[i * 4 + 2] >> 5) << 8) +
+														((bitmapPalette1[i * 4 + 1] >> 5) << 4) + (bitmapPalette1[i * 4 + 0] >> 5);
+								}
+								Setpalette(bitmapPalette);
+								FireDown = 1;
 
-			// 					FireDown = 1;
-
-			// 				} break;
-			// 				case 4:
-			// 				{
-			// 					ClearScreen();
-			// 					for (int i = 0; i < 16; i++)
-			// 					{
-			// 						bitmapPalette[i] = ((palettePalette[i * 4 + 2] >> 5) << 8) +
-			// 											((palettePalette[i * 4 + 1] >> 5) << 4) + (palettePalette[i * 4 + 0] >> 5);
-			// 					}
-			// 					Setpalette(bitmapPalette);
-			// 					infoScreen = 1;
-			// 					lastTime = timerGetPrec();
-			// 					startTime = timerGetPrec();
-			// 					deltaTime = 0;
-			// 				} break;
-			// 			}
-			// 		}
-			// 		else if(FireDown && !IKBD_Keyboard[KEY_DOWN])
-			// 		{
-			// 			FireDown = 0;
-			// 		}
-			// 	}
-			// }
+							} break;
+							case 4:
+							{
+								ClearScreen();
+								for (int i = 0; i < 16; i++)
+								{
+									bitmapPalette[i] = ((palettePalette[i * 4 + 2] >> 5) << 8) +
+														((palettePalette[i * 4 + 1] >> 5) << 4) + (palettePalette[i * 4 + 0] >> 5);
+								}
+								Setpalette(bitmapPalette);
+								infoScreen = 1;
+								lastTime = timerGetPrec();
+								startTime = timerGetPrec();
+								deltaTime = 0;
+								levelTime = 0;
+							} break;
+						}
+					}
+					else if(FireDown && !((IKBD_STICK1 & IKBD_JOY_FIRE ) || IKBD_Keyboard[KEY_CTRL]))
+					{
+						FireDown = 0;
+					}
+				}
+			}
 
 			ProcessQualityInputAtari();
 			ProcessPlayerInputAtari();
@@ -458,11 +481,27 @@ void main_supervisor()
 			//draw only even lines 
 			crossHairX = ( (160 + (cx / 10)) / 16 );
 			crossHairY = ( YSIZEODD*2 + (cy / 5) )/2;
+			if(crossHairX > 2*80)
+			{
+				crossHairX = 0;
+			}
+			if(crossHairX > 76)
+			{
+				crossHairX = 76;
+			}
+			if(crossHairY - 2 > 2*100)
+			{
+				crossHairY = 2;
+			}
+			if(crossHairY + 2 > 100)
+			{
+				crossHairY = 100 - 2;
+			}
 			DrawPixel( crossHairX, crossHairY*2 + 4, 0);
-			DrawPixel( crossHairX*2, crossHairY*2 - 4, 0);
+			DrawPixel( crossHairX, crossHairY*2 - 4, 0);
 				
-			printf("%d	%d\r", p1y, (p1y / 256 + 1) % MAPLENGTH);
-			printf("%d  %d\r", points, velocity);
+			//printf("%d	%d\r", p1y, (p1y / 256 + 1) % MAPLENGTH);
+			printf("SC:%d  SP:%d  RH:%d  T:%d\r", points, velocity, relativeHeight, levelTime);
 			fflush(stdout);
 			//IKBD_Flush();
 			Vsync();
@@ -483,14 +522,8 @@ void main_supervisor()
 			//restart
 			if ((p1h - 3) < (UBYTE)(mapHigh[(UBYTE)(p1x)][(UBYTE)(p1y + 15)]))
 			{
-   				DrawBitmap4bCenter(bitmap1, &bitmapHeader1);
-				for(int i=0;i<16;i++)
-				{
-					bitmapPalette[i] = ((bitmapPalette1[i*4+2]>>5) << 8) +
-					((bitmapPalette1[i*4+1]>>5) << 4) + (bitmapPalette1[i*4+0]>>5);
-				}
-
-				Setpalette(bitmapPalette);
+   				
+				ClearScreen();
 
 				p1xf = 64 * 100;
 				p1yf = 0;
@@ -503,22 +536,24 @@ void main_supervisor()
 				cx = 0;
 				cy = 0;
 				levelTime = 0;
+				printf("You are dead! Press fire to try again!\r");
+				fflush(stdout);
 
-
-				while(!IKBD_STICK1 & IKBD_JOY_FIRE)
+				while(!((IKBD_STICK1 & IKBD_JOY_FIRE ) || IKBD_Keyboard[KEY_CTRL]))
 				{
+
 
 				}
 				lastTime = timerGetPrec();
 
 
 
+				ClearScreen();
 				for(int i=0;i<16;i++)
 				{
 					bitmapPalette[i] = ((palettePalette[i*4+2]>>5) << 8) +
 					((palettePalette[i*4+1]>>5) << 4) + (palettePalette[i*4+0]>>5);
 				}
-				ClearScreen();
 				Setpalette(bitmapPalette);
 
 			}
