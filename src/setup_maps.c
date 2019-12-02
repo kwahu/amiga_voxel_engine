@@ -45,7 +45,7 @@ void SetupMaps()
 	LoadMap("data/height4", "data/color4", mapSource[7]);mapLoaded7=1;
 	LoadMap("data/height3", "data/color3", mapSource[8]);mapLoaded8=1;
 	LoadMap("data/height2", "data/color2", mapSource[9]);mapLoaded9=1;
-	LoadMap("data/height1", "data/color1", mapSource[10]);mapLoaded10=1;
+	LoadMap("data/height1", "data/color2", mapSource[10]);mapLoaded10=1;
 
 	//prepare starting map
 	CopyMapWord(mapSource[0], mapHigh);
