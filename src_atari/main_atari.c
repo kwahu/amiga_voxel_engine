@@ -97,7 +97,7 @@ void switchIntroScreen()
 	case 2:
 	{
 		free(bitmap1);
-		bitmap1 = LoadBitmapFile("data/logo2", &bitmapHeader1, bitmapPalette1);
+		bitmap1 = LoadBitmapFile("data_atari/logo2", &bitmapHeader1, bitmapPalette1);
 		
 		ClearScreen();
 		DrawBitmap4bCenter(bitmap1, &bitmapHeader1);
@@ -112,7 +112,7 @@ void switchIntroScreen()
 	case 3:
 	{
 		free(bitmap1);
-		bitmap1 = LoadBitmapFile("data/logo3", &bitmapHeader1, bitmapPalette1);
+		bitmap1 = LoadBitmapFile("data_atari/logo3", &bitmapHeader1, bitmapPalette1);
 		
 		ClearScreen();
 		DrawBitmap4bCenter(bitmap1, &bitmapHeader1);
@@ -289,7 +289,7 @@ void main_supervisor()
 
 
 
-    bitmap1 = LoadBitmapFile("data/logo1",&bitmapHeader1, bitmapPalette1);
+    bitmap1 = LoadBitmapFile("data_atari/logo1",&bitmapHeader1, bitmapPalette1);
 	
 	planes = framebuffer_get_pointer();
    
@@ -305,7 +305,7 @@ void main_supervisor()
     DrawBitmap4bCenter(bitmap1, &bitmapHeader1);
 
 
-	paletteBitmap = LoadBitmapFile("data/palette", &paletteHeader, palettePalette);
+	paletteBitmap = LoadBitmapFile("data_atari/palette", &paletteHeader, palettePalette);
 
 	//process paletter from an image
 	for(int i=0;i<16;i++)
@@ -317,9 +317,9 @@ void main_supervisor()
 	
 	//*************************************************
 	
-	p1xf = 64 * 100;
+	p1xf = 60 * 100;
 	p1yf = 0;
-	p1hf = 50 * 100;
+	p1hf = 20 * 100;
 
 	p2x = 0;
 	p2y = 0;
@@ -369,6 +369,11 @@ void main_supervisor()
 
 			animateIntro();
 
+			if(IKBD_Keyboard[IKBD_KEY_ESC])
+			{
+				//PRINT("ESC\r\n");
+				exitflag = 1;
+			}
 
 			screenDuration -= deltaTime;
 		}
@@ -436,7 +441,7 @@ void main_supervisor()
 							case 3:
 							{
 								free(bitmap1);
-								bitmap1 = LoadBitmapFile("data_atari/menu1", &bitmapHeader1, bitmapPalette1);
+								bitmap1 = LoadBitmapFile("data_atari/intro4_atari", &bitmapHeader1, bitmapPalette1);
 								
 								ClearScreen();
 								DrawBitmap4bCenter(bitmap1, &bitmapHeader1);
@@ -470,6 +475,14 @@ void main_supervisor()
 					else if(FireDown && !((IKBD_STICK1 & IKBD_JOY_FIRE ) || IKBD_Keyboard[KEY_CTRL]))
 					{
 						FireDown = 0;
+					}
+
+					
+					if(IKBD_Keyboard[IKBD_KEY_ESC])
+					{
+						//PRINT("ESC\r\n");
+						exitflag = 1;
+						infoScreen = 1;
 					}
 				}
 			}
@@ -528,9 +541,9 @@ void main_supervisor()
    				
 				ClearScreen();
 
-				p1xf = 64 * 100;
+				p1xf = 60 * 100;
 				p1yf = 0;
-				p1hf = 50 * 100;
+				p1hf = 20 * 100;
 				velocity = 0;
 				acceleration = 0;
 				points = 0;
@@ -539,12 +552,23 @@ void main_supervisor()
 				cx = 0;
 				cy = 0;
 				levelTime = 0;
+				velocityDenom = 128;
 				printf("You are dead! Press fire to try again!\r");
 				fflush(stdout);
 
-				while(!((IKBD_STICK1 & IKBD_JOY_FIRE ) || IKBD_Keyboard[KEY_CTRL]))
+				char cont = 0;
+				while(!cont)
 				{
-
+					if(((IKBD_STICK1 & IKBD_JOY_FIRE ) || IKBD_Keyboard[KEY_CTRL]))
+					{
+						cont = 1;
+					}
+					if(IKBD_Keyboard[IKBD_KEY_ESC])
+					{
+						//PRINT("ESC\r\n");
+						exitflag = 1;
+						cont = 1;
+					}
 
 				}
 				lastTime = timerGetPrec();
@@ -560,8 +584,129 @@ void main_supervisor()
 				Setpalette(bitmapPalette);
 
 			}
+			else if(endScreen)
+			{
+				
+				if(points < 1100000)
+				{
+					ClearScreen();
+
+					p1xf = 60 * 100;
+					p1yf = 0;
+					p1hf = 20 * 100;
+					velocity = 0;
+					acceleration = 0;
+					points = 0;
+					CopyMapWord(mapSource[0], mapHigh);
+					lastOverwrittenLine = 0;
+					cx = 0;
+					cy = 0;
+					levelTime = 0;
+					velocityDenom = 128;
+					endScreen = 0;
+					printf("You failed! Press fire to try again!\r");
+					fflush(stdout);
+
+					char cont = 0;
+					while(!cont)
+					{
+						if(((IKBD_STICK1 & IKBD_JOY_FIRE ) || IKBD_Keyboard[KEY_CTRL]))
+						{
+							cont = 1;
+						}
+						if(IKBD_Keyboard[IKBD_KEY_ESC])
+						{
+							//PRINT("ESC\r\n");
+							exitflag = 1;
+							cont = 1;
+						}
+
+					}
+					lastTime = timerGetPrec();
+
+
+
+					ClearScreen();
+					for(int i=0;i<16;i++)
+					{
+						bitmapPalette[i] = ((palettePalette[i*4+2]>>5) << 8) +
+						((palettePalette[i*4+1]>>5) << 4) + (palettePalette[i*4+0]>>5);
+					}
+					Setpalette(bitmapPalette);
+				}
+				else
+				{
+					free(bitmap1);
+					bitmap1 = LoadBitmapFile("data_atari/finish", &bitmapHeader1, bitmapPalette1);
+					
+					ClearScreen();
+					DrawBitmap4bCenter(bitmap1, &bitmapHeader1);
+					
+					for (int i = 0; i < 16; i++)
+					{
+						bitmapPalette[i] = ((bitmapPalette1[i * 4 + 2] >> 5) << 8) +
+											((bitmapPalette1[i * 4 + 1] >> 5) << 4) + (bitmapPalette1[i * 4 + 0] >> 5);
+					}
+					Setpalette(bitmapPalette);
+
+					p1xf = 60 * 100;
+					p1yf = 0;
+					p1hf = 20 * 100;
+					velocity = 0;
+					acceleration = 0;
+					points = 0;
+					CopyMapWord(mapSource[0], mapHigh);
+					lastOverwrittenLine = 0;
+					cx = 0;
+					cy = 0;
+					levelTime = 0;
+					velocityDenom = 128;
+					infoScreen = 0;
+
+					endScreen = 0;
+					char cont = 0;
+					while(!cont)
+					{
+						if(((IKBD_STICK1 & IKBD_JOY_FIRE ) || IKBD_Keyboard[KEY_CTRL]))
+						{
+							cont = 1;
+						}
+						if(IKBD_Keyboard[IKBD_KEY_ESC])
+						{
+							//PRINT("ESC\r\n");
+							exitflag = 1;
+							cont = 1;
+						}
+
+					}
+					lastTime = timerGetPrec();
+
+					
+					ClearScreen();
+					for(int i=0;i<16;i++)
+					{
+						bitmapPalette[i] = ((palettePalette[i*4+2]>>5) << 8) +
+						((palettePalette[i*4+1]>>5) << 4) + (palettePalette[i*4+0]>>5);
+					}
+					Setpalette(bitmapPalette);
+					
+				}
+				
+			}
+
+			
+			if(p1y > 11*256 && velocityDenom < 3*255)
+			{
+				velocityDenom = velocityDenom + 4;
+			}
+			else if(velocityDenom >= 3*255)
+			{
+				endScreen = 1;
+			}
+			
 			
 		}
+
 		
 			
 	   endTime = timerGetPrec();

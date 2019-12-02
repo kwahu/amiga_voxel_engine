@@ -137,14 +137,28 @@ void ProcessPlayerInput()
 	ULONG lowerDelta = (deltaTime/10000);
 
 	relativeHeight = ((p1h - 3) - (UBYTE)(mapHigh[(UBYTE)(p1x)][(UBYTE)(p1y + 15)]));
-	acceleration = lowerDelta*((256 - relativeHeight) - (velocity/4));
+	acceleration = 5*((256 - relativeHeight) - (velocity/4));
 	LONG addedpoints = (deltaTime/10000)*(128 - ((p1h - 3) - (UBYTE)(mapHigh[(UBYTE)(p1x)][(UBYTE)(p1y + 15)])));
 	if(addedpoints > 0)
 	{
 		points += addedpoints;
 	}
-
-	velocity = velocity + lowerDelta*(acceleration/48);
+	LONG addedVelocity = 5*(acceleration/48);
+	if(addedVelocity > 1000)
+	{
+		if(acceleration < 0)
+		{
+			acceleration = 5*((256 - relativeHeight) - (velocity/4));
+			addedVelocity = 5*(acceleration/48);
+		}
+		else
+		{
+			addedVelocity = 1000 - velocity;	
+		}
+		
+		
+	}
+	velocity = velocity + addedVelocity;
 
 	if(velocity > 1000)
 	{

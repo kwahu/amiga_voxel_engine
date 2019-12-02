@@ -904,7 +904,7 @@ void engineGsLoop(void)
 		}
 		else if(endScreen)
 		{
-			if(points < 1000000)
+			if(points < 1100000)
 			{
 				ClearBuffor();
 				for (int i = 0; i < 16; i++)
@@ -1142,7 +1142,7 @@ void engineGsLoop(void)
 				UBYTE y = 30;
 				for(int i = 0; i < lines; ++i)
 				{	
-					fontDrawTextBitMap(s_pBuffer->pBack, pBitmapInfo[i], 180, y, 0, FONT_LEFT|FONT_COOKIE);
+					fontDrawTextBitMap(s_pBuffer->pBack, pBitmapInfo[i], 170, y, 0, FONT_LEFT|FONT_COOKIE);
 					y += 6;
 				}
 				joyProcess();
