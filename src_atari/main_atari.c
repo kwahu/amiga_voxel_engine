@@ -97,7 +97,7 @@ void switchIntroScreen()
 	case 2:
 	{
 		free(bitmap1);
-		bitmap1 = LoadBitmapFile("data_atari/logo2", &bitmapHeader1, bitmapPalette1);
+		bitmap1 = LoadBitmapFile("data/logo2", &bitmapHeader1, bitmapPalette1);
 		
 		ClearScreen();
 		DrawBitmap4bCenter(bitmap1, &bitmapHeader1);
@@ -112,7 +112,7 @@ void switchIntroScreen()
 	case 3:
 	{
 		free(bitmap1);
-		bitmap1 = LoadBitmapFile("data_atari/logo3", &bitmapHeader1, bitmapPalette1);
+		bitmap1 = LoadBitmapFile("data/logo3", &bitmapHeader1, bitmapPalette1);
 		
 		ClearScreen();
 		DrawBitmap4bCenter(bitmap1, &bitmapHeader1);
@@ -256,6 +256,9 @@ void getDeltaTime()
 
 void main_supervisor() 
 {
+	//turn off cursor
+	Cursconf(0, 0);
+
 	int32_t key = 0;
     int i;
 	readPalette(systemPalette);
@@ -289,7 +292,7 @@ void main_supervisor()
 
 
 
-    bitmap1 = LoadBitmapFile("data_atari/logo1",&bitmapHeader1, bitmapPalette1);
+    bitmap1 = LoadBitmapFile("data/logo1",&bitmapHeader1, bitmapPalette1);
 	
 	planes = framebuffer_get_pointer();
    
@@ -305,7 +308,7 @@ void main_supervisor()
     DrawBitmap4bCenter(bitmap1, &bitmapHeader1);
 
 
-	paletteBitmap = LoadBitmapFile("data_atari/palette", &paletteHeader, palettePalette);
+	paletteBitmap = LoadBitmapFile("data/palette", &paletteHeader, palettePalette);
 
 	//process paletter from an image
 	for(int i=0;i<16;i++)
@@ -340,6 +343,7 @@ void main_supervisor()
 
 	//Setpalette(grayColors);
 	//DrawColorMap(mapHigh);
+
 
 	printf("\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n");
 
@@ -495,8 +499,10 @@ void main_supervisor()
 
 			//draw crosshair
 			//draw only even lines 
-			crossHairX = ( (160 + (cx / 10)) / 16 );
-			crossHairY = ( YSIZEODD*2 + (cy / 5) )/2;
+			crossHairX = ( (160 + (cx / 50)) / 16 );
+			crossHairY = ( YSIZEODD*2 + (cy / 25) )/2;
+			//crossHairX = ( (160 + (cx / 10)) / 16 );
+			//crossHairY = ( YSIZEODD*2 + (cy / 5) )/2;
 			if(crossHairX > 2*80)
 			{
 				crossHairX = 0;
@@ -518,6 +524,7 @@ void main_supervisor()
 				
 			//printf("%d	%d\r", p1y, (p1y / 256 + 1) % MAPLENGTH);
 			printf("SC:%d  SP:%d  RH:%d  T:%d\r", points, velocity, relativeHeight, levelTime);
+			
 			fflush(stdout);
 			//IKBD_Flush();
 			Vsync();
@@ -587,7 +594,7 @@ void main_supervisor()
 			else if(endScreen)
 			{
 				
-				if(points < 1100000)
+				if(points < 1000000)
 				{
 					ClearScreen();
 
@@ -637,7 +644,7 @@ void main_supervisor()
 				else
 				{
 					free(bitmap1);
-					bitmap1 = LoadBitmapFile("data_atari/finish", &bitmapHeader1, bitmapPalette1);
+					bitmap1 = LoadBitmapFile("data/finish", &bitmapHeader1, bitmapPalette1);
 					
 					ClearScreen();
 					DrawBitmap4bCenter(bitmap1, &bitmapHeader1);
@@ -697,7 +704,7 @@ void main_supervisor()
 			
 			if(p1y > 11*256 && velocityDenom < 3*255)
 			{
-				velocityDenom = velocityDenom + 4;
+				velocityDenom = velocityDenom + 8;
 			}
 			else if(velocityDenom >= 3*255)
 			{
@@ -719,6 +726,9 @@ void main_supervisor()
 	IKBD_Uninstall();
 
 	Setpalette(systemPalette);
+
+	
+	Cursconf(1, 0);
 }
 
 int main(int argc, char **argv)

@@ -157,7 +157,7 @@ void ProcessPlayerInputAtari()
 			velocity = 0;
 		}
 
-		p1yf += lowerDelta*velocity/128;
+		p1yf += lowerDelta*velocity/velocityDenom;
 
 
 

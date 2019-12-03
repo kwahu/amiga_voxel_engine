@@ -904,7 +904,7 @@ void engineGsLoop(void)
 		}
 		else if(endScreen)
 		{
-			if(points < 1100000)
+			if(points < 1000000)
 			{
 				ClearBuffor();
 				for (int i = 0; i < 16; i++)
@@ -1220,8 +1220,10 @@ void engineGsLoop(void)
 
 		//draw crosshair
 					//draw only even lines 
-			crossHairX = ( (160 + (cx / 150)) / 16 );
-			crossHairY = ( 110 + (cy / 200) )/2;
+			crossHairX = ( (160 + (cx / 750)) / 16 );
+			crossHairY = ( 110 + (cy / 1000) )/2;
+			//crossHairX = ( (160 + (cx / 150)) / 16 );
+			//crossHairY = ( 110 + (cy / 200) )/2;
 			DrawPixel( crossHairX, crossHairY*2 + 4, 0);
 			DrawPixel( crossHairX, crossHairY*2 - 4, 0);
 
