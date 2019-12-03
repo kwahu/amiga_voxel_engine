@@ -559,10 +559,17 @@ void main_supervisor()
 				cx = 0;
 				cy = 0;
 				levelTime = 0;
+				
 				velocityDenom = 128;
-				printf("You are dead! Press fire to try again!\r");
-				fflush(stdout);
 
+				Cursconf(1, 0);
+				
+							
+				printf("You are dead! Press fire to try again!\r");
+				
+				fflush(stdout);
+				
+				
 				char cont = 0;
 				while(!cont)
 				{
@@ -576,13 +583,15 @@ void main_supervisor()
 						exitflag = 1;
 						cont = 1;
 					}
+					
 
 				}
+
+				Cursconf(0, 0);
+
 				lastTime = timerGetPrec();
 
 
-
-				ClearScreen();
 				for(int i=0;i<16;i++)
 				{
 					bitmapPalette[i] = ((palettePalette[i*4+2]>>5) << 8) +
@@ -611,6 +620,8 @@ void main_supervisor()
 					levelTime = 0;
 					velocityDenom = 128;
 					endScreen = 0;
+					
+					Cursconf(1, 0);
 					printf("You failed! Press fire to try again!\r");
 					fflush(stdout);
 
@@ -631,7 +642,8 @@ void main_supervisor()
 					}
 					lastTime = timerGetPrec();
 
-
+					Cursconf(0, 0);
+				
 
 					ClearScreen();
 					for(int i=0;i<16;i++)
