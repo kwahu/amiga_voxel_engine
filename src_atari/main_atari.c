@@ -501,12 +501,10 @@ void main_supervisor()
 
 			//draw crosshair
 			//draw only even lines 
-			crossHairX = 160 + (cx / 1000);
-			crossHairY = 80 + (cy / 1000) ;
+			crossHairX = 160 + (cx / 400);
+			crossHairY = 90 + (cy / 400) ;
 			//crossHairX = ( (160 + (cx / 10)) / 16 );
 			//crossHairY = ( YSIZEODD*2 + (cy / 5) )/2;
-			//DrawPixel( crossHairX, crossHairY*2 + 4, 0);
-			//DrawPixel( crossHairX, crossHairY*2 - 4, 0);
 			
 			WORD spriteIndexX = 1;
 			WORD spriteIndexY = 1;
@@ -527,8 +525,10 @@ void main_supervisor()
 				spriteIndexY = 2;
 			}
 			
-			DrawSprite4b(ship, &shipHeader, crossHairX, crossHairY,
-						 spriteIndexX, spriteIndexY, 48, 48, 15);
+			DrawPixel( crossHairX, crossHairY + 4, 0);
+			DrawPixel( crossHairX, crossHairY - 4, 0);
+			DrawSprite4b(ship, &shipHeader, 160, 100,
+						 spriteIndexX, spriteIndexY, 48, 48, 3);
 
 			//printf("%d	%d\r", p1y, (p1y / 256 + 1) % MAPLENGTH);
 			printf("SC:%d  SP:%d  RH:%d  T:%d\r", points, velocity, relativeHeight, levelTime);

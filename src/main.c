@@ -1226,8 +1226,8 @@ void engineGsLoop(void)
 
 			
 					//draw only even lines 
-			crossHairX =  (160 + (cx / 1000));
-			crossHairY = ( 126 + (cy / 1000) );
+			crossHairX =  (160 + (cx / 400));
+			crossHairY = ( 130 + (cy / 400) );
 
 			WORD spriteIndexX = 1;
 			WORD spriteIndexY = 1;
@@ -1250,13 +1250,13 @@ void engineGsLoop(void)
 			
 			//crossHairX = ( (160 + (cx / 150)) / 16 );
 			//crossHairY = ( 110 + (cy / 200) )/2;
-			//DrawPixel( crossHairX, crossHairY*2 + 4, 0);
-			//DrawPixel( crossHairX, crossHairY*2 - 4, 0);
 
 			//DrawSprite4b(ship, &shipHeader, crossHairX, crossHairY,
 			//			 spriteIndexX, spriteIndexY, 32, 32, 11);
-			DrawSprite4b(ship, &shipHeader, crossHairX, crossHairY,
-						 spriteIndexX, spriteIndexY, 48, 48, 15);
+			DrawPixel( crossHairX, crossHairY + 4, 0);
+			DrawPixel( crossHairX, crossHairY - 4, 0);
+			DrawSprite4b(ship, &shipHeader, 160, 140,
+						 spriteIndexX, spriteIndexY, 48, 48, 3);
 			//DrawSprite4b(ship, &shipHeader, crossHairX, crossHairY,
 			//			 spriteIndexX, spriteIndexY, 64, 64, 6);
 

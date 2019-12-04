@@ -3,10 +3,18 @@
 
 void DrawPixel(UWORD x, UWORD y, UBYTE color)
 {
-  plane1W[y * PLANEWIDTHWORD + x] = 0b1000100110010001;
-  plane2W[y * PLANEWIDTHWORD + x] = 0b1000100110010001;
-  plane3W[y * PLANEWIDTHWORD + x] = 0b1000100110010001;
-  plane4W[y * PLANEWIDTHWORD + x] = 0b1000100110010001;
+  UWORD posX = x/16;
+  UWORD leftGap = x - posX*16;
+  UWORD rightGap = 16 - leftGap;
+  plane1W[y * PLANEWIDTHWORD + posX] = (0b1000100110010001 >> leftGap) + (plane1W[y * PLANEWIDTHWORD + posX] & (0b1111111111111111 << rightGap));
+  plane2W[y * PLANEWIDTHWORD + posX] = (0b1000100110010001 >> leftGap) + (plane2W[y * PLANEWIDTHWORD + posX] & (0b1111111111111111 << rightGap));
+  plane3W[y * PLANEWIDTHWORD + posX] = (0b1000100110010001 >> leftGap) + (plane3W[y * PLANEWIDTHWORD + posX] & (0b1111111111111111 << rightGap));
+  plane4W[y * PLANEWIDTHWORD + posX] = (0b1000100110010001 >> leftGap) + (plane4W[y * PLANEWIDTHWORD + posX] & (0b1111111111111111 << rightGap));
+  
+  plane1W[y * PLANEWIDTHWORD + posX + 1] = (0b1000100110010001 << rightGap) + (plane1W[y * PLANEWIDTHWORD + posX + 1] & (0b1111111111111111 >> leftGap));
+  plane2W[y * PLANEWIDTHWORD + posX + 1] = (0b1000100110010001 << rightGap) + (plane2W[y * PLANEWIDTHWORD + posX + 1] & (0b1111111111111111 >> leftGap));
+  plane3W[y * PLANEWIDTHWORD + posX + 1] = (0b1000100110010001 << rightGap) + (plane3W[y * PLANEWIDTHWORD + posX + 1] & (0b1111111111111111 >> leftGap));
+  plane4W[y * PLANEWIDTHWORD + posX + 1] = (0b1000100110010001 << rightGap) + (plane4W[y * PLANEWIDTHWORD + posX + 1] & (0b1111111111111111 >> leftGap));
 }
 
 void DrawPixelWord(UWORD x, UWORD y, UBYTE color)
