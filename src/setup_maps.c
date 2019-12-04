@@ -35,17 +35,17 @@ void LoadMap(const char *heightName, const char *colorName,
 }
 void SetupMaps()
 {
-	LoadMap("data/height11", "data/color11", mapSource[0]);mapLoaded0 = 1;
-	LoadMap("data/height10", "data/color10", mapSource[1]);mapLoaded1=1;
-	LoadMap("data/height9", "data/color9", mapSource[2]);mapLoaded2=1;
-	LoadMap("data/height8", "data/color8", mapSource[3]);mapLoaded3=1;
-	LoadMap("data/height7", "data/color7", mapSource[4]);mapLoaded4=1;
-	LoadMap("data/height6", "data/color6", mapSource[5]);mapLoaded5=1;
-	LoadMap("data/height5", "data/color5", mapSource[6]);mapLoaded6=1;
-	LoadMap("data/height4", "data/color4", mapSource[7]);mapLoaded7=1;
-	LoadMap("data/height3", "data/color3", mapSource[8]);mapLoaded8=1;
-	LoadMap("data/height7", "data/color7", mapSource[9]);mapLoaded9=1;
-	LoadMap("data/height1", "data/color1", mapSource[10]);mapLoaded10=1;
+	LoadMap("data/h11", "data/c11", mapSource[0]);mapLoaded0 = 1;
+	LoadMap("data/h10", "data/c10", mapSource[1]);mapLoaded1=1;
+	LoadMap("data/h9", "data/c9", mapSource[2]);mapLoaded2=1;
+	LoadMap("data/h8", "data/c8", mapSource[3]);mapLoaded3=1;
+	LoadMap("data/h7", "data/c7", mapSource[4]);mapLoaded4=1;
+	LoadMap("data/h6", "data/c6", mapSource[5]);mapLoaded5=1;
+	LoadMap("data/h5", "data/c5", mapSource[6]);mapLoaded6=1;
+	LoadMap("data/h4", "data/c4", mapSource[7]);mapLoaded7=1;
+	LoadMap("data/h3", "data/c3", mapSource[8]);mapLoaded8=1;
+	LoadMap("data/h7", "data/c7", mapSource[9]);mapLoaded9=1;
+	LoadMap("data/h1", "data/c1", mapSource[10]);mapLoaded10=1;
 
 	//prepare starting map
 	CopyMapWord(mapSource[0], mapHigh);

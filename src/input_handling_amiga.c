@@ -99,15 +99,15 @@ void ProcessPlayerInput()
 
 	if (joyCheck(JOY1_RIGHT))
 	{
-		cx += deltaTime / 100;
+		cx += deltaTime / 60;
 	}
 	else if (joyCheck(JOY1_LEFT))
 	{
-		cx -= deltaTime / 100;
+		cx -= deltaTime / 60;
 	}
 	else if (cx != 0)
 	{
-		cx = cx - cx / ((LONG)(deltaTime) / 1000);
+		cx = cx - cx / ((LONG)(deltaTime) / 2000);
 	}
 
 	if (cx > 0x4000)
@@ -131,7 +131,7 @@ void ProcessPlayerInput()
 	}
 	else if (cy != 0)
 	{
-		cy = cy - cy / ((LONG)(deltaTime) / 1000);
+		cy = cy - cy / ((LONG)(deltaTime) / 2000);
 	}
 
 	ULONG lowerDelta = (deltaTime/10000);

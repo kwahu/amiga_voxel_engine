@@ -83,7 +83,7 @@ void switchIntroScreen()
 	{
 		free(bitmap1);
 		systemUse();
-		bitmap1 = LoadBitmapFile("data/logo2", &bitmapHeader1, bitmapPalette1);
+		bitmap1 = LoadBitmapFile("data/l2", &bitmapHeader1, bitmapPalette1);
 		systemUnuse();
 		
 		ClearBuffor();
@@ -103,7 +103,7 @@ void switchIntroScreen()
 	{
 		free(bitmap1);
 		systemUse();
-		bitmap1 = LoadBitmapFile("data/logo3", &bitmapHeader1, bitmapPalette1);
+		bitmap1 = LoadBitmapFile("data/l3", &bitmapHeader1, bitmapPalette1);
 		systemUnuse();
 		ClearBuffor();
 		DrawBitmap4bCenter(bitmap1, &bitmapHeader1);
@@ -429,8 +429,11 @@ void engineGsCreate(void)
 								   TAG_SIMPLEBUFFER_BITMAP_FLAGS, BMF_CLEAR,
 								   TAG_DONE);
 
-	bitmap1 = LoadBitmapFile("data/logo1", &bitmapHeader1, bitmapPalette1);
-	paletteBitmap = LoadBitmapFile("data/palette", &paletteHeader, palettePalette);
+	//ship = LoadBitmapFile("data/icar32", &shipHeader, palettePalette);
+	ship = LoadBitmapFile("data/icar48", &shipHeader, palettePalette);
+	//ship = LoadBitmapFile("data/icar", &shipHeader, palettePalette);
+	bitmap1 = LoadBitmapFile("data/l1", &bitmapHeader1, bitmapPalette1);
+	paletteBitmap = LoadBitmapFile("data/plt", &paletteHeader, palettePalette);
 
 	//process paletter from an image
 	for (int i = 0; i < 16; i++)
@@ -448,7 +451,7 @@ void engineGsCreate(void)
 	memcpy(s_pVPort->pPalette, bitmapPalette, 16 * sizeof(UWORD));
 	viewLoad(s_pView);
 	// Load font
-	s_pMenuFont = fontCreate("data/silkscreen.fnt");
+	s_pMenuFont = fontCreate("data/ss.fnt");
 
 	p1xf = 60 * 100;
 	p1yf = 0;
@@ -594,7 +597,7 @@ void engineGsLoop(void)
 		{
 			free(bitmap1);
 			systemUse();
-			bitmap1 = LoadBitmapFile("data/menu0", &bitmapHeader1, bitmapPalette1);
+			bitmap1 = LoadBitmapFile("data/m0", &bitmapHeader1, bitmapPalette1);
 			systemUnuse();
 			ClearBuffor();
 			DrawBitmap4bCenter(bitmap1, &bitmapHeader1);
@@ -628,7 +631,7 @@ void engineGsLoop(void)
 							
 							free(bitmap1);
 							systemUse();
-							bitmap1 = LoadBitmapFile("data/menu1", &bitmapHeader1, bitmapPalette1);
+							bitmap1 = LoadBitmapFile("data/m1", &bitmapHeader1, bitmapPalette1);
 							systemUnuse();
 							ClearBuffor();
 							DrawBitmap4bCenter(bitmap1, &bitmapHeader1);
@@ -651,7 +654,7 @@ void engineGsLoop(void)
 							
 							free(bitmap1);
 							systemUse();
-							bitmap1 = LoadBitmapFile("data/menu2", &bitmapHeader1, bitmapPalette1);
+							bitmap1 = LoadBitmapFile("data/m2", &bitmapHeader1, bitmapPalette1);
 							systemUnuse();
 							ClearBuffor();
 							DrawBitmap4bCenter(bitmap1, &bitmapHeader1);
@@ -674,7 +677,7 @@ void engineGsLoop(void)
 
 							free(bitmap1);
 							systemUse();
-							bitmap1 = LoadBitmapFile("data/message", &bitmapHeader1, bitmapPalette1);
+							bitmap1 = LoadBitmapFile("data/msg", &bitmapHeader1, bitmapPalette1);
 							systemUnuse();
 							ClearBuffor();
 							DrawBitmap4bCenter(bitmap1, &bitmapHeader1);
@@ -1013,7 +1016,7 @@ void engineGsLoop(void)
 			{
 				free(bitmap1);
 				systemUse();
-				bitmap1 = LoadBitmapFile("data/finish", &bitmapHeader1, bitmapPalette1);
+				bitmap1 = LoadBitmapFile("data/fin", &bitmapHeader1, bitmapPalette1);
 				systemUnuse();
 				ClearBuffor();
 				DrawBitmap4bCenter(bitmap1, &bitmapHeader1);
@@ -1219,13 +1222,43 @@ void engineGsLoop(void)
 			RenderQuality();
 
 		//draw crosshair
+			
+
+			
 					//draw only even lines 
-			crossHairX = ( (160 + (cx / 750)) / 16 );
-			crossHairY = ( 110 + (cy / 1000) )/2;
+			crossHairX =  (160 + (cx / 1000));
+			crossHairY = ( 126 + (cy / 1000) );
+
+			WORD spriteIndexX = 1;
+			WORD spriteIndexY = 1;
+			if(cx > 8000)
+			{
+				spriteIndexX = 2;
+			}
+			else if(cx < -8000)
+			{
+				spriteIndexX = 0;
+			}
+			if(cy > 4000)
+			{
+				spriteIndexY = 0;
+			}
+			else if(cy < -4000)
+			{
+				spriteIndexY = 2;
+			}
+			
 			//crossHairX = ( (160 + (cx / 150)) / 16 );
 			//crossHairY = ( 110 + (cy / 200) )/2;
-			DrawPixel( crossHairX, crossHairY*2 + 4, 0);
-			DrawPixel( crossHairX, crossHairY*2 - 4, 0);
+			//DrawPixel( crossHairX, crossHairY*2 + 4, 0);
+			//DrawPixel( crossHairX, crossHairY*2 - 4, 0);
+
+			//DrawSprite4b(ship, &shipHeader, crossHairX, crossHairY,
+			//			 spriteIndexX, spriteIndexY, 32, 32, 11);
+			DrawSprite4b(ship, &shipHeader, crossHairX, crossHairY,
+						 spriteIndexX, spriteIndexY, 48, 48, 15);
+			//DrawSprite4b(ship, &shipHeader, crossHairX, crossHairY,
+			//			 spriteIndexX, spriteIndexY, 64, 64, 6);
 
 			//DrawBitmap8b(bitmap1, &bitmapHeader1);
 

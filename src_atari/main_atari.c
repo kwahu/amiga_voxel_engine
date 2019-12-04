@@ -97,7 +97,7 @@ void switchIntroScreen()
 	case 2:
 	{
 		free(bitmap1);
-		bitmap1 = LoadBitmapFile("data/logo2", &bitmapHeader1, bitmapPalette1);
+		bitmap1 = LoadBitmapFile("data/l2", &bitmapHeader1, bitmapPalette1);
 		
 		ClearScreen();
 		DrawBitmap4bCenter(bitmap1, &bitmapHeader1);
@@ -112,7 +112,7 @@ void switchIntroScreen()
 	case 3:
 	{
 		free(bitmap1);
-		bitmap1 = LoadBitmapFile("data/logo3", &bitmapHeader1, bitmapPalette1);
+		bitmap1 = LoadBitmapFile("data/l3", &bitmapHeader1, bitmapPalette1);
 		
 		ClearScreen();
 		DrawBitmap4bCenter(bitmap1, &bitmapHeader1);
@@ -292,7 +292,9 @@ void main_supervisor()
 
 
 
-    bitmap1 = LoadBitmapFile("data/logo1",&bitmapHeader1, bitmapPalette1);
+    bitmap1 = LoadBitmapFile("data/l1",&bitmapHeader1, bitmapPalette1);
+	
+    ship = LoadBitmapFile("data/icar48",&shipHeader, palettePalette);
 	
 	planes = framebuffer_get_pointer();
    
@@ -308,7 +310,7 @@ void main_supervisor()
     DrawBitmap4bCenter(bitmap1, &bitmapHeader1);
 
 
-	paletteBitmap = LoadBitmapFile("data/palette", &paletteHeader, palettePalette);
+	paletteBitmap = LoadBitmapFile("data/plt", &paletteHeader, palettePalette);
 
 	//process paletter from an image
 	for(int i=0;i<16;i++)
@@ -387,7 +389,7 @@ void main_supervisor()
 			if(infoScreen == 0)
 			{
 				free(bitmap1);
-				bitmap1 = LoadBitmapFile("data_atari/intro1_atari", &bitmapHeader1, bitmapPalette1);
+				bitmap1 = LoadBitmapFile("data_a/i1", &bitmapHeader1, bitmapPalette1);
 				
 				ClearScreen();
 				DrawBitmap4bCenter(bitmap1, &bitmapHeader1);
@@ -413,7 +415,7 @@ void main_supervisor()
 							case 1:
 							{
 								free(bitmap1);
-								bitmap1 = LoadBitmapFile("data_atari/intro2_atari", &bitmapHeader1, bitmapPalette1);
+								bitmap1 = LoadBitmapFile("data_a/i2", &bitmapHeader1, bitmapPalette1);
 								
 								ClearScreen();
 								DrawBitmap4bCenter(bitmap1, &bitmapHeader1);
@@ -429,7 +431,7 @@ void main_supervisor()
 							case 2:
 							{
 								free(bitmap1);
-								bitmap1 = LoadBitmapFile("data_atari/intro3_atari", &bitmapHeader1, bitmapPalette1);
+								bitmap1 = LoadBitmapFile("data_a/i3", &bitmapHeader1, bitmapPalette1);
 								
 								ClearScreen();
 								DrawBitmap4bCenter(bitmap1, &bitmapHeader1);
@@ -445,7 +447,7 @@ void main_supervisor()
 							case 3:
 							{
 								free(bitmap1);
-								bitmap1 = LoadBitmapFile("data_atari/intro4_atari", &bitmapHeader1, bitmapPalette1);
+								bitmap1 = LoadBitmapFile("data_a/i4", &bitmapHeader1, bitmapPalette1);
 								
 								ClearScreen();
 								DrawBitmap4bCenter(bitmap1, &bitmapHeader1);
@@ -499,29 +501,35 @@ void main_supervisor()
 
 			//draw crosshair
 			//draw only even lines 
-			crossHairX = ( (160 + (cx / 50)) / 16 );
-			crossHairY = ( YSIZEODD*2 + (cy / 25) )/2;
+			crossHairX = 160 + (cx / 1000);
+			crossHairY = 80 + (cy / 1000) ;
 			//crossHairX = ( (160 + (cx / 10)) / 16 );
 			//crossHairY = ( YSIZEODD*2 + (cy / 5) )/2;
-			if(crossHairX > 2*80)
+			//DrawPixel( crossHairX, crossHairY*2 + 4, 0);
+			//DrawPixel( crossHairX, crossHairY*2 - 4, 0);
+			
+			WORD spriteIndexX = 1;
+			WORD spriteIndexY = 1;
+			if(cx > 8000)
 			{
-				crossHairX = 0;
+				spriteIndexX = 2;
 			}
-			if(crossHairX > 76)
+			else if(cx < -8000)
 			{
-				crossHairX = 76;
+				spriteIndexX = 0;
 			}
-			if(crossHairY - 2 > 2*100)
+			if(cy > 4000)
 			{
-				crossHairY = 2;
+				spriteIndexY = 0;
 			}
-			if(crossHairY + 2 > 100)
+			else if(cy < -4000)
 			{
-				crossHairY = 100 - 2;
+				spriteIndexY = 2;
 			}
-			DrawPixel( crossHairX, crossHairY*2 + 4, 0);
-			DrawPixel( crossHairX, crossHairY*2 - 4, 0);
-				
+			
+			DrawSprite4b(ship, &shipHeader, crossHairX, crossHairY,
+						 spriteIndexX, spriteIndexY, 48, 48, 15);
+
 			//printf("%d	%d\r", p1y, (p1y / 256 + 1) % MAPLENGTH);
 			printf("SC:%d  SP:%d  RH:%d  T:%d\r", points, velocity, relativeHeight, levelTime);
 			
@@ -587,6 +595,7 @@ void main_supervisor()
 
 				}
 
+				printf("                                      \r");
 				Cursconf(0, 0);
 
 				lastTime = timerGetPrec();
@@ -642,6 +651,7 @@ void main_supervisor()
 					}
 					lastTime = timerGetPrec();
 
+					printf("                                      \r");
 					Cursconf(0, 0);
 				
 
@@ -656,7 +666,7 @@ void main_supervisor()
 				else
 				{
 					free(bitmap1);
-					bitmap1 = LoadBitmapFile("data/finish", &bitmapHeader1, bitmapPalette1);
+					bitmap1 = LoadBitmapFile("data/fin", &bitmapHeader1, bitmapPalette1);
 					
 					ClearScreen();
 					DrawBitmap4bCenter(bitmap1, &bitmapHeader1);

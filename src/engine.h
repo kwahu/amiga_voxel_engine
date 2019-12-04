@@ -113,8 +113,8 @@ typedef struct tagBITMAPINFOHEADER
     ULONG biClrImportant;  //number of colors that are important
 } BITMAPINFOHEADER;
 
-BITMAPINFOHEADER bitmapHeader1, bitmapHeader2, bitmapHeader3, bitmapHeader4, paletteHeader;
-unsigned char *bitmap1, *paletteBitmap;
+BITMAPINFOHEADER bitmapHeader1, bitmapHeader2, bitmapHeader3, bitmapHeader4, paletteHeader, shipHeader;
+unsigned char *bitmap1, *paletteBitmap, *ship;
 unsigned char bitmapPalette1[16 * 4], bitmapPalette2[16 * 4], bitmapPalette3[16 * 4], bitmapPalette4[16 * 4], palettePalette[16 * 4];
 
 UBYTE skyColor = 33;

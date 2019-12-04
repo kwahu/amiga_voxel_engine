@@ -13,6 +13,186 @@ void ClearBuffor()
 		
 }
 
+#define UnpackSpriteByte(byte, value, b1, m1, n1, b2, m2, n2, howMany)  \
+if((howMany) < 0)						\
+{											\
+	(m1) = (m2) = 0;							\
+	(n1) = (n2) = 1;							\
+} 											\												
+else										\
+{											\
+	(b2) = (byte) & 0x0F;						\
+	(m2) = ((b2) ^ (value));			\
+	if((m2) > 0)								\
+	{										\
+		(m2) = 1;								\
+	}										\
+	(n2) = 1 - (m2);							\
+	(b1) = (byte) >> 4;							\
+	(m1) = ((b1) ^ (value));			\
+	if((m1) > 0)								\
+	{										\
+		(m1) = 1;								\
+	}										\
+	(n1) = 1 - (m1);						\
+}										\
+(howMany)++;									
+
+#define BlendSprite(planeValue, planeShift, b, m, n, bitIndex)	\
+(((n)*(((planeValue) >> (planeShift)) & 1) + (m)*(((b) >> (bitIndex)) & 1)) << (planeShift))	
+
+void DrawSprite4b(unsigned char *bLogo, BITMAPINFOHEADER *bhLogo, 
+					UWORD posX, UWORD posY, WORD spriteIndexX, WORD spriteIndexY,
+					UWORD spriteSizeX, UWORD spriteSizeY, unsigned char backgroundValue)
+{
+	UWORD position;
+	unsigned char b1, b2, b3, b4, b5, b6, b7, b8, b9, b10, b11, b12, b13, b14, b15, b16;
+	unsigned char m1, m2, m3, m4, m5, m6, m7, m8, m9, m10, m11, m12, m13, m14, m15, m16;
+	unsigned char n1, n2, n3, n4, n5, n6, n7, n8, n9, n10, n11, n12, n13, n14, n15, n16;
+	unsigned char a1, a2, a3, a4, a5, a6, a7, a8, a9, a10, a11, a12, a13, a14, a15, a16;
+	unsigned char byte;
+	ULONG xx, yy;
+
+	WORD planePosX = posX/16;
+	BYTE leftGap = posX - planePosX*16;
+
+	UBYTE xSteps = (spriteSizeX/16);
+
+
+	//position = startOffset;
+
+	UWORD baseX = spriteIndexX*spriteSizeX/16;
+	UWORD baseY = spriteIndexY*spriteSizeY;
+
+	for (ULONG y =baseY+spriteSizeY; y > baseY; y--)
+	{
+		yy = (y - 1) * bhLogo->biWidth/2;
+		position = (spriteSizeY/2 - (y - baseY - posY)) * PLANEWIDTHWORD + planePosX - spriteSizeX/32;
+
+		BYTE howManyPixels = -leftGap/2;
+
+		for (ULONG x = 0; x <= xSteps; x++)
+		{
+			if(x < xSteps)
+			{
+				xx = ((baseX + x) * 8 - (leftGap/2));
+				
+			}
+			else
+			{
+				howManyPixels = 0x80 - leftGap/2;
+				xx = ((baseX + x) * 8 - (leftGap/2));
+			}
+			
+
+			byte = bLogo[xx + yy];
+			
+			UnpackSpriteByte(byte, backgroundValue, b1, m1, n1, b2, m2, n2, howManyPixels)
+			++xx;
+			byte = bLogo[xx + yy];
+			
+			UnpackSpriteByte(byte, backgroundValue, b3, m3, n3, b4, m4, n4, howManyPixels)
+			++xx;
+			byte = bLogo[xx + yy];
+			
+			UnpackSpriteByte(byte, backgroundValue, b5, m5, n5, b6, m6, n6, howManyPixels)
+			++xx;
+			byte = bLogo[xx + yy];
+			
+			UnpackSpriteByte(byte, backgroundValue, b7, m7, n7, b8, m8, n8, howManyPixels)
+			++xx;
+			byte = bLogo[xx + yy];
+			
+			UnpackSpriteByte(byte, backgroundValue, b9, m9, n9, b10, m10, n10, howManyPixels)
+			++xx;
+			byte = bLogo[xx + yy];
+			
+			UnpackSpriteByte(byte, backgroundValue, b11, m11, n11, b12, m12, n12, howManyPixels)
+			++xx;
+			byte = bLogo[xx + yy];
+			
+			UnpackSpriteByte(byte, backgroundValue, b13, m13, n13, b14, m14, n14, howManyPixels)
+			++xx;
+			byte = bLogo[xx + yy];
+			
+			UnpackSpriteByte(byte, backgroundValue, b15, m15, n15, b16, m16, n16, howManyPixels)
+
+			WORD plane1Value = plane1W[position];
+			WORD plane2Value = plane2W[position];
+			WORD plane3Value = plane3W[position];
+			WORD plane4Value = plane4W[position];
+
+			plane1W[position] = BlendSprite(plane1Value, 15, b1, m1, n1, 0) +
+								BlendSprite(plane1Value, 14, b2, m2, n2, 0) +
+								BlendSprite(plane1Value, 13, b3, m3, n3, 0) +
+								BlendSprite(plane1Value, 12, b4, m4, n4, 0) +
+								BlendSprite(plane1Value, 11, b5, m5, n5, 0) +
+								BlendSprite(plane1Value, 10, b6, m6, n6, 0) +
+								BlendSprite(plane1Value, 9, b7, m7, n7, 0) +
+								BlendSprite(plane1Value, 8, b8, m8, n8, 0) +
+								BlendSprite(plane1Value, 7, b9, m9, n9, 0) +
+								BlendSprite(plane1Value, 6, b10, m10, n10, 0) +
+								BlendSprite(plane1Value, 5, b11, m11, n11, 0) +
+								BlendSprite(plane1Value, 4, b12, m12, n12, 0) +
+								BlendSprite(plane1Value, 3, b13, m13, n13, 0) +
+								BlendSprite(plane1Value, 2, b14, m14, n14, 0) +
+								BlendSprite(plane1Value, 1, b15, m15, n15, 0) +
+								BlendSprite(plane1Value, 0, b16, m16, n16, 0);
+			plane2W[position] = BlendSprite(plane2Value, 15, b1, m1, n1, 1) +
+								BlendSprite(plane2Value, 14, b2, m2, n2, 1) +
+								BlendSprite(plane2Value, 13, b3, m3, n3, 1) +
+								BlendSprite(plane2Value, 12, b4, m4, n4, 1) +
+								BlendSprite(plane2Value, 11, b5, m5, n5, 1) +
+								BlendSprite(plane2Value, 10, b6, m6, n6, 1) +
+								BlendSprite(plane2Value, 9, b7, m7, n7, 1) +
+								BlendSprite(plane2Value, 8, b8, m8, n8, 1) +
+								BlendSprite(plane2Value, 7, b9, m9, n9, 1) +
+								BlendSprite(plane2Value, 6, b10, m10, n10, 1) +
+								BlendSprite(plane2Value, 5, b11, m11, n11, 1) +
+								BlendSprite(plane2Value, 4, b12, m12, n12, 1) +
+								BlendSprite(plane2Value, 3, b13, m13, n13, 1) +
+								BlendSprite(plane2Value, 2, b14, m14, n14, 1) +
+								BlendSprite(plane2Value, 1, b15, m15, n15, 1) +
+								BlendSprite(plane2Value, 0, b16, m16, n16, 1);
+			plane3W[position] = BlendSprite(plane3Value, 15, b1, m1, n1, 2) +
+								BlendSprite(plane3Value, 14, b2, m2, n2, 2) +
+								BlendSprite(plane3Value, 13, b3, m3, n3, 2) +
+								BlendSprite(plane3Value, 12, b4, m4, n4, 2) +
+								BlendSprite(plane3Value, 11, b5, m5, n5, 2) +
+								BlendSprite(plane3Value, 10, b6, m6, n6, 2) +
+								BlendSprite(plane3Value, 9, b7, m7, n7, 2) +
+								BlendSprite(plane3Value, 8, b8, m8, n8, 2) +
+								BlendSprite(plane3Value, 7, b9, m9, n9, 2) +
+								BlendSprite(plane3Value, 6, b10, m10, n10, 2) +
+								BlendSprite(plane3Value, 5, b11, m11, n11, 2) +
+								BlendSprite(plane3Value, 4, b12, m12, n12, 2) +
+								BlendSprite(plane3Value, 3, b13, m13, n13, 2) +
+								BlendSprite(plane3Value, 2, b14, m14, n14, 2) +
+								BlendSprite(plane3Value, 1, b15, m15, n15, 2) +
+								BlendSprite(plane3Value, 0, b16, m16, n16, 2);
+			plane4W[position] = BlendSprite(plane4Value, 15, b1, m1, n1, 3) +
+								BlendSprite(plane4Value, 14, b2, m2, n2, 3) +
+								BlendSprite(plane4Value, 13, b3, m3, n3, 3) +
+								BlendSprite(plane4Value, 12, b4, m4, n4, 3) +
+								BlendSprite(plane4Value, 11, b5, m5, n5, 3) +
+								BlendSprite(plane4Value, 10, b6, m6, n6, 3) +
+								BlendSprite(plane4Value, 9, b7, m7, n7, 3) +
+								BlendSprite(plane4Value, 8, b8, m8, n8, 3) +
+								BlendSprite(plane4Value, 7, b9, m9, n9, 3) +
+								BlendSprite(plane4Value, 6, b10, m10, n10, 3) +
+								BlendSprite(plane4Value, 5, b11, m11, n11, 3) +
+								BlendSprite(plane4Value, 4, b12, m12, n12, 3) +
+								BlendSprite(plane4Value, 3, b13, m13, n13, 3) +
+								BlendSprite(plane4Value, 2, b14, m14, n14, 3) +
+								BlendSprite(plane4Value, 1, b15, m15, n15, 3) +
+								BlendSprite(plane4Value, 0, b16, m16, n16, 3);
+			position++;
+			howManyPixels = 0;
+		}
+		position+=PLANEWIDTHWORD;
+	}
+}
+
 void DrawBitmap4b(unsigned char *bLogo, BITMAPINFOHEADER *bhLogo, UWORD offsety)
 {
 	UWORD position;
