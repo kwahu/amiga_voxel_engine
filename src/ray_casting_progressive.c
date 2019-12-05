@@ -1,8 +1,8 @@
 #include "../src/engine.h"
-
+ 
 UBYTE ProcessWord1v6(UBYTE rounds, UBYTE sx, UBYTE sy, UWORD *_tz, UWORD *tzz, UBYTE px, UBYTE py,UBYTE ph,
 UWORD *address1, UWORD *address2, 
-WORD (*rayCastX)[TERRAINDEPTH], WORD (*rayCastY)[TERRAINDEPTH], UWORD (*map)[256])
+WORD (*rayCastX)[TERRAINDEPTH], WORD (*rayCastY)[TERRAINDEPTH], UWORD (*map)[256], UBYTE threshold)
 {
 	UWORD mapValue;
 	WORD slope;
@@ -13,7 +13,7 @@ WORD (*rayCastX)[TERRAINDEPTH], WORD (*rayCastY)[TERRAINDEPTH], UWORD (*map)[256
 
 	sx = sx + 2;
 	tz = tzz[iHor];//set current depth - tz
-	while(tz < renderingDepth)//check depth step by step
+	while(tz < threshold)//check depth step by step
 	{
 		mapValue = map[ (UBYTE)( px + rayCastX[sx][tz] ) ][ (UBYTE)( py + (tz<<renderingDepthStep) ) ];//read color + height
 		th = mapValue;//take just the height
@@ -38,7 +38,7 @@ WORD (*rayCastX)[TERRAINDEPTH], WORD (*rayCastY)[TERRAINDEPTH], UWORD (*map)[256
 }
 UBYTE ProcessWord2v6(UBYTE rounds, UBYTE sx, UBYTE sy, UWORD *_tz, UWORD *tzz, UBYTE px, UBYTE py,UBYTE ph,
 UWORD *address1, UWORD *address2, 
-WORD (*rayCastX)[TERRAINDEPTH], WORD (*rayCastY)[TERRAINDEPTH], UWORD (*map)[256])
+WORD (*rayCastX)[TERRAINDEPTH], WORD (*rayCastY)[TERRAINDEPTH], UWORD (*map)[256], UBYTE threshold)
 {
 	UWORD mapValue;
 	WORD slope;
@@ -54,7 +54,7 @@ WORD (*rayCastX)[TERRAINDEPTH], WORD (*rayCastY)[TERRAINDEPTH], UWORD (*map)[256
 	{
 		
 		tz = tzz[iHor];//set current depth - tz
-		while(tz < renderingDepth)//check depth step by step
+		while(tz < threshold)//check depth step by step
 		{
 			mapValue = map[ (UBYTE)( px + rayCastX[sx][tz] ) ][ (UBYTE)( py + (tz<<renderingDepthStep) ) ];//read color + height
 			th = mapValue;//take just the height
@@ -81,7 +81,7 @@ WORD (*rayCastX)[TERRAINDEPTH], WORD (*rayCastY)[TERRAINDEPTH], UWORD (*map)[256
 }
 UBYTE ProcessWord3v6(UBYTE rounds, UBYTE sx, UBYTE sy, UWORD *_tz, UWORD *tzz, UBYTE px, UBYTE py,UBYTE ph,
 UWORD *address1, UWORD *address2, 
-WORD (*rayCastX)[TERRAINDEPTH], WORD (*rayCastY)[TERRAINDEPTH], UWORD (*map)[256])
+WORD (*rayCastX)[TERRAINDEPTH], WORD (*rayCastY)[TERRAINDEPTH], UWORD (*map)[256], UBYTE threshold)
 {
 	UWORD mapValue;
 	WORD slope;
@@ -98,7 +98,7 @@ WORD (*rayCastX)[TERRAINDEPTH], WORD (*rayCastY)[TERRAINDEPTH], UWORD (*map)[256
 	{
 		
 		tz = tzz[iHor];//set current depth - tz
-		while(tz < renderingDepth)//check depth step by step
+		while(tz < threshold)//check depth step by step
 		{
 			mapValue = map[ (UBYTE)( px + rayCastX[sx][tz] ) ][ (UBYTE)( py + (tz<<renderingDepthStep) ) ];//read color + height
 			th = mapValue;//take just the height

@@ -44,7 +44,7 @@ void ProcessRayCastsProgressiveAtari(WORD (*rayCastX)[TERRAINDEPTH], WORD (*rayC
 		{
 			 if(tz < threshold1)			
 			 {
-				tz = ProcessWord1v6(1,sx,sy,&tz,tzz,px,py,ph,&address1,&address2,rayCastX, rayCastY, map);
+				tz = ProcessWord1v6(1,sx,sy,&tz,tzz,px,py,ph,&address1,&address2,rayCastX, rayCastY, map, threshold1);
 				byte = dither3x2EvenP1[ address1 ];
 				word = (byte<<8) + byte;
 				planes[position] = word;
@@ -78,7 +78,7 @@ void ProcessRayCastsProgressiveAtari(WORD (*rayCastX)[TERRAINDEPTH], WORD (*rayC
 			 }
 			else if(tz < threshold2)			
 			 {
-				tz = ProcessWord2v6(2,sx,sy,&tz,tzz,px,py,ph,&address1,&address2,rayCastX, rayCastY, map);
+				tz = ProcessWord2v6(2,sx,sy,&tz,tzz,px,py,ph,&address1,&address2,rayCastX, rayCastY, map, threshold2);
 
 				word = (dither3x2EvenP1[ address1 ]<<8) + dither3x2EvenP1[ address2 ];
 				planes[position] = word;
@@ -106,7 +106,7 @@ void ProcessRayCastsProgressiveAtari(WORD (*rayCastX)[TERRAINDEPTH], WORD (*rayC
 			 }
 			else if(tz < TERRAINDEPTH)			
 			 {
-				tz = ProcessWord3v6(3,sx,sy,&tz,tzz,px,py,ph,&address1,&address2,rayCastX, rayCastY, map);
+				tz = ProcessWord3v6(3,sx,sy,&tz,tzz,px,py,ph,&address1,&address2,rayCastX, rayCastY, map, TERRAINDEPTH);
 
 				word = (dither3x2EvenP1[ address1 ]<<8) + dither3x2EvenP1[ address2 ];
 				planes[position] = word;
