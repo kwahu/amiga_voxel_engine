@@ -8,7 +8,7 @@ void OverwriteMap()
 
 	for (UWORD x = 0; x < MAPSIZE; x++)
 	{
-		for (UWORD y = lastOverwrittenLine; y < p1y; y++)
+		for (UWORD y = lastOverwrittenLine; y < engine.gameState.shipParams.pZ; y++)
 		{
 			yy = (UBYTE)y ;
 			yyplusone = (yy+1);
@@ -20,5 +20,5 @@ void OverwriteMap()
 			mapHigh[x*2+1][yyplusone] = word;
 		}
 	}
-	lastOverwrittenLine = p1y;
+	lastOverwrittenLine = engine.gameState.shipParams.pZ;
 }

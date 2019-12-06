@@ -11,7 +11,7 @@
 #include "draw_screen_amiga.c"
 //#include "mipmaps.c"
 #include "file_read.c"
-#include "bitmap_filters.c"
+#include "physics.c"
 #include "dithering.c"
 #include "draw_ships.c"
 #include "draw_sprite.c"
@@ -217,12 +217,12 @@ void animateIntro()
 void RecalculateEven()
 {
 	CalculateRayCasts(rayCastXEven, rayCastYEven, XSIZEEVEN, YSIZEEVEN, 2); //było 2
-	deltaTime = 0;
+	engine.deltaTime = 0;
 }
 void RecalculateOdd()
 {
 	CalculateRayCasts(rayCastXOdd, rayCastYOdd, XSIZEODD, YSIZEODD, 1);
-	deltaTime = 0;
+	engine.deltaTime = 0;
 }
 void Recalculate()
 {
@@ -453,13 +453,20 @@ void engineGsCreate(void)
 	// Load font
 	s_pMenuFont = fontCreate("data/ss.fnt");
 
-	p1xf = 60 * 100;
-	p1yf = 0;
-	p1hf = 20 * 100;
+	engine.gameState.shipParams.precX = 60 * 100;
+	engine.gameState.shipParams.precZ = 0;
+	engine.gameState.shipParams.precY = 20 * 100;
+	engine.gameState.shipParams.pX = 0;
+	engine.gameState.shipParams.pZ = 0;
+	engine.gameState.shipParams.pY = 0;
+	engine.gameState.shipParams.dPDenom = 128;
+	engine.gameState.shipParams.dP = 0;
+	engine.gameState.shipParams.ddP = 0;
+	engine.gameState.shipParams.relHeight = 0;
 
-	p2x = 0;
-	p2y = 0;
-	p2h = 10;
+	engine.gameState.crossHairX = 0;
+	engine.gameState.crossHairY = 0;
+
 
 	lastOverwrittenLine = 0;
 
@@ -485,7 +492,7 @@ void engineGsCreate(void)
 	//	pixel[i] = fontCreateTextBitMapFromStr(s_pMenuFont, "1234567890");
 
 	s_pAvgTime = logAvgCreate("perf", 100);
-	levelTime = 0;
+	engine.accTime = 0;
 	screenIndex = 1;
 
 	keyCreate();
@@ -553,7 +560,7 @@ void engineGsCreate(void)
 	vPortWaitForEnd(s_pVPort);
 	CopyFastToChipW(s_pBuffer->pBack);
 
-	lastTime = timerGetPrec();
+	engine.endTime = timerGetPrec();
 	screenDuration = 7500000;
 
 
@@ -568,13 +575,13 @@ void engineGsLoop(void)
 	joyProcess();
 	//	keyProcess();
 	
-	startTime = timerGetPrec();
-	deltaTime = startTime - lastTime;
-	lastTime = startTime;
-	levelTime += deltaTime;
+	engine.startTime = timerGetPrec();
+	engine.deltaTime = engine.startTime - engine.endTime;
+	engine.endTime = engine.startTime;
+	engine.accTime += engine.deltaTime;
 	if (screenIndex > 0)   //turned off
 	{
-		levelTime = 0;
+		engine.accTime = 0;
 		if(screenDuration > 7500000)
 		{
 			screenDuration = 7500000;
@@ -584,7 +591,7 @@ void engineGsLoop(void)
 
 		animateIntro();
 
-		screenDuration -= deltaTime;
+		screenDuration -= engine.deltaTime;
 		if (keyCheck(KEY_ESCAPE))
 		{
 			gameClose();
@@ -729,16 +736,17 @@ void engineGsLoop(void)
 							//vPortWaitForEnd(s_pVPort);
 							CopyFastToChipW(s_pBuffer->pBack);
 							infoScreen = 1;
-							lastTime = timerGetPrec();
-							startTime = timerGetPrec();
-							deltaTime = 0;
-							levelTime = 0;
+							engine.endTime = timerGetPrec();
+							engine.startTime = timerGetPrec();
+							engine.deltaTime = 0;
+							engine.accTime = 0;
 
 							
 							pBitmapVelocityLabel = fontCreateTextBitMapFromStr(s_pMenuFont, "SPEED");
 							pBitmapScoreLabel = fontCreateTextBitMapFromStr(s_pMenuFont, "SCORE");
 							pBitmapTimeLabel = fontCreateTextBitMapFromStr(s_pMenuFont, "TIME");
 							pBitmapHeightLabel = fontCreateTextBitMapFromStr(s_pMenuFont, "RELATIVE HEIGHT");
+
 						} break;
 					}
 				}
@@ -757,12 +765,28 @@ void engineGsLoop(void)
 
 
 
-	//	deltaTime = 0;
-		ProcessPlayerInput();
+	//	engine.deltaTime = 0;
+		
+		engine.gameState = ProcessInput(engine.gameState, engine.deltaTime);
+
+		ULONG lowerDelta = (engine.deltaTime/10000);
+
+		UWORD terrainHeight = getTerrainHeight(engine.gameState.shipParams, mapHigh);
+
+		engine.gameState = updateShipParams(engine.gameState, lowerDelta, terrainHeight);
+
+		LONG addedpoints = (lowerDelta)*(128 - engine.gameState.shipParams.relHeight);
+		if(addedpoints > 0)
+		{
+			points += addedpoints;
+		}
+
+		//ProcessPlayerInput();
+		
 		OverwriteMap(); //this is how we go through many different maps, we just overwrite the main array with new content
 
 		//restart
-		if ((p1h - 3) < (UBYTE)(mapHigh[(UBYTE)(p1x)][(UBYTE)(p1y + 15)]))
+		if ((engine.gameState.shipParams.pY - 3) < (UBYTE)(mapHigh[(UBYTE)(engine.gameState.shipParams.pX)][(UBYTE)(engine.gameState.shipParams.pZ + 15)]))
 		{
 			
 			ClearBuffor();
@@ -779,7 +803,7 @@ void engineGsLoop(void)
 
 			UBYTE lines = 0;
 
-			if(levelTime & 1)
+			if(engine.accTime & 1)
 			{
 				pBitmapInfo[0] = fontCreateTextBitMapFromStr(s_pMenuFont, "You are dead!");
 				pBitmapInfo[1] = fontCreateTextBitMapFromStr(s_pMenuFont, "The Revolt won't have any use of");
@@ -788,7 +812,7 @@ void engineGsLoop(void)
 			}
 			else
 			{
-				switch((levelTime >> 1) % 10)
+				switch((engine.accTime >> 1) % 10)
 				{
 					case 0:
 					{
@@ -877,22 +901,22 @@ void engineGsLoop(void)
 				
 			}
 
-			p1xf = 60 * 100;
-			p1yf = 0;
-			p1hf = 20 * 100;
+			engine.gameState.shipParams.precX = 60 * 100;
+			engine.gameState.shipParams.precZ = 0;
+			engine.gameState.shipParams.precY = 20 * 100;
 			
-			velocity = 0;
-			acceleration = 0;
+			engine.gameState.shipParams.dP = 0;
+			engine.gameState.shipParams.ddP = 0;
 			points = 0;
-			cx = 0;
-			cy = 0;
-			levelTime = 0;
-			deltaTime = 0;
+			engine.gameState.crossHairX = 0;
+			engine.gameState.crossHairY = 0;
+			engine.accTime = 0;
+			engine.deltaTime = 0;
 			lastOverwrittenLine = 0;
-			velocityDenom = 128;
+			engine.gameState.shipParams.dPDenom = 128;
 
 			CopyMapWord(mapSource[0], mapHigh);
-			lastTime = timerGetPrec();
+			engine.endTime = timerGetPrec();
 			
 			for(int i = 0; i < lines; ++i)
 			{
@@ -924,7 +948,7 @@ void engineGsLoop(void)
 				UBYTE lines = 0;
 
 				
-				switch((levelTime) % 4)
+				switch((engine.accTime) % 4)
 				{
 					case 0:
 					{
@@ -983,23 +1007,23 @@ void engineGsLoop(void)
 					
 				}
 
-				p1xf = 60 * 100;
-				p1yf = 0;
-				p1hf = 20 * 100;
+				engine.gameState.shipParams.precX = 60 * 100;
+				engine.gameState.shipParams.precZ = 0;
+				engine.gameState.shipParams.precY = 20 * 100;
 				
-				velocity = 0;
-				acceleration = 0;
+				engine.gameState.shipParams.dP = 0;
+				engine.gameState.shipParams.ddP = 0;
 				points = 0;
-				cx = 0;
-				cy = 0;
-				levelTime = 0;
-				deltaTime = 0;
+				engine.gameState.crossHairX = 0;
+				engine.gameState.crossHairY = 0;
+				engine.accTime = 0;
+				engine.deltaTime = 0;
 				lastOverwrittenLine = 0;
-				velocityDenom = 128;
+				engine.gameState.shipParams.dPDenom = 128;
 				endScreen = 0;
 
 				CopyMapWord(mapSource[0], mapHigh);
-				lastTime = timerGetPrec();
+				engine.endTime = timerGetPrec();
 				
 				for(int i = 0; i < lines; ++i)
 				{
@@ -1048,7 +1072,7 @@ void engineGsLoop(void)
 				UBYTE lines = 0;
 
 				
-				switch((levelTime) % 12)
+				switch((engine.accTime) % 12)
 				{
 					case 0:
 					{
@@ -1168,24 +1192,24 @@ void engineGsLoop(void)
 					
 				}
 
-				p1xf = 60 * 100;
-				p1yf = 0;
-				p1hf = 20 * 100;
+				engine.gameState.shipParams.precX = 60 * 100;
+				engine.gameState.shipParams.precZ = 0;
+				engine.gameState.shipParams.precY = 20 * 100;
 				
-				velocity = 0;
-				acceleration = 0;
+				engine.gameState.shipParams.dP = 0;
+				engine.gameState.shipParams.ddP = 0;
 				points = 0;
-				cx = 0;
-				cy = 0;
-				levelTime = 0;
-				deltaTime = 0;
+				engine.gameState.crossHairX = 0;
+				engine.gameState.crossHairY = 0;
+				engine.accTime = 0;
+				engine.deltaTime = 0;
 				lastOverwrittenLine = 0;
-				velocityDenom = 128;
+				engine.gameState.shipParams.dPDenom = 128;
 				endScreen = 0;
 				infoScreen = 0;
 
 				CopyMapWord(mapSource[0], mapHigh);
-				lastTime = timerGetPrec();
+				engine.endTime = timerGetPrec();
 				
 				for(int i = 0; i < lines; ++i)
 				{
@@ -1205,19 +1229,21 @@ void engineGsLoop(void)
 			
 		//	ProcessQualityInput();
 			
-			if(p1y > 11*256 && velocityDenom < 3*255)
+
+			
+			if(engine.gameState.shipParams.pZ > 11*256 && engine.gameState.shipParams.dPDenom < 3*255)
 			{
-				velocityDenom = velocityDenom + 4;
+				engine.gameState.shipParams.dPDenom = engine.gameState.shipParams.dPDenom + 4;
 			}
-			else if(velocityDenom >= 3*255)
+			else if(engine.gameState.shipParams.dPDenom >= 3*255)
 			{
 				endScreen = 1;
 			}
 			
 
 
-			xOffsetOdd = cx / 300;
-			xOffsetEven = cx / 450;
+			xOffsetOdd = engine.gameState.crossHairX / 300;
+			xOffsetEven = engine.gameState.crossHairX / 450;
 
 			RenderQuality();
 
@@ -1226,36 +1252,39 @@ void engineGsLoop(void)
 
 			
 					//draw only even lines 
-			crossHairX =  (160 + (cx / 400));
-			crossHairY = ( 130 + (cy / 400) );
+			crossHairX =  (160 + (engine.gameState.crossHairX / 400));
+			crossHairY = ( 130 + (engine.gameState.crossHairY / 400) );
+
+			UWORD shipX = 160 + (engine.gameState.crossHairX/1600);
+			UWORD shipY = 135 + (engine.gameState.crossHairY/1600);
 
 			WORD spriteIndexX = 1;
 			WORD spriteIndexY = 1;
-			if(cx > 8000)
+			if(engine.gameState.crossHairX > 8000)
 			{
 				spriteIndexX = 2;
 			}
-			else if(cx < -8000)
+			else if(engine.gameState.crossHairX < -8000)
 			{
 				spriteIndexX = 0;
 			}
-			if(cy > 4000)
+			if(engine.gameState.crossHairY > 4000)
 			{
 				spriteIndexY = 0;
 			}
-			else if(cy < -4000)
+			else if(engine.gameState.crossHairY < -4000)
 			{
 				spriteIndexY = 2;
 			}
 			
-			//crossHairX = ( (160 + (cx / 150)) / 16 );
-			//crossHairY = ( 110 + (cy / 200) )/2;
+			//crossHairX = ( (160 + (engine.gameState.crossHairX / 150)) / 16 );
+			//crossHairY = ( 110 + (engine.gameState.crossHairY / 200) )/2;
 
 			//DrawSprite4b(ship, &shipHeader, crossHairX, crossHairY,
 			//			 spriteIndexX, spriteIndexY, 32, 32, 11);
 			DrawPixel( crossHairX, crossHairY + 4, 0);
 			DrawPixel( crossHairX, crossHairY - 4, 0);
-			DrawSprite4b(ship, &shipHeader, 160, 140,
+			DrawSprite4b(ship, &shipHeader, shipX, shipY,
 						 spriteIndexX, spriteIndexY, 48, 48, 3);
 			//DrawSprite4b(ship, &shipHeader, crossHairX, crossHairY,
 			//			 spriteIndexX, spriteIndexY, 64, 64, 6);
@@ -1309,14 +1338,14 @@ void engineGsLoop(void)
 	}
 
 	//ConvertIntToChar((lastOverwrittenLine / 256 + 1) % MAPLENGTH, sPlayerX);
-	//ConvertIntToChar(p1y, sPlayerY);
+	//ConvertIntToChar(engine.gameState.shipParams.pZ, sPlayerY);
 	//ConvertIntToChar(bcLogo[2], sPlayerH);
-	//timerFormatPrec(sTime, startTime);
+	//timerFormatPrec(sTime, engine.startTime);
 	//ConvertIntToChar(bcLogo[3], sTime);
 	ConvertIntToChar(points, sScore, 8);
-	ConvertIntToChar(velocity, sVelocity, 5);
-	ConvertIntToChar(levelTime/2500, sTime, 8);
-	ConvertIntToChar(relativeHeight, sPlayerH, 5);
+	ConvertIntToChar(engine.gameState.shipParams.dP, sVelocity, 5);
+	ConvertIntToChar(engine.accTime/2500, sTime, 8);
+	ConvertIntToChar(engine.gameState.shipParams.relHeight, sPlayerH, 5);
 	
 
 
@@ -1338,21 +1367,21 @@ void engineGsLoop(void)
 	//fontDrawTextBitMap(s_pBuffer->pBack, pBitmapPlayerY, 40, 225, 15, FONT_LEFT);
 	//fontDrawTextBitMap(s_pBuffer->pBack, pBitmapPlayerH, 60, 225, 15, FONT_LEFT);
 	//fontDrawTextBitMap(s_pBuffer->pBack, pBitmapTime, 80, 225, 12, FONT_LEFT);
-	fontDrawTextBitMap(s_pBuffer->pBack, pBitmapVelocityLabel, 75, 225, 12, FONT_LEFT|FONT_COOKIE);
-	fontDrawTextBitMap(s_pBuffer->pBack, pBitmapScoreLabel, 0, 225, 12, FONT_LEFT|FONT_COOKIE);
-	fontDrawTextBitMap(s_pBuffer->pBack, pBitmapHeightLabel, 135, 225, 12, FONT_LEFT|FONT_COOKIE);
-	fontDrawTextBitMap(s_pBuffer->pBack, pBitmapTimeLabel, 230, 225, 12, FONT_LEFT|FONT_COOKIE);
 	fontDrawTextBitMap(s_pBuffer->pBack, pBitmapVelocity, 100, 225, 12, FONT_LEFT|FONT_COOKIE);
 	fontDrawTextBitMap(s_pBuffer->pBack, pBitmapScore, 35, 225, 12, FONT_LEFT|FONT_COOKIE);
 	fontDrawTextBitMap(s_pBuffer->pBack, pBitmapHeight, 195, 225, 12, FONT_LEFT|FONT_COOKIE);
 	fontDrawTextBitMap(s_pBuffer->pBack, pBitmapTime, 250, 225, 12, FONT_LEFT|FONT_COOKIE);
+	fontDrawTextBitMap(s_pBuffer->pBack, pBitmapVelocityLabel, 75, 225, 12, FONT_LEFT|FONT_COOKIE);
+	fontDrawTextBitMap(s_pBuffer->pBack, pBitmapScoreLabel, 0, 225, 12, FONT_LEFT|FONT_COOKIE);
+	fontDrawTextBitMap(s_pBuffer->pBack, pBitmapHeightLabel, 135, 225, 12, FONT_LEFT|FONT_COOKIE);
+	fontDrawTextBitMap(s_pBuffer->pBack, pBitmapTimeLabel, 230, 225, 12, FONT_LEFT|FONT_COOKIE);
 
 	interlace++;
 	if (interlace == 4)
 		interlace = 0;
 
 	logAvgEnd(s_pAvgTime);
-	endTime = timerGetPrec();
+	engine.loopEndTime = timerGetPrec();
 }
 
 //****************************** DESTROY
@@ -1375,13 +1404,13 @@ void engineGsDestroy(void)
 	fontDestroyTextBitMap(pBitmapHeightLabel);
 
 	char szAvg[15];
-	timerFormatPrec(szAvg, endTime - startTime);
+	timerFormatPrec(szAvg, engine.loopEndTime - engine.startTime);
 	free(bitmap1);
 	
 	free(paletteBitmap);
 
 	printf("%s", szAvg);
-	printf("%lu", deltaTime);
+	printf("%lu", engine.deltaTime);
 	logAvgDestroy(s_pAvgTime);
 }
 
