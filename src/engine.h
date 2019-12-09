@@ -39,7 +39,7 @@ UWORD kolory2[COLORS] =
         0xa86, 0xb97,
         0xca8, 0xda9, 0xeba, 0xfcb, 0x12f, 0x23f};
 
-UWORD grayColors[16] =
+UWORD grayColors[16] = 
 {
 	0x000,0x111,0x222,0x333,0x444,0x555,0x666,0x777,
 	0x888,0x999,0xaaa,0xbbb,0xccc,0xddd,0xeee,0xfff
@@ -58,6 +58,9 @@ UBYTE screen3x2b[24 * 128]; //3k
 UBYTE screen3x2c[24 * 128]; //3k
 UBYTE screen3x2d[24 * 128]; //3k
 UBYTE screen3x2e[24 * 128]; //3k
+
+UBYTE screen3x2[6 * 90]; //3k
+UBYTE screen4x4[4 * 45]; //3k
 
 UBYTE dither4x4EvenP1[COLORS * COLORS]; //1k
 UBYTE dither4x4EvenP2[COLORS * COLORS]; //1k
@@ -108,6 +111,7 @@ BITMAPINFOHEADER bitmapHeader1, bitmapHeader2, bitmapHeader3, bitmapHeader4, pal
 unsigned char *bitmap1, *paletteBitmap, *ship;
 unsigned char bitmapPalette1[16 * 4], bitmapPalette2[16 * 4], bitmapPalette3[16 * 4], bitmapPalette4[16 * 4], palettePalette[16 * 4];
 
+
 UBYTE skyColor = 33;
 
 void engineGsCreate(void);
@@ -115,7 +119,6 @@ void engineGsCreate(void);
 void engineGsLoop(void);
 
 void engineGsDestroy(void);
-
 
 typedef struct ShipParams
 {
@@ -128,17 +131,45 @@ typedef struct ShipParams
     ULONG dPDenom;
 } ShipParams;
 
+typedef struct MenuState
+{
+    UBYTE Dummy;
+} MenuState;
+
+typedef struct LogoState
+{
+    UBYTE Dummy;
+} LogoState;
+
+typedef struct CutsceneState
+{
+    UBYTE Dummy;
+} CutsceneState;
+
 typedef struct GameState
 {
     WORD crossHairX, crossHairY;
     ShipParams shipParams;
 } GameState;
 
+typedef enum State
+{
+    State_Logo,
+    State_Menu,
+    State_Game,
+    State_Cutscene,
+    State_Count
+} State;
+
 typedef struct Engine
 {
+    State CurrentState;
     union
     {
+        LogoState logoState;
+        MenuState menuState;
         GameState gameState;
+        CutsceneState cutsceneState;
 
     };
     

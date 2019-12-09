@@ -1,12 +1,6 @@
 #include "engine.h"
 
-#ifdef AMIGA
-	#include "settings_amiga.h"
-#endif
-
-#ifdef ATARI
-	#include "../src_atari/settings_atari.h"
-#endif
+#include "settings.h"
 
 
 //calculate paths for raycasts going from the camera
@@ -42,10 +36,10 @@ void CalculateRayCasts(WORD (*rayCastX)[TERRAINDEPTH], WORD (*rayCastY)[TERRAIND
 		{
 			sxx = (sx * tzz)/stepModifier; //make smaller steps
 			sxxx = sxx/fovX;
+			rayCastX[xMiddle+sx][tz] = sxxx;
 			for(int sy=-yMiddle;sy<yMiddle;sy++)
 			{
 				syy = (sy*stepSize * tzz)/stepModifier;//make smaller steps
-				rayCastX[xMiddle+sx][tz] = sxxx;
 				rayCastY[yMiddle+sy][tz] = syy/fovY;
 			}
 		}
@@ -151,19 +145,3 @@ void CombineMapsMed(UBYTE (*height)[128], UBYTE (*color)[128], UWORD (*map)[256]
 	}
 }
 */
-void CombineMapsHigh(UBYTE (*height)[MAPSIZE], UBYTE (*color)[MAPSIZE], UWORD (*map)[MAPSIZE])
-{
-	for (int x = 0; x < MAPSIZE; x++) {
-		for (int y = 0; y < MAPSIZE; y++) {
-			map[y][x] = (color[x][y] << 8) + height[x][y];
-		}
-	}
-}
-void GenerateMap(UWORD (*map)[MAPSIZE])
-{
-	for (int x = 0; x < MAPSIZE; x++) {
-		for (int y = 0; y < MAPSIZE; y++) {
-			map[x][y] = ( ( (x>>4) + (y>>4) ) << 8) + x;
-		}
-	}
-}

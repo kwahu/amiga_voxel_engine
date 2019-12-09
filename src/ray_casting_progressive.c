@@ -1,5 +1,5 @@
 #include "engine.h"
-#include "settings_amiga.h"
+#include "settings.h"
  
 UBYTE ProcessWord1v6(UBYTE rounds, UBYTE sx, UBYTE sy, UWORD *_tz, UWORD *tzz, UBYTE px, UBYTE py,UBYTE ph,
 UWORD *address1, UWORD *address2, 

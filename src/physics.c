@@ -1,6 +1,7 @@
 
 #include <stdlib.h>
 #include "engine.h"
+#include "settings.h"
 
 #ifdef ATARI
 #define _hz_200 *(volatile long *)0x4ba
@@ -9,7 +10,6 @@
 
 #include "key_map_atari.h"
 #include "../ikbd/ikbd.h"
-#include "settings_atari.h"
 
 #define getJoy(index, button) (IKBD_STICK ##index## & IKBD_JOY_ ##button)
 #define getKey(name) IKBD_Keyboard(KEY_ ##name## )
@@ -19,7 +19,6 @@
 #include <ace/managers/timer.h>
 #include <ace/managers/joy.h>
 #include <ace/managers/key.h>
-#include "settings_amiga.h"
 
 #define getJoy(index, button) joyCheck(JOY ##index## _ ##button)
 #define getKey(name) keyCheck(KEY_ ##name)

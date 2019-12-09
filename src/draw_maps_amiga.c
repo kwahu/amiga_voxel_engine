@@ -1,5 +1,5 @@
 #include "engine.h"
-#include "settings_amiga.h"
+#include "settings.h"
 
 void ClearBuffor()
 {

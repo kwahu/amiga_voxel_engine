@@ -1,5 +1,5 @@
 #include "engine.h"
-#include "settings_amiga.h"
+#include "settings.h"
 
 void ProcessRayCastsProgressiveAmiga(WORD (*rayCastX)[TERRAINDEPTH], WORD (*rayCastY)[TERRAINDEPTH], UWORD (*map)[256],
 	UBYTE px, UBYTE py, UBYTE ph, 

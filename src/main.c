@@ -2,12 +2,12 @@
 
 #include <ace/generic/main.h>
 
-#include "settings_amiga.h"
+#include "settings.h"
 #include "engine.h"
 #include "ray_casting_progressive.c"
 #include "ray_casting_amiga.c"
 
-#include "ray_cast_calculate.c"
+#include "raycasting.c"
 #include "draw_screen_amiga.c"
 //#include "mipmaps.c"
 #include "file_read.c"
@@ -16,10 +16,9 @@
 #include "draw_ships.c"
 #include "draw_sprite.c"
 #include "draw_maps_amiga.c"
-#include "input_handling_amiga.c"
 #include "map_streaming.c"
 #include "setup_maps.c"
-#include "rendering_quality_amiga.c"
+#include "rendering_quality.c"
 //#include "bitmap.c"
 #include <ace/managers/game.h>
 #include <ace/managers/timer.h>
@@ -63,7 +62,6 @@ char sPixel[32][10];
 char sPlayerX[5], sPlayerY[5], sPlayerH[5];
 char sTime[8], sVelocity[5], sScore[8];
 char fadeInStatus[4], fadeOutStatus[4];
-UWORD crossHairX, crossHairY;
 
 unsigned char *currentPallete;
 
@@ -71,7 +69,7 @@ UBYTE hardwareSelection = 0;
 
 UBYTE gamePaletteSet = 0;
 
-UWORD screenOffset = 28;//(256 - YSIZEODD*2)/2 * 20;
+UWORD screenOffset = 28;
 
 
 void switchIntroScreen()
@@ -1242,8 +1240,8 @@ void engineGsLoop(void)
 			
 
 
-			xOffsetOdd = engine.gameState.crossHairX / 300;
-			xOffsetEven = engine.gameState.crossHairX / 450;
+			xOffsetOdd = engine.gameState.crossHairX / 600;
+			xOffsetEven = engine.gameState.crossHairX / 900;
 
 			RenderQuality();
 
@@ -1252,11 +1250,11 @@ void engineGsLoop(void)
 
 			
 					//draw only even lines 
-			crossHairX =  (160 + (engine.gameState.crossHairX / 400));
-			crossHairY = ( 130 + (engine.gameState.crossHairY / 400) );
+			UWORD crossPX =  (160 + (engine.gameState.crossHairX / 400));
+			UWORD crossPY = ( 130 + (engine.gameState.crossHairY / 400) );
 
-			UWORD shipX = 160 + (engine.gameState.crossHairX/1600);
-			UWORD shipY = 135 + (engine.gameState.crossHairY/1600);
+			UWORD shipDirX = 160 + (engine.gameState.crossHairX/1600);
+			UWORD shipDirY = 135 + (engine.gameState.crossHairY/1600);
 
 			WORD spriteIndexX = 1;
 			WORD spriteIndexY = 1;
@@ -1276,15 +1274,12 @@ void engineGsLoop(void)
 			{
 				spriteIndexY = 2;
 			}
-			
-			//crossHairX = ( (160 + (engine.gameState.crossHairX / 150)) / 16 );
-			//crossHairY = ( 110 + (engine.gameState.crossHairY / 200) )/2;
 
 			//DrawSprite4b(ship, &shipHeader, crossHairX, crossHairY,
 			//			 spriteIndexX, spriteIndexY, 32, 32, 11);
-			DrawPixel( crossHairX, crossHairY + 4, 0);
-			DrawPixel( crossHairX, crossHairY - 4, 0);
-			DrawSprite4b(ship, &shipHeader, shipX, shipY,
+			DrawPixel( crossPX, crossPY + 4, 0);
+			DrawPixel( crossPX, crossPY - 4, 0);
+			DrawSprite4b(ship, &shipHeader, shipDirX, shipDirY,
 						 spriteIndexX, spriteIndexY, 48, 48, 3);
 			//DrawSprite4b(ship, &shipHeader, crossHairX, crossHairY,
 			//			 spriteIndexX, spriteIndexY, 64, 64, 6);

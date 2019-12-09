@@ -1,20 +1,30 @@
 #include "engine.h"
-#include "settings_amiga.h"
+#include "settings.h"
 
 void DrawPixel(UWORD x, UWORD y, UBYTE color)
 {
   UWORD posX = x/16;
   UWORD leftGap = x - posX*16;
   UWORD rightGap = 16 - leftGap;
-  plane1W[y * PLANEWIDTHWORD + posX] = (0b1000100110010001 >> leftGap) + (plane1W[y * PLANEWIDTHWORD + posX] & (0b1111111111111111 << rightGap));
-  plane2W[y * PLANEWIDTHWORD + posX] = (0b1000100110010001 >> leftGap) + (plane2W[y * PLANEWIDTHWORD + posX] & (0b1111111111111111 << rightGap));
-  plane3W[y * PLANEWIDTHWORD + posX] = (0b1000100110010001 >> leftGap) + (plane3W[y * PLANEWIDTHWORD + posX] & (0b1111111111111111 << rightGap));
-  plane4W[y * PLANEWIDTHWORD + posX] = (0b1000100110010001 >> leftGap) + (plane4W[y * PLANEWIDTHWORD + posX] & (0b1111111111111111 << rightGap));
+
+  UWORD firstPos = y*PLANEWIDTHWORD+posX;
+  UWORD secondPos = firstPos+1;
+
+  WORD leftUpPattern = 0b1000100110010001 >> leftGap;
+  WORD rightUpPattern = 0b1111111111111111 << rightGap;
+
+  WORD leftDownPattern = 0b1000100110010001 << rightGap;
+  WORD rightDownPattern = 0b1111111111111111 >> leftGap;
+
+  plane1W[firstPos] = (leftUpPattern) + (plane1W[firstPos] & (rightUpPattern));
+  plane2W[firstPos] = (leftUpPattern) + (plane2W[firstPos] & (rightUpPattern));
+  plane3W[firstPos] = (leftUpPattern) + (plane3W[firstPos] & (rightUpPattern));
+  plane4W[firstPos] = (leftUpPattern) + (plane4W[firstPos] & (rightUpPattern));
   
-  plane1W[y * PLANEWIDTHWORD + posX + 1] = (0b1000100110010001 << rightGap) + (plane1W[y * PLANEWIDTHWORD + posX + 1] & (0b1111111111111111 >> leftGap));
-  plane2W[y * PLANEWIDTHWORD + posX + 1] = (0b1000100110010001 << rightGap) + (plane2W[y * PLANEWIDTHWORD + posX + 1] & (0b1111111111111111 >> leftGap));
-  plane3W[y * PLANEWIDTHWORD + posX + 1] = (0b1000100110010001 << rightGap) + (plane3W[y * PLANEWIDTHWORD + posX + 1] & (0b1111111111111111 >> leftGap));
-  plane4W[y * PLANEWIDTHWORD + posX + 1] = (0b1000100110010001 << rightGap) + (plane4W[y * PLANEWIDTHWORD + posX + 1] & (0b1111111111111111 >> leftGap));
+  plane1W[secondPos] = (leftDownPattern) + (plane1W[secondPos] & (rightDownPattern));
+  plane2W[secondPos] = (leftDownPattern) + (plane2W[secondPos] & (rightDownPattern));
+  plane3W[secondPos] = (leftDownPattern) + (plane3W[secondPos] & (rightDownPattern));
+  plane4W[secondPos] = (leftDownPattern) + (plane4W[secondPos] & (rightDownPattern));
 }
 
 void DrawPixelWord(UWORD x, UWORD y, UBYTE color)

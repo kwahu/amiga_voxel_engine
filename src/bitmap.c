@@ -231,3 +231,21 @@ void CopyMapWord(UWORD (*source)[MAPSIZE], UWORD (*destination)[256])
 			destination[x*2+1][y*2+1] = word;
 		}
 }
+
+
+void CombineMapsHigh(UBYTE (*height)[MAPSIZE], UBYTE (*color)[MAPSIZE], UWORD (*map)[MAPSIZE])
+{
+	for (int x = 0; x < MAPSIZE; x++) {
+		for (int y = 0; y < MAPSIZE; y++) {
+			map[y][x] = (color[x][y] << 8) + height[x][y];
+		}
+	}
+}
+void GenerateMap(UWORD (*map)[MAPSIZE])
+{
+	for (int x = 0; x < MAPSIZE; x++) {
+		for (int y = 0; y < MAPSIZE; y++) {
+			map[x][y] = ( ( (x>>4) + (y>>4) ) << 8) + x;
+		}
+	}
+}

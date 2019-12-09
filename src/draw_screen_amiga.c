@@ -1,5 +1,5 @@
 #include "engine.h"
-#include "settings_amiga.h"
+#include "settings.h"
 #include <ace/managers/viewport/simplebuffer.h>
 
 void CopyFastToChipW(tBitMap *bm)
