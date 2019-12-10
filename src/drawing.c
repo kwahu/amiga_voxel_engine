@@ -1,10 +1,38 @@
-#include "../src/engine.h"
+#include "engine.h"
+#include "settings.h"
 
-void ClearScreen()
+
+
+#ifdef AMIGA
+
+void ClearBuffor()
+{
+	for(UWORD p = 0; p< 20*256;p++)
+	{
+		plane1W[p] = 0;
+		plane2W[p] = 0;
+		plane3W[p] = 0;
+		plane4W[p] = 0;
+	}
+		
+}
+
+
+void CopyFastToChipW(tBitMap *bm)
+{
+	CopyMemQuick(plane1W, bm->Planes[0], PLANEWIDTH*PLANEHEIGHT);
+	CopyMemQuick(plane2W, bm->Planes[1], PLANEWIDTH*PLANEHEIGHT);
+	CopyMemQuick(plane3W, bm->Planes[2], PLANEWIDTH*PLANEHEIGHT);
+	CopyMemQuick(plane4W, bm->Planes[3], PLANEWIDTH*PLANEHEIGHT);
+}
+#else
+
+void ClearBuffor()
 {
 	for(UWORD p = 0; p< 20*200*4;p++)
 		planes[p] = 0;
 }
+#endif
 
 #define UnpackSpriteByte(byte, value, b1, m1, n1, b2, m2, n2, howMany)  \
 if((howMany) < 0)						\
@@ -29,7 +57,7 @@ else										\
 	}										\
 	(n1) = 1 - (m1);						\
 }										\
-(howMany)++;									
+(howMany)++;	
 
 
 #define UnpackSpriteByteMinus(byte, value, b1, m1, n1, b2, m2, n2, howMany)  \
@@ -55,7 +83,7 @@ else										\
 	}										\
 	(n1) = 1 - (m1);						\
 }										\
-(howMany)--;								
+(howMany)--;
 
 #define BlendSprite(planeValue, planeShift, b, m, n, bitIndex)	\
 (((n)*(((planeValue) >> (planeShift)) & 1) + (m)*(((b) >> (bitIndex)) & 1)) << (planeShift))	
@@ -73,67 +101,87 @@ void DrawSprite4b(unsigned char *bLogo, BITMAPINFOHEADER *bhLogo,
 	unsigned char byte;
 	ULONG xx, yy;
 
-	WORD planePosX = (posX/16);
-	BYTE leftGap = posX - (planePosX*16);
+	WORD planePosX = posX/16;
+	BYTE leftGap = posX - planePosX*16;
 
 	UBYTE xSteps = (spriteSizeX/16);
-	
-	UWORD baseX = spriteIndexX*xSteps;
+
+
+	//position = startOffset;
+
+	UWORD baseX = spriteIndexX*spriteSizeX/16;
 	UWORD baseY = spriteIndexY*spriteSizeY;
 
+    #ifdef AMIGA
+	position = (posY - (spriteSizeY/2)) * PLANEWIDTHWORD + planePosX - spriteSizeX/32;
+    UWORD *firstCol = plane1W + position;
+    UWORD *secondCol = plane2W + position;
+    UWORD *thirdCol = plane3W + position;
+    UWORD *fourthCol = plane4W + position;
+    #else 
+	position = (posY - (spriteSizeY/2)) * PLANEWIDTHWORD + planePosX*4 - spriteSizeX/32*4;
+    UWORD *firstCol = planes + position;
+    UWORD *secondCol = planes + position + 1;
+    UWORD *thirdCol = planes + position + 2;
+    UWORD *fourthCol = planes + position + 3;
 
+    #endif 
 
-	for (ULONG y = baseY+spriteSizeY; y > baseY; y--)
+	for (ULONG y =baseY+spriteSizeY; y > baseY; y--)
 	{
 		yy = (y - 1) * bhLogo->biWidth/2;
-		position = (spriteSizeY/2 - (y - baseY - posY)) * PLANEWIDTHWORD + planePosX*4 - (spriteSizeX/32)*4;
 
-		WORD howManyPixels = -leftGap/2;
+        UWORD *firstPos = firstCol;
+        UWORD *secondPos = secondCol;
+        UWORD *thirdPos = thirdCol;
+        UWORD *fourthPos = fourthCol;
+
+		BYTE howManyPixels = -leftGap/2;
 
 		for (ULONG x = 0; x <= xSteps; x++)
 		{
-			
 			if(x < xSteps)
 			{
 				xx = ((baseX + x) * 8 - (leftGap/2));
+                    
+                byte = bLogo[xx + yy];
+                
+                UnpackSpriteByte(byte, backgroundValue, b1, m1, n1, b2, m2, n2, howManyPixels)
+                ++xx;
+                byte = bLogo[xx + yy];
+                
+                UnpackSpriteByte(byte, backgroundValue, b3, m3, n3, b4, m4, n4, howManyPixels)
+                ++xx;
+                byte = bLogo[xx + yy];
+                
+                UnpackSpriteByte(byte, backgroundValue, b5, m5, n5, b6, m6, n6, howManyPixels)
+                ++xx;
+                byte = bLogo[xx + yy];
+                
+                UnpackSpriteByte(byte, backgroundValue, b7, m7, n7, b8, m8, n8, howManyPixels)
+                ++xx;
+                byte = bLogo[xx + yy];
+                
+                UnpackSpriteByte(byte, backgroundValue, b9, m9, n9, b10, m10, n10, howManyPixels)
+                ++xx;
+                byte = bLogo[xx + yy];
+                
+                UnpackSpriteByte(byte, backgroundValue, b11, m11, n11, b12, m12, n12, howManyPixels)
+                ++xx;
+                byte = bLogo[xx + yy];
+                
+                UnpackSpriteByte(byte, backgroundValue, b13, m13, n13, b14, m14, n14, howManyPixels)
+                ++xx;
+                byte = bLogo[xx + yy];
+                
+                UnpackSpriteByte(byte, backgroundValue, b15, m15, n15, b16, m16, n16, howManyPixels)
 				
-				byte = bLogo[xx + yy];
-				
-				UnpackSpriteByte(byte, backgroundValue, b1, m1, n1, b2, m2, n2, howManyPixels)
-				++xx;
-				byte = bLogo[xx + yy];
-				
-				UnpackSpriteByte(byte, backgroundValue, b3, m3, n3, b4, m4, n4, howManyPixels)
-				++xx;
-				byte = bLogo[xx + yy];
-				
-				UnpackSpriteByte(byte, backgroundValue, b5, m5, n5, b6, m6, n6, howManyPixels)
-				++xx;
-				byte = bLogo[xx + yy];
-				
-				UnpackSpriteByte(byte, backgroundValue, b7, m7, n7, b8, m8, n8, howManyPixels)
-				++xx;
-				byte = bLogo[xx + yy];
-				
-				UnpackSpriteByte(byte, backgroundValue, b9, m9, n9, b10, m10, n10, howManyPixels)
-				++xx;
-				byte = bLogo[xx + yy];
-				
-				UnpackSpriteByte(byte, backgroundValue, b11, m11, n11, b12, m12, n12, howManyPixels)
-				++xx;
-				byte = bLogo[xx + yy];
-				
-				UnpackSpriteByte(byte, backgroundValue, b13, m13, n13, b14, m14, n14, howManyPixels)
-				++xx;
-				byte = bLogo[xx + yy];
-				
-				UnpackSpriteByte(byte, backgroundValue, b15, m15, n15, b16, m16, n16, howManyPixels)
-
 			}
 			else
 			{
 				howManyPixels = leftGap/2;
-
+				xx = ((baseX + x) * 8 - (leftGap/2));
+                
 				byte = bLogo[xx + yy];
 			
 				UnpackSpriteByteMinus(byte, backgroundValue, b1, m1, n1, b2, m2, n2, howManyPixels)
@@ -165,20 +213,16 @@ void DrawSprite4b(unsigned char *bLogo, BITMAPINFOHEADER *bhLogo,
 				byte = bLogo[xx + yy];
 				
 				UnpackSpriteByteMinus(byte, backgroundValue, b15, m15, n15, b16, m16, n16, howManyPixels)
-
-				xx = ((baseX + x) * 8 - (leftGap/2));
+                
 			}
 			
-			
 
-			WORD plane1Value = planes[position];
-			WORD plane2Value = planes[position+1];
-			WORD plane3Value = planes[position+2];
-			WORD plane4Value = planes[position+3];
+			WORD plane1Value = *firstPos;
+			WORD plane2Value = *secondPos;
+			WORD plane3Value = *thirdPos;
+			WORD plane4Value = *fourthPos;
 
-
-			
-			planes[position] = BlendSprite(plane1Value, 15, b1, m1, n1, 0) +
+			*firstPos = BlendSprite(plane1Value, 15, b1, m1, n1, 0) +
 								BlendSprite(plane1Value, 14, b2, m2, n2, 0) +
 								BlendSprite(plane1Value, 13, b3, m3, n3, 0) +
 								BlendSprite(plane1Value, 12, b4, m4, n4, 0) +
@@ -194,7 +238,7 @@ void DrawSprite4b(unsigned char *bLogo, BITMAPINFOHEADER *bhLogo,
 								BlendSprite(plane1Value, 2, b14, m14, n14, 0) +
 								BlendSprite(plane1Value, 1, b15, m15, n15, 0) +
 								BlendSprite(plane1Value, 0, b16, m16, n16, 0);
-			planes[position+1] = BlendSprite(plane2Value, 15, b1, m1, n1, 1) +
+			*secondPos = BlendSprite(plane2Value, 15, b1, m1, n1, 1) +
 								BlendSprite(plane2Value, 14, b2, m2, n2, 1) +
 								BlendSprite(plane2Value, 13, b3, m3, n3, 1) +
 								BlendSprite(plane2Value, 12, b4, m4, n4, 1) +
@@ -210,7 +254,7 @@ void DrawSprite4b(unsigned char *bLogo, BITMAPINFOHEADER *bhLogo,
 								BlendSprite(plane2Value, 2, b14, m14, n14, 1) +
 								BlendSprite(plane2Value, 1, b15, m15, n15, 1) +
 								BlendSprite(plane2Value, 0, b16, m16, n16, 1);
-			planes[position+2] = BlendSprite(plane3Value, 15, b1, m1, n1, 2) +
+			*thirdPos = BlendSprite(plane3Value, 15, b1, m1, n1, 2) +
 								BlendSprite(plane3Value, 14, b2, m2, n2, 2) +
 								BlendSprite(plane3Value, 13, b3, m3, n3, 2) +
 								BlendSprite(plane3Value, 12, b4, m4, n4, 2) +
@@ -226,7 +270,7 @@ void DrawSprite4b(unsigned char *bLogo, BITMAPINFOHEADER *bhLogo,
 								BlendSprite(plane3Value, 2, b14, m14, n14, 2) +
 								BlendSprite(plane3Value, 1, b15, m15, n15, 2) +
 								BlendSprite(plane3Value, 0, b16, m16, n16, 2);
-			planes[position+3] = BlendSprite(plane4Value, 15, b1, m1, n1, 3) +
+			*fourthPos = BlendSprite(plane4Value, 15, b1, m1, n1, 3) +
 								BlendSprite(plane4Value, 14, b2, m2, n2, 3) +
 								BlendSprite(plane4Value, 13, b3, m3, n3, 3) +
 								BlendSprite(plane4Value, 12, b4, m4, n4, 3) +
@@ -242,35 +286,63 @@ void DrawSprite4b(unsigned char *bLogo, BITMAPINFOHEADER *bhLogo,
 								BlendSprite(plane4Value, 2, b14, m14, n14, 3) +
 								BlendSprite(plane4Value, 1, b15, m15, n15, 3) +
 								BlendSprite(plane4Value, 0, b16, m16, n16, 3);
-			position+=4;
+			
+            #ifdef AMIGA
+            firstPos++;
+            secondPos++;
+            thirdPos++;
+            fourthPos++;
+            #else
+            firstPos+=4;
+            secondPos+=4;
+            thirdPos+=4;
+            fourthPos+=4;
+            #endif
 			howManyPixels = 0;
 		}
-		position+=PLANEWIDTHWORD;
+
+        firstCol += PLANEWIDTHWORD;
+        secondCol += PLANEWIDTHWORD;
+        thirdCol += PLANEWIDTHWORD;
+        fourthCol += PLANEWIDTHWORD;
 	}
 }
 
-void DrawBitmap4b(unsigned char *bLogo, BITMAPINFOHEADER *bhLogo)
+
+void DrawBitmap4b(unsigned char *bLogo, BITMAPINFOHEADER *bhLogo, UWORD offsety)
 {
 	UWORD position;
 	unsigned char b1, b2, b3, b4, b5, b6, b7, b8, b9, b10, b11, b12, b13, b14, b15, b16;
 	unsigned char byte;
 	ULONG xx, yy;
-	UBYTE offsety;
-	UWORD startOffset;
 
-	offsety = 0;
-	startOffset = 0;
+	position = offsety * PLANEWIDTHWORD;
+    #ifdef AMIGA
+    UWORD *firstCol = plane1W + position;
+    UWORD *secondCol = plane2W + position;
+    UWORD *thirdCol = plane3W + position;
+    UWORD *fourthCol = plane4W + position;
+    #else 
+    UWORD *firstCol = planes + position;
+    UWORD *secondCol = planes + position + 1;
+    UWORD *thirdCol = planes + position + 2;
+    UWORD *fourthCol = planes + position + 3;
 
-	position = startOffset;
+    #endif 
+
+	//position = startOffset;
 
 	for (ULONG y = bhLogo->biHeight; y > 0; y--)
 	{
 		yy = (y - 1 - offsety) * bhLogo->biWidth/2;
-		position = (bhLogo->biHeight - (y - offsety)) * PLANEWIDTHWORD;
+        
+        UWORD *firstPos = firstCol;
+        UWORD *secondPos = secondCol;
+        UWORD *thirdPos = thirdCol;
+        UWORD *fourthPos = fourthCol;
 
 		for (ULONG x = 0; x < bhLogo->biWidth / 16; x++)
 		{
-			
 			xx = x * 8;
 
 			byte = bLogo[xx + yy];
@@ -298,7 +370,7 @@ void DrawBitmap4b(unsigned char *bLogo, BITMAPINFOHEADER *bhLogo)
 			b16 = byte & 0x0F;
 			b15 = byte >> 4;
 
-			planes[position+0] = ((b1 >> 0) & 1) * 0b1000000000000000 +
+			*firstPos = ((b1 >> 0) & 1) * 0b1000000000000000 +
 								((b2 >> 0) & 1) * 0b0100000000000000 +
 								((b3 >> 0) & 1) * 0b0010000000000000 +
 								((b4 >> 0) & 1) * 0b0001000000000000 +
@@ -314,7 +386,7 @@ void DrawBitmap4b(unsigned char *bLogo, BITMAPINFOHEADER *bhLogo)
 								((b14 >> 0) & 1) * 0b0000000000000100 +
 								((b15 >> 0) & 1) * 0b0000000000000010 +
 								((b16 >> 0) & 1) * 0b0000000000000001;
-			planes[position+1] = ((b1 >> 1) & 1) * 0b1000000000000000 +
+			*secondPos = ((b1 >> 1) & 1) * 0b1000000000000000 +
 								((b2 >> 1) & 1) * 0b0100000000000000 +
 								((b3 >> 1) & 1) * 0b0010000000000000 +
 								((b4 >> 1) & 1) * 0b0001000000000000 +
@@ -330,7 +402,7 @@ void DrawBitmap4b(unsigned char *bLogo, BITMAPINFOHEADER *bhLogo)
 								((b14 >> 1) & 1) * 0b0000000000000100 +
 								((b15 >> 1) & 1) * 0b0000000000000010 +
 								((b16 >> 1) & 1) * 0b0000000000000001;
-			planes[position+2] = ((b1 >> 2) & 1) * 0b1000000000000000 +
+			*thirdPos = ((b1 >> 2) & 1) * 0b1000000000000000 +
 								((b2 >> 2) & 1) * 0b0100000000000000 +
 								((b3 >> 2) & 1) * 0b0010000000000000 +
 								((b4 >> 2) & 1) * 0b0001000000000000 +
@@ -346,7 +418,7 @@ void DrawBitmap4b(unsigned char *bLogo, BITMAPINFOHEADER *bhLogo)
 								((b14 >> 2) & 1) * 0b0000000000000100 +
 								((b15 >> 2) & 1) * 0b0000000000000010 +
 								((b16 >> 2) & 1) * 0b0000000000000001;
-			planes[position+3] = ((b1 >> 3) & 1) * 0b1000000000000000 +
+			*fourthPos = ((b1 >> 3) & 1) * 0b1000000000000000 +
 								((b2 >> 3) & 1) * 0b0100000000000000 +
 								((b3 >> 3) & 1) * 0b0010000000000000 +
 								((b4 >> 3) & 1) * 0b0001000000000000 +
@@ -362,11 +434,27 @@ void DrawBitmap4b(unsigned char *bLogo, BITMAPINFOHEADER *bhLogo)
 								((b14 >> 3) & 1) * 0b0000000000000100 +
 								((b15 >> 3) & 1) * 0b0000000000000010 +
 								((b16 >> 3) & 1) * 0b0000000000000001;
-			position+=4;
+                                
+            #ifdef AMIGA
+            firstPos++;
+            secondPos++;
+            thirdPos++;
+            fourthPos++;
+            #else
+            firstPos+=4;
+            secondPos+=4;
+            thirdPos+=4;
+            fourthPos+=4;
+            #endif
 		}
-		//position+=PLANEWIDTH/2;
+
+        firstCol += PLANEWIDTHWORD;
+        secondCol += PLANEWIDTHWORD;
+        thirdCol += PLANEWIDTHWORD;
+        fourthCol += PLANEWIDTHWORD;
 	}
 }
+
 void DrawBitmap4bCenter(unsigned char *bLogo, BITMAPINFOHEADER *bhLogo)
 {
 	UWORD position;
@@ -374,18 +462,36 @@ void DrawBitmap4bCenter(unsigned char *bLogo, BITMAPINFOHEADER *bhLogo)
 	unsigned char byte;
 	ULONG xx, yy;
 
+	position = ((PLANEHEIGHT-bhLogo->biHeight)/2) * PLANEWIDTHWORD + (320-bhLogo->biWidth)/32;
 
+    #ifdef AMIGA
+	position = ((PLANEHEIGHT-bhLogo->biHeight)/2) * PLANEWIDTHWORD + (320-bhLogo->biWidth)/32;
+    UWORD *firstCol = plane1W + position;
+    UWORD *secondCol = plane2W + position;
+    UWORD *thirdCol = plane3W + position;
+    UWORD *fourthCol = plane4W + position;
+    #else 
+	position = ((PLANEHEIGHT-bhLogo->biHeight)/2) * PLANEWIDTHWORD + (320-bhLogo->biWidth)/32*4;
+    UWORD *firstCol = planes + position;
+    UWORD *secondCol = planes + position + 1;
+    UWORD *thirdCol = planes + position + 2;
+    UWORD *fourthCol = planes + position + 3;
+
+    #endif 
 
 	//position = startOffset;
 
 	for (ULONG y = bhLogo->biHeight; y > 0; y--)
 	{
 		yy = (y - 1) * bhLogo->biWidth/2;
-		position = (bhLogo->biHeight - (y - (PLANEHEIGHT-bhLogo->biHeight)/2)) * PLANEWIDTHWORD + (320-bhLogo->biWidth)/32*4;
+
+        UWORD *firstPos = firstCol;
+        UWORD *secondPos = secondCol;
+        UWORD *thirdPos = thirdCol;
+        UWORD *fourthPos = fourthCol;
 
 		for (ULONG x = 0; x < bhLogo->biWidth / 16; x++)
 		{
-			
 			xx = x * 8;
 
 			byte = bLogo[xx + yy];
@@ -413,7 +519,7 @@ void DrawBitmap4bCenter(unsigned char *bLogo, BITMAPINFOHEADER *bhLogo)
 			b16 = byte & 0x0F;
 			b15 = byte >> 4;
 
-			planes[position+0] = ((b1 >> 0) & 1) * 0b1000000000000000 +
+			*firstPos = ((b1 >> 0) & 1) * 0b1000000000000000 +
 								((b2 >> 0) & 1) * 0b0100000000000000 +
 								((b3 >> 0) & 1) * 0b0010000000000000 +
 								((b4 >> 0) & 1) * 0b0001000000000000 +
@@ -429,7 +535,7 @@ void DrawBitmap4bCenter(unsigned char *bLogo, BITMAPINFOHEADER *bhLogo)
 								((b14 >> 0) & 1) * 0b0000000000000100 +
 								((b15 >> 0) & 1) * 0b0000000000000010 +
 								((b16 >> 0) & 1) * 0b0000000000000001;
-			planes[position+1] = ((b1 >> 1) & 1) * 0b1000000000000000 +
+			*secondPos = ((b1 >> 1) & 1) * 0b1000000000000000 +
 								((b2 >> 1) & 1) * 0b0100000000000000 +
 								((b3 >> 1) & 1) * 0b0010000000000000 +
 								((b4 >> 1) & 1) * 0b0001000000000000 +
@@ -445,7 +551,7 @@ void DrawBitmap4bCenter(unsigned char *bLogo, BITMAPINFOHEADER *bhLogo)
 								((b14 >> 1) & 1) * 0b0000000000000100 +
 								((b15 >> 1) & 1) * 0b0000000000000010 +
 								((b16 >> 1) & 1) * 0b0000000000000001;
-			planes[position+2] = ((b1 >> 2) & 1) * 0b1000000000000000 +
+			*thirdPos = ((b1 >> 2) & 1) * 0b1000000000000000 +
 								((b2 >> 2) & 1) * 0b0100000000000000 +
 								((b3 >> 2) & 1) * 0b0010000000000000 +
 								((b4 >> 2) & 1) * 0b0001000000000000 +
@@ -461,7 +567,7 @@ void DrawBitmap4bCenter(unsigned char *bLogo, BITMAPINFOHEADER *bhLogo)
 								((b14 >> 2) & 1) * 0b0000000000000100 +
 								((b15 >> 2) & 1) * 0b0000000000000010 +
 								((b16 >> 2) & 1) * 0b0000000000000001;
-			planes[position+3] = ((b1 >> 3) & 1) * 0b1000000000000000 +
+			*fourthPos = ((b1 >> 3) & 1) * 0b1000000000000000 +
 								((b2 >> 3) & 1) * 0b0100000000000000 +
 								((b3 >> 3) & 1) * 0b0010000000000000 +
 								((b4 >> 3) & 1) * 0b0001000000000000 +
@@ -476,233 +582,82 @@ void DrawBitmap4bCenter(unsigned char *bLogo, BITMAPINFOHEADER *bhLogo)
 								((b13 >> 3) & 1) * 0b0000000000001000 +
 								((b14 >> 3) & 1) * 0b0000000000000100 +
 								((b15 >> 3) & 1) * 0b0000000000000010 +
-								((b16 >> 3) & 1) * 0b0000000000000001;
-			position+=4;
+								((b16 >> 3) & 1) * 0b0000000000000001;   
+            #ifdef AMIGA
+            firstPos++;
+            secondPos++;
+            thirdPos++;
+            fourthPos++;
+            #else
+            firstPos+=4;
+            secondPos+=4;
+            thirdPos+=4;
+            fourthPos+=4;
+            #endif
 		}
-		//position+=PLANEWIDTH/2;
-	}
-}
-void DrawBitmap8b(unsigned char *bLogo, BITMAPINFOHEADER *bhLogo)
-{
-	UWORD position;
-	unsigned char b1,b2,b3,b4,b5,b6,b7,b8,b9,b10,b11,b12,b13,b14,b15,b16;
-	unsigned char byte;
-	ULONG xx,yy;
-	UBYTE offsety;
-	UWORD startOffset;
-
-	offsety = 0;
-	startOffset = 0;
-
-	position = startOffset;
-
-	for (ULONG y = bhLogo->biHeight; y > 0; y--)
-	{
-		yy = (y - 1 - offsety) * bhLogo->biWidth;
-		position = (bhLogo->biHeight - (y - offsety)) * PLANEWIDTH/2 * 4;
-
-		for (ULONG x = 0; x < bhLogo->biWidth/16; x++)
-		{
-			xx = x*16;
-	
-
-			b1 = bLogo[xx+yy];
-			b2 = bLogo[xx+1+yy];
-			b3 = bLogo[xx+2+yy];
-			b4 = bLogo[xx+3+yy];
-			b5 = bLogo[xx+4+yy];
-			b6 = bLogo[xx+5+yy];
-			b7 = bLogo[xx+6+yy];
-			b8 = bLogo[xx+7+yy];
-			b9 = bLogo[xx+8+yy];
-			b10 = bLogo[xx+9+yy];
-			b11 = bLogo[xx+10+yy];
-			b12 = bLogo[xx+11+yy];
-			b13 = bLogo[xx+12+yy];   
-			b14 = bLogo[xx+13+yy];
-			b15 = bLogo[xx+14+yy];
-			b16 = bLogo[xx+15+yy];
-			
-
-
-			planes[position+0] = ((b1>>0) & 1) *0b1000000000000000+
-			((b2>>0) & 1) *0b0100000000000000+
-			((b3>>0) & 1) *0b0010000000000000+
-			((b4>>0) & 1) *0b0001000000000000+
-			((b5>>0) & 1) *0b0000100000000000+
-			((b6>>0) & 1) *0b0000010000000000+
-			((b7>>0) & 1) *0b0000001000000000+
-			((b8>>0) & 1) *0b0000000100000000+
-			((b9>>0) & 1) *0b0000000010000000+
-			((b10>>0) & 1) *0b0000000001000000+
-			((b11>>0) & 1) *0b0000000000100000+
-			((b12>>0) & 1) *0b0000000000010000+
-			((b13>>0) & 1) *0b0000000000001000+
-			((b14>>0) & 1) *0b0000000000000100+
-			((b15>>0) & 1) *0b0000000000000010+
-			((b16>>0) & 1) *0b0000000000000001;
-			planes[position+1] = ((b1>>1) & 1) *0b1000000000000000+
-			((b2>>1) & 1) *0b0100000000000000+
-			((b3>>1) & 1) *0b0010000000000000+
-			((b4>>1) & 1) *0b0001000000000000+
-			((b5>>1) & 1) *0b0000100000000000+
-			((b6>>1) & 1) *0b0000010000000000+
-			((b7>>1) & 1) *0b0000001000000000+
-			((b8>>1) & 1) *0b0000000100000000+
-			((b9>>1) & 1) *0b0000000010000000+
-			((b10>>1) & 1) *0b0000000001000000+
-			((b11>>1) & 1) *0b0000000000100000+
-			((b12>>1) & 1) *0b0000000000010000+
-			((b13>>1) & 1) *0b0000000000001000+
-			((b14>>1) & 1) *0b0000000000000100+
-			((b15>>1) & 1) *0b0000000000000010+
-			((b16>>1) & 1) *0b0000000000000001;
-			planes[position+2] = ((b1>>2) & 1) *0b1000000000000000+
-			((b2>>2) & 1) *0b0100000000000000+
-			((b3>>2) & 1) *0b0010000000000000+
-			((b4>>2) & 1) *0b0001000000000000+
-			((b5>>2) & 1) *0b0000100000000000+
-			((b6>>2) & 1) *0b0000010000000000+
-			((b7>>2) & 1) *0b0000001000000000+
-			((b8>>2) & 1) *0b0000000100000000+
-			((b9>>2) & 1) *0b0000000010000000+
-			((b10>>2) & 1) *0b0000000001000000+
-			((b11>>2) & 1) *0b0000000000100000+
-			((b12>>2) & 1) *0b0000000000010000+
-			((b13>>2) & 1) *0b0000000000001000+
-			((b14>>2) & 1) *0b0000000000000100+
-			((b15>>2) & 1) *0b0000000000000010+
-			((b16>>2) & 1) *0b0000000000000001;
-			planes[position+3] = ((b1>>3) & 1) *0b1000000000000000+
-			((b2>>3) & 1) *0b0100000000000000+
-			((b3>>3) & 1) *0b0010000000000000+
-			((b4>>3) & 1) *0b0001000000000000+
-			((b5>>3) & 1) *0b0000100000000000+
-			((b6>>3) & 1) *0b0000010000000000+
-			((b7>>3) & 1) *0b0000001000000000+
-			((b8>>3) & 1) *0b0000000100000000+
-			((b9>>3) & 1) *0b0000000010000000+
-			((b10>>3) & 1) *0b0000000001000000+
-			((b11>>3) & 1) *0b0000000000100000+
-			((b12>>3) & 1) *0b0000000000010000+
-			((b13>>3) & 1) *0b0000000000001000+
-			((b14>>3) & 1) *0b0000000000000100+
-			((b15>>3) & 1) *0b0000000000000010+
-			((b16>>3) & 1) *0b0000000000000001;
-			position+=4;
-		}
-		//position+=PLANEWIDTH/2;
+        firstCol += PLANEWIDTHWORD;
+        secondCol += PLANEWIDTHWORD;
+        thirdCol += PLANEWIDTHWORD;
+        fourthCol += PLANEWIDTHWORD;
 	}
 }
 
-void DrawColorMap(UBYTE (*map)[MAPSIZE])
+void DrawPixel(UWORD x, UWORD y, UBYTE color)
 {
-	UWORD position;
-	unsigned char b1,b2,b3,b4,b5,b6,b7,b8,b9,b10,b11,b12,b13,b14,b15,b16;
-	unsigned char byte;
-	ULONG xx,yy;
-	UBYTE offsety;
-	UWORD startOffset;
+  UWORD posX = x/16;
+  UWORD leftGap = x - posX*16;
+  UWORD rightGap = 16 - leftGap;
 
-	offsety = 0;
-	startOffset = 0;
+#ifdef AMIGA
+  UWORD firstPos = y*PLANEWIDTHWORD+posX;
+  UWORD secondPos = firstPos+1;
+  #else
+  UWORD firstPos = y*PLANEWIDTHWORD+posX*4;
+  UWORD secondPos = firstPos+4;
+  #endif
 
-	position = startOffset;
+  WORD leftUpPattern = 0b1000100110010001 >> leftGap;
+  WORD rightUpPattern = 0b1111111111111111 << rightGap;
 
-	for (ULONG y=0; y < MAPSIZE; y++)
-	{
-		//yy = (y - 1) * 256*4;
-		position = y * PLANEWIDTH/2 * 4;
+  WORD leftDownPattern = 0b1000100110010001 << rightGap;
+  WORD rightDownPattern = 0b1111111111111111 >> leftGap;
 
-		for (ULONG x = 0; x < MAPSIZE/16; x++)
-		{
-			xx = x*16;
+#ifdef AMIGA
+  plane1W[firstPos] = (leftUpPattern) + (plane1W[firstPos] & (rightUpPattern));
+  plane2W[firstPos] = (leftUpPattern) + (plane2W[firstPos] & (rightUpPattern));
+  plane3W[firstPos] = (leftUpPattern) + (plane3W[firstPos] & (rightUpPattern));
+  plane4W[firstPos] = (leftUpPattern) + (plane4W[firstPos] & (rightUpPattern));
+  
+  plane1W[secondPos] = (leftDownPattern) + (plane1W[secondPos] & (rightDownPattern));
+  plane2W[secondPos] = (leftDownPattern) + (plane2W[secondPos] & (rightDownPattern));
+  plane3W[secondPos] = (leftDownPattern) + (plane3W[secondPos] & (rightDownPattern));
+  plane4W[secondPos] = (leftDownPattern) + (plane4W[secondPos] & (rightDownPattern));
+  #else
+  
+  planes[firstPos] = (leftUpPattern) + (planes[firstPos] & (rightUpPattern));
+  planes[firstPos+1] = (leftUpPattern) + (planes[firstPos+1] & (rightUpPattern));
+  planes[firstPos+2] = (leftUpPattern) + (planes[firstPos+2] & (rightUpPattern));
+  planes[firstPos+3] = (leftUpPattern) + (planes[firstPos+3] & (rightUpPattern));
+  
+  planes[secondPos] = (leftDownPattern) + (planes[secondPos] & (rightDownPattern));
+  planes[secondPos+1] = (leftDownPattern) + (planes[secondPos+1] & (rightDownPattern));
+  planes[secondPos+2] = (leftDownPattern) + (planes[secondPos+2] & (rightDownPattern));
+  planes[secondPos+3] = (leftDownPattern) + (planes[secondPos+3] & (rightDownPattern));
+  #endif
+}
 
-			b1 = map[xx+0][y];
-			b2 = map[xx+1][y];
-			b3 = map[xx+2][y];
-			b4 = map[xx+3][y];
-			b5 = map[xx+4][y];
-			b6 = map[xx+5][y];
-			b7 = map[xx+6][y];
-			b8 = map[xx+7][y];
-			b9 = map[xx+8][y];
-			b10 = map[xx+9][y];
-			b11 = map[xx+10][y];
-			b12 = map[xx+11][y];
-			b13 = map[xx+12][y];  
-			b14 = map[xx+13][y];
-			b15 = map[xx+14][y];
-			b16 = map[xx+15][y];
-			
-
-
-			planes[position+0] = ((b1>>0) & 1) *0b1000000000000000+
-			((b2>>0) & 1) *0b0100000000000000+
-			((b3>>0) & 1) *0b0010000000000000+
-			((b4>>0) & 1) *0b0001000000000000+
-			((b5>>0) & 1) *0b0000100000000000+
-			((b6>>0) & 1) *0b0000010000000000+
-			((b7>>0) & 1) *0b0000001000000000+
-			((b8>>0) & 1) *0b0000000100000000+
-			((b9>>0) & 1) *0b0000000010000000+
-			((b10>>0) & 1) *0b0000000001000000+
-			((b11>>0) & 1) *0b0000000000100000+
-			((b12>>0) & 1) *0b0000000000010000+
-			((b13>>0) & 1) *0b0000000000001000+
-			((b14>>0) & 1) *0b0000000000000100+
-			((b15>>0) & 1) *0b0000000000000010+
-			((b16>>0) & 1) *0b0000000000000001;
-			planes[position+1] = ((b1>>1) & 1) *0b1000000000000000+
-			((b2>>1) & 1) *0b0100000000000000+
-			((b3>>1) & 1) *0b0010000000000000+
-			((b4>>1) & 1) *0b0001000000000000+
-			((b5>>1) & 1) *0b0000100000000000+
-			((b6>>1) & 1) *0b0000010000000000+
-			((b7>>1) & 1) *0b0000001000000000+
-			((b8>>1) & 1) *0b0000000100000000+
-			((b9>>1) & 1) *0b0000000010000000+
-			((b10>>1) & 1) *0b0000000001000000+
-			((b11>>1) & 1) *0b0000000000100000+
-			((b12>>1) & 1) *0b0000000000010000+
-			((b13>>1) & 1) *0b0000000000001000+
-			((b14>>1) & 1) *0b0000000000000100+
-			((b15>>1) & 1) *0b0000000000000010+
-			((b16>>1) & 1) *0b0000000000000001;
-			planes[position+2] = ((b1>>2) & 1) *0b1000000000000000+
-			((b2>>2) & 1) *0b0100000000000000+
-			((b3>>2) & 1) *0b0010000000000000+
-			((b4>>2) & 1) *0b0001000000000000+
-			((b5>>2) & 1) *0b0000100000000000+
-			((b6>>2) & 1) *0b0000010000000000+
-			((b7>>2) & 1) *0b0000001000000000+
-			((b8>>2) & 1) *0b0000000100000000+
-			((b9>>2) & 1) *0b0000000010000000+
-			((b10>>2) & 1) *0b0000000001000000+
-			((b11>>2) & 1) *0b0000000000100000+
-			((b12>>2) & 1) *0b0000000000010000+
-			((b13>>2) & 1) *0b0000000000001000+
-			((b14>>2) & 1) *0b0000000000000100+
-			((b15>>2) & 1) *0b0000000000000010+
-			((b16>>2) & 1) *0b0000000000000001;
-			planes[position+3] = ((b1>>3) & 1) *0b1000000000000000+
-			((b2>>3) & 1) *0b0100000000000000+
-			((b3>>3) & 1) *0b0010000000000000+
-			((b4>>3) & 1) *0b0001000000000000+
-			((b5>>3) & 1) *0b0000100000000000+
-			((b6>>3) & 1) *0b0000010000000000+
-			((b7>>3) & 1) *0b0000001000000000+
-			((b8>>3) & 1) *0b0000000100000000+
-			((b9>>3) & 1) *0b0000000010000000+
-			((b10>>3) & 1) *0b0000000001000000+
-			((b11>>3) & 1) *0b0000000000100000+
-			((b12>>3) & 1) *0b0000000000010000+
-			((b13>>3) & 1) *0b0000000000001000+
-			((b14>>3) & 1) *0b0000000000000100+
-			((b15>>3) & 1) *0b0000000000000010+
-			((b16>>3) & 1) *0b0000000000000001;
-			position+=4;
-		}
-		//position+=PLANEWIDTH/2;
-	}
+void DrawPixelWord(UWORD x, UWORD y, UBYTE color)
+{
+    #ifdef AMIGA
+  plane1W[y * PLANEWIDTHWORD + x] = ( (color>>0) & 1) * 0xffff;
+  plane2W[y * PLANEWIDTHWORD + x] = ( (color>>1) & 1) * 0xffff;
+  plane3W[y * PLANEWIDTHWORD + x] = ( (color>>2) & 1) * 0xffff;
+  plane4W[y * PLANEWIDTHWORD + x] = ( (color>>3) & 1) * 0xffff;
+  #else
+  
+  planes[y * PLANEWIDTHWORD + x*4] = ( (color>>0) & 1) * 0xffff;
+  planes[y * PLANEWIDTHWORD + x*4 + 1] = ( (color>>1) & 1) * 0xffff;
+  planes[y * PLANEWIDTHWORD + x*4 + 2] = ( (color>>2) & 1) * 0xffff;
+  planes[y * PLANEWIDTHWORD + x*4 + 3] = ( (color>>3) & 1) * 0xffff;
+  #endif
 }

@@ -8,6 +8,8 @@
 #define TERRAINDEPTH 64
 #define PLANEHEIGHT 256
 #define XTURNBUFFOR 55
+#define PLANEWIDTH 40
+#define PLANEWIDTHWORD 20
 
 
 #define XSIZEODD 120 + XTURNBUFFOR * 2
@@ -34,7 +36,7 @@ static tView *s_pView;
 static tVPort *s_pVPort;
 static tSimpleBufferManager *s_pBuffer;
 
-#elif ATARI
+#else
 
 #define ULONG 	uint32_t
 #define LONG	int32_t
@@ -43,6 +45,8 @@ static tSimpleBufferManager *s_pBuffer;
 #define UBYTE  unsigned char
 #define BYTE	signed char
 
+#define PLANEWIDTH 160
+#define PLANEWIDTHWORD 80
 #define TERRAINDEPTH 32
 #define PLANEHEIGHT 200
 #define XSIZEODD 120 + XTURNBUFFOR * 2

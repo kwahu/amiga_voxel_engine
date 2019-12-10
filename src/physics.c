@@ -3,7 +3,17 @@
 #include "engine.h"
 #include "settings.h"
 
-#ifdef ATARI
+ #ifdef AMIGA
+
+#include <ace/managers/timer.h>
+#include <ace/managers/joy.h>
+#include <ace/managers/key.h>
+
+#define getJoy(index, button) joyCheck(JOY ##index## _ ##button)
+#define getKey(name) keyCheck(KEY_ ##name)
+
+ #else
+
 #define _hz_200 *(volatile long *)0x4ba
 
 #define timerGetPrec() _hz_200*12500;
@@ -13,17 +23,8 @@
 
 #define getJoy(index, button) (IKBD_STICK ##index## & IKBD_JOY_ ##button)
 #define getKey(name) IKBD_Keyboard(KEY_ ##name## )
+
 #endif
-
- #ifdef AMIGA
-#include <ace/managers/timer.h>
-#include <ace/managers/joy.h>
-#include <ace/managers/key.h>
-
-#define getJoy(index, button) joyCheck(JOY ##index## _ ##button)
-#define getKey(name) keyCheck(KEY_ ##name)
-
- #endif
 
 #define getCurrentTime() timerGetPrec()
 

@@ -4,8 +4,6 @@
 #include <stdlib.h>
 
 
-#define PLANEWIDTH 40
-#define PLANEWIDTHWORD 20
 #define DEPTH 4
 #define COLORS 32
 
