@@ -108,7 +108,7 @@ typedef struct Renderer
     UBYTE heightMap[MAPSIZE][MAPSIZE]; //16k
     UBYTE colorMap[MAPSIZE][MAPSIZE];  //16k
 
-    UWORD mapHigh[MAPSIZE][MAPSIZE]; //131k
+    UWORD mapHigh[MAPSIZE][MAPSIZE]; //32k
     UWORD lastOverwrittenLine;
 
     UWORD mapSource[11][MAPSIZE][MAPSIZE];  //360k
@@ -121,8 +121,8 @@ typedef struct Renderer
         
     UWORD bitmapPalette[16];
 
-    UBYTE screen3x2[6 * 90]; //3k
-    UBYTE screen4x4[4 * 45]; //3k
+    UBYTE screen3x2[6 * 90]; //540B
+    UBYTE screen4x4[4 * 45]; //180B
 
     UBYTE dither4x4EvenP1[COLORS * COLORS]; //1k
     UBYTE dither4x4EvenP2[COLORS * COLORS]; //1k
@@ -134,8 +134,8 @@ typedef struct Renderer
     UBYTE dither3x2EvenP3[COLORS * COLORS * COLORS]; //32k
     UBYTE dither3x2EvenP4[COLORS * COLORS * COLORS]; //32k
     
-    WORD rayCastX[XSIZEODD][TERRAINDEPTH]; //51k
-    WORD rayCastY[YSIZEODD][TERRAINDEPTH]; //51k
+    WORD rayCastX[XSIZEODD][TERRAINDEPTH]; //29k AMIGA / 14k ATARI
+    WORD rayCastY[YSIZEODD][TERRAINDEPTH]; //12k AMIGA / 3k ATARI
     
     BYTE xOffsetEven, xOffsetOdd; //camera rotation offsett when turning
 

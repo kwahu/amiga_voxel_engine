@@ -22,7 +22,7 @@
 #include "../ikbd/ikbd.h"
 
 #define getJoy(index, button) (IKBD_STICK ##index & IKBD_JOY_ ##button) ||IKBD_Keyboard[KEY_ ##button ]
-#define getKey(name) IKBD_Keyboard(KEY_ ##name )
+#define getKey(name) IKBD_Keyboard[KEY_ ##name ]
 
 #endif
 
@@ -133,4 +133,90 @@ GameState ProcessInput(GameState gameState, LONG deltaTime)
 UWORD getTerrainHeight(ShipParams shipParams, UWORD map[][128])
 {
     return ((UBYTE)(map[((UBYTE)(shipParams.pX)) >> 1][((UBYTE)(shipParams.pZ + 15)) >> 1]));
+}
+
+void ProcessQualityInput()
+{
+	
+
+	if(getKey(1) && engine.renderer.renderingType!=1)
+	{
+		renderingDepth = TERRAINDEPTH;
+		engine.renderer.renderingType = 1;
+		engine.renderer.calculationDepthDivider = 2;
+		engine.renderer.calculationDepthStep = 4;
+		engine.renderer.renderingDepthStep = 1;
+		ClearBuffor();
+		//DrawBitmap8b(bitmap1, &bitmapHeader1);
+	}
+	if(getKey(2) && engine.renderer.renderingType!=2)
+	{
+		renderingDepth = TERRAINDEPTH;
+		engine.renderer.renderingType = 2;
+		engine.renderer.calculationDepthDivider = 2;
+		engine.renderer.calculationDepthStep = 4;
+		engine.renderer.renderingDepthStep = 1;
+		ClearBuffor();
+		//DrawBitmap8b(bitmap1, &bitmapHeader1);
+	}
+	if(getKey(3) && engine.renderer.renderingType!=3)
+	{
+		renderingDepth = TERRAINDEPTH;
+		engine.renderer.renderingType = 3;
+		engine.renderer.calculationDepthDivider = 2;
+		engine.renderer.calculationDepthStep = 4;
+		engine.renderer.renderingDepthStep = 1;
+		ClearBuffor();
+		//DrawBitmap8b(bitmap1, &bitmapHeader1);
+	}
+	if(getKey(4)  && engine.renderer.renderingType!=4)
+	{
+		renderingDepth = TERRAINDEPTH;
+		engine.renderer.renderingType = 4;
+		engine.renderer.calculationDepthDivider = 2;
+		engine.renderer.calculationDepthStep = 4;
+		engine.renderer.renderingDepthStep = 1;
+		ClearBuffor();
+		//DrawBitmap8b(bitmap1, &bitmapHeader1);
+	}
+	if(getKey(5) && engine.renderer.renderingType!=5)
+	{
+		renderingDepth = TERRAINDEPTH;
+		engine.renderer.renderingType = 5;
+		engine.renderer.calculationDepthDivider = 2;
+		engine.renderer.calculationDepthStep = 4;
+		engine.renderer.renderingDepthStep = 1;
+		ClearBuffor();
+		//DrawBitmap8b(bitmap1, &bitmapHeader1);
+	}
+	if(getKey(6) && engine.renderer.renderingType!=6)
+	{
+		renderingDepth = TERRAINDEPTH;
+		engine.renderer.renderingType = 6;
+		engine.renderer.calculationDepthDivider = 2;
+		engine.renderer.calculationDepthStep = 4;
+		engine.renderer.renderingDepthStep = 1;
+		ClearBuffor();
+		//DrawBitmap8b(bitmap1, &bitmapHeader1);
+	}
+	if(getKey(7) && engine.renderer.renderingType!=7)
+	{
+		renderingDepth = TERRAINDEPTH;
+		engine.renderer.renderingType = 7;
+		engine.renderer.calculationDepthDivider = 2;
+		engine.renderer.calculationDepthStep = 2;
+		engine.renderer.renderingDepthStep = 1;
+		ClearBuffor();
+		//DrawBitmap8b(bitmap1, &bitmapHeader1);
+	}
+	if (getKey(8) && engine.renderer.renderingType!=8 )
+	{
+		renderingDepth = TERRAINDEPTH;
+		engine.renderer.renderingType = 8;
+		engine.renderer.calculationDepthDivider = 2;
+		engine.renderer.calculationDepthStep = 2;
+		engine.renderer.renderingDepthStep = 1;
+	}
+
+
 }

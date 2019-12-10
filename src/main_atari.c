@@ -492,8 +492,8 @@ void main_supervisor()
 				}
 			}
 
-			//ProcessQualityInput();
 
+			ProcessQualityInput();
 			
 			engine.gameState = ProcessInput(engine.gameState, engine.deltaTime);
 

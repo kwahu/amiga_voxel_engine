@@ -52,9 +52,6 @@ static tSimpleBufferManager *s_pBuffer;
 #define YSIZEEVEN YSIZEODD / 2
 
 
-//WORD rayCastXEven[XSIZEEVEN][TERRAINDEPTH]; //21k
-//WORD rayCastYEven[YSIZEEVEN][TERRAINDEPTH]; //21k
-
 UBYTE renderingDepth = TERRAINDEPTH;
 
 //ATARI
