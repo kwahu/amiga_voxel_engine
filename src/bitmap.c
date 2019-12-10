@@ -216,7 +216,7 @@ void CopyMapByte(UBYTE (*source)[MAPSIZE], UBYTE (*destination)[MAPSIZE])
 		destination[x][y] = source[x][y];
 	}
 }
-void CopyMapWord(UWORD (*source)[MAPSIZE], UWORD (*destination)[256])
+void CopyMapWord(UWORD (*source)[MAPSIZE], UWORD (*destination)[128])
 {
 	UWORD word;
 	//CopyMemQuick(source, destination, MAPSIZE*MAPSIZE*2);
@@ -225,10 +225,7 @@ void CopyMapWord(UWORD (*source)[MAPSIZE], UWORD (*destination)[256])
 		for (int y = 0; y < MAPSIZE; y++)
 		{
 			word = source[x][y];
-			destination[x*2][y*2] = word;
-			destination[x*2+1][y*2] = word;
-			destination[x*2][y*2+1] = word;
-			destination[x*2+1][y*2+1] = word;
+			destination[x][y] = word;
 		}
 }
 

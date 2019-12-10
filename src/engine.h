@@ -10,52 +10,10 @@
 #define MAPSIZE 128
 #define MAPLENGTH 11
 
-UBYTE heightMap[MAPSIZE][MAPSIZE]; //16k
-UBYTE colorMap[MAPSIZE][MAPSIZE];  //16k
 
-UWORD mapHigh[256][256]; //131k
-
-UWORD mapSource[11][MAPSIZE][MAPSIZE];  //360k
-
-UBYTE mapLoaded0, mapLoaded1, mapLoaded2, mapLoaded3, mapLoaded4, mapLoaded5, mapLoaded6,
-    mapLoaded7, mapLoaded8, mapLoaded9, mapLoaded10;
-
-UBYTE renderingType, calculationDepthDivider, calculationDepthStep, renderingDepthStep, stepModifier, xFOV, yFOV;
-
-
-//sand dunes theme
-UWORD kolory[COLORS] =
-    {
-        0x101, 0x323, 0x523, 0x743, 0xa65, 0xc85, 0xeb8, 0xfdb,
-        0xbcc, 0x8be,
-        0x243, 0x9b8, 0xafd, 0x324, 0xa9b, 0xdcf};
-
-//sand dunes theme
-UWORD kolory2[COLORS] =
-    {
-        0x101, 0x312, 0x423, 0x533, 0x634, 0x754, 0x865, 0x975,
-        0xa86, 0xb97,
-        0xca8, 0xda9, 0xeba, 0xfcb, 0x12f, 0x23f};
-
-UWORD grayColors[16] = 
-{
-	0x000,0x111,0x222,0x333,0x444,0x555,0x666,0x777,
-	0x888,0x999,0xaaa,0xbbb,0xccc,0xddd,0xeee,0xfff
-};
 
 UWORD bitmapPalette[16];
 
-UBYTE screen4x4a[16 * 64]; //1k
-UBYTE screen4x4b[16 * 64]; //1k
-UBYTE screen4x4c[16 * 64]; //1k
-UBYTE screen4x4d[16 * 64]; //1k
-UBYTE screen4x4e[16 * 64]; //1k
-
-UBYTE screen3x2a[24 * 128]; //3k
-UBYTE screen3x2b[24 * 128]; //3k
-UBYTE screen3x2c[24 * 128]; //3k
-UBYTE screen3x2d[24 * 128]; //3k
-UBYTE screen3x2e[24 * 128]; //3k
 
 UBYTE screen3x2[6 * 90]; //3k
 UBYTE screen4x4[4 * 45]; //3k
@@ -159,6 +117,23 @@ typedef enum State
     State_Count
 } State;
 
+typedef struct Renderer
+{
+
+    UBYTE heightMap[MAPSIZE][MAPSIZE]; //16k
+    UBYTE colorMap[MAPSIZE][MAPSIZE];  //16k
+
+    UWORD mapHigh[MAPSIZE][MAPSIZE]; //131k
+
+    UWORD mapSource[11][MAPSIZE][MAPSIZE];  //360k
+
+    UBYTE mapLoaded0, mapLoaded1, mapLoaded2, mapLoaded3, mapLoaded4, mapLoaded5, mapLoaded6,
+        mapLoaded7, mapLoaded8, mapLoaded9, mapLoaded10;
+
+    UBYTE renderingType, calculationDepthDivider, calculationDepthStep, renderingDepthStep, stepModifier, xFOV, yFOV;
+
+} Renderer;
+
 typedef struct Engine
 {
     State CurrentState;
@@ -170,11 +145,36 @@ typedef struct Engine
         CutsceneState cutsceneState;
 
     };
+
+    Renderer renderer;
     
     ULONG startTime, endTime, deltaTime, accTime, loopEndTime;
 
 } Engine;
 
 Engine engine;
+
+
+// //sand dunes theme
+// UWORD kolory[COLORS] =
+//     {
+//         0x101, 0x323, 0x523, 0x743, 0xa65, 0xc85, 0xeb8, 0xfdb,
+//         0xbcc, 0x8be,
+//         0x243, 0x9b8, 0xafd, 0x324, 0xa9b, 0xdcf};
+
+// //sand dunes theme
+// UWORD kolory2[COLORS] =
+//     {
+//         0x101, 0x312, 0x423, 0x533, 0x634, 0x754, 0x865, 0x975,
+//         0xa86, 0xb97,
+//         0xca8, 0xda9, 0xeba, 0xfcb, 0x12f, 0x23f};
+
+// UWORD grayColors[16] = 
+// {
+// 	0x000,0x111,0x222,0x333,0x444,0x555,0x666,0x777,
+// 	0x888,0x999,0xaaa,0xbbb,0xccc,0xddd,0xeee,0xfff
+// };
+
+
 
 #endif // _ENGINE_H_

@@ -13,11 +13,8 @@ void OverwriteMap()
 			yy = (UBYTE)y ;
 			yyplusone = (yy+1);
 			mapNumber = (y / 256 + 1) % MAPLENGTH;
-			word = mapSource[mapNumber][x][yy/2];
-			mapHigh[x*2][yy] = word;
-			mapHigh[x*2+1][yy] = word;
-			mapHigh[x*2][yyplusone] = word;
-			mapHigh[x*2+1][yyplusone] = word;
+			word = engine.renderer.mapSource[mapNumber][x][yy/2];
+			engine.renderer.mapHigh[x][yy/2] = word;
 		}
 	}
 	lastOverwrittenLine = engine.gameState.shipParams.pZ;

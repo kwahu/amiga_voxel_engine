@@ -503,42 +503,42 @@ void engineGsCreate(void)
 		if (keyCheck(KEY_1))
 		{
 			renderingDepth = 16;
-			renderingType = 1;
-			calculationDepthDivider = 2;
-			calculationDepthStep = 4;
-			renderingDepthStep = 2;
+			engine.renderer.renderingType = 1;
+			engine.renderer.calculationDepthDivider = 2;
+			engine.renderer.calculationDepthStep = 4;
+			engine.renderer.renderingDepthStep = 2;
 
-			stepModifier = 16;
-			xFOV = 32;
-			yFOV = 12;
+			engine.renderer.stepModifier = 16;
+			engine.renderer.xFOV = 32;
+			engine.renderer.yFOV = 12;
 			RecalculateEven();
 			hardwareSelection = 1;
 		}
 		if (keyCheck(KEY_2)) //A1200
 		{
 			renderingDepth = 32;
-			renderingType = 4;
-			calculationDepthDivider = 2;
-			calculationDepthStep = 2;
-			renderingDepthStep = 2;
+			engine.renderer.renderingType = 4;
+			engine.renderer.calculationDepthDivider = 2;
+			engine.renderer.calculationDepthStep = 2;
+			engine.renderer.renderingDepthStep = 2;
 
-			stepModifier = 16;
-			xFOV = 28;
-			yFOV = 10;
+			engine.renderer.stepModifier = 16;
+			engine.renderer.xFOV = 28;
+			engine.renderer.yFOV = 10;
 			RecalculateEven();
 			hardwareSelection = 2;
 		}
 		if (keyCheck(KEY_3)) //A3000
 		{
 			renderingDepth = 64;
-			renderingType = 6;
-			calculationDepthDivider = 2;
-			calculationDepthStep = 2;
-			renderingDepthStep = 1;
+			engine.renderer.renderingType = 6;
+			engine.renderer.calculationDepthDivider = 2;
+			engine.renderer.calculationDepthStep = 2;
+			engine.renderer.renderingDepthStep = 1;
 
-			stepModifier = 16;
-			xFOV = 10;
-			yFOV = 18;
+			engine.renderer.stepModifier = 16;
+			engine.renderer.xFOV = 10;
+			engine.renderer.yFOV = 18;
 			RecalculateOdd();
 			hardwareSelection = 3;
 		}
@@ -764,7 +764,7 @@ void engineGsLoop(void)
 
 		ULONG lowerDelta = (engine.deltaTime/10000);
 
-		UWORD terrainHeight = getTerrainHeight(engine.gameState.shipParams, mapHigh);
+		UWORD terrainHeight = getTerrainHeight(engine.gameState.shipParams, engine.renderer.mapHigh);
 
 		engine.gameState = updateShipParams(engine.gameState, lowerDelta, terrainHeight);
 
@@ -779,7 +779,7 @@ void engineGsLoop(void)
 		OverwriteMap(); //this is how we go through many different maps, we just overwrite the main array with new content
 
 		//restart
-		if ((engine.gameState.shipParams.pY - 3) < (UBYTE)(mapHigh[(UBYTE)(engine.gameState.shipParams.pX)][(UBYTE)(engine.gameState.shipParams.pZ + 15)]))
+		if ((engine.gameState.shipParams.pY - 3) < (UBYTE)(engine.renderer.mapHigh[((UBYTE)(engine.gameState.shipParams.pX)) >> 1][((UBYTE)(engine.gameState.shipParams.pZ + 15)) >> 1]))
 		{
 			
 			ClearBuffor();
@@ -908,7 +908,7 @@ void engineGsLoop(void)
 			lastOverwrittenLine = 0;
 			engine.gameState.shipParams.dPDenom = 128;
 
-			CopyMapWord(mapSource[0], mapHigh);
+			CopyMapWord(engine.renderer.mapSource[0], engine.renderer.mapHigh);
 			engine.endTime = timerGetPrec();
 			
 			for(int i = 0; i < lines; ++i)
@@ -1015,7 +1015,7 @@ void engineGsLoop(void)
 				engine.gameState.shipParams.dPDenom = 128;
 				endScreen = 0;
 
-				CopyMapWord(mapSource[0], mapHigh);
+				CopyMapWord(engine.renderer.mapSource[0], engine.renderer.mapHigh);
 				engine.endTime = timerGetPrec();
 				
 				for(int i = 0; i < lines; ++i)
@@ -1201,7 +1201,7 @@ void engineGsLoop(void)
 				endScreen = 0;
 				infoScreen = 0;
 
-				CopyMapWord(mapSource[0], mapHigh);
+				CopyMapWord(engine.renderer.mapSource[0], engine.renderer.mapHigh);
 				engine.endTime = timerGetPrec();
 				
 				for(int i = 0; i < lines; ++i)

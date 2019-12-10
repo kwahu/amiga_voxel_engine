@@ -1,7 +1,6 @@
 #include "engine.h"
 #include "settings.h"
 
-//TODO ProcessRayCastProgressiveNonInterleaved
 
 void CalculateRayCasts(WORD (*rayCastX), WORD (*rayCastY), 
                         UBYTE xSize, UBYTE ySize, int stepSize)
@@ -9,8 +8,8 @@ void CalculateRayCasts(WORD (*rayCastX), WORD (*rayCastY),
 	WORD sxx;
 	WORD syy;
 	WORD tzz; //depth step value
-	WORD fovX = xSize/xFOV; //width FOV
-	WORD fovY = ySize/yFOV;//5; //height FOV
+	WORD fovX = xSize/engine.renderer.xFOV; //width FOV
+	WORD fovY = ySize/engine.renderer.yFOV;//5; //height FOV
 	WORD sxxx;
 	WORD xMiddle = xSize/2;
 	WORD yMiddle = ySize/2;
@@ -32,18 +31,18 @@ void CalculateRayCasts(WORD (*rayCastX), WORD (*rayCastY),
 			CopyFastToChipW(s_pBuffer->pBack);
 		#endif
 		//high - 2 - 8
-		tzz += calculationDepthStep + tz / calculationDepthDivider; //+tz/16; //increase step with the distance from camera
+		tzz += engine.renderer.calculationDepthStep + tz / engine.renderer.calculationDepthDivider; //+tz/16; //increase step with the distance from camera
 		WORD *rayXPtr = rayCastX + tz;
         for(int sx=-xMiddle;sx<xMiddle;sx++)
 		{
-			sxx = (sx * tzz)/stepModifier; //make smaller steps
+			sxx = (sx * tzz)/engine.renderer.stepModifier; //make smaller steps
 			sxxx = sxx/fovX;
             *rayXPtr = sxxx; 
             rayXPtr += TERRAINDEPTH;
             WORD *rayYPtr = rayCastY + tz;
 			for(int sy=-yMiddle;sy<yMiddle;sy++)
 			{
-				syy = (sy*stepSize * tzz)/stepModifier;//make smaller steps
+				syy = (sy*stepSize * tzz)/engine.renderer.stepModifier;//make smaller steps
 				*rayYPtr = syy/fovY;
                 rayYPtr += TERRAINDEPTH;
 			}
@@ -56,7 +55,7 @@ void CalculateRayCasts(WORD (*rayCastX), WORD (*rayCastY),
 
 UBYTE ProcessWord1v6(UBYTE rounds, UBYTE sx, UBYTE sy, UWORD *_tz, UWORD *tzz, UBYTE px, UBYTE py,UBYTE ph,
 UWORD *address1, UWORD *address2, 
-WORD (*rayCastX), WORD (*rayCastY), UWORD (*map)[256], UBYTE threshold)
+WORD (*rayCastX), WORD (*rayCastY), UWORD (*map)[128], UBYTE threshold)
 {
 	UWORD mapValue;
 	WORD slope;
@@ -71,7 +70,7 @@ WORD (*rayCastX), WORD (*rayCastY), UWORD (*map)[256], UBYTE threshold)
     WORD *rayYPtr = rayCastY + sy*TERRAINDEPTH + tz;
 	while(tz < threshold)//check depth step by step
 	{
-		mapValue = map[ (UBYTE)( px + *rayXPtr ) ][ (UBYTE)( py + (tz<<renderingDepthStep) ) ];//read color + height
+		mapValue = map[ (UBYTE)( px + *rayXPtr ) >> 1 ][ (UBYTE)( py + (tz<<engine.renderer.renderingDepthStep) ) >> 1 ];//read color + height
 		th = mapValue;//take just the height
 		slope = th - (ph + *rayYPtr);//check if read height is higher than what we expect from the raycast table
 		if(slope > 0)
@@ -96,7 +95,7 @@ WORD (*rayCastX), WORD (*rayCastY), UWORD (*map)[256], UBYTE threshold)
 }
 UBYTE ProcessWord2v6(UBYTE rounds, UBYTE sx, UBYTE sy, UWORD *_tz, UWORD *tzz, UBYTE px, UBYTE py,UBYTE ph,
 UWORD *address1, UWORD *address2, 
-WORD (*rayCastX), WORD (*rayCastY), UWORD (*map)[256], UBYTE threshold)
+WORD (*rayCastX), WORD (*rayCastY), UWORD (*map)[128], UBYTE threshold)
 {
 	UWORD mapValue;
 	WORD slope;
@@ -117,7 +116,7 @@ WORD (*rayCastX), WORD (*rayCastY), UWORD (*map)[256], UBYTE threshold)
 		tz = tzz[iHor];//set current depth - tz
 		while(tz < threshold)//check depth step by step
 		{
-			mapValue = map[ (UBYTE)( px + *rayXPtr ) ][ (UBYTE)( py + (tz<<renderingDepthStep) ) ];//read color + height
+			mapValue = map[ (UBYTE)( px + *rayXPtr ) >> 1 ][ (UBYTE)( py + (tz<<engine.renderer.renderingDepthStep) ) >> 1 ];//read color + height
 			th = mapValue;//take just the height
 			slope = th - (ph + *rayYPtr);//check if read height is higher than what we expect from the raycast table
 			if(slope > 0)
@@ -144,7 +143,7 @@ WORD (*rayCastX), WORD (*rayCastY), UWORD (*map)[256], UBYTE threshold)
 }
 UBYTE ProcessWord3v6(UBYTE rounds, UBYTE sx, UBYTE sy, UWORD *_tz, UWORD *tzz, UBYTE px, UBYTE py,UBYTE ph,
 UWORD *address1, UWORD *address2, 
-WORD (*rayCastX)[TERRAINDEPTH], WORD (*rayCastY)[TERRAINDEPTH], UWORD (*map)[256], UBYTE threshold)
+WORD (*rayCastX)[TERRAINDEPTH], WORD (*rayCastY)[TERRAINDEPTH], UWORD (*map)[128], UBYTE threshold)
 {
 	UWORD mapValue;
 	WORD slope;
@@ -165,7 +164,7 @@ WORD (*rayCastX)[TERRAINDEPTH], WORD (*rayCastY)[TERRAINDEPTH], UWORD (*map)[256
 		tz = tzz[iHor];//set current depth - tz
 		while(tz < threshold)//check depth step by step
 		{
-			mapValue = map[ (UBYTE)( px + *rayXPtr ) ][ (UBYTE)( py + (tz<<renderingDepthStep) ) ];//read color + height
+			mapValue = map[ (UBYTE)( px + *rayXPtr ) >> 1 ][ (UBYTE)( py + (tz<<engine.renderer.renderingDepthStep) ) >> 1 ];//read color + height
 			th = mapValue;//take just the height
 			slope = th - (ph + *rayYPtr);//check if read height is higher than what we expect from the raycast table
 			if(slope > 0)
@@ -191,7 +190,7 @@ WORD (*rayCastX)[TERRAINDEPTH], WORD (*rayCastY)[TERRAINDEPTH], UWORD (*map)[256
 	return tz;
 }
 
-void ProcessRayCastsProgressive(WORD (*rayCastX), WORD (*rayCastY), UWORD (*map)[256],
+void ProcessRayCastsProgressive(WORD (*rayCastX), WORD (*rayCastY), UWORD (*map)[128],
 	UBYTE px, UBYTE py, UBYTE ph, UBYTE screenStart, UBYTE screenEnd, UBYTE zStart)
 {
 	UBYTE sx,sy,mist;
@@ -364,7 +363,7 @@ void ProcessRayCastsProgressive(WORD (*rayCastX), WORD (*rayCastY), UWORD (*map)
 }
 
 
-void ProcessRayCastsProgressiveNonInterleaved(WORD (*rayCastX), WORD (*rayCastY), UWORD (*map)[256],
+void ProcessRayCastsProgressiveNonInterleaved(WORD (*rayCastX), WORD (*rayCastY), UWORD (*map)[128],
 	UBYTE px, UBYTE py, UBYTE ph, UBYTE screenStart, UBYTE screenEnd, UBYTE zStart)
 {
 	UBYTE sx,sy,mist;
@@ -541,7 +540,7 @@ void ProcessRayCastsProgressiveNonInterleaved(WORD (*rayCastX), WORD (*rayCastY)
 	}
 }
 
-void ProcessRayCastsFull3x2(WORD (*rayCastX), WORD (*rayCastY), UWORD (*map)[256],
+void ProcessRayCastsFull3x2(WORD (*rayCastX), WORD (*rayCastY), UWORD (*map)[128],
 UBYTE px, UBYTE py, UBYTE ph, UBYTE screenStart, UBYTE screenEnd, UBYTE zStart)
 {
 
@@ -568,8 +567,8 @@ UBYTE px, UBYTE py, UBYTE ph, UBYTE screenStart, UBYTE screenEnd, UBYTE zStart)
             while(tz < renderingDepth)
             {
                 mx = px + *rayXPtr;
-                my = (py + (tz<<renderingDepthStep));
-                mapValue = map[ mx ][ my ];
+                my = (py + (tz<<engine.renderer.renderingDepthStep));
+                mapValue = map[ mx >> 1 ][ my >> 1 ];
                 UBYTE th = mapValue;
 
                 WORD slope = th - (ph + *rayYPtr);
@@ -657,7 +656,7 @@ UBYTE px, UBYTE py, UBYTE ph, UBYTE screenStart, UBYTE screenEnd, UBYTE zStart)
 }
 
 
-void ProcessRayCastsFull4x4(WORD (*rayCastX), WORD (*rayCastY), UWORD (*map)[256],
+void ProcessRayCastsFull4x4(WORD (*rayCastX), WORD (*rayCastY), UWORD (*map)[128],
 UBYTE px, UBYTE py, UBYTE ph, UBYTE screenStart, UBYTE screenEnd, UBYTE zStart)
 {
 
@@ -684,8 +683,8 @@ UBYTE px, UBYTE py, UBYTE ph, UBYTE screenStart, UBYTE screenEnd, UBYTE zStart)
             while(tz < renderingDepth)
             {
                 mx = px + *rayXPtr;
-                my = (py + (tz<<renderingDepthStep));
-                mapValue = map[ mx ][ my ];
+                my = (py + (tz<<engine.renderer.renderingDepthStep));
+                mapValue = map[ mx >> 1 ][ my >> 1 ];
                 UBYTE th = mapValue;
 
                 WORD slope = th - (ph + *rayYPtr);
@@ -814,8 +813,8 @@ UBYTE px, UBYTE py, UBYTE ph, UBYTE screenStart, UBYTE screenEnd, UBYTE zStart)
             while(tz < renderingDepth)
             {
                 mx = px + *rayXPtr;
-                my = (py + (tz<<renderingDepthStep));
-                mapValue = map[ mx ][ my ];
+                my = (py + (tz<<engine.renderer.renderingDepthStep));
+                mapValue = map[ mx >> 1 ][ my >> 1 ];
                 UBYTE th = mapValue;
 
                 if(th > ph + *rayYPtr)//tz>>3)
@@ -891,7 +890,7 @@ UBYTE px, UBYTE py, UBYTE ph, UBYTE screenStart, UBYTE screenEnd, UBYTE zStart)
     }
 }
 
-void ProcessRayCasts164x4(WORD (*rayCastX), WORD (*rayCastY), UWORD (*map)[256],
+void ProcessRayCasts164x4(WORD (*rayCastX), WORD (*rayCastY), UWORD (*map)[MAPSIZE],
 UBYTE px, UBYTE py, UBYTE ph, UBYTE screenStart, UBYTE screenEnd, UBYTE zStart)
 {
 
@@ -918,8 +917,8 @@ UBYTE px, UBYTE py, UBYTE ph, UBYTE screenStart, UBYTE screenEnd, UBYTE zStart)
             while(tz < renderingDepth)
             {
                 mx = px + *rayXPtr;
-                my = (py + (tz<<renderingDepthStep));
-                mapValue = map[ mx ][ my ];
+                my = (py + (tz<<engine.renderer.renderingDepthStep));
+                mapValue = map[ mx >> 1 ][ my >> 1 ];
                 UBYTE th = mapValue;
 
                 if(th > ph + *rayYPtr)//tz>>3)

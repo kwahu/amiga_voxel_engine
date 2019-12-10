@@ -130,7 +130,7 @@ GameState ProcessInput(GameState gameState, LONG deltaTime)
 
 }
 
-UWORD getTerrainHeight(ShipParams shipParams, UWORD map[][256])
+UWORD getTerrainHeight(ShipParams shipParams, UWORD map[][128])
 {
-    return ((UBYTE)(map[(UBYTE)(shipParams.pX)][(UBYTE)(shipParams.pZ + 15)]));
+    return ((UBYTE)(map[((UBYTE)(shipParams.pX)) >> 1][((UBYTE)(shipParams.pZ + 15)) >> 1]));
 }
