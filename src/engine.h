@@ -2,6 +2,8 @@
 #define _ENGINE_H_
 
 #include <stdlib.h>
+#include <stdint.h>
+#include "settings.h"
 
 
 #define DEPTH 4
@@ -12,21 +14,6 @@
 
 
 
-UWORD bitmapPalette[16];
-
-
-UBYTE screen3x2[6 * 90]; //3k
-UBYTE screen4x4[4 * 45]; //3k
-
-UBYTE dither4x4EvenP1[COLORS * COLORS]; //1k
-UBYTE dither4x4EvenP2[COLORS * COLORS]; //1k
-UBYTE dither4x4EvenP3[COLORS * COLORS]; //1k
-UBYTE dither4x4EvenP4[COLORS * COLORS]; //1k
-
-UBYTE dither3x2EvenP1[COLORS * COLORS * COLORS]; //32k
-UBYTE dither3x2EvenP2[COLORS * COLORS * COLORS]; //32k
-UBYTE dither3x2EvenP3[COLORS * COLORS * COLORS]; //32k
-UBYTE dither3x2EvenP4[COLORS * COLORS * COLORS]; //32k
 
 
 static int interlace;
@@ -36,8 +23,6 @@ static UBYTE screenIndex;
 static ULONG screenDuration;
 static UBYTE infoScreen = 0;
 static UBYTE endScreen = 0;
-UWORD lastOverwrittenLine;
-static BYTE xOffsetEven, xOffsetOdd; //camera rotation offsett when turning
 
 typedef struct tagBITMAPFILEHEADER
 {
@@ -65,7 +50,7 @@ typedef struct tagBITMAPINFOHEADER
 
 BITMAPINFOHEADER bitmapHeader1, bitmapHeader2, bitmapHeader3, bitmapHeader4, paletteHeader, shipHeader;
 unsigned char *bitmap1, *paletteBitmap, *ship;
-unsigned char bitmapPalette1[16 * 4], bitmapPalette2[16 * 4], bitmapPalette3[16 * 4], bitmapPalette4[16 * 4], palettePalette[16 * 4];
+unsigned char bitmapPalette1[16 * 4], palettePalette[16 * 4];
 
 
 UBYTE skyColor = 33;
@@ -124,6 +109,7 @@ typedef struct Renderer
     UBYTE colorMap[MAPSIZE][MAPSIZE];  //16k
 
     UWORD mapHigh[MAPSIZE][MAPSIZE]; //131k
+    UWORD lastOverwrittenLine;
 
     UWORD mapSource[11][MAPSIZE][MAPSIZE];  //360k
 
@@ -131,6 +117,28 @@ typedef struct Renderer
         mapLoaded7, mapLoaded8, mapLoaded9, mapLoaded10;
 
     UBYTE renderingType, calculationDepthDivider, calculationDepthStep, renderingDepthStep, stepModifier, xFOV, yFOV;
+
+        
+    UWORD bitmapPalette[16];
+
+    UBYTE screen3x2[6 * 90]; //3k
+    UBYTE screen4x4[4 * 45]; //3k
+
+    UBYTE dither4x4EvenP1[COLORS * COLORS]; //1k
+    UBYTE dither4x4EvenP2[COLORS * COLORS]; //1k
+    UBYTE dither4x4EvenP3[COLORS * COLORS]; //1k
+    UBYTE dither4x4EvenP4[COLORS * COLORS]; //1k
+
+    UBYTE dither3x2EvenP1[COLORS * COLORS * COLORS]; //32k
+    UBYTE dither3x2EvenP2[COLORS * COLORS * COLORS]; //32k
+    UBYTE dither3x2EvenP3[COLORS * COLORS * COLORS]; //32k
+    UBYTE dither3x2EvenP4[COLORS * COLORS * COLORS]; //32k
+    
+    WORD rayCastX[XSIZEODD][TERRAINDEPTH]; //51k
+    WORD rayCastY[YSIZEODD][TERRAINDEPTH]; //51k
+    
+    BYTE xOffsetEven, xOffsetOdd; //camera rotation offsett when turning
+
 
 } Renderer;
 

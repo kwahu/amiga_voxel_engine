@@ -14,7 +14,7 @@
 #include "map_streaming.c"
 #include "setup_maps.c"
 #include "rendering_quality.c"
-//#include "bitmap.c"
+#include "bitmap.c"
 #include <ace/managers/game.h>
 #include <ace/managers/timer.h>
 #include <ace/managers/system.h>
@@ -120,10 +120,10 @@ void animateIntro()
 	{
 		for (int i = 0; i < 16; i++)
 		{
-			bitmapPalette[i] = ((((currentPallete[i * 4 + 2]/4) >> 4) << 8) +
+			engine.renderer.bitmapPalette[i] = ((((currentPallete[i * 4 + 2]/4) >> 4) << 8) +
 								(((currentPallete[i * 4 + 1]/4) >> 4) << 4) + ((currentPallete[i * 4 + 0]/4) >> 4));
 		}
-		memcpy(s_pVPort->pPalette, bitmapPalette, 16 * sizeof(UWORD));
+		memcpy(s_pVPort->pPalette, engine.renderer.bitmapPalette, 16 * sizeof(UWORD));
 		viewLoad(s_pView);
 		fadeInStatus[3] = 1;
 	}
@@ -131,10 +131,10 @@ void animateIntro()
 	{
 		for (int i = 0; i < 16; i++)
 		{
-			bitmapPalette[i] = ((((currentPallete[i * 4 + 2]/2) >> 4) << 8) +
+			engine.renderer.bitmapPalette[i] = ((((currentPallete[i * 4 + 2]/2) >> 4) << 8) +
 								(((currentPallete[i * 4 + 1]/2) >> 4) << 4) + ((currentPallete[i * 4 + 0]/2) >> 4));
 		}
-		memcpy(s_pVPort->pPalette, bitmapPalette, 16 * sizeof(UWORD));
+		memcpy(s_pVPort->pPalette, engine.renderer.bitmapPalette, 16 * sizeof(UWORD));
 		viewLoad(s_pView);
 		fadeInStatus[2] = 1;
 	}
@@ -142,10 +142,10 @@ void animateIntro()
 	{
 		for (int i = 0; i < 16; i++)
 		{
-			bitmapPalette[i] = ((((currentPallete[i * 4 + 2]*3/4) >> 4) << 8) +
+			engine.renderer.bitmapPalette[i] = ((((currentPallete[i * 4 + 2]*3/4) >> 4) << 8) +
 								(((currentPallete[i * 4 + 1]*3/4) >> 4) << 4) + ((currentPallete[i * 4 + 0]*3/4) >> 4));
 		}
-		memcpy(s_pVPort->pPalette, bitmapPalette, 16 * sizeof(UWORD));
+		memcpy(s_pVPort->pPalette, engine.renderer.bitmapPalette, 16 * sizeof(UWORD));
 		viewLoad(s_pView);
 		fadeInStatus[1] = 1;
 	}
@@ -153,10 +153,10 @@ void animateIntro()
 	{
 		for (int i = 0; i < 16; i++)
 		{
-			bitmapPalette[i] = (((currentPallete[i * 4 + 2] >> 4) << 8) +
+			engine.renderer.bitmapPalette[i] = (((currentPallete[i * 4 + 2] >> 4) << 8) +
 								((currentPallete[i * 4 + 1] >> 4) << 4) + (currentPallete[i * 4 + 0] >> 4));
 		}
-		memcpy(s_pVPort->pPalette, bitmapPalette, 16 * sizeof(UWORD));
+		memcpy(s_pVPort->pPalette, engine.renderer.bitmapPalette, 16 * sizeof(UWORD));
 		viewLoad(s_pView);
 		fadeInStatus[0] = 1;
 	}
@@ -165,10 +165,10 @@ void animateIntro()
 	{
 		for (int i = 0; i < 16; i++)
 		{
-			bitmapPalette[i] = ((((currentPallete[i * 4 + 2]*3/4) >> 4) << 8) +
+			engine.renderer.bitmapPalette[i] = ((((currentPallete[i * 4 + 2]*3/4) >> 4) << 8) +
 								(((currentPallete[i * 4 + 1]*3/4) >> 4) << 4) + ((currentPallete[i * 4 + 0]*3/4) >> 4));
 		}
-		memcpy(s_pVPort->pPalette, bitmapPalette, 16 * sizeof(UWORD));
+		memcpy(s_pVPort->pPalette, engine.renderer.bitmapPalette, 16 * sizeof(UWORD));
 		viewLoad(s_pView);
 		fadeOutStatus[0] = 1;
 	}
@@ -176,10 +176,10 @@ void animateIntro()
 	{
 		for (int i = 0; i < 16; i++)
 		{
-			bitmapPalette[i] = ((((currentPallete[i * 4 + 2]/2) >> 4) << 8) +
+			engine.renderer.bitmapPalette[i] = ((((currentPallete[i * 4 + 2]/2) >> 4) << 8) +
 								(((currentPallete[i * 4 + 1]/2) >> 4) << 4) + ((currentPallete[i * 4 + 0]/2) >> 4));
 		}
-		memcpy(s_pVPort->pPalette, bitmapPalette, 16 * sizeof(UWORD));
+		memcpy(s_pVPort->pPalette, engine.renderer.bitmapPalette, 16 * sizeof(UWORD));
 		viewLoad(s_pView);
 		fadeOutStatus[1] = 1;
 	}
@@ -187,10 +187,10 @@ void animateIntro()
 	{
 		for (int i = 0; i < 16; i++)
 		{
-			bitmapPalette[i] = ((((currentPallete[i * 4 + 2]/4) >> 4) << 8) +
+			engine.renderer.bitmapPalette[i] = ((((currentPallete[i * 4 + 2]/4) >> 4) << 8) +
 								(((currentPallete[i * 4 + 1]/4) >> 4) << 4) + ((currentPallete[i * 4 + 0]/4) >> 4));
 		}
-		memcpy(s_pVPort->pPalette, bitmapPalette, 16 * sizeof(UWORD));
+		memcpy(s_pVPort->pPalette, engine.renderer.bitmapPalette, 16 * sizeof(UWORD));
 		viewLoad(s_pView);
 		fadeOutStatus[2] = 1;
 	}
@@ -198,9 +198,9 @@ void animateIntro()
 	{
 		for (int i = 0; i < 16; i++)
 		{
-			bitmapPalette[i] = 0;
+			engine.renderer.bitmapPalette[i] = 0;
 		}
-		memcpy(s_pVPort->pPalette, bitmapPalette, 16 * sizeof(UWORD));
+		memcpy(s_pVPort->pPalette, engine.renderer.bitmapPalette, 16 * sizeof(UWORD));
 		viewLoad(s_pView);
 		fadeOutStatus[3] = 1;
 	}
@@ -209,18 +209,13 @@ void animateIntro()
 
 void RecalculateEven()
 {
-	CalculateRayCasts(rayCastXEven, rayCastYEven, XSIZEEVEN, YSIZEEVEN, 2); //było 2
+	CalculateRayCasts(engine.renderer.rayCastX, engine.renderer.rayCastY, XSIZEEVEN, YSIZEEVEN, 2); //było 2
 	engine.deltaTime = 0;
 }
 void RecalculateOdd()
 {
-	CalculateRayCasts(rayCastXOdd, rayCastYOdd, XSIZEODD, YSIZEODD, 1);
+	CalculateRayCasts(engine.renderer.rayCastX, engine.renderer.rayCastY, XSIZEODD, YSIZEODD, 1);
 	engine.deltaTime = 0;
-}
-void Recalculate()
-{
-	CalculateRayCasts(rayCastXEven, rayCastYEven, XSIZEEVEN, YSIZEEVEN, 2); //było 2
-	CalculateRayCasts(rayCastXOdd, rayCastYOdd, XSIZEODD, YSIZEODD, 1);
 }
 
 void ConvertIntToChar(int number, char *test, int size)
@@ -397,11 +392,11 @@ void SetGamePaletter()
 	//process paletter from an image
 	for (int i = 0; i < 16; i++)
 	{
-		bitmapPalette[i] = ((palettePalette[i * 4 + 2] >> 4) << 8) +
+		engine.renderer.bitmapPalette[i] = ((palettePalette[i * 4 + 2] >> 4) << 8) +
 						   ((palettePalette[i * 4 + 1] >> 4) << 4) + (palettePalette[i * 4 + 0] >> 4);
 	}
 
-	memcpy(s_pVPort->pPalette, bitmapPalette, 16 * sizeof(UWORD));
+	memcpy(s_pVPort->pPalette, engine.renderer.bitmapPalette, 16 * sizeof(UWORD));
 	viewLoad(s_pView);
 }
 
@@ -431,7 +426,7 @@ void engineGsCreate(void)
 	//process paletter from an image
 	for (int i = 0; i < 16; i++)
 	{
-		bitmapPalette[i] = ((bitmapPalette1[i * 4 + 2] >> 4) << 8) +
+		engine.renderer.bitmapPalette[i] = ((bitmapPalette1[i * 4 + 2] >> 4) << 8) +
 						   ((bitmapPalette1[i * 4 + 1] >> 4) << 4) + (bitmapPalette1[i * 4 + 0] >> 4);
 	}
 
@@ -441,7 +436,7 @@ void engineGsCreate(void)
 		fadeInStatus[i] = 1;
 		fadeOutStatus[i] = 0;
 	}
-	memcpy(s_pVPort->pPalette, bitmapPalette, 16 * sizeof(UWORD));
+	memcpy(s_pVPort->pPalette, engine.renderer.bitmapPalette, 16 * sizeof(UWORD));
 	viewLoad(s_pView);
 	// Load font
 	s_pMenuFont = fontCreate("data/ss.fnt");
@@ -461,7 +456,7 @@ void engineGsCreate(void)
 	engine.gameState.crossHairY = 0;
 
 
-	lastOverwrittenLine = 0;
+	engine.renderer.lastOverwrittenLine = 0;
 
 	SetupMaps();
 
@@ -520,12 +515,12 @@ void engineGsCreate(void)
 			engine.renderer.renderingType = 4;
 			engine.renderer.calculationDepthDivider = 2;
 			engine.renderer.calculationDepthStep = 2;
-			engine.renderer.renderingDepthStep = 2;
+			engine.renderer.renderingDepthStep = 1;
 
 			engine.renderer.stepModifier = 16;
-			engine.renderer.xFOV = 28;
-			engine.renderer.yFOV = 10;
-			RecalculateEven();
+			engine.renderer.xFOV = 20;
+			engine.renderer.yFOV = 24;
+			RecalculateOdd();
 			hardwareSelection = 2;
 		}
 		if (keyCheck(KEY_3)) //A3000
@@ -604,10 +599,10 @@ void engineGsLoop(void)
 			
 			for (int i = 0; i < 16; i++)
 			{
-				bitmapPalette[i] = ((bitmapPalette1[i * 4 + 2] >> 4) << 8) +
+				engine.renderer.bitmapPalette[i] = ((bitmapPalette1[i * 4 + 2] >> 4) << 8) +
 									((bitmapPalette1[i * 4 + 1] >> 4) << 4) + (bitmapPalette1[i * 4 + 0] >> 4);
 			}
-			memcpy(s_pVPort->pPalette, bitmapPalette, 16 * sizeof(UWORD));
+			memcpy(s_pVPort->pPalette, engine.renderer.bitmapPalette, 16 * sizeof(UWORD));
 			
 			viewLoad(s_pView);
 			//vPortWaitForEnd(s_pVPort);
@@ -638,10 +633,10 @@ void engineGsLoop(void)
 							
 							for (int i = 0; i < 16; i++)
 							{
-								bitmapPalette[i] = ((bitmapPalette1[i * 4 + 2] >> 4) << 8) +
+								engine.renderer.bitmapPalette[i] = ((bitmapPalette1[i * 4 + 2] >> 4) << 8) +
 													((bitmapPalette1[i * 4 + 1] >> 4) << 4) + (bitmapPalette1[i * 4 + 0] >> 4);
 							}
-							memcpy(s_pVPort->pPalette, bitmapPalette, 16 * sizeof(UWORD));
+							memcpy(s_pVPort->pPalette, engine.renderer.bitmapPalette, 16 * sizeof(UWORD));
 							
 							viewLoad(s_pView);
 							//vPortWaitForEnd(s_pVPort);
@@ -661,10 +656,10 @@ void engineGsLoop(void)
 							
 							for (int i = 0; i < 16; i++)
 							{
-								bitmapPalette[i] = ((bitmapPalette1[i * 4 + 2] >> 4) << 8) +
+								engine.renderer.bitmapPalette[i] = ((bitmapPalette1[i * 4 + 2] >> 4) << 8) +
 													((bitmapPalette1[i * 4 + 1] >> 4) << 4) + (bitmapPalette1[i * 4 + 0] >> 4);
 							}
-							memcpy(s_pVPort->pPalette, bitmapPalette, 16 * sizeof(UWORD));
+							memcpy(s_pVPort->pPalette, engine.renderer.bitmapPalette, 16 * sizeof(UWORD));
 							
 							viewLoad(s_pView);
 							//vPortWaitForEnd(s_pVPort);
@@ -684,10 +679,10 @@ void engineGsLoop(void)
 							
 							for (int i = 0; i < 16; i++)
 							{
-								bitmapPalette[i] = ((bitmapPalette1[i * 4 + 2] >> 4) << 8) +
+								engine.renderer.bitmapPalette[i] = ((bitmapPalette1[i * 4 + 2] >> 4) << 8) +
 													((bitmapPalette1[i * 4 + 1] >> 4) << 4) + (bitmapPalette1[i * 4 + 0] >> 4);
 							}
-							memcpy(s_pVPort->pPalette, bitmapPalette, 16 * sizeof(UWORD));
+							memcpy(s_pVPort->pPalette, engine.renderer.bitmapPalette, 16 * sizeof(UWORD));
 							
 							viewLoad(s_pView);
 							//vPortWaitForEnd(s_pVPort);
@@ -779,16 +774,16 @@ void engineGsLoop(void)
 		OverwriteMap(); //this is how we go through many different maps, we just overwrite the main array with new content
 
 		//restart
-		if ((engine.gameState.shipParams.pY - 3) < (UBYTE)(engine.renderer.mapHigh[((UBYTE)(engine.gameState.shipParams.pX)) >> 1][((UBYTE)(engine.gameState.shipParams.pZ + 15)) >> 1]))
+		if ((engine.gameState.shipParams.pY - 3) < (UBYTE)(engine.renderer.mapHigh[((UBYTE)(engine.gameState.shipParams.pX)) >>1][((UBYTE)(engine.gameState.shipParams.pZ + 15)) >>1]))
 		{
 			
 			ClearBuffor();
 			for (int i = 0; i < 16; i++)
 			{
-				bitmapPalette[i] = ((bitmapPalette1[i * 4 + 2] >> 4) << 8) +
+				engine.renderer.bitmapPalette[i] = ((bitmapPalette1[i * 4 + 2] >> 4) << 8) +
 									((bitmapPalette1[i * 4 + 1] >> 4) << 4) + (bitmapPalette1[i * 4 + 0] >> 4);
 			}
-			memcpy(s_pVPort->pPalette, bitmapPalette, 16 * sizeof(UWORD));
+			memcpy(s_pVPort->pPalette, engine.renderer.bitmapPalette, 16 * sizeof(UWORD));
 			DrawBitmap4bCenter(bitmap1, &bitmapHeader1);
 			viewLoad(s_pView);
 			//vPortWaitForEnd(s_pVPort);
@@ -905,7 +900,7 @@ void engineGsLoop(void)
 			engine.gameState.crossHairY = 0;
 			engine.accTime = 0;
 			engine.deltaTime = 0;
-			lastOverwrittenLine = 0;
+			engine.renderer.lastOverwrittenLine = 0;
 			engine.gameState.shipParams.dPDenom = 128;
 
 			CopyMapWord(engine.renderer.mapSource[0], engine.renderer.mapHigh);
@@ -929,10 +924,10 @@ void engineGsLoop(void)
 				ClearBuffor();
 				for (int i = 0; i < 16; i++)
 				{
-					bitmapPalette[i] = ((bitmapPalette1[i * 4 + 2] >> 4) << 8) +
+					engine.renderer.bitmapPalette[i] = ((bitmapPalette1[i * 4 + 2] >> 4) << 8) +
 										((bitmapPalette1[i * 4 + 1] >> 4) << 4) + (bitmapPalette1[i * 4 + 0] >> 4);
 				}
-				memcpy(s_pVPort->pPalette, bitmapPalette, 16 * sizeof(UWORD));
+				memcpy(s_pVPort->pPalette, engine.renderer.bitmapPalette, 16 * sizeof(UWORD));
 				DrawBitmap4bCenter(bitmap1, &bitmapHeader1);
 				viewLoad(s_pView);
 				//vPortWaitForEnd(s_pVPort);
@@ -1011,7 +1006,7 @@ void engineGsLoop(void)
 				engine.gameState.crossHairY = 0;
 				engine.accTime = 0;
 				engine.deltaTime = 0;
-				lastOverwrittenLine = 0;
+				engine.renderer.lastOverwrittenLine = 0;
 				engine.gameState.shipParams.dPDenom = 128;
 				endScreen = 0;
 
@@ -1040,10 +1035,10 @@ void engineGsLoop(void)
 				
 				for (int i = 0; i < 16; i++)
 				{
-					bitmapPalette[i] = ((bitmapPalette1[i * 4 + 2] >> 4) << 8) +
+					engine.renderer.bitmapPalette[i] = ((bitmapPalette1[i * 4 + 2] >> 4) << 8) +
 										((bitmapPalette1[i * 4 + 1] >> 4) << 4) + (bitmapPalette1[i * 4 + 0] >> 4);
 				}
-				memcpy(s_pVPort->pPalette, bitmapPalette, 16 * sizeof(UWORD));
+				memcpy(s_pVPort->pPalette, engine.renderer.bitmapPalette, 16 * sizeof(UWORD));
 				
 				viewLoad(s_pView);
 				//vPortWaitForEnd(s_pVPort);
@@ -1053,10 +1048,10 @@ void engineGsLoop(void)
 				ClearBuffor();
 				for (int i = 0; i < 16; i++)
 				{
-					bitmapPalette[i] = ((bitmapPalette1[i * 4 + 2] >> 4) << 8) +
+					engine.renderer.bitmapPalette[i] = ((bitmapPalette1[i * 4 + 2] >> 4) << 8) +
 										((bitmapPalette1[i * 4 + 1] >> 4) << 4) + (bitmapPalette1[i * 4 + 0] >> 4);
 				}
-				memcpy(s_pVPort->pPalette, bitmapPalette, 16 * sizeof(UWORD));
+				memcpy(s_pVPort->pPalette, engine.renderer.bitmapPalette, 16 * sizeof(UWORD));
 				DrawBitmap4bCenter(bitmap1, &bitmapHeader1);
 				viewLoad(s_pView);
 				//vPortWaitForEnd(s_pVPort);
@@ -1196,7 +1191,7 @@ void engineGsLoop(void)
 				engine.gameState.crossHairY = 0;
 				engine.accTime = 0;
 				engine.deltaTime = 0;
-				lastOverwrittenLine = 0;
+				engine.renderer.lastOverwrittenLine = 0;
 				engine.gameState.shipParams.dPDenom = 128;
 				endScreen = 0;
 				infoScreen = 0;
@@ -1235,8 +1230,8 @@ void engineGsLoop(void)
 			
 
 
-			xOffsetOdd = engine.gameState.crossHairX / 600;
-			xOffsetEven = engine.gameState.crossHairX / 900;
+			engine.renderer.xOffsetOdd = engine.gameState.crossHairX / 600;
+			engine.renderer.xOffsetEven = engine.gameState.crossHairX / 900;
 
 			RenderQuality();
 

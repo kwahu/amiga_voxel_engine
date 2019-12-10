@@ -21,8 +21,8 @@
 #include "key_map_atari.h"
 #include "../ikbd/ikbd.h"
 
-#define getJoy(index, button) (IKBD_STICK ##index## & IKBD_JOY_ ##button)
-#define getKey(name) IKBD_Keyboard(KEY_ ##name## )
+#define getJoy(index, button) (IKBD_STICK ##index & IKBD_JOY_ ##button) ||IKBD_Keyboard[KEY_ ##button ]
+#define getKey(name) IKBD_Keyboard(KEY_ ##name )
 
 #endif
 

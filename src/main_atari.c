@@ -3,31 +3,28 @@
 //#include <inttypes.h>
 #include <string.h>
 #include <stdio.h>
+#include <stdlib.h>
 #include <osbind.h>
-#include <mint/sysbind.h>
-//#include <stdlib.h>
 //#include <stdint.h>
 //#include <mint/osbind.h>
-#include "time_atari.c"
+#include <mint/sysbind.h>
 //#include <gem.h>
 //#include <gemx.h>
 
-#include "settings_atari.h"
-#include "../src/bitmap.c"
-#include "../src/file_read.c"
-#include "../src/engine.h"
-#include "draw_maps_atari.c"
-#include "draw_sprite_atari.c"
-#include "../src/ray_cast_calculate.c"
-#include "../src/bitmap_filters.c"
-#include "../src/setup_maps.c"
-#include "../src/dithering.c"
-#include "../src/ray_casting_progressive.c"
-#include "ray_casting_atari_falcon.c"
-#include "draw_screen_atari.c"
-#include "rendering_quality_atari.c"
-#include "../src/map_streaming.c"
-#include "input_handling_atari.c"
+
+#include "engine.h"
+
+#include "raycasting.c"
+//#include "mipmaps.c"
+#include "file_read.c"
+#include "physics.c"
+#include "dithering.c"
+#include "drawing.c"
+#include "map_streaming.c"
+#include "setup_maps.c"
+#include "rendering_quality.c"
+#include "bitmap.c"
+
 
 //http://retrospec.sgn.net/users/tomcat/miodrag/Atari_ST/Atari%20ST%20Internals.htm#SCREEN_DISPLAY
 //m68k-atari-mint-gcc rough.c -o hello.tos -Ofast -std=c99 -lgem
@@ -40,7 +37,6 @@
 uint16_t *physBase;
 uint16_t *logBase;
 
-UWORD crossHairX, crossHairY;
 
 void framebuffer_open() {
     physBase=Physbase();
@@ -71,19 +67,19 @@ uint16_t systemPalette[16];
 
 void Recalculate()
 {
-	CalculateRayCasts(rayCastXOdd, rayCastYOdd, XSIZEODD, YSIZEODD, 1);
-	deltaTime = 0;
+	CalculateRayCasts(engine.renderer.rayCastX, engine.renderer.rayCastY, XSIZEODD, YSIZEODD, 1);
+	engine.deltaTime = 0;
 }
 
 void SetDefaulResolution()
 {
 		renderingDepth = TERRAINDEPTH;
-		//renderingType = 8;
-		calculationDepthDivider = 2;
-		calculationDepthStep = 2;
-		renderingDepthStep = 1;
+		//engine.renderer.renderingType = 8;
+		engine.renderer.calculationDepthDivider = 2;
+		engine.renderer.calculationDepthStep = 2;
+		engine.renderer.renderingDepthStep = 1;
 
-		stepModifier = 16;
+		engine.renderer.stepModifier = 16;
 		Recalculate();
 }
 
@@ -99,7 +95,7 @@ void switchIntroScreen()
 		free(bitmap1);
 		bitmap1 = LoadBitmapFile("data/l2", &bitmapHeader1, bitmapPalette1);
 		
-		ClearScreen();
+		ClearBuffor();
 		DrawBitmap4bCenter(bitmap1, &bitmapHeader1);
 		
 		for(int i = 0; i < 4; i++)
@@ -114,7 +110,7 @@ void switchIntroScreen()
 		free(bitmap1);
 		bitmap1 = LoadBitmapFile("data/l3", &bitmapHeader1, bitmapPalette1);
 		
-		ClearScreen();
+		ClearBuffor();
 		DrawBitmap4bCenter(bitmap1, &bitmapHeader1);
 		
 		for(int i = 0; i < 4; i++)
@@ -134,84 +130,84 @@ void switchIntroScreen()
 
 void animateIntro()
 {
-	if(screenDuration < 2940 && !fadeInStatus[3])
+	if(screenDuration < 7400000 && !fadeInStatus[3])
 	{
 		for (int i = 0; i < 16; i++)
 		{
-			bitmapPalette[i] = ((((bitmapPalette1[i * 4 + 2]/4) >> 5) << 8) +
+			engine.renderer.bitmapPalette[i] = ((((bitmapPalette1[i * 4 + 2]/4) >> 5) << 8) +
 								(((bitmapPalette1[i * 4 + 1]/4) >> 5) << 4) + ((bitmapPalette1[i * 4 + 0]/4) >> 5));
 		}
-		Setpalette(bitmapPalette);
+		Setpalette(engine.renderer.bitmapPalette);
 		fadeInStatus[3] = 1;
 	}
-	if(screenDuration < 2880 && !fadeInStatus[2])
+	if(screenDuration < 7300000 && !fadeInStatus[2])
 	{
 		for (int i = 0; i < 16; i++)
 		{
-			bitmapPalette[i] = ((((bitmapPalette1[i * 4 + 2]/2) >> 5) << 8) +
+			engine.renderer.bitmapPalette[i] = ((((bitmapPalette1[i * 4 + 2]/2) >> 5) << 8) +
 								(((bitmapPalette1[i * 4 + 1]/2) >> 5) << 4) + ((bitmapPalette1[i * 4 + 0]/2) >> 5));
 		}
-		Setpalette(bitmapPalette);
+		Setpalette(engine.renderer.bitmapPalette);
 		fadeInStatus[2] = 1;
 	}
-	if(screenDuration < 2820 && !fadeInStatus[1])
+	if(screenDuration < 7200000 && !fadeInStatus[1])
 	{
 		for (int i = 0; i < 16; i++)
 		{
-			bitmapPalette[i] = ((((bitmapPalette1[i * 4 + 2]*3/4) >> 5) << 8) +
+			engine.renderer.bitmapPalette[i] = ((((bitmapPalette1[i * 4 + 2]*3/4) >> 5) << 8) +
 								(((bitmapPalette1[i * 4 + 1]*3/4) >> 5) << 4) + ((bitmapPalette1[i * 4 + 0]*3/4) >> 5));
 		}
-		Setpalette(bitmapPalette);
+		Setpalette(engine.renderer.bitmapPalette);
 		fadeInStatus[1] = 1;
 	}
-	if(screenDuration < 2740 && !fadeInStatus[0])
+	if(screenDuration < 7100000 && !fadeInStatus[0])
 	{
 		for (int i = 0; i < 16; i++)
 		{
-			bitmapPalette[i] = (((bitmapPalette1[i * 4 + 2] >> 5) << 8) +
+			engine.renderer.bitmapPalette[i] = (((bitmapPalette1[i * 4 + 2] >> 5) << 8) +
 								((bitmapPalette1[i * 4 + 1] >> 5) << 4) + (bitmapPalette1[i * 4 + 0] >> 5));
 		}
-		Setpalette(bitmapPalette);
+		Setpalette(engine.renderer.bitmapPalette);
 		fadeInStatus[0] = 1;
 	}
 
-	if(screenDuration < 240 && !fadeOutStatus[0])
+	if(screenDuration < 400000 && !fadeOutStatus[0])
 	{
 		for (int i = 0; i < 16; i++)
 		{
-			bitmapPalette[i] = ((((bitmapPalette1[i * 4 + 2]*3/4) >> 5) << 8) +
+			engine.renderer.bitmapPalette[i] = ((((bitmapPalette1[i * 4 + 2]*3/4) >> 5) << 8) +
 								(((bitmapPalette1[i * 4 + 1]*3/4) >> 5) << 4) + ((bitmapPalette1[i * 4 + 0]*3/4) >> 5));
 		}
-		Setpalette(bitmapPalette);
+		Setpalette(engine.renderer.bitmapPalette);
 		fadeOutStatus[0] = 1;
 	}
-	if(screenDuration < 180 && !fadeOutStatus[1])
+	if(screenDuration < 300000 && !fadeOutStatus[1])
 	{
 		for (int i = 0; i < 16; i++)
 		{
-			bitmapPalette[i] = ((((bitmapPalette1[i * 4 + 2]/2) >> 5) << 8) +
+			engine.renderer.bitmapPalette[i] = ((((bitmapPalette1[i * 4 + 2]/2) >> 5) << 8) +
 								(((bitmapPalette1[i * 4 + 1]/2) >> 5) << 4) + ((bitmapPalette1[i * 4 + 0]/2) >> 5));
 		}
-		Setpalette(bitmapPalette);
+		Setpalette(engine.renderer.bitmapPalette);
 		fadeOutStatus[1] = 1;
 	}
-	if(screenDuration < 120 && !fadeOutStatus[2])
+	if(screenDuration < 200000 && !fadeOutStatus[2])
 	{
 		for (int i = 0; i < 16; i++)
 		{
-			bitmapPalette[i] = ((((bitmapPalette1[i * 4 + 2]/4) >> 5) << 8) +
+			engine.renderer.bitmapPalette[i] = ((((bitmapPalette1[i * 4 + 2]/4) >> 5) << 8) +
 								(((bitmapPalette1[i * 4 + 1]/4) >> 5) << 4) + ((bitmapPalette1[i * 4 + 0]/4) >> 5));
 		}
-		Setpalette(bitmapPalette);
+		Setpalette(engine.renderer.bitmapPalette);
 		fadeOutStatus[2] = 1;
 	}
-	if(screenDuration < 60 && !fadeOutStatus[3])
+	if(screenDuration < 100000 && !fadeOutStatus[3])
 	{
 		for (int i = 0; i < 16; i++)
 		{
-			bitmapPalette[i] = 0;
+			engine.renderer.bitmapPalette[i] = 0;
 		}
-		Setpalette(bitmapPalette);
+		Setpalette(engine.renderer.bitmapPalette);
 		fadeOutStatus[3] = 1;
 	}
 }
@@ -242,16 +238,16 @@ void readPalette(uint16_t *systemPalette)
 	for(int i=0;i<16;i++)
 		systemPalette[i] = *(uint16_t *)(0xffff8240+(i*2));
 }
-void initDeltaTime()
+void initdeltaTime()
 {
-	lastTime = timerGetPrec();
+	engine.endTime = getCurrentTime();
 }
-void getDeltaTime()
+void getdeltaTime()
 {
-	startTime = timerGetPrec();
-	deltaTime = (startTime - lastTime);
-	lastTime = startTime;
-	levelTime += deltaTime;
+	engine.startTime = getCurrentTime();
+	engine.deltaTime = (engine.startTime - engine.endTime);
+	engine.endTime = engine.startTime;
+	engine.accTime += engine.deltaTime;
 }
 
 void main_supervisor() 
@@ -274,17 +270,17 @@ void main_supervisor()
 	{
 		if (IKBD_Keyboard[KEY_1])
 		{
-			renderingType = 4;
+			engine.renderer.renderingType = 4;
 			hardwareSelection = 1;
-			xFOV = 28;
-			yFOV = 14;
+			engine.renderer.xFOV = 28;
+			engine.renderer.yFOV = 14;
 		}
 		if (IKBD_Keyboard[KEY_2]) 
 		{
-			renderingType = 8;
+			engine.renderer.renderingType = 8;
 			hardwareSelection = 2;
-			xFOV = 25;
-			yFOV = 14;
+			engine.renderer.xFOV = 25;
+			engine.renderer.yFOV = 14;
 		}
 	}
 	//*************************************** SELECT HARDWARE
@@ -301,12 +297,12 @@ void main_supervisor()
    	//process paletter from an image
 	for(int i=0;i<16;i++)
 	{
-		bitmapPalette[i] = ((bitmapPalette1[i*4+2]>>5) << 8) +
+		engine.renderer.bitmapPalette[i] = ((bitmapPalette1[i*4+2]>>5) << 8) +
 		 ((bitmapPalette1[i*4+1]>>5) << 4) + (bitmapPalette1[i*4+0]>>5);
 	}
 
-	Setpalette(bitmapPalette);
-	ClearScreen();
+	Setpalette(engine.renderer.bitmapPalette);
+	ClearBuffor();
     DrawBitmap4bCenter(bitmap1, &bitmapHeader1);
 
 
@@ -315,22 +311,26 @@ void main_supervisor()
 	//process paletter from an image
 	for(int i=0;i<16;i++)
 	{
-		bitmapPalette[i] = ((palettePalette[i*4+2]>>5) << 8) +
+		engine.renderer.bitmapPalette[i] = ((palettePalette[i*4+2]>>5) << 8) +
 		 ((palettePalette[i*4+1]>>5) << 4) + (palettePalette[i*4+0]>>5);
 	}
 	
 	
 	//*************************************************
 	
-	p1xf = 60 * 100;
-	p1yf = 0;
-	p1hf = 20 * 100;
+	engine.gameState.shipParams.precX = 60 * 100;
+	engine.gameState.shipParams.precZ = 0;
+	engine.gameState.shipParams.precY = 20 * 100;
+	engine.gameState.shipParams.dP = 0;
+	engine.gameState.shipParams.ddP = 0;
+	points = 0;
+	engine.renderer.lastOverwrittenLine = 0;
+	engine.gameState.crossHairX = 0;
+	engine.gameState.crossHairY = 0;
+	engine.accTime = 0;
+				
+	engine.gameState.shipParams.dPDenom = 128;
 
-	p2x = 0;
-	p2y = 0;
-	p2h = 10;
-
-	lastOverwrittenLine = 0;
 	SetupMaps();
 	GenerateColorBytesDither3x2();
 
@@ -344,15 +344,14 @@ void main_supervisor()
 	//IKBD_MouseOff();
 
 	//Setpalette(grayColors);
-	//DrawColorMap(mapHigh);
 
 
 	printf("\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n");
 
-	screenDuration = 3000;
+	screenDuration = 7500000;
 	screenIndex = 1;
 
-	initDeltaTime();
+	initdeltaTime();
 	for(int i = 0; i < 4; i++)
 	{
 		fadeInStatus[i] = 1;
@@ -363,12 +362,12 @@ void main_supervisor()
     {
 
 
-		getDeltaTime();
+		getdeltaTime();
 		if(screenIndex > 0)
 		{
-			if(screenDuration > 3000)
+			if(screenDuration > 7500000)
 			{
-				screenDuration = 3000;
+				screenDuration = 7500000;
 				screenIndex = (screenIndex + 1) % 4;
 				switchIntroScreen();
 			}
@@ -381,7 +380,7 @@ void main_supervisor()
 				exitflag = 1;
 			}
 
-			screenDuration -= deltaTime;
+			screenDuration -= engine.deltaTime;
 		}
 		else
 		{
@@ -391,15 +390,15 @@ void main_supervisor()
 				free(bitmap1);
 				bitmap1 = LoadBitmapFile("data_a/i1", &bitmapHeader1, bitmapPalette1);
 				
-				ClearScreen();
+				ClearBuffor();
 				DrawBitmap4bCenter(bitmap1, &bitmapHeader1);
 				
 				for (int i = 0; i < 16; i++)
 				{
-					bitmapPalette[i] = ((bitmapPalette1[i * 4 + 2] >> 5) << 8) +
+					engine.renderer.bitmapPalette[i] = ((bitmapPalette1[i * 4 + 2] >> 5) << 8) +
 										((bitmapPalette1[i * 4 + 1] >> 5) << 4) + (bitmapPalette1[i * 4 + 0] >> 5);
 				}
-				Setpalette(bitmapPalette);
+				Setpalette(engine.renderer.bitmapPalette);
 
 				UBYTE infoIndex = 0;
 				UBYTE FireDown = 0;
@@ -417,15 +416,15 @@ void main_supervisor()
 								free(bitmap1);
 								bitmap1 = LoadBitmapFile("data_a/i2", &bitmapHeader1, bitmapPalette1);
 								
-								ClearScreen();
+								ClearBuffor();
 								DrawBitmap4bCenter(bitmap1, &bitmapHeader1);
 								
 								for (int i = 0; i < 16; i++)
 								{
-									bitmapPalette[i] = ((bitmapPalette1[i * 4 + 2] >> 5) << 8) +
+									engine.renderer.bitmapPalette[i] = ((bitmapPalette1[i * 4 + 2] >> 5) << 8) +
 														((bitmapPalette1[i * 4 + 1] >> 5) << 4) + (bitmapPalette1[i * 4 + 0] >> 5);
 								}
-								Setpalette(bitmapPalette);
+								Setpalette(engine.renderer.bitmapPalette);
 								FireDown = 1;
 							} break;
 							case 2:
@@ -433,15 +432,15 @@ void main_supervisor()
 								free(bitmap1);
 								bitmap1 = LoadBitmapFile("data_a/i3", &bitmapHeader1, bitmapPalette1);
 								
-								ClearScreen();
+								ClearBuffor();
 								DrawBitmap4bCenter(bitmap1, &bitmapHeader1);
 								
 								for (int i = 0; i < 16; i++)
 								{
-									bitmapPalette[i] = ((bitmapPalette1[i * 4 + 2] >> 5) << 8) +
+									engine.renderer.bitmapPalette[i] = ((bitmapPalette1[i * 4 + 2] >> 5) << 8) +
 														((bitmapPalette1[i * 4 + 1] >> 5) << 4) + (bitmapPalette1[i * 4 + 0] >> 5);
 								}
-								Setpalette(bitmapPalette);
+								Setpalette(engine.renderer.bitmapPalette);
 								FireDown = 1;
 							} break;
 							case 3:
@@ -449,32 +448,32 @@ void main_supervisor()
 								free(bitmap1);
 								bitmap1 = LoadBitmapFile("data_a/i4", &bitmapHeader1, bitmapPalette1);
 								
-								ClearScreen();
+								ClearBuffor();
 								DrawBitmap4bCenter(bitmap1, &bitmapHeader1);
 								
 								for (int i = 0; i < 16; i++)
 								{
-									bitmapPalette[i] = ((bitmapPalette1[i * 4 + 2] >> 5) << 8) +
+									engine.renderer.bitmapPalette[i] = ((bitmapPalette1[i * 4 + 2] >> 5) << 8) +
 														((bitmapPalette1[i * 4 + 1] >> 5) << 4) + (bitmapPalette1[i * 4 + 0] >> 5);
 								}
-								Setpalette(bitmapPalette);
+								Setpalette(engine.renderer.bitmapPalette);
 								FireDown = 1;
 
 							} break;
 							case 4:
 							{
-								ClearScreen();
+								ClearBuffor();
 								for (int i = 0; i < 16; i++)
 								{
-									bitmapPalette[i] = ((palettePalette[i * 4 + 2] >> 5) << 8) +
+									engine.renderer.bitmapPalette[i] = ((palettePalette[i * 4 + 2] >> 5) << 8) +
 														((palettePalette[i * 4 + 1] >> 5) << 4) + (palettePalette[i * 4 + 0] >> 5);
 								}
-								Setpalette(bitmapPalette);
+								Setpalette(engine.renderer.bitmapPalette);
 								infoScreen = 1;
-								lastTime = timerGetPrec();
-								startTime = timerGetPrec();
-								deltaTime = 0;
-								levelTime = 0;
+								engine.endTime = timerGetPrec();
+								engine.startTime = timerGetPrec();
+								engine.deltaTime = 0;
+								engine.accTime = 0;
 							} break;
 						}
 					}
@@ -493,45 +492,66 @@ void main_supervisor()
 				}
 			}
 
-			ProcessQualityInputAtari();
-			ProcessPlayerInputAtari();
-			OverwriteMap();
+			//ProcessQualityInput();
+
 			
+			engine.gameState = ProcessInput(engine.gameState, engine.deltaTime);
+
+			ULONG lowerDelta = (engine.deltaTime/10000);
+
+			UWORD terrainHeight = getTerrainHeight(engine.gameState.shipParams, engine.renderer.mapHigh);
+
+			engine.gameState = updateShipParams(engine.gameState, lowerDelta, terrainHeight);
+
+			LONG addedpoints = (lowerDelta)*(128 - engine.gameState.shipParams.relHeight);
+			if(addedpoints > 0)
+			{
+				points += addedpoints;
+			}
+			
+			engine.renderer.xOffsetOdd = engine.gameState.crossHairX / 600;
+			engine.renderer.xOffsetEven = engine.gameState.crossHairX / 900;
+
+			OverwriteMap();
 			RenderQuality();
 
 			//draw crosshair
 			//draw only even lines 
-			crossHairX = 160 + (cx / 400);
-			crossHairY = 90 + (cy / 400) ;
-			//crossHairX = ( (160 + (cx / 10)) / 16 );
-			//crossHairY = ( YSIZEODD*2 + (cy / 5) )/2;
+			UWORD crossPX = 160 + (engine.gameState.crossHairX / 400);
+			UWORD crossPY = 90 + (engine.gameState.crossHairY / 400) ;
+			
+
+			UWORD shipDirX = 160 + (engine.gameState.crossHairX/1600);
+			UWORD shipDirY = 95 + (engine.gameState.crossHairY/1600);
+			//crossHairX = ( (160 + (engine.gameState.crossHairX / 10)) / 16 );
+			//crossHairY = ( YSIZEODD*2 + (engine.gameState.crossHairY / 5) )/2;
 			
 			WORD spriteIndexX = 1;
 			WORD spriteIndexY = 1;
-			if(cx > 8000)
+			if(engine.gameState.crossHairX > 8000)
 			{
 				spriteIndexX = 2;
 			}
-			else if(cx < -8000)
+			else if(engine.gameState.crossHairX < -8000)
 			{
 				spriteIndexX = 0;
 			}
-			if(cy > 4000)
+			if(engine.gameState.crossHairY > 4000)
 			{
 				spriteIndexY = 0;
 			}
-			else if(cy < -4000)
+			else if(engine.gameState.crossHairY < -4000)
 			{
 				spriteIndexY = 2;
 			}
 			
-			DrawPixel( crossHairX, crossHairY + 4, 0);
-			DrawPixel( crossHairX, crossHairY - 4, 0);
-			DrawSprite4b(ship, &shipHeader, 160, 100,
+			DrawPixel( crossPX, crossPY + 4, 0);
+			DrawPixel( crossPX, crossPY - 4, 0);
+			DrawSprite4b(ship, &shipHeader, shipDirX, shipDirY,
 						 spriteIndexX, spriteIndexY, 48, 48, 3);
 
-			//printf("%d	%d\r", p1y, (p1y / 256 + 1) % MAPLENGTH);
-			printf("SC:%d  SP:%d  RH:%d  T:%d\r", points, velocity, relativeHeight, levelTime);
+			//printf("%d	%d\r", engine.gameState.shipParams.pZ, (engine.gameState.shipParams.pZ / 256 + 1) % MAPLENGTH);
+			printf("SC:%d  SP:%d  RH:%d  T:%d\r", points, engine.gameState.shipParams.dP, engine.gameState.shipParams.relHeight, engine.accTime/2500);
 			
 			fflush(stdout);
 			//IKBD_Flush();
@@ -542,33 +562,33 @@ void main_supervisor()
 				//PRINT("ESC\r\n");
 				exitflag = 1;
 			}
-			//if(IKBD_Keyboard[IKBD_KEY_UP]) p1h += 1;
-			//if(IKBD_Keyboard[IKBD_KEY_DOWN]) p1h -= 1;
-			//if(IKBD_Keyboard[IKBD_KEY_RIGHT]) p1x += 1;
-			//if(IKBD_Keyboard[IKBD_KEY_LEFT]) p1x -= 1;
-			//if(IKBD_Keyboard[IKBD_KEY_CONTROL]) p1y += 1;
-			//if(IKBD_Keyboard[IKBD_KEY_ALT]) p1y -= 1;
+			//if(IKBD_Keyboard[IKBD_KEY_UP]) engine.gameState.shipParams.pY += 1;
+			//if(IKBD_Keyboard[IKBD_KEY_DOWN]) engine.gameState.shipParams.pY -= 1;
+			//if(IKBD_Keyboard[IKBD_KEY_RIGHT]) engine.gameState.shipParams.pX += 1;
+			//if(IKBD_Keyboard[IKBD_KEY_LEFT]) engine.gameState.shipParams.pX -= 1;
+			//if(IKBD_Keyboard[IKBD_KEY_CONTROL]) engine.gameState.shipParams.pZ += 1;
+			//if(IKBD_Keyboard[IKBD_KEY_ALT]) engine.gameState.shipParams.pZ -= 1;
 			
 
 			//restart
-			if ((p1h - 3) < (UBYTE)(mapHigh[(UBYTE)(p1x)][(UBYTE)(p1y + 15)]))
+			if ((engine.gameState.shipParams.pY - 3) < (UBYTE)(engine.renderer.mapHigh[((UBYTE)(engine.gameState.shipParams.pX)) >> 1][((UBYTE)(engine.gameState.shipParams.pZ + 15)) >> 1]))
 			{
    				
-				ClearScreen();
+				ClearBuffor();
 
-				p1xf = 60 * 100;
-				p1yf = 0;
-				p1hf = 20 * 100;
-				velocity = 0;
-				acceleration = 0;
+				engine.gameState.shipParams.precX = 60 * 100;
+				engine.gameState.shipParams.precZ = 0;
+				engine.gameState.shipParams.precY = 20 * 100;
+				engine.gameState.shipParams.dP = 0;
+				engine.gameState.shipParams.ddP = 0;
 				points = 0;
-				CopyMapWord(mapSource[0], mapHigh);
-				lastOverwrittenLine = 0;
-				cx = 0;
-				cy = 0;
-				levelTime = 0;
+				CopyMapWord(engine.renderer.mapSource[0], engine.renderer.mapHigh);
+				engine.renderer.lastOverwrittenLine = 0;
+				engine.gameState.crossHairX = 0;
+				engine.gameState.crossHairY = 0;
+				engine.accTime = 0;
 				
-				velocityDenom = 128;
+				engine.gameState.shipParams.dPDenom = 128;
 
 				Cursconf(1, 0);
 				
@@ -598,15 +618,15 @@ void main_supervisor()
 				printf("                                      \r");
 				Cursconf(0, 0);
 
-				lastTime = timerGetPrec();
+				engine.endTime = timerGetPrec();
 
 
 				for(int i=0;i<16;i++)
 				{
-					bitmapPalette[i] = ((palettePalette[i*4+2]>>5) << 8) +
+					engine.renderer.bitmapPalette[i] = ((palettePalette[i*4+2]>>5) << 8) +
 					((palettePalette[i*4+1]>>5) << 4) + (palettePalette[i*4+0]>>5);
 				}
-				Setpalette(bitmapPalette);
+				Setpalette(engine.renderer.bitmapPalette);
 
 			}
 			else if(endScreen)
@@ -614,20 +634,20 @@ void main_supervisor()
 				
 				if(points < 1000000)
 				{
-					ClearScreen();
+					ClearBuffor();
 
-					p1xf = 60 * 100;
-					p1yf = 0;
-					p1hf = 20 * 100;
-					velocity = 0;
-					acceleration = 0;
+					engine.gameState.shipParams.precX = 60 * 100;
+					engine.gameState.shipParams.precZ = 0;
+					engine.gameState.shipParams.precY = 20 * 100;
+					engine.gameState.shipParams.dP = 0;
+					engine.gameState.shipParams.ddP = 0;
 					points = 0;
-					CopyMapWord(mapSource[0], mapHigh);
-					lastOverwrittenLine = 0;
-					cx = 0;
-					cy = 0;
-					levelTime = 0;
-					velocityDenom = 128;
+					CopyMapWord(engine.renderer.mapSource[0], engine.renderer.mapHigh);
+					engine.renderer.lastOverwrittenLine = 0;
+					engine.gameState.crossHairX = 0;
+					engine.gameState.crossHairY = 0;
+					engine.accTime = 0;
+					engine.gameState.shipParams.dPDenom = 128;
 					endScreen = 0;
 					
 					Cursconf(1, 0);
@@ -649,47 +669,47 @@ void main_supervisor()
 						}
 
 					}
-					lastTime = timerGetPrec();
+					engine.endTime = timerGetPrec();
 
 					printf("                                      \r");
 					Cursconf(0, 0);
 				
 
-					ClearScreen();
+					ClearBuffor();
 					for(int i=0;i<16;i++)
 					{
-						bitmapPalette[i] = ((palettePalette[i*4+2]>>5) << 8) +
+						engine.renderer.bitmapPalette[i] = ((palettePalette[i*4+2]>>5) << 8) +
 						((palettePalette[i*4+1]>>5) << 4) + (palettePalette[i*4+0]>>5);
 					}
-					Setpalette(bitmapPalette);
+					Setpalette(engine.renderer.bitmapPalette);
 				}
 				else
 				{
 					free(bitmap1);
 					bitmap1 = LoadBitmapFile("data/fin", &bitmapHeader1, bitmapPalette1);
 					
-					ClearScreen();
+					ClearBuffor();
 					DrawBitmap4bCenter(bitmap1, &bitmapHeader1);
 					
 					for (int i = 0; i < 16; i++)
 					{
-						bitmapPalette[i] = ((bitmapPalette1[i * 4 + 2] >> 5) << 8) +
+						engine.renderer.bitmapPalette[i] = ((bitmapPalette1[i * 4 + 2] >> 5) << 8) +
 											((bitmapPalette1[i * 4 + 1] >> 5) << 4) + (bitmapPalette1[i * 4 + 0] >> 5);
 					}
-					Setpalette(bitmapPalette);
+					Setpalette(engine.renderer.bitmapPalette);
 
-					p1xf = 60 * 100;
-					p1yf = 0;
-					p1hf = 20 * 100;
-					velocity = 0;
-					acceleration = 0;
+					engine.gameState.shipParams.precX = 60 * 100;
+					engine.gameState.shipParams.precZ = 0;
+					engine.gameState.shipParams.precY = 20 * 100;
+					engine.gameState.shipParams.dP = 0;
+					engine.gameState.shipParams.ddP = 0;
 					points = 0;
-					CopyMapWord(mapSource[0], mapHigh);
-					lastOverwrittenLine = 0;
-					cx = 0;
-					cy = 0;
-					levelTime = 0;
-					velocityDenom = 128;
+					CopyMapWord(engine.renderer.mapSource[0], engine.renderer.mapHigh);
+					engine.renderer.lastOverwrittenLine = 0;
+					engine.gameState.crossHairX = 0;
+					engine.gameState.crossHairY = 0;
+					engine.accTime = 0;
+					engine.gameState.shipParams.dPDenom = 128;
 					infoScreen = 0;
 
 					endScreen = 0;
@@ -708,37 +728,38 @@ void main_supervisor()
 						}
 
 					}
-					lastTime = timerGetPrec();
+					engine.endTime = timerGetPrec();
 
 					
-					ClearScreen();
+					ClearBuffor();
 					for(int i=0;i<16;i++)
 					{
-						bitmapPalette[i] = ((palettePalette[i*4+2]>>5) << 8) +
+						engine.renderer.bitmapPalette[i] = ((palettePalette[i*4+2]>>5) << 8) +
 						((palettePalette[i*4+1]>>5) << 4) + (palettePalette[i*4+0]>>5);
 					}
-					Setpalette(bitmapPalette);
+					Setpalette(engine.renderer.bitmapPalette);
 					
 				}
 				
 			}
 
 			
-			if(p1y > 11*256 && velocityDenom < 3*255)
+			if(engine.gameState.shipParams.pZ > 11*256 && engine.gameState.shipParams.dPDenom < 3*255)
 			{
-				velocityDenom = velocityDenom + 8;
+				engine.gameState.shipParams.dPDenom = engine.gameState.shipParams.dPDenom + 8;
 			}
-			else if(velocityDenom >= 3*255)
+			else if(engine.gameState.shipParams.dPDenom >= 3*255)
 			{
 				endScreen = 1;
 			}
+			
 			
 			
 		}
 
 		
 			
-	   endTime = timerGetPrec();
+	   engine.loopEndTime = timerGetPrec();
     }
 	free(bitmap1);
 	free(paletteBitmap);

@@ -2,7 +2,6 @@
 
 #ifdef AMIGA
 
-#include "engine.h"
 #include <ace/managers/viewport/simplebuffer.h>
 
 #define TERRAINDEPTH 64
@@ -18,11 +17,6 @@
 #define YSIZEODD 90
 #define YSIZEEVEN YSIZEODD / 2
 
-WORD rayCastXOdd[XSIZEODD][TERRAINDEPTH]; //26k
-WORD rayCastYOdd[YSIZEODD][TERRAINDEPTH]; //11k
-
-WORD rayCastXEven[XSIZEEVEN][TERRAINDEPTH]; //24k
-WORD rayCastYEven[YSIZEEVEN][TERRAINDEPTH]; //6k
 
 UBYTE renderingDepth = TERRAINDEPTH;
 
@@ -57,8 +51,6 @@ static tSimpleBufferManager *s_pBuffer;
 #define YSIZEODD 40
 #define YSIZEEVEN YSIZEODD / 2
 
-WORD rayCastXOdd[XSIZEODD][TERRAINDEPTH]; //51k
-WORD rayCastYOdd[YSIZEODD][TERRAINDEPTH]; //51k
 
 //WORD rayCastXEven[XSIZEEVEN][TERRAINDEPTH]; //21k
 //WORD rayCastYEven[YSIZEEVEN][TERRAINDEPTH]; //21k
