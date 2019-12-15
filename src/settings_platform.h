@@ -48,7 +48,10 @@ typedef struct PlatformScreen
 	tVPort *s_pVPort;
 	tSimpleBufferManager *s_pBuffer;
 	#else
-	int16_t *planesAtari;
+    uint16_t *physBase;
+    uint16_t *logBase;
+	uint16_t *planesAtari;
+	uint16_t systemPalette[16];
 	#endif
 
 } PlatformScreen;

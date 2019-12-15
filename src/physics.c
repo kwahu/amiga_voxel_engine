@@ -1,5 +1,4 @@
 
-#include <stdlib.h>
 #include "engine.h"
 
 void ResetTime()
@@ -26,9 +25,9 @@ ULONG getDeltaTime(ULONG *refTime)
     return result;
 }
 
-GameState updateShipParams(GameState gameState, LONG deltaTime, UWORD terrainHeight)
+void updateShipParams(LONG deltaTime, UWORD terrainHeight)
 {
-    ShipParams shipParams = gameState.shipParams;
+    ShipParams shipParams = engine.gameState.shipParams;
 	shipParams.relHeight = ((shipParams.pY - 3) - terrainHeight);
 	shipParams.ddP = 5*((256 - shipParams.relHeight) - (shipParams.dP/4));
 	
@@ -61,8 +60,8 @@ GameState updateShipParams(GameState gameState, LONG deltaTime, UWORD terrainHei
 	shipParams.precZ += deltaTime*shipParams.dP/shipParams.dPDenom;
 
 
-	shipParams.precX += (LONG)deltaTime * gameState.crossHairX / 2000;
-	shipParams.precY -= (LONG)deltaTime * gameState.crossHairY / 1000;
+	shipParams.precX += (LONG)deltaTime * engine.gameState.crossHairX / 2000;
+	shipParams.precY -= (LONG)deltaTime * engine.gameState.crossHairY / 1000;
 
 	if (shipParams.precY > 7000)
 		shipParams.precY = 7000; //block going above hills
@@ -72,15 +71,14 @@ GameState updateShipParams(GameState gameState, LONG deltaTime, UWORD terrainHei
 	shipParams.pZ = shipParams.precZ / 32;
 	shipParams.pX = shipParams.precX / 32;
 	shipParams.pY = shipParams.precY / 32;
-    gameState.shipParams = shipParams;
+    engine.gameState.shipParams = shipParams;
 
-    return gameState;
 }
 
-GameState ProcessInput(GameState gameState, LONG deltaTime)
+void ProcessInput()
 {
 	
-	LONG lowerDelta = deltaTime/2000;
+	LONG lowerDelta = engine.deltaTime/2000;
 	if(lowerDelta == 0)
 	{
 		lowerDelta = 1;
@@ -88,42 +86,41 @@ GameState ProcessInput(GameState gameState, LONG deltaTime)
 
     if (getJoy(1, RIGHT))
 	{
-		gameState.crossHairX += deltaTime / 60;
+		engine.gameState.crossHairX += engine.deltaTime / 60;
 	}
 	else if (getJoy(1, LEFT))
 	{
-		gameState.crossHairX -= deltaTime / 60;
+		engine.gameState.crossHairX -= engine.deltaTime / 60;
 	}
-	else if (gameState.crossHairX != 0)
+	else if (engine.gameState.crossHairX != 0)
 	{
-		gameState.crossHairX = gameState.crossHairX - gameState.crossHairX / (lowerDelta);
+		engine.gameState.crossHairX = engine.gameState.crossHairX - engine.gameState.crossHairX / (lowerDelta);
 	}
 
-	if (gameState.crossHairX > 0x4000)
-		gameState.crossHairX = 0x4000;
-	else if (gameState.crossHairX < -0x4000)
-		gameState.crossHairX = -0x4000;
+	if (engine.gameState.crossHairX > 0x4000)
+		engine.gameState.crossHairX = 0x4000;
+	else if (engine.gameState.crossHairX < -0x4000)
+		engine.gameState.crossHairX = -0x4000;
 
-	if (gameState.crossHairY > 0x2000)
-		gameState.crossHairY = 0x2000;
-	else if (gameState.crossHairY < -0x2000)
-		gameState.crossHairY = -0x2000;
+	if (engine.gameState.crossHairY > 0x2000)
+		engine.gameState.crossHairY = 0x2000;
+	else if (engine.gameState.crossHairY < -0x2000)
+		engine.gameState.crossHairY = -0x2000;
 
 	if (getJoy(1, DOWN))
 	{
-		gameState.crossHairY += deltaTime / 60;
-		//gameState.crossHairY += deltaTime / 10;
+		engine.gameState.crossHairY += engine.deltaTime / 60;
+		//engine.gameState.crossHairY += deltaTime / 10;
 	}
 	else if (getJoy(1, UP))
 	{
-		gameState.crossHairY -= deltaTime / 60;
+		engine.gameState.crossHairY -= engine.deltaTime / 60;
 	}
-	else if (gameState.crossHairY != 0)
+	else if (engine.gameState.crossHairY != 0)
 	{
-		gameState.crossHairY = gameState.crossHairY - gameState.crossHairY / (lowerDelta);
+		engine.gameState.crossHairY = engine.gameState.crossHairY - engine.gameState.crossHairY / (lowerDelta);
 	}
 
-    return gameState;
 
 }
 

@@ -12,10 +12,10 @@ void DrawPanelsToScreen()
 		for(int j = 0; j < PLANEWIDTHWORD/4; ++j)
 		{
 			UBYTE shift = 0;
-			UWORD plane1Val = planes[i*PLANEWIDTHWORD + j*4];
-			UWORD plane2Val = planes[i*PLANEWIDTHWORD + j*4 + 1];
-			UWORD plane3Val = planes[i*PLANEWIDTHWORD + j*4 + 2];
-			UWORD plane4Val = planes[i*PLANEWIDTHWORD + j*4 + 3];
+			UWORD plane1Val = engine.renderer.planes[i*PLANEWIDTHWORD + j*4];
+			UWORD plane2Val = engine.renderer.planes[i*PLANEWIDTHWORD + j*4 + 1];
+			UWORD plane3Val = engine.renderer.planes[i*PLANEWIDTHWORD + j*4 + 2];
+			UWORD plane4Val = engine.renderer.planes[i*PLANEWIDTHWORD + j*4 + 3];
 
 			plane1[i*(PLANEWIDTHWORD/2) + j*2] = plane1Val >> 8;
 			plane2[i*(PLANEWIDTHWORD/2) + j*2] = plane2Val >> 8;
@@ -95,7 +95,15 @@ void FreeView()
 
 #else
 void DrawPanelsToScreen()
-	memcpy(planes, engine.platformScreen.planesAtari, PLANEWIDTH*PLANEHEIGHT);
+{
+	
+    uint16_t *tmp;
+    tmp=engine.platformScreen.physBase;
+    engine.platformScreen.physBase=engine.platformScreen.logBase;
+    engine.platformScreen.logBase=tmp;
+	engine.renderer.planes = engine.platformScreen.physBase;
+    Setscreen(engine.platformScreen.logBase,engine.platformScreen.physBase,-1);
+	//memcpy(engine.platformScreen.planesAtari, engine.renderer.planes, PLANEWIDTH*PLANEHEIGHT);
 }
 
 #define VSyncAndDraw() \
@@ -132,6 +140,33 @@ void SetPalette()
 
 void InitScreen()
 {
+	Cursconf(0, 0);
+    engine.platformScreen.physBase=Physbase();
+    engine.platformScreen.logBase=Logbase();
+    memset(engine.platformScreen.logBase,0,32000);
+    memset(engine.platformScreen.physBase,0,32000);
+    VsetMode(0x80|2|0x20);
+
+	for(int i=0;i<16;i++)
+	{
+		engine.platformScreen.systemPalette[i] = *(uint16_t *)(0xffff8240+(i*2));
+	}
+	SetPalette();
+
+	//engine.platformScreen.planesAtari = engine.platformScreen.logBase;
+	engine.renderer.planes = (uint16_t *)engine.platformScreen.physBase;
 }
+
+void ViewOff()
+{
+
+	Setpalette(engine.platformScreen.systemPalette);	
+	Cursconf(1, 0);
+}
+void FreeView()
+{
+}
+
+
 
 #endif

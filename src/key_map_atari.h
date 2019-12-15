@@ -1,4 +1,4 @@
-#define KEY_ESC 0x01	
+#define KEY_ESCAPE 0x01	
 #define KEY_1 0x02	
 #define KEY_2 0x03	
 #define KEY_3 0x04	
@@ -26,7 +26,8 @@
 // 1A	[
 // 1B	]
 // 1C	RET
-#define KEY_CTRL 0x1D	
+#define KEY_CTRL 0x1D
+#define KEY_FIRE 0x1D	
 // 1E	A
 // 1F	S
 // 20	D

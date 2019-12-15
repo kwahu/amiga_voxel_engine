@@ -5,7 +5,7 @@
 
 void ClearBuffor()
 {
-	memset(planes, 0, PLANEWIDTH*PLANEHEIGHT);
+	memset(engine.renderer.planes, 0, PLANEWIDTH*PLANEHEIGHT);
 }
 
 #define UnpackSpriteByte(byte, value, b1, m1, n1, b2, m2, n2, howMany)  \
@@ -87,10 +87,10 @@ void DrawSprite4b(unsigned char *bLogo, BITMAPINFOHEADER *bhLogo,
 	UWORD baseY = spriteIndexY*spriteSizeY;
 
 	position = (posY - (spriteSizeY/2)) * PLANEWIDTHWORD + planePosX*4 - spriteSizeX/32*4;
-    UWORD *firstCol = planes + position;
-    UWORD *secondCol = planes + position + 1;
-    UWORD *thirdCol = planes + position + 2;
-    UWORD *fourthCol = planes + position + 3;
+    UWORD *firstCol = engine.renderer.planes + position;
+    UWORD *secondCol = engine.renderer.planes + position + 1;
+    UWORD *thirdCol = engine.renderer.planes + position + 2;
+    UWORD *fourthCol = engine.renderer.planes + position + 3;
 
 
 	for (ULONG y =baseY+spriteSizeY; y > baseY; y--)
@@ -276,10 +276,10 @@ void DrawBitmap4b(unsigned char *bLogo, BITMAPINFOHEADER *bhLogo, UWORD offsety)
 	ULONG xx, yy;
 
 	position = offsety * PLANEWIDTHWORD;
-    UWORD *firstCol = planes + position;
-    UWORD *secondCol = planes + position + 1;
-    UWORD *thirdCol = planes + position + 2;
-    UWORD *fourthCol = planes + position + 3;
+    UWORD *firstCol = engine.renderer.planes + position;
+    UWORD *secondCol = engine.renderer.planes + position + 1;
+    UWORD *thirdCol = engine.renderer.planes + position + 2;
+    UWORD *fourthCol = engine.renderer.planes + position + 3;
 
 
 	//position = startOffset;
@@ -408,10 +408,10 @@ void DrawBitmap4bCenter(unsigned char *bLogo, BITMAPINFOHEADER *bhLogo)
 	ULONG xx, yy;
 
 	position = ((PLANEHEIGHT-bhLogo->biHeight)/2) * PLANEWIDTHWORD + (320-bhLogo->biWidth)/32*4;
-    UWORD *firstCol = planes + position;
-    UWORD *secondCol = planes + position + 1;
-    UWORD *thirdCol = planes + position + 2;
-    UWORD *fourthCol = planes + position + 3;
+    UWORD *firstCol = engine.renderer.planes + position;
+    UWORD *secondCol = engine.renderer.planes + position + 1;
+    UWORD *thirdCol = engine.renderer.planes + position + 2;
+    UWORD *fourthCol = engine.renderer.planes + position + 3;
 
 
 	//position = startOffset;
@@ -545,24 +545,24 @@ void DrawPixel(UWORD x, UWORD y, UBYTE color)
   WORD leftDownPattern = 0b1000100110010001 << rightGap;
   WORD rightDownPattern = 0b1111111111111111 >> leftGap;
 
-  planes[firstPos] = (leftUpPattern) + (planes[firstPos] & (rightUpPattern));
-  planes[firstPos+1] = (leftUpPattern) + (planes[firstPos+1] & (rightUpPattern));
-  planes[firstPos+2] = (leftUpPattern) + (planes[firstPos+2] & (rightUpPattern));
-  planes[firstPos+3] = (leftUpPattern) + (planes[firstPos+3] & (rightUpPattern));
+  engine.renderer.planes[firstPos] = (leftUpPattern) + (engine.renderer.planes[firstPos] & (rightUpPattern));
+  engine.renderer.planes[firstPos+1] = (leftUpPattern) + (engine.renderer.planes[firstPos+1] & (rightUpPattern));
+  engine.renderer.planes[firstPos+2] = (leftUpPattern) + (engine.renderer.planes[firstPos+2] & (rightUpPattern));
+  engine.renderer.planes[firstPos+3] = (leftUpPattern) + (engine.renderer.planes[firstPos+3] & (rightUpPattern));
   
-  planes[secondPos] = (leftDownPattern) + (planes[secondPos] & (rightDownPattern));
-  planes[secondPos+1] = (leftDownPattern) + (planes[secondPos+1] & (rightDownPattern));
-  planes[secondPos+2] = (leftDownPattern) + (planes[secondPos+2] & (rightDownPattern));
-  planes[secondPos+3] = (leftDownPattern) + (planes[secondPos+3] & (rightDownPattern));
+  engine.renderer.planes[secondPos] = (leftDownPattern) + (engine.renderer.planes[secondPos] & (rightDownPattern));
+  engine.renderer.planes[secondPos+1] = (leftDownPattern) + (engine.renderer.planes[secondPos+1] & (rightDownPattern));
+  engine.renderer.planes[secondPos+2] = (leftDownPattern) + (engine.renderer.planes[secondPos+2] & (rightDownPattern));
+  engine.renderer.planes[secondPos+3] = (leftDownPattern) + (engine.renderer.planes[secondPos+3] & (rightDownPattern));
 }
 
 void DrawPixelWord(UWORD x, UWORD y, UBYTE color)
 {
   
-  planes[y * PLANEWIDTHWORD + x*4] = ( (color>>0) & 1) * 0xffff;
-  planes[y * PLANEWIDTHWORD + x*4 + 1] = ( (color>>1) & 1) * 0xffff;
-  planes[y * PLANEWIDTHWORD + x*4 + 2] = ( (color>>2) & 1) * 0xffff;
-  planes[y * PLANEWIDTHWORD + x*4 + 3] = ( (color>>3) & 1) * 0xffff;
+  engine.renderer.planes[y * PLANEWIDTHWORD + x*4] = ( (color>>0) & 1) * 0xffff;
+  engine.renderer.planes[y * PLANEWIDTHWORD + x*4 + 1] = ( (color>>1) & 1) * 0xffff;
+  engine.renderer.planes[y * PLANEWIDTHWORD + x*4 + 2] = ( (color>>2) & 1) * 0xffff;
+  engine.renderer.planes[y * PLANEWIDTHWORD + x*4 + 3] = ( (color>>3) & 1) * 0xffff;
 }
 
 

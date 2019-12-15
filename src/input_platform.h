@@ -200,10 +200,65 @@ void ProcessQualityInput()
 #define getKey(name) IKBD_Keyboard[KEY_ ##name ]
 
 
+void ProcessJoystick()
+{
+}
+
+
+void CloseJoystick()
+{
+	IKBD_Flush();
+
+	IKBD_Uninstall();
+}
+
+void UseSystem()
+{
+}
+void UnuseSystem()
+{
+}
+
 void ExitGame()
 {
 }
 
+
+void InitInput()
+{
+	IKBD_Install();
+}
+
+
+void GetPlayerRendererSetting()
+{
+	if (getKey(1))
+	{
+		engine.renderer.renderingType = 4;
+		engine.renderer.xFOV = 28;
+		engine.renderer.yFOV = 14;
+		engine.renderer.renderingDepth = TERRAINDEPTH;
+		engine.renderer.calculationDepthDivider = 2;
+		engine.renderer.calculationDepthStep = 2;
+		engine.renderer.renderingDepthStep = 1;
+
+		engine.renderer.stepModifier = 16;
+		RecalculateOdd();
+	}
+	if (getKey(2)) 
+	{
+		engine.renderer.renderingType = 8;
+		engine.renderer.xFOV = 25;
+		engine.renderer.yFOV = 14;
+		engine.renderer.renderingDepth = TERRAINDEPTH;
+		engine.renderer.calculationDepthDivider = 2;
+		engine.renderer.calculationDepthStep = 2;
+		engine.renderer.renderingDepthStep = 1;
+
+		engine.renderer.stepModifier = 16;
+		RecalculateOdd();
+	}
+}
 
 void ProcessQualityInput()
 {

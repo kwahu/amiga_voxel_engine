@@ -5,6 +5,7 @@
 void ShowDeathCutscene()
 {
     ClearBuffor();
+#ifdef AMIGA
     SetBitmapPalette(engine.activePalette);
     DrawBitmap4bCenter(engine.activeBitmap, &engine.activeBitmapHeader);
     VSyncAndDraw();
@@ -83,13 +84,27 @@ void ShowDeathCutscene()
         }
         
     }
-    
+
     UBYTE y = 70;
     for(int i = 0; i < lines; ++i)
     {	
         DrawTextBitmap(engine.pBitmapInfo[i], 100, y, 4);
         y += 6;
     }
+    for(int i = 0; i < lines; ++i)
+    {
+        FreeTextBitmap(engine.pBitmapInfo[i]);
+    }
+#else
+    Cursconf(1, 0);
+    
+                
+    printf("You are dead! Press fire to try again!\r");
+    
+    fflush(stdout);
+            
+#endif
+    
     ProcessJoystick();
     UBYTE cont = 0;
     //wait 2 seconds
@@ -109,11 +124,11 @@ void ShowDeathCutscene()
         
     }
 
-
-    for(int i = 0; i < lines; ++i)
-    {
-        FreeTextBitmap(engine.pBitmapInfo[i]);
-    }
+#ifdef AMIGA
+#else
+    printf("                                      \r");
+    Cursconf(0, 0);
+#endif
 
     ClearBuffor();
     SetGamePaletter();
@@ -126,13 +141,15 @@ void ShowDeathCutscene()
 void ShowTooLateCutscene()
 {
     ClearBuffor();
-    SetBitmapPalette(engine.activePalette);
+ 
+#ifdef AMIGA
+   SetBitmapPalette(engine.activePalette);
     DrawBitmap4bCenter(engine.activeBitmap, &engine.activeBitmapHeader);
     VSyncAndDraw();
 
     UBYTE lines = 0;
 
-    
+
     switch((engine.accTime) % 4)
     {
         case 0:
@@ -165,20 +182,33 @@ void ShowTooLateCutscene()
         
     }
 
-
     UBYTE y = 70;
     for(int i = 0; i < lines; ++i)
     {	
         DrawTextBitmap(engine.pBitmapInfo[i], 100, y, 4);
         y += 6;
     }
+
+    for(int i = 0; i < lines; ++i)
+    {
+        FreeTextBitmap(engine.pBitmapInfo[i]);
+    }
+
+#else
+
+    Cursconf(1, 0);
+    printf("You failed! Press fire to try again!\r");
+    fflush(stdout);
+#endif
+
+
     ProcessJoystick();
     UBYTE cont = 0;
     //wait 2 seconds
     while(!cont)
     {
 
-        joyProcess();
+        ProcessJoystick();
         if (getKey(ESCAPE))
         {
             ExitGame();
@@ -192,11 +222,12 @@ void ShowTooLateCutscene()
         
     }
 
+#ifdef AMIGA
+#else
+    printf("                                      \r");
+    Cursconf(0, 0);
+#endif
 
-    for(int i = 0; i < lines; ++i)
-    {
-        FreeTextBitmap(engine.pBitmapInfo[i]);
-    }
 
     ClearBuffor();
     SetGamePaletter();
@@ -316,6 +347,11 @@ void ShowWinCutscene()
         DrawTextBitmap(engine.pBitmapInfo[i], 170, y, 1);
         y += 6;
     }
+    for(int i = 0; i < lines; ++i)
+    {
+        FreeTextBitmap(engine.pBitmapInfo[i]);
+    }
+
     ProcessJoystick();
     UBYTE cont = 0;
     //wait 2 seconds
@@ -337,12 +373,6 @@ void ShowWinCutscene()
     }
 
 
-
-    
-    for(int i = 0; i < lines; ++i)
-    {
-        FreeTextBitmap(engine.pBitmapInfo[i]);
-    }
 
     ClearBuffor();
     SetGamePaletter();

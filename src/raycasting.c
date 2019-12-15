@@ -90,7 +90,7 @@ WORD (*rayCastX)[TERRAINDEPTH], WORD (*rayCastY)[TERRAINDEPTH], UWORD (*map)[128
 		}
 	}
 
-	if(c == 99) c = skyColor - ph/32 - sy/8; //draw sky if too deep
+	if(c == 99) c = SKY_COLOR - ph/32 - sy/8; //draw sky if too deep
 	*address1 = (c<<10) + (c<<5) + (c); *address2 = *address1;
 	
 	
@@ -133,8 +133,8 @@ WORD (*rayCastX)[TERRAINDEPTH], WORD (*rayCastY)[TERRAINDEPTH], UWORD (*map)[128
 		
 		sx += 3;
 	}
-	if(c[0] == 99) c[0] = skyColor - ph/32 - sy/8; //draw sky if too deep
-	if(c[1] == 99) c[1] = skyColor - ph/32 - sy/8; //draw sky if too deep
+	if(c[0] == 99) c[0] = SKY_COLOR - ph/32 - sy/8; //draw sky if too deep
+	if(c[1] == 99) c[1] = SKY_COLOR - ph/32 - sy/8; //draw sky if too deep
 	*address1 = (c[0]<<10) + (c[0]<<5) + (c[0]); *address2 = (c[1]<<10) + (c[1]<<5) + (c[1]);
 
 	return tz;
@@ -176,9 +176,9 @@ WORD (*rayCastX)[TERRAINDEPTH], WORD (*rayCastY)[TERRAINDEPTH], UWORD (*map)[128
 		}
 		sx +=2;
 	}
-	if(c[0] == 99) c[0] = skyColor - ph/32 - sy/8; //draw sky if too deep
-	if(c[1] == 99) c[1] = skyColor - ph/32 - sy/8; //draw sky if too deep
-	if(c[2] == 99) c[2] = skyColor - ph/32 - sy/8; //draw sky if too deep
+	if(c[0] == 99) c[0] = SKY_COLOR - ph/32 - sy/8; //draw sky if too deep
+	if(c[1] == 99) c[1] = SKY_COLOR - ph/32 - sy/8; //draw sky if too deep
+	if(c[2] == 99) c[2] = SKY_COLOR - ph/32 - sy/8; //draw sky if too deep
 	*address1 = (c[0]<<10) + (c[0]<<5) + (c[1]); *address2 = (c[1]<<10) + (c[2]<<5) + (c[2]);
 
 	return tz;
@@ -220,7 +220,7 @@ WORD (*rayCastX)[TERRAINDEPTH], WORD (*rayCastY)[TERRAINDEPTH], UWORD (*map)[128
 // 		}
 // 	}
 
-// 	if(c == 99) c = skyColor - ph/32 - sy/8; //draw sky if too deep
+// 	if(c == 99) c = SKY_COLOR - ph/32 - sy/8; //draw sky if too deep
 // 	*address1 = (c<<10) + (c<<5) + (c); *address2 = *address1;
 	
 	
@@ -268,8 +268,8 @@ WORD (*rayCastX)[TERRAINDEPTH], WORD (*rayCastY)[TERRAINDEPTH], UWORD (*map)[128
 		
 // 		sx += 3;
 // 	}
-// 	if(c[0] == 99) c[0] = skyColor - ph/32 - sy/8; //draw sky if too deep
-// 	if(c[1] == 99) c[1] = skyColor - ph/32 - sy/8; //draw sky if too deep
+// 	if(c[0] == 99) c[0] = SKY_COLOR - ph/32 - sy/8; //draw sky if too deep
+// 	if(c[1] == 99) c[1] = SKY_COLOR - ph/32 - sy/8; //draw sky if too deep
 // 	*address1 = (c[0]<<10) + (c[0]<<5) + (c[0]); *address2 = (c[1]<<10) + (c[1]<<5) + (c[1]);
 
 // 	return tz;
@@ -315,9 +315,9 @@ WORD (*rayCastX)[TERRAINDEPTH], WORD (*rayCastY)[TERRAINDEPTH], UWORD (*map)[128
 // 		}
 // 		sx +=2;
 // 	}
-// 	if(c[0] == 99) c[0] = skyColor - ph/32 - sy/8; //draw sky if too deep
-// 	if(c[1] == 99) c[1] = skyColor - ph/32 - sy/8; //draw sky if too deep
-// 	if(c[2] == 99) c[2] = skyColor - ph/32 - sy/8; //draw sky if too deep
+// 	if(c[0] == 99) c[0] = SKY_COLOR - ph/32 - sy/8; //draw sky if too deep
+// 	if(c[1] == 99) c[1] = SKY_COLOR - ph/32 - sy/8; //draw sky if too deep
+// 	if(c[2] == 99) c[2] = SKY_COLOR - ph/32 - sy/8; //draw sky if too deep
 // 	*address1 = (c[0]<<10) + (c[0]<<5) + (c[1]); *address2 = (c[1]<<10) + (c[2]<<5) + (c[2]);
 
 // 	return tz;
@@ -349,10 +349,10 @@ void ProcessRayCastsProgressive(WORD (*rayCastX), WORD (*rayCastY), UWORD (*map)
 	//for each vertical line
     
 
-    UWORD *firstCol = planes + (YSIZEODD+1)*PLANEWIDTHWORD*4;
-    UWORD *secondCol = planes + (YSIZEODD+1)*PLANEWIDTHWORD*4 + 1;
-    UWORD *thirdCol = planes + (YSIZEODD+1)*PLANEWIDTHWORD*4 + 2;
-    UWORD *fourthCol = planes + (YSIZEODD+1)*PLANEWIDTHWORD*4 + 3;
+    UWORD *firstCol = engine.renderer.planes + (YSIZEODD+1)*PLANEWIDTHWORD*4;
+    UWORD *secondCol = engine.renderer.planes + (YSIZEODD+1)*PLANEWIDTHWORD*4 + 1;
+    UWORD *thirdCol = engine.renderer.planes + (YSIZEODD+1)*PLANEWIDTHWORD*4 + 2;
+    UWORD *fourthCol = engine.renderer.planes + (YSIZEODD+1)*PLANEWIDTHWORD*4 + 3;
 
 
     UWORD planeStride = PLANEWIDTHWORD*2;
@@ -415,7 +415,7 @@ void ProcessRayCastsProgressive(WORD (*rayCastX), WORD (*rayCastY), UWORD (*map)
 			 if(tz == engine.renderer.renderingDepth) 	
 			 {
 	            UBYTE byte1, byte2, byte3, byte4;
-				UBYTE color = skyColor - ph/32 -sy/8;
+				UBYTE color = SKY_COLOR - ph/32 -sy/8;
 				address1 = (color<<10) + (color<<5) + (color);
 	
 				byte1 = engine.renderer.dither3x2EvenP1[ address1 ];
@@ -502,10 +502,10 @@ void ProcessRayCastsProgressiveNonInterleaved(WORD (*rayCastX), WORD (*rayCastY)
 	//for each vertical line
     
 
-    UWORD *firstCol = planes + (YSIZEODD+1)*PLANEWIDTHWORD*4;
-    UWORD *secondCol = planes + (YSIZEODD+1)*PLANEWIDTHWORD*4 + 1;
-    UWORD *thirdCol = planes + (YSIZEODD+1)*PLANEWIDTHWORD*4 + 2;
-    UWORD *fourthCol = planes + (YSIZEODD+1)*PLANEWIDTHWORD*4 + 3;
+    UWORD *firstCol = engine.renderer.planes + (YSIZEODD+1)*PLANEWIDTHWORD*4;
+    UWORD *secondCol = engine.renderer.planes + (YSIZEODD+1)*PLANEWIDTHWORD*4 + 1;
+    UWORD *thirdCol = engine.renderer.planes + (YSIZEODD+1)*PLANEWIDTHWORD*4 + 2;
+    UWORD *fourthCol = engine.renderer.planes + (YSIZEODD+1)*PLANEWIDTHWORD*4 + 3;
 
 
     UWORD planeStride = PLANEWIDTHWORD;
@@ -568,7 +568,7 @@ void ProcessRayCastsProgressiveNonInterleaved(WORD (*rayCastX), WORD (*rayCastY)
 			 if(tz == engine.renderer.renderingDepth) 	
 			 {
 	            UBYTE byte1, byte2, byte3, byte4;
-				UBYTE color = skyColor - ph/32 -sy/8;
+				UBYTE color = SKY_COLOR - ph/32 -sy/8;
 				address1 = (color<<10) + (color<<5) + (color);
 	
 				byte1 = engine.renderer.dither3x2EvenP1[ address1 ];
@@ -710,10 +710,10 @@ UBYTE px, UBYTE py, UBYTE ph, UBYTE screenStart, UBYTE screenEnd, UBYTE zStart)
         }
 
 
-        UWORD *planePos1 = planes + yOffset + x*4;
-        UWORD *planePos2 = planes + yOffset + x*4 + 1;
-        UWORD *planePos3 = planes + yOffset + x*4 + 2;
-        UWORD *planePos4 = planes + yOffset + x*4 + 3;
+        UWORD *planePos1 = engine.renderer.planes + yOffset + x*4;
+        UWORD *planePos2 = engine.renderer.planes + yOffset + x*4 + 1;
+        UWORD *planePos3 = engine.renderer.planes + yOffset + x*4 + 2;
+        UWORD *planePos4 = engine.renderer.planes + yOffset + x*4 + 3;
         UWORD sp = 0;
 
         for(UBYTE y=0;y<YSIZEODD;y++)
@@ -821,10 +821,10 @@ UBYTE px, UBYTE py, UBYTE ph, UBYTE screenStart, UBYTE screenEnd, UBYTE zStart)
         }
 
 
-        UWORD *planePos1 = planes + yOffset + x*4;
-        UWORD *planePos2 = planes + yOffset + x*4 + 1;
-        UWORD *planePos3 = planes + yOffset + x*4 + 2;
-        UWORD *planePos4 = planes + yOffset + x*4 + 3;
+        UWORD *planePos1 = engine.renderer.planes + yOffset + x*4;
+        UWORD *planePos2 = engine.renderer.planes + yOffset + x*4 + 1;
+        UWORD *planePos3 = engine.renderer.planes + yOffset + x*4 + 2;
+        UWORD *planePos4 = engine.renderer.planes + yOffset + x*4 + 3;
         UWORD sp = 0;
 
         for(UBYTE y=0;y<YSIZEEVEN;y++)
@@ -947,10 +947,10 @@ UBYTE px, UBYTE py, UBYTE ph, UBYTE screenStart, UBYTE screenEnd, UBYTE zStart)
             baseX++;
         }
 
-        UWORD *planePos1 = planes + yOffset + x*4;
-        UWORD *planePos2 = planes + yOffset + x*4 + 1;
-        UWORD *planePos3 = planes + yOffset + x*4 + 2;
-        UWORD *planePos4 = planes + yOffset + x*4 + 3;
+        UWORD *planePos1 = engine.renderer.planes + yOffset + x*4;
+        UWORD *planePos2 = engine.renderer.planes + yOffset + x*4 + 1;
+        UWORD *planePos3 = engine.renderer.planes + yOffset + x*4 + 2;
+        UWORD *planePos4 = engine.renderer.planes + yOffset + x*4 + 3;
         UWORD sp = 0;
 
         for(UBYTE y=0;y<YSIZEODD;y++)
@@ -1047,10 +1047,10 @@ UBYTE px, UBYTE py, UBYTE ph, UBYTE screenStart, UBYTE screenEnd, UBYTE zStart)
         }
 
 
-        UWORD *planePos1 = planes + yOffset + x*4;
-        UWORD *planePos2 = planes + yOffset + x*4 + 1;
-        UWORD *planePos3 = planes + yOffset + x*4 + 2;
-        UWORD *planePos4 = planes + yOffset + x*4 + 3;
+        UWORD *planePos1 = engine.renderer.planes + yOffset + x*4;
+        UWORD *planePos2 = engine.renderer.planes + yOffset + x*4 + 1;
+        UWORD *planePos3 = engine.renderer.planes + yOffset + x*4 + 2;
+        UWORD *planePos4 = engine.renderer.planes + yOffset + x*4 + 3;
         UWORD sp = 0;
 
         for(UBYTE y=0;y<YSIZEEVEN;y++)

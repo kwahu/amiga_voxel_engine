@@ -1,6 +1,5 @@
-#define AMIGA
 
-
+#include "platform.h"
 #include "engine.h"
 #include "bitmap.c"
 #include "file_platform.h"
@@ -19,7 +18,6 @@
 #include "game_state.c"
 #include "cutscene.c"
 
-#include "platform.h"
 
 /*
 docker run --rm \
@@ -36,6 +34,7 @@ void engineGsCreate(void)
 	engine.exitFlag = 0;
 
 	InitScreen();
+	InitInput();
 
 	engine.shipBitmap = LoadBitmapFile("data/icar48", &engine.shipHeader, engine.palettePalette);
 	engine.activeBitmap = LoadBitmapFile("data/l1", &engine.activeBitmapHeader, engine.activePalette);
@@ -62,14 +61,19 @@ void engineGsCreate(void)
 	engine.pBitmapHeightLabel = CreateBitmapFromText(engine.font, "RELATIVE HEIGHT");
 
 	ResetTime();
-	InitInput();
 
 	UnuseSystem();
 
 
 	//*********************************** SELECT HARDWARE ***********************************************
 	engine.informationText = CreateBitmapFromText(engine.font, "KEY 1 = A500   KEY 2 = A1200   KEY 3 = A3000");
+	#ifdef AMIGA
 	DrawTextBitmap(engine.informationText, 50, PLANEHEIGHT/2, 3);
+	#else
+	printf("KEY 1 ATARI ST     KEY 2 ATARI FALCON / TT\r\n");
+	printf("Change quality at any time KEYS 1-8\r\n");
+	printf("\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n");
+	#endif
 
 	while(engine.renderer.renderingType == 0)
 	{
@@ -92,37 +96,41 @@ void engineGsCreate(void)
 //****************************** LOOP
 void engineGsLoop(void)
 {
-	ProcessJoystick();
-	
-	TimeStep();
-	if (engine.currentState == State_Logo)   //turned off
+	while(!engine.exitFlag)
 	{
-		RunLogoState();
+		ProcessJoystick();
 		
-		if (keyCheck(KEY_ESCAPE))
+		TimeStep();
+		if (engine.currentState == State_Logo)   //turned off
 		{
-			engine.exitFlag = 1;
-			ExitGame();
+			RunLogoState();
+			
+			if (getKey(ESCAPE))
+			{
+				engine.exitFlag = 1;
+				ExitGame();
+			}
+				
 		}
-			
-	}
-	else if(engine.currentState == State_Menu)
-	{
-		RunMenuState();
-	}
-	else if(engine.currentState == State_Game)
-	{
-			
-		RunGameState();
-	}
+		else if(engine.currentState == State_Menu)
+		{
+			RunMenuState();
+		}
+		else if(engine.currentState == State_Game)
+		{
+				
+			RunGameState();
+		}
 
-	if (getKey(ESCAPE) || engine.exitFlag)
-	{
-		ExitGame();
+		if (getKey(ESCAPE) || engine.exitFlag)
+		{
+			ExitGame();
+			engine.exitFlag = 1;
+		}
+
+
+		engine.loopEndTime = getCurrentTime();
 	}
-
-
-	engine.loopEndTime = getCurrentTime();
 }
 
 //****************************** DESTROY

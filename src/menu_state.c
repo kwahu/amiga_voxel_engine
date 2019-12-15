@@ -11,7 +11,13 @@ void InitMenuState()
 
 void RunMenuState()
 {
-    LoadBitmapToMemory("data/m0");
+    LoadBitmapToMemory(
+        #ifdef AMIGA
+        "data/m0"
+        #else
+        "data_a/i1"
+        #endif
+        );
     ClearBuffor();
     DrawBitmap4bCenter(engine.activeBitmap, &engine.activeBitmapHeader);
     
@@ -24,7 +30,7 @@ void RunMenuState()
 
     while(!engine.menuState.infoScreen)
     {
-        joyProcess();
+        ProcessJoystick();
         if(getJoy(1, FIRE) && !FireDown)
         {
             infoIndex += 1;
@@ -33,7 +39,13 @@ void RunMenuState()
             {
                 case 1:
                 {
-                    LoadBitmapToMemory("data/m1");
+                    LoadBitmapToMemory(
+                        #ifdef AMIGA
+                        "data/m1"
+                        #else
+                        "data_a/i2"
+                        #endif
+                        );
                     ClearBuffor();
                     DrawBitmap4bCenter(engine.activeBitmap, &engine.activeBitmapHeader);
                     
@@ -44,7 +56,13 @@ void RunMenuState()
                 } break;
                 case 2:
                 {
-                    LoadBitmapToMemory("data/m2");
+                    LoadBitmapToMemory(
+                        #ifdef AMIGA
+                        "data/m2"
+                        #else
+                        "data_a/i3"
+                        #endif
+                    );
                     ClearBuffor();
                     DrawBitmap4bCenter(engine.activeBitmap, &engine.activeBitmapHeader);
                     
@@ -56,7 +74,13 @@ void RunMenuState()
                 case 3:
                 {
 
-                    LoadBitmapToMemory("data/msg");
+                    LoadBitmapToMemory(
+                        #ifdef AMIGA
+                        "data/msg"
+                        #else
+                        "data_a/i4"
+                        #endif
+                        );
                     ClearBuffor();
                     DrawBitmap4bCenter(engine.activeBitmap, &engine.activeBitmapHeader);
                     

@@ -3,6 +3,7 @@
 
 #include <stdlib.h>
 #include <stdint.h>
+#include <stdio.h>
 #include "settings_platform.h"
 
 #define ULONG 	uint32_t
@@ -22,11 +23,7 @@
 #define PLANEWIDTHWORD 80
 
 #define LOGORUNTIME 7500000
-
-UWORD planes[PLANEWIDTHWORD*PLANEHEIGHT];
-
-
-static UBYTE endScreen = 0;
+#define SKY_COLOR 33
 
 typedef struct tagBITMAPFILEHEADER
 {
@@ -53,14 +50,6 @@ typedef struct tagBITMAPINFOHEADER
 } BITMAPINFOHEADER;
 
 
-
-UBYTE skyColor = 33;
-
-void engineGsCreate(void);
-
-void engineGsLoop(void);
-
-void engineGsDestroy(void);
 
 typedef struct ShipParams
 {
@@ -115,7 +104,11 @@ typedef enum Cutscene
 
 typedef struct Renderer
 {
-
+    #ifdef AMIGA
+    UWORD planes[PLANEWIDTHWORD*PLANEHEIGHT];
+    #else
+    uint16_t *planes;
+    #endif
     UBYTE heightMap[MAPSIZE][MAPSIZE]; //16k
     UBYTE colorMap[MAPSIZE][MAPSIZE];  //16k
 
