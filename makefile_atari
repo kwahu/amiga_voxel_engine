@@ -19,6 +19,7 @@ CFLAGS=-mcpu=68000\
 	-fomit-frame-pointer \
 	-Ofast\
 	-std=c99\
+	-DATARI\
 	-lgem
 	#
 	#-Wall\
@@ -39,8 +40,8 @@ OBJECTS=ikbd/keys.o ikbd/mouse.o ikbd/ikbd.o
 
 LDLIBS= -lscandir
 
-$(APP): $(OBJECTS) ikbd/startup.S src/main_atari.c depend
-	$(CC) $(CFLAGS) ikbd/startup.S src/main_atari.c $(LIB) -o $(APP)
+$(APP): $(OBJECTS) ikbd/startup.S src/main.c depend
+	$(CC) $(CFLAGS) ikbd/startup.S src/main.c $(LIB) -o $(APP)
 	m68k-atari-mint-strip $(APP)
 
 $(LIB): $(OBJECTS)
@@ -49,8 +50,8 @@ $(LIB): $(OBJECTS)
 .PHONY clean:
 	- rm -rf *.o $(LIB) depend $(APP)
 
-depend: $(CSOURCES) src/main_atari.c 
-		$(CC) $(CFLAGS) $(INCLUDE) -M $(CSOURCES) src/main_atari.c  > depend
+depend: $(CSOURCES) src/main.c 
+		$(CC) $(CFLAGS) $(INCLUDE) -M $(CSOURCES) src/main.c  > depend
 
 	
 ifneq (clean,$(MAKECMDGOALS))
