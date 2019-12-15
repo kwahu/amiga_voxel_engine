@@ -16,13 +16,13 @@ UWORD ConvertEndianWORD(UWORD number)
     return (number >> 8) | (number << 8);
 }
 
-unsigned char *LoadBitmapFile(char *filename, BITMAPINFOHEADER *bitmapInfoHeader, unsigned char bitmapColorTable[16])
+UBYTE *LoadBitmapFile(BYTE *filename, BITMAPINFOHEADER *bitmapInfoHeader, UBYTE *bitmapColorTable)
 {
     FILE *filePtr;                     //our file pointer
     BITMAPFILEHEADER bitmapFileHeader; //our bitmap file header
-    unsigned char *bitmapImage;        //store image data
+    UBYTE *bitmapImage;        //store image data
     int imageIdx = 0;                  //image index counter
-    unsigned char tempRGB;             //our swap variable
+    UBYTE tempRGB;             //our swap variable
 
     //open filename in read binary mode
     filePtr = fopen(filename, "rb");

@@ -3,8 +3,14 @@
 
 #include <stdlib.h>
 #include <stdint.h>
-#include "settings.h"
+#include "settings_platform.h"
 
+#define ULONG 	uint32_t
+#define LONG	int32_t
+#define UWORD 	uint16_t
+#define WORD 	int16_t
+#define UBYTE  unsigned char
+#define BYTE	signed char
 
 #define DEPTH 4
 #define COLORS 32
@@ -12,16 +18,14 @@
 #define MAPSIZE 128
 #define MAPLENGTH 11
 
+#define PLANEWIDTH 160
+#define PLANEWIDTHWORD 80
+
+#define LOGORUNTIME 7500000
+
+UWORD planes[PLANEWIDTHWORD*PLANEHEIGHT];
 
 
-
-
-static int interlace;
-ULONG points = 0;
-
-static UBYTE screenIndex;
-static ULONG screenDuration;
-static UBYTE infoScreen = 0;
 static UBYTE endScreen = 0;
 
 typedef struct tagBITMAPFILEHEADER
@@ -48,9 +52,6 @@ typedef struct tagBITMAPINFOHEADER
     ULONG biClrImportant;  //number of colors that are important
 } BITMAPINFOHEADER;
 
-BITMAPINFOHEADER bitmapHeader1, bitmapHeader2, bitmapHeader3, bitmapHeader4, paletteHeader, shipHeader;
-unsigned char *bitmap1, *paletteBitmap, *ship;
-unsigned char bitmapPalette1[16 * 4], palettePalette[16 * 4];
 
 
 UBYTE skyColor = 33;
@@ -74,23 +75,26 @@ typedef struct ShipParams
 
 typedef struct MenuState
 {
-    UBYTE Dummy;
+    UBYTE infoScreen;
 } MenuState;
 
 typedef struct LogoState
 {
-    UBYTE Dummy;
+    
+    UBYTE screenIndex;
+    ULONG screenDuration;
+    char fadeInStatus[4], fadeOutStatus[4];
 } LogoState;
 
-typedef struct CutsceneState
-{
-    UBYTE Dummy;
-} CutsceneState;
 
 typedef struct GameState
 {
     WORD crossHairX, crossHairY;
     ShipParams shipParams;
+    ULONG points;
+    BYTE runOver;
+    char sPlayerY[5];
+    char sTime[8], sVelocity[5], sScore[8];
 } GameState;
 
 typedef enum State
@@ -101,6 +105,13 @@ typedef enum State
     State_Cutscene,
     State_Count
 } State;
+
+typedef enum Cutscene
+{
+    Cutscene_Death,
+    Cutscene_TooLate,
+    Cutscene_Win,
+} Cutscene;
 
 typedef struct Renderer
 {
@@ -117,6 +128,7 @@ typedef struct Renderer
         mapLoaded7, mapLoaded8, mapLoaded9, mapLoaded10;
 
     UBYTE renderingType, calculationDepthDivider, calculationDepthStep, renderingDepthStep, stepModifier, xFOV, yFOV;
+    UBYTE renderingDepth;
 
         
     UWORD bitmapPalette[16];
@@ -144,19 +156,31 @@ typedef struct Renderer
 
 typedef struct Engine
 {
-    State CurrentState;
+    State currentState;
+    State newState;
     union
     {
         LogoState logoState;
         MenuState menuState;
         GameState gameState;
-        CutsceneState cutsceneState;
 
     };
+
+    PlatformScreen platformScreen;
 
     Renderer renderer;
     
     ULONG startTime, endTime, deltaTime, accTime, loopEndTime;
+    
+    UBYTE activePalette[16 * 4], palettePalette[16 * 4];
+    BITMAPINFOHEADER activeBitmapHeader, paletteHeader, shipHeader;
+    UBYTE *activeBitmap, *paletteBitmap, *shipBitmap;
+
+    Font *font;
+    TextBitmap *pBitmapHeightLabel, *pBitmapHeight, *pBitmapTime, *pBitmapTimeLabel, *informationText;
+    TextBitmap *pBitmapVelocityLabel, *pBitmapVelocity, *pBitmapScore, *pBitmapScoreLabel, *pBitmapInfo[10];
+
+    UBYTE exitFlag;
 
 } Engine;
 
@@ -184,5 +208,8 @@ Engine engine;
 // };
 
 
+#include "font_platform.h"
+#include "input_platform.h"
+#include "screen_platform.h"
 
 #endif // _ENGINE_H_

@@ -1,7 +1,6 @@
 #include "engine.h"
 
 #ifdef AMIGA
-#include "settings.h"
 
 void RenderQuality()
 {
@@ -14,7 +13,7 @@ void RenderQuality()
 	{
 
 
-		ProcessRayCasts164x4(engine.renderer.rayCastX, engine.renderer.rayCastY, engine.renderer.mapHigh, engine.gameState.shipParams.pX,engine.gameState.shipParams.pZ,engine.gameState.shipParams.pY, 0, PLANEWIDTHWORD, 1);
+		ProcessRayCasts164x4(engine.renderer.rayCastX, engine.renderer.rayCastY, engine.renderer.mapHigh, engine.gameState.shipParams.pX,engine.gameState.shipParams.pZ,engine.gameState.shipParams.pY, 0, 20, 1);
 		
 	}
 	else if(engine.renderer.renderingType == 3)
@@ -45,17 +44,17 @@ void RenderQuality()
 	else if(engine.renderer.renderingType == 6)
 	{
 
-		ProcessRayCastsFull3x2(engine.renderer.rayCastX, engine.renderer.rayCastY, engine.renderer.mapHigh, engine.gameState.shipParams.pX,engine.gameState.shipParams.pZ,engine.gameState.shipParams.pY, 0, PLANEWIDTHWORD, 12);
+		ProcessRayCastsFull3x2(engine.renderer.rayCastX, engine.renderer.rayCastY, engine.renderer.mapHigh, engine.gameState.shipParams.pX,engine.gameState.shipParams.pZ,engine.gameState.shipParams.pY, 0, 20, 12);
 	}
 	else if(engine.renderer.renderingType == 7)
 	{
 
 
-		ProcessRayCastsFull3x2(engine.renderer.rayCastX, engine.renderer.rayCastY, engine.renderer.mapHigh, engine.gameState.shipParams.pX,engine.gameState.shipParams.pZ,engine.gameState.shipParams.pY, 0, PLANEWIDTHWORD, 8);
+		ProcessRayCastsFull3x2(engine.renderer.rayCastX, engine.renderer.rayCastY, engine.renderer.mapHigh, engine.gameState.shipParams.pX,engine.gameState.shipParams.pZ,engine.gameState.shipParams.pY, 0, 20, 8);
 	}
 	else if(engine.renderer.renderingType == 8)
 	{
-		ProcessRayCastsProgressive(engine.renderer.rayCastX, engine.renderer.rayCastY,engine.renderer.mapHigh,engine.gameState.shipParams.pX,engine.gameState.shipParams.pZ,engine.gameState.shipParams.pY, 0, PLANEWIDTHWORD, 12);
+		ProcessRayCastsProgressive(engine.renderer.rayCastX, engine.renderer.rayCastY,engine.renderer.mapHigh,engine.gameState.shipParams.pX,engine.gameState.shipParams.pZ,engine.gameState.shipParams.pY, 0, 20, 12);
 	}
 }
 #else

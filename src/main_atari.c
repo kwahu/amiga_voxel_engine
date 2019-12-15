@@ -36,7 +36,13 @@
 
 uint16_t *physBase;
 uint16_t *logBase;
+uint16_t *planesAtari;
 
+
+void DrawPanelsToScreen()
+{
+	memcpy(planesAtari, planes, PLANEWIDTH*PLANEHEIGHT);
+}
 
 void framebuffer_open() {
     physBase=Physbase();
@@ -73,7 +79,7 @@ void Recalculate()
 
 void SetDefaulResolution()
 {
-		renderingDepth = TERRAINDEPTH;
+		engine.renderer.renderingDepth = TERRAINDEPTH;
 		//engine.renderer.renderingType = 8;
 		engine.renderer.calculationDepthDivider = 2;
 		engine.renderer.calculationDepthStep = 2;
@@ -103,6 +109,7 @@ void switchIntroScreen()
 			fadeInStatus[i] = 0;
 			fadeOutStatus[i] = 0;
 		}
+		DrawPanelsToScreen();
 	}
 	break;
 	case 3:
@@ -118,6 +125,7 @@ void switchIntroScreen()
 			fadeInStatus[i] = 0;
 			fadeOutStatus[i] = 0;
 		}
+		DrawPanelsToScreen();
 	}
 	break;
 	case 0:
@@ -292,7 +300,7 @@ void main_supervisor()
 	
     ship = LoadBitmapFile("data/icar48",&shipHeader, palettePalette);
 	
-	planes = framebuffer_get_pointer();
+	planesAtari = framebuffer_get_pointer();
    
    	//process paletter from an image
 	for(int i=0;i<16;i++)
@@ -305,6 +313,7 @@ void main_supervisor()
 	ClearBuffor();
     DrawBitmap4bCenter(bitmap1, &bitmapHeader1);
 
+	DrawPanelsToScreen();
 
 	paletteBitmap = LoadBitmapFile("data/plt", &paletteHeader, palettePalette);
 
@@ -337,7 +346,6 @@ void main_supervisor()
 	SetDefaulResolution();
     //*****************************************
     
-	uint8_t exitflag = 0;
 	uint8_t idx,joy_id,joy[2];
 
 	
@@ -399,6 +407,7 @@ void main_supervisor()
 										((bitmapPalette1[i * 4 + 1] >> 5) << 4) + (bitmapPalette1[i * 4 + 0] >> 5);
 				}
 				Setpalette(engine.renderer.bitmapPalette);
+				DrawPanelsToScreen();
 
 				UBYTE infoIndex = 0;
 				UBYTE FireDown = 0;
@@ -424,6 +433,7 @@ void main_supervisor()
 									engine.renderer.bitmapPalette[i] = ((bitmapPalette1[i * 4 + 2] >> 5) << 8) +
 														((bitmapPalette1[i * 4 + 1] >> 5) << 4) + (bitmapPalette1[i * 4 + 0] >> 5);
 								}
+								DrawPanelsToScreen();
 								Setpalette(engine.renderer.bitmapPalette);
 								FireDown = 1;
 							} break;
@@ -441,6 +451,7 @@ void main_supervisor()
 														((bitmapPalette1[i * 4 + 1] >> 5) << 4) + (bitmapPalette1[i * 4 + 0] >> 5);
 								}
 								Setpalette(engine.renderer.bitmapPalette);
+								DrawPanelsToScreen();
 								FireDown = 1;
 							} break;
 							case 3:
@@ -457,6 +468,7 @@ void main_supervisor()
 														((bitmapPalette1[i * 4 + 1] >> 5) << 4) + (bitmapPalette1[i * 4 + 0] >> 5);
 								}
 								Setpalette(engine.renderer.bitmapPalette);
+								DrawPanelsToScreen();
 								FireDown = 1;
 
 							} break;
@@ -469,6 +481,7 @@ void main_supervisor()
 														((palettePalette[i * 4 + 1] >> 5) << 4) + (palettePalette[i * 4 + 0] >> 5);
 								}
 								Setpalette(engine.renderer.bitmapPalette);
+								DrawPanelsToScreen();
 								infoScreen = 1;
 								engine.endTime = timerGetPrec();
 								engine.startTime = timerGetPrec();
@@ -486,7 +499,7 @@ void main_supervisor()
 					if(IKBD_Keyboard[IKBD_KEY_ESC])
 					{
 						//PRINT("ESC\r\n");
-						exitflag = 1;
+						engine.exitFlag = 1;
 						infoScreen = 1;
 					}
 				}
@@ -551,11 +564,14 @@ void main_supervisor()
 						 spriteIndexX, spriteIndexY, 48, 48, 3);
 
 			//printf("%d	%d\r", engine.gameState.shipParams.pZ, (engine.gameState.shipParams.pZ / 256 + 1) % MAPLENGTH);
+			
+			//IKBD_Flush();
+			Vsync();
+			DrawPanelsToScreen();
+			
 			printf("SC:%d  SP:%d  RH:%d  T:%d\r", points, engine.gameState.shipParams.dP, engine.gameState.shipParams.relHeight, engine.accTime/2500);
 			
 			fflush(stdout);
-			//IKBD_Flush();
-			Vsync();
 			//IKBD_ReadMouse();
 			if(IKBD_Keyboard[IKBD_KEY_ESC])
 			{
@@ -576,6 +592,7 @@ void main_supervisor()
    				
 				ClearBuffor();
 
+				DrawPanelsToScreen();
 				engine.gameState.shipParams.precX = 60 * 100;
 				engine.gameState.shipParams.precZ = 0;
 				engine.gameState.shipParams.precY = 20 * 100;
@@ -635,6 +652,7 @@ void main_supervisor()
 				if(points < 1000000)
 				{
 					ClearBuffor();
+					DrawPanelsToScreen();
 
 					engine.gameState.shipParams.precX = 60 * 100;
 					engine.gameState.shipParams.precZ = 0;
@@ -682,6 +700,7 @@ void main_supervisor()
 						((palettePalette[i*4+1]>>5) << 4) + (palettePalette[i*4+0]>>5);
 					}
 					Setpalette(engine.renderer.bitmapPalette);
+					DrawPanelsToScreen();
 				}
 				else
 				{
@@ -697,6 +716,7 @@ void main_supervisor()
 											((bitmapPalette1[i * 4 + 1] >> 5) << 4) + (bitmapPalette1[i * 4 + 0] >> 5);
 					}
 					Setpalette(engine.renderer.bitmapPalette);
+					DrawPanelsToScreen();
 
 					engine.gameState.shipParams.precX = 60 * 100;
 					engine.gameState.shipParams.precZ = 0;
@@ -738,6 +758,7 @@ void main_supervisor()
 						((palettePalette[i*4+1]>>5) << 4) + (palettePalette[i*4+0]>>5);
 					}
 					Setpalette(engine.renderer.bitmapPalette);
+					DrawPanelsToScreen();
 					
 				}
 				

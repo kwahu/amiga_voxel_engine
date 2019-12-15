@@ -1,38 +1,12 @@
 #include "engine.h"
-#include "settings.h"
 
 
 
-#ifdef AMIGA
 
 void ClearBuffor()
 {
-	for(UWORD p = 0; p< 20*256;p++)
-	{
-		plane1W[p] = 0;
-		plane2W[p] = 0;
-		plane3W[p] = 0;
-		plane4W[p] = 0;
-	}
-		
+	memset(planes, 0, PLANEWIDTH*PLANEHEIGHT);
 }
-
-
-void CopyFastToChipW(tBitMap *bm)
-{
-	CopyMemQuick(plane1W, bm->Planes[0], PLANEWIDTH*PLANEHEIGHT);
-	CopyMemQuick(plane2W, bm->Planes[1], PLANEWIDTH*PLANEHEIGHT);
-	CopyMemQuick(plane3W, bm->Planes[2], PLANEWIDTH*PLANEHEIGHT);
-	CopyMemQuick(plane4W, bm->Planes[3], PLANEWIDTH*PLANEHEIGHT);
-}
-#else
-
-void ClearBuffor()
-{
-	for(UWORD p = 0; p< 20*200*4;p++)
-		planes[p] = 0;
-}
-#endif
 
 #define UnpackSpriteByte(byte, value, b1, m1, n1, b2, m2, n2, howMany)  \
 if((howMany) < 0)						\
@@ -112,20 +86,12 @@ void DrawSprite4b(unsigned char *bLogo, BITMAPINFOHEADER *bhLogo,
 	UWORD baseX = spriteIndexX*spriteSizeX/16;
 	UWORD baseY = spriteIndexY*spriteSizeY;
 
-    #ifdef AMIGA
-	position = (posY - (spriteSizeY/2)) * PLANEWIDTHWORD + planePosX - spriteSizeX/32;
-    UWORD *firstCol = plane1W + position;
-    UWORD *secondCol = plane2W + position;
-    UWORD *thirdCol = plane3W + position;
-    UWORD *fourthCol = plane4W + position;
-    #else 
 	position = (posY - (spriteSizeY/2)) * PLANEWIDTHWORD + planePosX*4 - spriteSizeX/32*4;
     UWORD *firstCol = planes + position;
     UWORD *secondCol = planes + position + 1;
     UWORD *thirdCol = planes + position + 2;
     UWORD *fourthCol = planes + position + 3;
 
-    #endif 
 
 	for (ULONG y =baseY+spriteSizeY; y > baseY; y--)
 	{
@@ -287,17 +253,10 @@ void DrawSprite4b(unsigned char *bLogo, BITMAPINFOHEADER *bhLogo,
 								BlendSprite(plane4Value, 1, b15, m15, n15, 3) +
 								BlendSprite(plane4Value, 0, b16, m16, n16, 3);
 			
-            #ifdef AMIGA
-            firstPos++;
-            secondPos++;
-            thirdPos++;
-            fourthPos++;
-            #else
             firstPos+=4;
             secondPos+=4;
             thirdPos+=4;
             fourthPos+=4;
-            #endif
 			howManyPixels = 0;
 		}
 
@@ -317,18 +276,11 @@ void DrawBitmap4b(unsigned char *bLogo, BITMAPINFOHEADER *bhLogo, UWORD offsety)
 	ULONG xx, yy;
 
 	position = offsety * PLANEWIDTHWORD;
-    #ifdef AMIGA
-    UWORD *firstCol = plane1W + position;
-    UWORD *secondCol = plane2W + position;
-    UWORD *thirdCol = plane3W + position;
-    UWORD *fourthCol = plane4W + position;
-    #else 
     UWORD *firstCol = planes + position;
     UWORD *secondCol = planes + position + 1;
     UWORD *thirdCol = planes + position + 2;
     UWORD *fourthCol = planes + position + 3;
 
-    #endif 
 
 	//position = startOffset;
 
@@ -435,17 +387,10 @@ void DrawBitmap4b(unsigned char *bLogo, BITMAPINFOHEADER *bhLogo, UWORD offsety)
 								((b15 >> 3) & 1) * 0b0000000000000010 +
 								((b16 >> 3) & 1) * 0b0000000000000001;
                                 
-            #ifdef AMIGA
-            firstPos++;
-            secondPos++;
-            thirdPos++;
-            fourthPos++;
-            #else
             firstPos+=4;
             secondPos+=4;
             thirdPos+=4;
             fourthPos+=4;
-            #endif
 		}
 
         firstCol += PLANEWIDTHWORD;
@@ -462,22 +407,12 @@ void DrawBitmap4bCenter(unsigned char *bLogo, BITMAPINFOHEADER *bhLogo)
 	unsigned char byte;
 	ULONG xx, yy;
 
-	position = ((PLANEHEIGHT-bhLogo->biHeight)/2) * PLANEWIDTHWORD + (320-bhLogo->biWidth)/32;
-
-    #ifdef AMIGA
-	position = ((PLANEHEIGHT-bhLogo->biHeight)/2) * PLANEWIDTHWORD + (320-bhLogo->biWidth)/32;
-    UWORD *firstCol = plane1W + position;
-    UWORD *secondCol = plane2W + position;
-    UWORD *thirdCol = plane3W + position;
-    UWORD *fourthCol = plane4W + position;
-    #else 
 	position = ((PLANEHEIGHT-bhLogo->biHeight)/2) * PLANEWIDTHWORD + (320-bhLogo->biWidth)/32*4;
     UWORD *firstCol = planes + position;
     UWORD *secondCol = planes + position + 1;
     UWORD *thirdCol = planes + position + 2;
     UWORD *fourthCol = planes + position + 3;
 
-    #endif 
 
 	//position = startOffset;
 
@@ -583,17 +518,10 @@ void DrawBitmap4bCenter(unsigned char *bLogo, BITMAPINFOHEADER *bhLogo)
 								((b14 >> 3) & 1) * 0b0000000000000100 +
 								((b15 >> 3) & 1) * 0b0000000000000010 +
 								((b16 >> 3) & 1) * 0b0000000000000001;   
-            #ifdef AMIGA
-            firstPos++;
-            secondPos++;
-            thirdPos++;
-            fourthPos++;
-            #else
             firstPos+=4;
             secondPos+=4;
             thirdPos+=4;
             fourthPos+=4;
-            #endif
 		}
         firstCol += PLANEWIDTHWORD;
         secondCol += PLANEWIDTHWORD;
@@ -608,13 +536,8 @@ void DrawPixel(UWORD x, UWORD y, UBYTE color)
   UWORD leftGap = x - posX*16;
   UWORD rightGap = 16 - leftGap;
 
-#ifdef AMIGA
-  UWORD firstPos = y*PLANEWIDTHWORD+posX;
-  UWORD secondPos = firstPos+1;
-  #else
   UWORD firstPos = y*PLANEWIDTHWORD+posX*4;
   UWORD secondPos = firstPos+4;
-  #endif
 
   WORD leftUpPattern = 0b1000100110010001 >> leftGap;
   WORD rightUpPattern = 0b1111111111111111 << rightGap;
@@ -622,18 +545,6 @@ void DrawPixel(UWORD x, UWORD y, UBYTE color)
   WORD leftDownPattern = 0b1000100110010001 << rightGap;
   WORD rightDownPattern = 0b1111111111111111 >> leftGap;
 
-#ifdef AMIGA
-  plane1W[firstPos] = (leftUpPattern) + (plane1W[firstPos] & (rightUpPattern));
-  plane2W[firstPos] = (leftUpPattern) + (plane2W[firstPos] & (rightUpPattern));
-  plane3W[firstPos] = (leftUpPattern) + (plane3W[firstPos] & (rightUpPattern));
-  plane4W[firstPos] = (leftUpPattern) + (plane4W[firstPos] & (rightUpPattern));
-  
-  plane1W[secondPos] = (leftDownPattern) + (plane1W[secondPos] & (rightDownPattern));
-  plane2W[secondPos] = (leftDownPattern) + (plane2W[secondPos] & (rightDownPattern));
-  plane3W[secondPos] = (leftDownPattern) + (plane3W[secondPos] & (rightDownPattern));
-  plane4W[secondPos] = (leftDownPattern) + (plane4W[secondPos] & (rightDownPattern));
-  #else
-  
   planes[firstPos] = (leftUpPattern) + (planes[firstPos] & (rightUpPattern));
   planes[firstPos+1] = (leftUpPattern) + (planes[firstPos+1] & (rightUpPattern));
   planes[firstPos+2] = (leftUpPattern) + (planes[firstPos+2] & (rightUpPattern));
@@ -643,21 +554,184 @@ void DrawPixel(UWORD x, UWORD y, UBYTE color)
   planes[secondPos+1] = (leftDownPattern) + (planes[secondPos+1] & (rightDownPattern));
   planes[secondPos+2] = (leftDownPattern) + (planes[secondPos+2] & (rightDownPattern));
   planes[secondPos+3] = (leftDownPattern) + (planes[secondPos+3] & (rightDownPattern));
-  #endif
 }
 
 void DrawPixelWord(UWORD x, UWORD y, UBYTE color)
 {
-    #ifdef AMIGA
-  plane1W[y * PLANEWIDTHWORD + x] = ( (color>>0) & 1) * 0xffff;
-  plane2W[y * PLANEWIDTHWORD + x] = ( (color>>1) & 1) * 0xffff;
-  plane3W[y * PLANEWIDTHWORD + x] = ( (color>>2) & 1) * 0xffff;
-  plane4W[y * PLANEWIDTHWORD + x] = ( (color>>3) & 1) * 0xffff;
-  #else
   
   planes[y * PLANEWIDTHWORD + x*4] = ( (color>>0) & 1) * 0xffff;
   planes[y * PLANEWIDTHWORD + x*4 + 1] = ( (color>>1) & 1) * 0xffff;
   planes[y * PLANEWIDTHWORD + x*4 + 2] = ( (color>>2) & 1) * 0xffff;
   planes[y * PLANEWIDTHWORD + x*4 + 3] = ( (color>>3) & 1) * 0xffff;
-  #endif
+}
+
+
+
+void ConvertIntToChar(int number, char *test, int size)
+{
+	int temp;
+	int i = size-2;
+	while (number != 0)
+	{
+		temp = number % 10;
+		number /= 10;
+		switch (temp)
+		{
+		case 1:
+			test[i] = '1';
+			break;
+		case 2:
+			test[i] = '2';
+			break;
+		case 3:
+			test[i] = '3';
+			break;
+		case 4:
+			test[i] = '4';
+			break;
+		case 5:
+			test[i] = '5';
+			break;
+		case 6:
+			test[i] = '6';
+			break;
+		case 7:
+			test[i] = '7';
+			break;
+		case 8:
+			test[i] = '8';
+			break;
+		case 9:
+			test[i] = '9';
+			break;
+		case 0:
+			test[i] = '0';
+			break;
+		}
+		i--;
+	}
+	while (i >= 0)
+	{
+		test[i] = ' ';
+		i--;
+	}
+	test[size-1] = 0;
+}
+
+void ConvertWordToChar(UWORD number, char *test)
+{
+	UWORD temp;
+	int i = 4;
+	while (i >= 0)
+	{
+		temp = number % 16;
+		number /= 16;
+		switch (temp)
+		{
+		case 0:
+			test[i] = '0';
+			break;
+		case 1:
+			test[i] = '1';
+			break;
+		case 2:
+			test[i] = '2';
+			break;
+		case 3:
+			test[i] = '3';
+			break;
+		case 4:
+			test[i] = '4';
+			break;
+		case 5:
+			test[i] = '5';
+			break;
+		case 6:
+			test[i] = '6';
+			break;
+		case 7:
+			test[i] = '7';
+			break;
+		case 8:
+			test[i] = '8';
+			break;
+		case 9:
+			test[i] = '9';
+			break;
+		case 10:
+			test[i] = 'a';
+			break;
+		case 11:
+			test[i] = 'b';
+			break;
+		case 12:
+			test[i] = 'c';
+			break;
+		case 13:
+			test[i] = 'd';
+			break;
+		case 14:
+			test[i] = 'e';
+			break;
+		case 15:
+			test[i] = 'f';
+			break;
+		}
+		i--;
+	}
+	//  while(i>=0)
+	//  {
+	//  	test[i] = '_';
+	//  	i--;
+	//  }
+}
+
+void ConvertByteToChar(UBYTE number, char *test)
+{
+	UBYTE temp;
+	int i = 3;
+	while (number != 0)
+	{
+		temp = number % 10;
+		number /= 10;
+		switch (temp)
+		{
+		case 1:
+			test[i] = '1';
+			break;
+		case 2:
+			test[i] = '2';
+			break;
+		case 3:
+			test[i] = '3';
+			break;
+		case 4:
+			test[i] = '4';
+			break;
+		case 5:
+			test[i] = '5';
+			break;
+		case 6:
+			test[i] = '6';
+			break;
+		case 7:
+			test[i] = '7';
+			break;
+		case 8:
+			test[i] = '8';
+			break;
+		case 9:
+			test[i] = '9';
+			break;
+		case 0:
+			test[i] = '0';
+			break;
+		}
+		i--;
+	}
+	while (i >= 0)
+	{
+		test[i] = ' ';
+		i--;
+	}
 }

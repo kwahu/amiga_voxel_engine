@@ -7,8 +7,6 @@
 #define TERRAINDEPTH 64
 #define PLANEHEIGHT 256
 #define XTURNBUFFOR 55
-#define PLANEWIDTH 40
-#define PLANEWIDTHWORD 20
 
 
 #define XSIZEODD 120 + XTURNBUFFOR * 2
@@ -18,17 +16,7 @@
 #define YSIZEEVEN YSIZEODD / 2
 
 
-UBYTE renderingDepth = TERRAINDEPTH;
 
-//AMIGA
-UWORD plane1W[PLANEWIDTHWORD * PLANEHEIGHT]; //8k
-UWORD plane2W[PLANEWIDTHWORD * PLANEHEIGHT]; //8k
-UWORD plane3W[PLANEWIDTHWORD * PLANEHEIGHT]; //8k
-UWORD plane4W[PLANEWIDTHWORD * PLANEHEIGHT]; //8k
-
-static tView *s_pView;
-static tVPort *s_pVPort;
-static tSimpleBufferManager *s_pBuffer;
 
 #else
 
@@ -39,8 +27,6 @@ static tSimpleBufferManager *s_pBuffer;
 #define UBYTE  unsigned char
 #define BYTE	signed char
 
-#define PLANEWIDTH 160
-#define PLANEWIDTHWORD 80
 #define TERRAINDEPTH 32
 #define PLANEHEIGHT 200
 #define XSIZEODD 120 + XTURNBUFFOR * 2
@@ -52,8 +38,29 @@ static tSimpleBufferManager *s_pBuffer;
 #define YSIZEEVEN YSIZEODD / 2
 
 
-UBYTE renderingDepth = TERRAINDEPTH;
+#endif
 
-//ATARI
-uint16_t *planes;
+
+typedef struct PlatformScreen
+{
+	#ifdef AMIGA
+	tView *s_pView;
+	tVPort *s_pVPort;
+	tSimpleBufferManager *s_pBuffer;
+	#else
+	int16_t *planesAtari;
+	#endif
+
+} PlatformScreen;
+
+#ifdef AMIGA
+#include <ace/utils/font.h>
+typedef tFont Font;
+typedef tTextBitMap TextBitmap; 
+
+#else
+
+typedef UBYTE Font;
+typedef UBYTE TextBitmap; 
+
 #endif

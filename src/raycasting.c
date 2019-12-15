@@ -1,6 +1,15 @@
 #include "engine.h"
-#include "settings.h"
 
+void RecalculateEven()
+{
+	CalculateRayCasts(engine.renderer.rayCastX, engine.renderer.rayCastY, XSIZEEVEN, YSIZEEVEN, 2); //było 2
+	engine.deltaTime = 0;
+}
+void RecalculateOdd()
+{
+	CalculateRayCasts(engine.renderer.rayCastX, engine.renderer.rayCastY, XSIZEODD, YSIZEODD, 1);
+	engine.deltaTime = 0;
+}
 
 void CalculateRayCasts(WORD (*rayCastX), WORD (*rayCastY), 
                         UBYTE xSize, UBYTE ySize, int stepSize)
@@ -16,9 +25,9 @@ void CalculateRayCasts(WORD (*rayCastX), WORD (*rayCastY),
 
 
 	tzz = 1;
-	for(int tz=1;tz<renderingDepth;tz++)
+	for(int tz=1;tz<engine.renderer.renderingDepth;tz++)
 	{
-        WORD offsetTZ = (20*tz)/renderingDepth;
+        WORD offsetTZ = (20*tz)/engine.renderer.renderingDepth;
 		DrawPixelWord((offsetTZ), PLANEHEIGHT-8,(offsetTZ));
 		DrawPixelWord((offsetTZ), PLANEHEIGHT-7,(offsetTZ));
 		DrawPixelWord((offsetTZ), PLANEHEIGHT-6,(offsetTZ));
@@ -27,9 +36,9 @@ void CalculateRayCasts(WORD (*rayCastX), WORD (*rayCastY),
 		DrawPixelWord((offsetTZ), PLANEHEIGHT-3,(offsetTZ));
 		DrawPixelWord((offsetTZ), PLANEHEIGHT-2,(offsetTZ));
 		DrawPixelWord((offsetTZ), PLANEHEIGHT-1,(offsetTZ));
-		#ifdef AMIGA
-			CopyFastToChipW(s_pBuffer->pBack);
-		#endif
+		
+        DrawPanelsToScreen();
+		
 		//high - 2 - 8
 		tzz += engine.renderer.calculationDepthStep + tz / engine.renderer.calculationDepthDivider; //+tz/16; //increase step with the distance from camera
 		WORD *rayXPtr = rayCastX + tz;
@@ -339,21 +348,12 @@ void ProcessRayCastsProgressive(WORD (*rayCastX), WORD (*rayCastY), UWORD (*map)
 
 	//for each vertical line
     
-    #if AMIGA
-
-    UWORD *firstCol = plane1W + (YSIZEODD+1)*PLANEWIDTHWORD*2;
-    UWORD *secondCol = plane2W + (YSIZEODD+1)*PLANEWIDTHWORD*2;
-    UWORD *thirdCol = plane3W + (YSIZEODD+1)*PLANEWIDTHWORD*2;
-    UWORD *fourthCol = plane4W + (YSIZEODD+1)*PLANEWIDTHWORD*2;
-
-    #else
 
     UWORD *firstCol = planes + (YSIZEODD+1)*PLANEWIDTHWORD*4;
     UWORD *secondCol = planes + (YSIZEODD+1)*PLANEWIDTHWORD*4 + 1;
     UWORD *thirdCol = planes + (YSIZEODD+1)*PLANEWIDTHWORD*4 + 2;
     UWORD *fourthCol = planes + (YSIZEODD+1)*PLANEWIDTHWORD*4 + 3;
 
-    #endif
 
     UWORD planeStride = PLANEWIDTHWORD*2;
     
@@ -361,17 +361,10 @@ void ProcessRayCastsProgressive(WORD (*rayCastX), WORD (*rayCastY), UWORD (*map)
 	for(UBYTE iVert=screenStart;iVert<screenEnd;iVert++)
 	{
         
-        #if AMIGA
-        UWORD *firstPos = firstCol + iVert;
-        UWORD *secondPos = secondCol + iVert;
-        UWORD *thirdPos = thirdCol + iVert;
-        UWORD *fourthPos = fourthCol + iVert;
-        #else
         UWORD *firstPos = firstCol + iVert*4;
         UWORD *secondPos = secondCol + iVert*4;
         UWORD *thirdPos = thirdCol + iVert*4;
         UWORD *fourthPos = fourthCol + iVert*4;
-        #endif
 
 		//start from the bottom
 		sy = 0;
@@ -409,9 +402,9 @@ void ProcessRayCastsProgressive(WORD (*rayCastX), WORD (*rayCastY), UWORD (*map)
 				word4 = (engine.renderer.dither3x2EvenP4[ address1 ]<<8) + engine.renderer.dither3x2EvenP4[ address2 ];
 
 			 }
-			if(tz >= threshold2 && tz < renderingDepth)			
+			if(tz >= threshold2 && tz < engine.renderer.renderingDepth)			
 			 {
-				tz = ProcessWord3v6(3,sx,sy,&tz,tzz,px,py,ph,&address1,&address2,rayCastX, rayCastY, map, renderingDepth);
+				tz = ProcessWord3v6(3,sx,sy,&tz,tzz,px,py,ph,&address1,&address2,rayCastX, rayCastY, map, engine.renderer.renderingDepth);
 
 				word1 = (engine.renderer.dither3x2EvenP1[ address1 ]<<8) + engine.renderer.dither3x2EvenP1[ address2 ];
 
@@ -419,7 +412,7 @@ void ProcessRayCastsProgressive(WORD (*rayCastX), WORD (*rayCastY), UWORD (*map)
 				word3 = (engine.renderer.dither3x2EvenP3[ address1 ]<<8) + engine.renderer.dither3x2EvenP3[ address2 ];
 				word4 = (engine.renderer.dither3x2EvenP4[ address1 ]<<8) + engine.renderer.dither3x2EvenP4[ address2 ];
 			 }
-			 if(tz == renderingDepth) 	
+			 if(tz == engine.renderer.renderingDepth) 	
 			 {
 	            UBYTE byte1, byte2, byte3, byte4;
 				UBYTE color = skyColor - ph/32 -sy/8;
@@ -478,11 +471,7 @@ void ProcessRayCastsProgressive(WORD (*rayCastX), WORD (*rayCastY), UWORD (*map)
             fourthPos -= planeStride;
 			//go step higher in the raycast table
             
-            #if AMIGA
-            sy+=4;
-            #else
             sy += 2;
-            #endif
 		}
 		sx += 6;//go to the next vertical line
 	}
@@ -512,21 +501,12 @@ void ProcessRayCastsProgressiveNonInterleaved(WORD (*rayCastX), WORD (*rayCastY)
 
 	//for each vertical line
     
-    #if AMIGA
-
-    UWORD *firstCol = plane1W + (YSIZEODD+1)*PLANEWIDTHWORD*2;
-    UWORD *secondCol = plane2W + (YSIZEODD+1)*PLANEWIDTHWORD*2;
-    UWORD *thirdCol = plane3W + (YSIZEODD+1)*PLANEWIDTHWORD*2;
-    UWORD *fourthCol = plane4W + (YSIZEODD+1)*PLANEWIDTHWORD*2;
-
-    #else
 
     UWORD *firstCol = planes + (YSIZEODD+1)*PLANEWIDTHWORD*4;
     UWORD *secondCol = planes + (YSIZEODD+1)*PLANEWIDTHWORD*4 + 1;
     UWORD *thirdCol = planes + (YSIZEODD+1)*PLANEWIDTHWORD*4 + 2;
     UWORD *fourthCol = planes + (YSIZEODD+1)*PLANEWIDTHWORD*4 + 3;
 
-    #endif
 
     UWORD planeStride = PLANEWIDTHWORD;
     
@@ -534,17 +514,10 @@ void ProcessRayCastsProgressiveNonInterleaved(WORD (*rayCastX), WORD (*rayCastY)
 	for(UBYTE iVert=screenStart;iVert<screenEnd;iVert++)
 	{
         
-        #if AMIGA
-        UWORD *firstPos = firstCol + iVert;
-        UWORD *secondPos = secondCol + iVert;
-        UWORD *thirdPos = thirdCol + iVert;
-        UWORD *fourthPos = fourthCol + iVert;
-        #else
         UWORD *firstPos = firstCol + iVert*4;
         UWORD *secondPos = secondCol + iVert*4;
         UWORD *thirdPos = thirdCol + iVert*4;
         UWORD *fourthPos = fourthCol + iVert*4;
-        #endif
 
 		//start from the bottom
 		sy = 0;
@@ -582,9 +555,9 @@ void ProcessRayCastsProgressiveNonInterleaved(WORD (*rayCastX), WORD (*rayCastY)
 				word4 = (engine.renderer.dither3x2EvenP4[ address1 ]<<8) + engine.renderer.dither3x2EvenP4[ address2 ];
 
 			 }
-			if(tz >= threshold2 && tz < renderingDepth)			
+			if(tz >= threshold2 && tz < engine.renderer.renderingDepth)			
 			 {
-				tz = ProcessWord3v6(3,sx,sy,&tz,tzz,px,py,ph,&address1,&address2,rayCastX, rayCastY, map, renderingDepth);
+				tz = ProcessWord3v6(3,sx,sy,&tz,tzz,px,py,ph,&address1,&address2,rayCastX, rayCastY, map, engine.renderer.renderingDepth);
 
 				word1 = (engine.renderer.dither3x2EvenP1[ address1 ]<<8) + engine.renderer.dither3x2EvenP1[ address2 ];
 
@@ -592,7 +565,7 @@ void ProcessRayCastsProgressiveNonInterleaved(WORD (*rayCastX), WORD (*rayCastY)
 				word3 = (engine.renderer.dither3x2EvenP3[ address1 ]<<8) + engine.renderer.dither3x2EvenP3[ address2 ];
 				word4 = (engine.renderer.dither3x2EvenP4[ address1 ]<<8) + engine.renderer.dither3x2EvenP4[ address2 ];
 			 }
-			 if(tz == renderingDepth) 	
+			 if(tz == engine.renderer.renderingDepth) 	
 			 {
 	            UBYTE byte1, byte2, byte3, byte4;
 				UBYTE color = skyColor - ph/32 -sy/8;
@@ -656,11 +629,7 @@ void ProcessRayCastsProgressiveNonInterleaved(WORD (*rayCastX), WORD (*rayCastY)
             fourthPos -= planeStride;
 			//go step higher in the raycast table
             
-            #if AMIGA
-            sy+=2;
-            #else
             sy += 1;
-            #endif
 		}
 		sx += 6;//go to the next vertical line
 	}
@@ -690,7 +659,7 @@ UBYTE px, UBYTE py, UBYTE ph, UBYTE screenStart, UBYTE screenEnd, UBYTE zStart)
 	        UBYTE mx,my;
 	        UWORD mapValue;
 
-            while(tz < renderingDepth)
+            while(tz < engine.renderer.renderingDepth)
             {
                 mx = px + *rayXPtr;
                 my = (py + (tz<<engine.renderer.renderingDepthStep));
@@ -705,7 +674,7 @@ UBYTE px, UBYTE py, UBYTE ph, UBYTE screenStart, UBYTE screenEnd, UBYTE zStart)
                     sy+=1;//go step higher in the raycast table
                     rayYPtr += TERRAINDEPTH;
                     screenPtr-=6;//go step higher on screen
-                    if(sy == YSIZEODD) tz=renderingDepth; //break if end of screen
+                    if(sy == YSIZEODD) tz=engine.renderer.renderingDepth; //break if end of screen
                 }
                 else if(slope > 0)
                 {
@@ -713,7 +682,7 @@ UBYTE px, UBYTE py, UBYTE ph, UBYTE screenStart, UBYTE screenEnd, UBYTE zStart)
                     sy+=1;//go step higher in the raycast table
                     rayYPtr += TERRAINDEPTH;
                     screenPtr-=6;//go step higher on screen
-                    if(sy == YSIZEODD) tz=renderingDepth; //break if end of screen
+                    if(sy == YSIZEODD) tz=engine.renderer.renderingDepth; //break if end of screen
                 }
                 else
                 {	
@@ -741,20 +710,10 @@ UBYTE px, UBYTE py, UBYTE ph, UBYTE screenStart, UBYTE screenEnd, UBYTE zStart)
         }
 
 
-    #if AMIGA
-
-    UWORD *planePos1 = plane1W + yOffset + x;
-    UWORD *planePos2 = plane2W + yOffset + x;
-    UWORD *planePos3 = plane3W + yOffset + x;
-    UWORD *planePos4 = plane4W + yOffset + x;
-    
-    #else
-
         UWORD *planePos1 = planes + yOffset + x*4;
         UWORD *planePos2 = planes + yOffset + x*4 + 1;
         UWORD *planePos3 = planes + yOffset + x*4 + 2;
         UWORD *planePos4 = planes + yOffset + x*4 + 3;
-    #endif
         UWORD sp = 0;
 
         for(UBYTE y=0;y<YSIZEODD;y++)
@@ -817,7 +776,7 @@ UBYTE px, UBYTE py, UBYTE ph, UBYTE screenStart, UBYTE screenEnd, UBYTE zStart)
 	        UBYTE mx,my;
 	        UWORD mapValue;
 
-            while(tz < renderingDepth)
+            while(tz < engine.renderer.renderingDepth)
             {
                 mx = px + *rayXPtr;
                 my = (py + (tz<<engine.renderer.renderingDepthStep));
@@ -832,7 +791,7 @@ UBYTE px, UBYTE py, UBYTE ph, UBYTE screenStart, UBYTE screenEnd, UBYTE zStart)
                     sy+=1;//go step higher in the raycast table
                     rayYPtr += TERRAINDEPTH;
                     screenPtr-=4;//go step higher on screen
-                    if(sy == YSIZEEVEN) tz=renderingDepth; //break if end of screen
+                    if(sy == YSIZEEVEN) tz=engine.renderer.renderingDepth; //break if end of screen
                 }
                 else if(slope > 0)
                 {
@@ -840,7 +799,7 @@ UBYTE px, UBYTE py, UBYTE ph, UBYTE screenStart, UBYTE screenEnd, UBYTE zStart)
                     sy+=1;//go step higher in the raycast table
                     rayYPtr += TERRAINDEPTH;
                     screenPtr-=4;//go step higher on screen
-                    if(sy == YSIZEEVEN) tz=renderingDepth; //break if end of screen
+                    if(sy == YSIZEEVEN) tz=engine.renderer.renderingDepth; //break if end of screen
                 }
                 else
                 {	
@@ -861,20 +820,11 @@ UBYTE px, UBYTE py, UBYTE ph, UBYTE screenStart, UBYTE screenEnd, UBYTE zStart)
             baseX++;
         }
 
-    #if AMIGA
-
-    UWORD *planePos1 = plane1W + yOffset + x;
-    UWORD *planePos2 = plane2W + yOffset + x;
-    UWORD *planePos3 = plane3W + yOffset + x;
-    UWORD *planePos4 = plane4W + yOffset + x;
-    
-    #else
 
         UWORD *planePos1 = planes + yOffset + x*4;
         UWORD *planePos2 = planes + yOffset + x*4 + 1;
         UWORD *planePos3 = planes + yOffset + x*4 + 2;
         UWORD *planePos4 = planes + yOffset + x*4 + 3;
-    #endif
         UWORD sp = 0;
 
         for(UBYTE y=0;y<YSIZEEVEN;y++)
@@ -957,7 +907,7 @@ UBYTE px, UBYTE py, UBYTE ph, UBYTE screenStart, UBYTE screenEnd, UBYTE zStart)
 	        UBYTE mx,my;
 	        UWORD mapValue;
 
-            while(tz < renderingDepth)
+            while(tz < engine.renderer.renderingDepth)
             {
                 mx = px + *rayXPtr;
                 my = (py + (tz<<engine.renderer.renderingDepthStep));
@@ -997,20 +947,10 @@ UBYTE px, UBYTE py, UBYTE ph, UBYTE screenStart, UBYTE screenEnd, UBYTE zStart)
             baseX++;
         }
 
-    #if AMIGA
-
-    UWORD *planePos1 = plane1W + yOffset + x;
-    UWORD *planePos2 = plane2W + yOffset + x;
-    UWORD *planePos3 = plane3W + yOffset + x;
-    UWORD *planePos4 = plane4W + yOffset + x;
-    
-    #else
-
         UWORD *planePos1 = planes + yOffset + x*4;
         UWORD *planePos2 = planes + yOffset + x*4 + 1;
         UWORD *planePos3 = planes + yOffset + x*4 + 2;
         UWORD *planePos4 = planes + yOffset + x*4 + 3;
-    #endif
         UWORD sp = 0;
 
         for(UBYTE y=0;y<YSIZEODD;y++)
@@ -1071,7 +1011,7 @@ UBYTE px, UBYTE py, UBYTE ph, UBYTE screenStart, UBYTE screenEnd, UBYTE zStart)
 	        UBYTE mx,my;
 	        UWORD mapValue;
 
-            while(tz < renderingDepth)
+            while(tz < engine.renderer.renderingDepth)
             {
                 mx = px + *rayXPtr;
                 my = (py + (tz<<engine.renderer.renderingDepthStep));
@@ -1106,20 +1046,11 @@ UBYTE px, UBYTE py, UBYTE ph, UBYTE screenStart, UBYTE screenEnd, UBYTE zStart)
             baseX++;
         }
 
-    #if AMIGA
-
-    UWORD *planePos1 = plane1W + yOffset + x;
-    UWORD *planePos2 = plane2W + yOffset + x;
-    UWORD *planePos3 = plane3W + yOffset + x;
-    UWORD *planePos4 = plane4W + yOffset + x;
-    
-    #else
 
         UWORD *planePos1 = planes + yOffset + x*4;
         UWORD *planePos2 = planes + yOffset + x*4 + 1;
         UWORD *planePos3 = planes + yOffset + x*4 + 2;
         UWORD *planePos4 = planes + yOffset + x*4 + 3;
-    #endif
         UWORD sp = 0;
 
         for(UBYTE y=0;y<YSIZEEVEN;y++)

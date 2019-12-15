@@ -1,32 +1,22 @@
 
 #include <stdlib.h>
 #include "engine.h"
-#include "settings.h"
 
- #ifdef AMIGA
+void ResetTime()
+{
+	engine.accTime = 0;
+	engine.deltaTime = 0;
+	engine.endTime = getCurrentTime();
+	engine.startTime = getCurrentTime();
+}
 
-#include <ace/managers/timer.h>
-#include <ace/managers/joy.h>
-#include <ace/managers/key.h>
-
-#define getJoy(index, button) joyCheck(JOY ##index## _ ##button)
-#define getKey(name) keyCheck(KEY_ ##name)
-
- #else
-
-#define _hz_200 *(volatile long *)0x4ba
-
-#define timerGetPrec() _hz_200*12500;
-
-#include "key_map_atari.h"
-#include "../ikbd/ikbd.h"
-
-#define getJoy(index, button) (IKBD_STICK ##index & IKBD_JOY_ ##button) ||IKBD_Keyboard[KEY_ ##button ]
-#define getKey(name) IKBD_Keyboard[KEY_ ##name ]
-
-#endif
-
-#define getCurrentTime() timerGetPrec()
+void TimeStep()
+{
+	engine.startTime = getCurrentTime();
+	engine.deltaTime = engine.startTime - engine.endTime;
+	engine.endTime = engine.startTime;
+	engine.accTime += engine.deltaTime;
+}
 
 ULONG getDeltaTime(ULONG *refTime)
 {
@@ -89,6 +79,13 @@ GameState updateShipParams(GameState gameState, LONG deltaTime, UWORD terrainHei
 
 GameState ProcessInput(GameState gameState, LONG deltaTime)
 {
+	
+	LONG lowerDelta = deltaTime/2000;
+	if(lowerDelta == 0)
+	{
+		lowerDelta = 1;
+	}
+
     if (getJoy(1, RIGHT))
 	{
 		gameState.crossHairX += deltaTime / 60;
@@ -99,7 +96,7 @@ GameState ProcessInput(GameState gameState, LONG deltaTime)
 	}
 	else if (gameState.crossHairX != 0)
 	{
-		gameState.crossHairX = gameState.crossHairX - gameState.crossHairX / ((deltaTime) / 2000);
+		gameState.crossHairX = gameState.crossHairX - gameState.crossHairX / (lowerDelta);
 	}
 
 	if (gameState.crossHairX > 0x4000)
@@ -123,7 +120,7 @@ GameState ProcessInput(GameState gameState, LONG deltaTime)
 	}
 	else if (gameState.crossHairY != 0)
 	{
-		gameState.crossHairY = gameState.crossHairY - gameState.crossHairY / ((deltaTime) / 2000);
+		gameState.crossHairY = gameState.crossHairY - gameState.crossHairY / (lowerDelta);
 	}
 
     return gameState;
@@ -133,90 +130,4 @@ GameState ProcessInput(GameState gameState, LONG deltaTime)
 UWORD getTerrainHeight(ShipParams shipParams, UWORD map[][128])
 {
     return ((UBYTE)(map[((UBYTE)(shipParams.pX)) >> 1][((UBYTE)(shipParams.pZ + 15)) >> 1]));
-}
-
-void ProcessQualityInput()
-{
-	
-
-	if(getKey(1) && engine.renderer.renderingType!=1)
-	{
-		renderingDepth = TERRAINDEPTH;
-		engine.renderer.renderingType = 1;
-		engine.renderer.calculationDepthDivider = 2;
-		engine.renderer.calculationDepthStep = 4;
-		engine.renderer.renderingDepthStep = 1;
-		ClearBuffor();
-		//DrawBitmap8b(bitmap1, &bitmapHeader1);
-	}
-	if(getKey(2) && engine.renderer.renderingType!=2)
-	{
-		renderingDepth = TERRAINDEPTH;
-		engine.renderer.renderingType = 2;
-		engine.renderer.calculationDepthDivider = 2;
-		engine.renderer.calculationDepthStep = 4;
-		engine.renderer.renderingDepthStep = 1;
-		ClearBuffor();
-		//DrawBitmap8b(bitmap1, &bitmapHeader1);
-	}
-	if(getKey(3) && engine.renderer.renderingType!=3)
-	{
-		renderingDepth = TERRAINDEPTH;
-		engine.renderer.renderingType = 3;
-		engine.renderer.calculationDepthDivider = 2;
-		engine.renderer.calculationDepthStep = 4;
-		engine.renderer.renderingDepthStep = 1;
-		ClearBuffor();
-		//DrawBitmap8b(bitmap1, &bitmapHeader1);
-	}
-	if(getKey(4)  && engine.renderer.renderingType!=4)
-	{
-		renderingDepth = TERRAINDEPTH;
-		engine.renderer.renderingType = 4;
-		engine.renderer.calculationDepthDivider = 2;
-		engine.renderer.calculationDepthStep = 4;
-		engine.renderer.renderingDepthStep = 1;
-		ClearBuffor();
-		//DrawBitmap8b(bitmap1, &bitmapHeader1);
-	}
-	if(getKey(5) && engine.renderer.renderingType!=5)
-	{
-		renderingDepth = TERRAINDEPTH;
-		engine.renderer.renderingType = 5;
-		engine.renderer.calculationDepthDivider = 2;
-		engine.renderer.calculationDepthStep = 4;
-		engine.renderer.renderingDepthStep = 1;
-		ClearBuffor();
-		//DrawBitmap8b(bitmap1, &bitmapHeader1);
-	}
-	if(getKey(6) && engine.renderer.renderingType!=6)
-	{
-		renderingDepth = TERRAINDEPTH;
-		engine.renderer.renderingType = 6;
-		engine.renderer.calculationDepthDivider = 2;
-		engine.renderer.calculationDepthStep = 4;
-		engine.renderer.renderingDepthStep = 1;
-		ClearBuffor();
-		//DrawBitmap8b(bitmap1, &bitmapHeader1);
-	}
-	if(getKey(7) && engine.renderer.renderingType!=7)
-	{
-		renderingDepth = TERRAINDEPTH;
-		engine.renderer.renderingType = 7;
-		engine.renderer.calculationDepthDivider = 2;
-		engine.renderer.calculationDepthStep = 2;
-		engine.renderer.renderingDepthStep = 1;
-		ClearBuffor();
-		//DrawBitmap8b(bitmap1, &bitmapHeader1);
-	}
-	if (getKey(8) && engine.renderer.renderingType!=8 )
-	{
-		renderingDepth = TERRAINDEPTH;
-		engine.renderer.renderingType = 8;
-		engine.renderer.calculationDepthDivider = 2;
-		engine.renderer.calculationDepthStep = 2;
-		engine.renderer.renderingDepthStep = 1;
-	}
-
-
 }
