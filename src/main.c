@@ -29,7 +29,7 @@ docker run --rm \
 
 
 //****************************** CREATE
-void engineGsCreate(void)
+void InitEngine(void)
 {
 	engine.exitFlag = 0;
 
@@ -94,7 +94,7 @@ void engineGsCreate(void)
 }
 
 //****************************** LOOP
-void engineGsLoop(void)
+void EngineLoop(void)
 {
 	while(!engine.exitFlag)
 	{
@@ -134,7 +134,7 @@ void engineGsLoop(void)
 }
 
 //****************************** DESTROY
-void engineGsDestroy(void)
+void EngineDestroy(void)
 {
 	UseSystem();
 	CloseJoystick();

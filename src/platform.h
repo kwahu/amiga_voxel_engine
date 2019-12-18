@@ -1,10 +1,10 @@
 
 
-void engineGsCreate(void);
+void InitEngine(void);
 
-void engineGsLoop(void);
+void EngineLoop(void);
 
-void engineGsDestroy(void);
+void EngineDestroy(void);
 
 #ifdef AMIGA
 #include <ace/generic/main.h>
@@ -15,7 +15,7 @@ void engineGsDestroy(void);
 #include <ace/utils/file.h>
 void genericCreate(void)
 {
-	gamePushState(engineGsCreate, engineGsLoop, engineGsDestroy);
+	gamePushState(InitEngine, EngineLoop, EngineDestroy);
 }
 
 void genericProcess(void)
@@ -36,9 +36,9 @@ void genericDestroy(void)
 
 void main_supervisor() 
 {
-	engineGsCreate();
-	engineGsLoop();
-	engineGsDestroy();
+	InitEngine();
+	EngineLoop();
+	EngineDestroy();
 }
 
 int main(int argc, char **argv)
