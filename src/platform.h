@@ -28,9 +28,6 @@ void genericDestroy(void)
 }
 #else
 #include "key_map_atari.h"
-#include <string.h>
-#include <stdio.h>
-#include <stdlib.h>
 #include <osbind.h>
 #include <mint/sysbind.h>
 

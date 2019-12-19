@@ -14,7 +14,7 @@ PREFIX=/opt/amiga/bin/m68k-amigaos
 endif
 
 CFLAGS=-m68000\
--msoft-float\
+	-msoft-float\
 	-fomit-frame-pointer \
 	-Os\
 	-std=c11\
@@ -35,10 +35,6 @@ LIB=ace/libace.a
 all: $(LIB) $(APP) 
 
 INC = -Ideps/ace/include
-
-CSOURCES=#ikbd/keys.c ikbd/mouse.c
-			
-OBJECTS=#ikbd/keys.o ikbd/mouse.o ikbd/ikbd.o
 
 $(APP): $(OBJECTS) src/main.c depend
 	$(CC) $(CFLAGS) src/main.c  $(INC) $(LIB) -o $(APP)

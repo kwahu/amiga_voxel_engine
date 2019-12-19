@@ -15,43 +15,43 @@ PREFIX=/opt/cross-mint/m68k-atari-mint
 HATARI=/usr/local/bin/hatari
 endif
 
-CFLAGS=-mcpu=68000\
+CFLAGS=-m68000\
+	-msoft-float\
 	-fomit-frame-pointer \
-	-Ofast\
+	-O3\
 	-std=c99\
-	-DATARI\
-	-lgem
+	-nostdlib\
+	-DATARI
 	#
 	#-Wall\
 	#-mshort\
-	#-nostdlib
 	
 ASFLAGS=$(CFLAGS)	
 	
-ICARUS=icarus_rising
+ICARUS=icarus
 APP=$(ICARUS).tos
 LIB=libikbd.a
 
 all: $(LIB) $(APP) 
 
+INC = #-Iikbd
+
 CSOURCES=ikbd/keys.c ikbd/mouse.c
 		
 OBJECTS=ikbd/keys.o ikbd/mouse.o ikbd/ikbd.o
 
-LDLIBS= -lscandir
-
-$(APP): $(OBJECTS) ikbd/startup.S src/main.c depend
-	$(CC) $(CFLAGS) ikbd/startup.S src/main.c $(LIB) -o $(APP)
+$(APP): $(OBJECTS) ikbd/startup.o src/main.c depend
+	$(CC) $(CFLAGS) ikbd/startup.o src/main.c $(INC) $(LIB) libcmini.a -o $(APP)  -s -L$LIBCMINI -lgcc
 	m68k-atari-mint-strip $(APP)
 
 $(LIB): $(OBJECTS)
-	$(AR) rcs $(LIB) $(OBJECTS) 
+	$(AR) rcs $(INC) $(LIB) $(OBJECTS) 
 		
 .PHONY clean:
 	- rm -rf *.o $(LIB) depend $(APP)
 
 depend: $(CSOURCES) src/main.c 
-		$(CC) $(CFLAGS) $(INCLUDE) -M $(CSOURCES) src/main.c  > depend
+		$(CC) $(CFLAGS)  $(INC) $(INCLUDE) -M $(CSOURCES) src/main.c  > depend
 
 	
 ifneq (clean,$(MAKECMDGOALS))
