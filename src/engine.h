@@ -122,25 +122,23 @@ typedef struct Renderer
 
     UBYTE renderingType, calculationDepthDivider, calculationDepthStep, renderingDepthStep, stepModifier, xFOV, yFOV;
     UBYTE renderingDepth;
+    UBYTE highMemory;
 
         
     UWORD bitmapPalette[16];
 
-    UBYTE screen3x2[6 * 90]; //540B
-    UBYTE screen4x4[4 * 45]; //180B
+    UBYTE *screenPatch;
+    UBYTE *ditherTable1;
+    UBYTE *ditherTable2;
+    UBYTE *ditherTable3;
+    UBYTE *ditherTable4;
 
-    UBYTE dither4x4EvenP1[COLORS * COLORS]; //1k
-    UBYTE dither4x4EvenP2[COLORS * COLORS]; //1k
-    UBYTE dither4x4EvenP3[COLORS * COLORS]; //1k
-    UBYTE dither4x4EvenP4[COLORS * COLORS]; //1k
+    WORD *rayCastX;
+    WORD *rayCastY;
 
-    UBYTE dither3x2EvenP1[COLORS * COLORS * COLORS]; //32k
-    UBYTE dither3x2EvenP2[COLORS * COLORS * COLORS]; //32k
-    UBYTE dither3x2EvenP3[COLORS * COLORS * COLORS]; //32k
-    UBYTE dither3x2EvenP4[COLORS * COLORS * COLORS]; //32k
-    
-    WORD rayCastX[XSIZEODD][TERRAINDEPTH]; //29k AMIGA / 14k ATARI
-    WORD rayCastY[YSIZEODD][TERRAINDEPTH]; //12k AMIGA / 3k ATARI
+
+    //WORD rayCastX[XSIZEODD][TERRAINDEPTH]; //29k AMIGA / 14k ATARI
+    //WORD rayCastY[YSIZEODD][TERRAINDEPTH]; //12k AMIGA / 3k ATARI
     
     BYTE xOffsetEven, xOffsetOdd; //camera rotation offsett when turning
 
@@ -179,26 +177,6 @@ typedef struct Engine
 
 Engine engine;
 
-
-// //sand dunes theme
-// UWORD kolory[COLORS] =
-//     {
-//         0x101, 0x323, 0x523, 0x743, 0xa65, 0xc85, 0xeb8, 0xfdb,
-//         0xbcc, 0x8be,
-//         0x243, 0x9b8, 0xafd, 0x324, 0xa9b, 0xdcf};
-
-// //sand dunes theme
-// UWORD kolory2[COLORS] =
-//     {
-//         0x101, 0x312, 0x423, 0x533, 0x634, 0x754, 0x865, 0x975,
-//         0xa86, 0xb97,
-//         0xca8, 0xda9, 0xeba, 0xfcb, 0x12f, 0x23f};
-
-// UWORD grayColors[16] = 
-// {
-// 	0x000,0x111,0x222,0x333,0x444,0x555,0x666,0x777,
-// 	0x888,0x999,0xaaa,0xbbb,0xccc,0xddd,0xeee,0xfff
-// };
 
 
 #include "font_platform.h"

@@ -143,7 +143,7 @@ void RunGameState()
     else
     {
     
-        ProcessQualityInput();
+        //ProcessQualityInput();
         
 
         

@@ -25,9 +25,9 @@ void CalculateRayCasts(WORD (*rayCastX), WORD (*rayCastY),
 
 
 	tzz = 1;
-	for(int tz=1;tz<engine.renderer.renderingDepth;tz++)
+	for(int tz=1;tz<TERRAINDEPTH;tz++)
 	{
-        WORD offsetTZ = (20*tz)/engine.renderer.renderingDepth;
+        WORD offsetTZ = (20*tz)/TERRAINDEPTH;
 		DrawPixelWord((offsetTZ), PLANEHEIGHT-8,(offsetTZ));
 		DrawPixelWord((offsetTZ), PLANEHEIGHT-7,(offsetTZ));
 		DrawPixelWord((offsetTZ), PLANEHEIGHT-6,(offsetTZ));
@@ -62,7 +62,7 @@ void CalculateRayCasts(WORD (*rayCastX), WORD (*rayCastY),
 
 UBYTE ProcessWord1v6(UBYTE rounds, UBYTE sx, UBYTE sy, UWORD *_tz, UWORD *tzz, UBYTE px, UBYTE py,UBYTE ph,
 UWORD *address1, UWORD *address2, 
-WORD (*rayCastX)[TERRAINDEPTH], WORD (*rayCastY)[TERRAINDEPTH], UWORD (*map)[128], UBYTE threshold)
+WORD (*rayCastX), WORD (*rayCastY), UWORD (*map)[MAPSIZE], UBYTE threshold)
 {
 	UWORD mapValue;
 	WORD slope;
@@ -73,11 +73,13 @@ WORD (*rayCastX)[TERRAINDEPTH], WORD (*rayCastY)[TERRAINDEPTH], UWORD (*map)[128
 
 	sx = sx + 2;
 	tz = tzz[iHor];//set current depth - tz
+    UWORD *rayXPtr = rayCastX + sx*TERRAINDEPTH + tz;
+    UWORD *rayYPtr = rayCastY + sy*TERRAINDEPTH + tz;
 	while(tz < threshold)//check depth step by step
 	{
-		mapValue = map[ ((UBYTE)( px + rayCastX[sx][tz]))  >> 1 ][ ((UBYTE)( py + (tz<<engine.renderer.renderingDepthStep) ))  >> 1 ];//read color + height
+		mapValue = map[ ((UBYTE)( px + *rayXPtr))  >> 1 ][ ((UBYTE)( py + (tz<<engine.renderer.renderingDepthStep) ))  >> 1 ];//read color + height
 		th = mapValue;//take just the height
-		slope = th - (ph + rayCastY[sy][tz]);//check if read height is higher than what we expect from the raycast table
+		slope = th - (ph + *rayYPtr);//check if read height is higher than what we expect from the raycast table
 		if(slope > 0)
 		{
 			c = (mapValue >> 8);
@@ -86,7 +88,9 @@ WORD (*rayCastX)[TERRAINDEPTH], WORD (*rayCastY)[TERRAINDEPTH], UWORD (*map)[128
 		}
 		else
 		{	
-			tz++;//go step in depth if no height hit
+            rayXPtr++;
+            rayYPtr++;
+			//go step in depth if no height hit
 		}
 	}
 
@@ -98,7 +102,7 @@ WORD (*rayCastX)[TERRAINDEPTH], WORD (*rayCastY)[TERRAINDEPTH], UWORD (*map)[128
 }
 UBYTE ProcessWord2v6(UBYTE rounds, UBYTE sx, UBYTE sy, UWORD *_tz, UWORD *tzz, UBYTE px, UBYTE py,UBYTE ph,
 UWORD *address1, UWORD *address2, 
-WORD (*rayCastX)[TERRAINDEPTH], WORD (*rayCastY)[TERRAINDEPTH], UWORD (*map)[128], UBYTE threshold)
+WORD (*rayCastX), WORD (*rayCastY), UWORD (*map)[MAPSIZE], UBYTE threshold)
 {
 	UWORD mapValue;
 	WORD slope;
@@ -114,11 +118,13 @@ WORD (*rayCastX)[TERRAINDEPTH], WORD (*rayCastY)[TERRAINDEPTH], UWORD (*map)[128
 	{
 		
 		tz = tzz[iHor];//set current depth - tz
+        UWORD *rayXPtr = rayCastX + sx*TERRAINDEPTH + tz;
+        UWORD *rayYPtr = rayCastY + sy*TERRAINDEPTH + tz;
 		while(tz < threshold)//check depth step by step
 		{
-			mapValue = map[ ((UBYTE)( px + rayCastX[sx][tz]))  >> 1 ][ ((UBYTE)( py + (tz<<engine.renderer.renderingDepthStep) )) >> 1 ];//read color + height
+			mapValue = map[ ((UBYTE)( px + *rayXPtr))  >> 1 ][ ((UBYTE)( py + (tz<<engine.renderer.renderingDepthStep) )) >> 1 ];//read color + height
 			th = mapValue;//take just the height
-			slope = th - (ph + rayCastY[sy][tz]);//check if read height is higher than what we expect from the raycast table
+			slope = th - (ph + *rayYPtr);//check if read height is higher than what we expect from the raycast table
 			if(slope > 0)
 			{
 				c[iHor] = (mapValue >> 8);
@@ -127,7 +133,9 @@ WORD (*rayCastX)[TERRAINDEPTH], WORD (*rayCastY)[TERRAINDEPTH], UWORD (*map)[128
 			}
 			else
 			{	
-				tz++;//go step in depth if no height hit
+                rayXPtr++;
+                rayYPtr++;
+				//go step in depth if no height hit
 			}
 		}
 		
@@ -141,7 +149,7 @@ WORD (*rayCastX)[TERRAINDEPTH], WORD (*rayCastY)[TERRAINDEPTH], UWORD (*map)[128
 }
 UBYTE ProcessWord3v6(UBYTE rounds, UBYTE sx, UBYTE sy, UWORD *_tz, UWORD *tzz, UBYTE px, UBYTE py,UBYTE ph,
 UWORD *address1, UWORD *address2, 
-WORD (*rayCastX)[TERRAINDEPTH], WORD (*rayCastY)[TERRAINDEPTH], UWORD (*map)[128], UBYTE threshold)
+WORD (*rayCastX), WORD (*rayCastY), UWORD (*map)[MAPSIZE], UBYTE threshold)
 {
 	UWORD mapValue;
 	WORD slope;
@@ -158,11 +166,13 @@ WORD (*rayCastX)[TERRAINDEPTH], WORD (*rayCastY)[TERRAINDEPTH], UWORD (*map)[128
 	{
 		
 		tz = tzz[iHor];//set current depth - tz
+        UWORD *rayXPtr = rayCastX + sx*TERRAINDEPTH + tz;
+        UWORD *rayYPtr = rayCastY + sy*TERRAINDEPTH + tz;
 		while(tz < threshold)//check depth step by step
 		{
-			mapValue = map[ ((UBYTE)( px + rayCastX[sx][tz] )) >> 1 ][ ((UBYTE)( py + (tz<<engine.renderer.renderingDepthStep) )) >> 1 ];//read color + height
+			mapValue = map[ ((UBYTE)( px + *rayXPtr )) >> 1 ][ ((UBYTE)( py + (tz<<engine.renderer.renderingDepthStep) )) >> 1 ];//read color + height
 			th = mapValue;//take just the height
-			slope = th - (ph + rayCastY[sy][tz]);//check if read height is higher than what we expect from the raycast table
+			slope = th - (ph + *rayYPtr);//check if read height is higher than what we expect from the raycast table
 			if(slope > 0)
 			{
 				c[iHor] = (mapValue >> 8);
@@ -171,7 +181,9 @@ WORD (*rayCastX)[TERRAINDEPTH], WORD (*rayCastY)[TERRAINDEPTH], UWORD (*map)[128
 			}
 			else
 			{	
-				tz++;//go step in depth if no height hit
+                rayXPtr++;
+                rayYPtr++;
+				//go step in depth if no height hit
 			}
 		}
 		sx +=2;
@@ -186,146 +198,7 @@ WORD (*rayCastX)[TERRAINDEPTH], WORD (*rayCastY)[TERRAINDEPTH], UWORD (*map)[128
 
 
 
-// UBYTE ProcessWord1v6(UBYTE rounds, UBYTE sx, UBYTE sy, UWORD *_tz, UWORD *tzz, UBYTE px, UBYTE py,UBYTE ph,
-// UWORD *address1, UWORD *address2, 
-// WORD (*rayCastX), WORD (*rayCastY), UWORD (*map)[128], UBYTE threshold)
-// {
-// 	UWORD mapValue;
-// 	WORD slope;
-// 	UBYTE c = 99;
-// 	UBYTE th;
-// 	UBYTE tz;
-// 	UBYTE iHor=0;
-
-// 	sx = sx + 2;
-// 	tz = tzz[iHor];//set current depth - tz
-//     WORD *rayXPtr = rayCastX + sx*TERRAINDEPTH + tz;
-//     WORD *rayYPtr = rayCastY + sy*TERRAINDEPTH + tz;
-// 	while(tz < threshold)//check depth step by step
-// 	{
-// 		mapValue = map[ ((UBYTE)( px + *rayXPtr )) >> 1 ][ ((UBYTE)( py + (tz<<engine.renderer.renderingDepthStep) )) >> 1 ];//read color + height
-// 		th = mapValue;//take just the height
-// 		slope = th - (ph + *rayYPtr);//check if read height is higher than what we expect from the raycast table
-// 		if(slope > 0)
-// 		{
-// 			c = (mapValue >> 8);
-// 			tzz[iHor] = tz;//save the depth we've arrived at
-// 			break;
-// 		}
-// 		else
-// 		{	
-// 			tz++;//go step in depth if no height hit
-//             ++rayXPtr;
-//             ++rayYPtr;
-// 		}
-// 	}
-
-// 	if(c == 99) c = SKY_COLOR - ph/32 - sy/8; //draw sky if too deep
-// 	*address1 = (c<<10) + (c<<5) + (c); *address2 = *address1;
-	
-	
-// 	return tz;
-// }
-// UBYTE ProcessWord2v6(UBYTE rounds, UBYTE sx, UBYTE sy, UWORD *_tz, UWORD *tzz, UBYTE px, UBYTE py,UBYTE ph,
-// UWORD *address1, UWORD *address2, 
-// WORD (*rayCastX), WORD (*rayCastY), UWORD (*map)[128], UBYTE threshold)
-// {
-// 	UWORD mapValue;
-// 	WORD slope;
-// 	UBYTE c[2];
-// 	UBYTE th;
-// 	UBYTE tz;
-
-// 	sx = sx + 1;
-// 	c[0] = 99;
-// 	c[1] = 99;
-    
-//     WORD *rayXPtr = rayCastX + sx*TERRAINDEPTH + tz;
-//     WORD *rayYPtr = rayCastY + sy*TERRAINDEPTH + tz;
-// 	//process 1,2,3 or 6 rounds to find colors for this WORD = 16 pixels
-// 	for(UBYTE iHor=0;iHor<2;iHor++)
-// 	{
-		
-// 		tz = tzz[iHor];//set current depth - tz
-// 		while(tz < threshold)//check depth step by step
-// 		{
-// 			mapValue = map[ ((UBYTE)( px + *rayXPtr )) >> 1 ][ ((UBYTE)( py + (tz<<engine.renderer.renderingDepthStep) )) >> 1 ];//read color + height
-// 			th = mapValue;//take just the height
-// 			slope = th - (ph + *rayYPtr);//check if read height is higher than what we expect from the raycast table
-// 			if(slope > 0)
-// 			{
-// 				c[iHor] = (mapValue >> 8);
-// 				tzz[iHor] = tz;//save the depth we've arrived at
-// 				break;
-// 			}
-// 			else
-// 			{	
-// 				tz++;//go step in depth if no height hit
-//                 ++rayXPtr;
-//                 ++rayYPtr;
-// 			}
-// 		}
-		
-// 		sx += 3;
-// 	}
-// 	if(c[0] == 99) c[0] = SKY_COLOR - ph/32 - sy/8; //draw sky if too deep
-// 	if(c[1] == 99) c[1] = SKY_COLOR - ph/32 - sy/8; //draw sky if too deep
-// 	*address1 = (c[0]<<10) + (c[0]<<5) + (c[0]); *address2 = (c[1]<<10) + (c[1]<<5) + (c[1]);
-
-// 	return tz;
-// }
-// UBYTE ProcessWord3v6(UBYTE rounds, UBYTE sx, UBYTE sy, UWORD *_tz, UWORD *tzz, UBYTE px, UBYTE py,UBYTE ph,
-// UWORD *address1, UWORD *address2, 
-// WORD (*rayCastX), WORD (*rayCastY), UWORD (*map)[128], UBYTE threshold)
-// {
-// 	UWORD mapValue;
-// 	WORD slope;
-// 	UBYTE c[3];
-// 	UBYTE th;
-// 	UBYTE tz;
-
-// 	c[0] = 99;
-// 	c[1] = 99;
-// 	c[2] = 99;
-
-//     WORD *rayXPtr = rayCastX + sx*TERRAINDEPTH + tz;
-//     WORD *rayYPtr = rayCastY + sy*TERRAINDEPTH + tz;
-// 	//process 1,2,3 or 6 rounds to find colors for this WORD = 16 pixels
-// 	for(UBYTE iHor=0;iHor<3;iHor++)
-// 	{
-		
-// 		tz = tzz[iHor];//set current depth - tz
-// 		while(tz < threshold)//check depth step by step
-// 		{
-// 			mapValue = map[ ((UBYTE)( px + *rayXPtr )) >> 1 ][ ((UBYTE)( py + (tz<<engine.renderer.renderingDepthStep) )) >> 1 ];//read color + height
-// 			th = mapValue;//take just the height
-// 			slope = th - (ph + *rayYPtr);//check if read height is higher than what we expect from the raycast table
-// 			if(slope > 0)
-// 			{
-// 				c[iHor] = (mapValue >> 8);
-// 				tzz[iHor] = tz;//save the depth we've arrived at
-// 				break;
-// 			}
-// 			else
-// 			{	
-// 				tz++;//go step in depth if no height hit
-//                 ++rayXPtr;
-//                 ++rayYPtr;
-// 			}
-// 		}
-// 		sx +=2;
-// 	}
-// 	if(c[0] == 99) c[0] = SKY_COLOR - ph/32 - sy/8; //draw sky if too deep
-// 	if(c[1] == 99) c[1] = SKY_COLOR - ph/32 - sy/8; //draw sky if too deep
-// 	if(c[2] == 99) c[2] = SKY_COLOR - ph/32 - sy/8; //draw sky if too deep
-// 	*address1 = (c[0]<<10) + (c[0]<<5) + (c[1]); *address2 = (c[1]<<10) + (c[2]<<5) + (c[2]);
-
-// 	return tz;
-// }
-
-
-
-void ProcessRayCastsProgressive(WORD (*rayCastX), WORD (*rayCastY), UWORD (*map)[256],
+void ProcessRayCastsProgressive(WORD (*rayCastX), WORD (*rayCastY), UWORD (*map)[MAPSIZE],
 	UBYTE px, UBYTE py, UBYTE ph, UBYTE screenStart, UBYTE screenEnd, UBYTE zStart)
 {
 	UBYTE sx,sy,mist;
@@ -382,13 +255,13 @@ void ProcessRayCastsProgressive(WORD (*rayCastX), WORD (*rayCastY), UWORD (*map)
 			 {
 	            UBYTE byte1, byte2, byte3, byte4;
 				tz = ProcessWord1v6(1,sx,sy,&tz,tzz,px,py,ph,&address1,&address2,rayCastX, rayCastY, map, threshold1);
-				byte1 = engine.renderer.dither3x2EvenP1[ address1 ];
+				byte1 = engine.renderer.ditherTable1[ address1 ];
 				word1 = (byte1<<8) + byte1;
-				byte2 = engine.renderer.dither3x2EvenP2[ address1 ];
+				byte2 = engine.renderer.ditherTable2[ address1 ];
 				word2 = (byte2<<8) + byte2;
-				byte3 = engine.renderer.dither3x2EvenP3[ address1 ];
+				byte3 = engine.renderer.ditherTable3[ address1 ];
 				word3 = (byte3<<8) + byte3;
-				byte4 = engine.renderer.dither3x2EvenP4[ address1 ];
+				byte4 = engine.renderer.ditherTable4[ address1 ];
 				word4 = (byte4<<8) + byte4;
 
 			 }
@@ -396,21 +269,21 @@ void ProcessRayCastsProgressive(WORD (*rayCastX), WORD (*rayCastY), UWORD (*map)
 			 {
 				tz = ProcessWord2v6(2,sx,sy,&tz,tzz,px,py,ph,&address1,&address2,rayCastX, rayCastY, map, threshold2);
 
-				word1 = (engine.renderer.dither3x2EvenP1[ address1 ]<<8) + engine.renderer.dither3x2EvenP1[ address2 ];
-				word2 = (engine.renderer.dither3x2EvenP2[ address1 ]<<8) + engine.renderer.dither3x2EvenP2[ address2 ];
-				word3 = (engine.renderer.dither3x2EvenP3[ address1 ]<<8) + engine.renderer.dither3x2EvenP3[ address2 ];
-				word4 = (engine.renderer.dither3x2EvenP4[ address1 ]<<8) + engine.renderer.dither3x2EvenP4[ address2 ];
+				word1 = (engine.renderer.ditherTable1[ address1 ]<<8) + engine.renderer.ditherTable1[ address2 ];
+				word2 = (engine.renderer.ditherTable2[ address1 ]<<8) + engine.renderer.ditherTable2[ address2 ];
+				word3 = (engine.renderer.ditherTable3[ address1 ]<<8) + engine.renderer.ditherTable3[ address2 ];
+				word4 = (engine.renderer.ditherTable4[ address1 ]<<8) + engine.renderer.ditherTable4[ address2 ];
 
 			 }
 			if(tz >= threshold2 && tz < engine.renderer.renderingDepth)			
 			 {
 				tz = ProcessWord3v6(3,sx,sy,&tz,tzz,px,py,ph,&address1,&address2,rayCastX, rayCastY, map, engine.renderer.renderingDepth);
 
-				word1 = (engine.renderer.dither3x2EvenP1[ address1 ]<<8) + engine.renderer.dither3x2EvenP1[ address2 ];
+				word1 = (engine.renderer.ditherTable1[ address1 ]<<8) + engine.renderer.ditherTable1[ address2 ];
 
-				word2 = (engine.renderer.dither3x2EvenP2[ address1 ]<<8) + engine.renderer.dither3x2EvenP2[ address2 ];
-				word3 = (engine.renderer.dither3x2EvenP3[ address1 ]<<8) + engine.renderer.dither3x2EvenP3[ address2 ];
-				word4 = (engine.renderer.dither3x2EvenP4[ address1 ]<<8) + engine.renderer.dither3x2EvenP4[ address2 ];
+				word2 = (engine.renderer.ditherTable2[ address1 ]<<8) + engine.renderer.ditherTable2[ address2 ];
+				word3 = (engine.renderer.ditherTable3[ address1 ]<<8) + engine.renderer.ditherTable3[ address2 ];
+				word4 = (engine.renderer.ditherTable4[ address1 ]<<8) + engine.renderer.ditherTable4[ address2 ];
 			 }
 			 if(tz == engine.renderer.renderingDepth) 	
 			 {
@@ -418,16 +291,16 @@ void ProcessRayCastsProgressive(WORD (*rayCastX), WORD (*rayCastY), UWORD (*map)
 				UBYTE color = SKY_COLOR - ph/32 -sy/8;
 				address1 = (color<<10) + (color<<5) + (color);
 	
-				byte1 = engine.renderer.dither3x2EvenP1[ address1 ];
+				byte1 = engine.renderer.ditherTable1[ address1 ];
 				word1 = (byte1<<8) + byte1;
 
-				byte2 = engine.renderer.dither3x2EvenP2[ address1 ];
+				byte2 = engine.renderer.ditherTable2[ address1 ];
 				word2 = (byte2<<8) + byte2;
 
-				byte3 = engine.renderer.dither3x2EvenP3[ address1 ];
+				byte3 = engine.renderer.ditherTable3[ address1 ];
 				word3 = (byte3<<8) + byte3;
 
-				byte4 = engine.renderer.dither3x2EvenP4[ address1 ];
+				byte4 = engine.renderer.ditherTable4[ address1 ];
 				word4 = (byte4<<8) + byte4;
 
 
@@ -478,7 +351,7 @@ void ProcessRayCastsProgressive(WORD (*rayCastX), WORD (*rayCastY), UWORD (*map)
 }
 
 
-void ProcessRayCastsProgressiveNonInterleaved(WORD (*rayCastX), WORD (*rayCastY), UWORD (*map)[128],
+void ProcessRayCastsProgressiveNonInterleaved(WORD (*rayCastX), WORD (*rayCastY), UWORD (*map)[MAPSIZE],
 	UBYTE px, UBYTE py, UBYTE ph, UBYTE screenStart, UBYTE screenEnd, UBYTE zStart)
 {
 	UBYTE sx,sy,mist;
@@ -535,13 +408,13 @@ void ProcessRayCastsProgressiveNonInterleaved(WORD (*rayCastX), WORD (*rayCastY)
 			 {
 	            UBYTE byte1, byte2, byte3, byte4;
 				tz = ProcessWord1v6(1,sx,sy,&tz,tzz,px,py,ph,&address1,&address2,rayCastX, rayCastY, map, threshold1);
-				byte1 = engine.renderer.dither3x2EvenP1[ address1 ];
+				byte1 = engine.renderer.ditherTable1[ address1 ];
 				word1 = (byte1<<8) + byte1;
-				byte2 = engine.renderer.dither3x2EvenP2[ address1 ];
+				byte2 = engine.renderer.ditherTable2[ address1 ];
 				word2 = (byte2<<8) + byte2;
-				byte3 = engine.renderer.dither3x2EvenP3[ address1 ];
+				byte3 = engine.renderer.ditherTable3[ address1 ];
 				word3 = (byte3<<8) + byte3;
-				byte4 = engine.renderer.dither3x2EvenP4[ address1 ];
+				byte4 = engine.renderer.ditherTable4[ address1 ];
 				word4 = (byte4<<8) + byte4;
 
 			 }
@@ -549,21 +422,21 @@ void ProcessRayCastsProgressiveNonInterleaved(WORD (*rayCastX), WORD (*rayCastY)
 			 {
 				tz = ProcessWord2v6(2,sx,sy,&tz,tzz,px,py,ph,&address1,&address2,rayCastX, rayCastY, map, threshold2);
 
-				word1 = (engine.renderer.dither3x2EvenP1[ address1 ]<<8) + engine.renderer.dither3x2EvenP1[ address2 ];
-				word2 = (engine.renderer.dither3x2EvenP2[ address1 ]<<8) + engine.renderer.dither3x2EvenP2[ address2 ];
-				word3 = (engine.renderer.dither3x2EvenP3[ address1 ]<<8) + engine.renderer.dither3x2EvenP3[ address2 ];
-				word4 = (engine.renderer.dither3x2EvenP4[ address1 ]<<8) + engine.renderer.dither3x2EvenP4[ address2 ];
+				word1 = (engine.renderer.ditherTable1[ address1 ]<<8) + engine.renderer.ditherTable1[ address2 ];
+				word2 = (engine.renderer.ditherTable2[ address1 ]<<8) + engine.renderer.ditherTable2[ address2 ];
+				word3 = (engine.renderer.ditherTable3[ address1 ]<<8) + engine.renderer.ditherTable3[ address2 ];
+				word4 = (engine.renderer.ditherTable4[ address1 ]<<8) + engine.renderer.ditherTable4[ address2 ];
 
 			 }
 			if(tz >= threshold2 && tz < engine.renderer.renderingDepth)			
 			 {
 				tz = ProcessWord3v6(3,sx,sy,&tz,tzz,px,py,ph,&address1,&address2,rayCastX, rayCastY, map, engine.renderer.renderingDepth);
 
-				word1 = (engine.renderer.dither3x2EvenP1[ address1 ]<<8) + engine.renderer.dither3x2EvenP1[ address2 ];
+				word1 = (engine.renderer.ditherTable1[ address1 ]<<8) + engine.renderer.ditherTable1[ address2 ];
 
-				word2 = (engine.renderer.dither3x2EvenP2[ address1 ]<<8) + engine.renderer.dither3x2EvenP2[ address2 ];
-				word3 = (engine.renderer.dither3x2EvenP3[ address1 ]<<8) + engine.renderer.dither3x2EvenP3[ address2 ];
-				word4 = (engine.renderer.dither3x2EvenP4[ address1 ]<<8) + engine.renderer.dither3x2EvenP4[ address2 ];
+				word2 = (engine.renderer.ditherTable2[ address1 ]<<8) + engine.renderer.ditherTable2[ address2 ];
+				word3 = (engine.renderer.ditherTable3[ address1 ]<<8) + engine.renderer.ditherTable3[ address2 ];
+				word4 = (engine.renderer.ditherTable4[ address1 ]<<8) + engine.renderer.ditherTable4[ address2 ];
 			 }
 			 if(tz == engine.renderer.renderingDepth) 	
 			 {
@@ -571,16 +444,16 @@ void ProcessRayCastsProgressiveNonInterleaved(WORD (*rayCastX), WORD (*rayCastY)
 				UBYTE color = SKY_COLOR - ph/32 -sy/8;
 				address1 = (color<<10) + (color<<5) + (color);
 	
-				byte1 = engine.renderer.dither3x2EvenP1[ address1 ];
+				byte1 = engine.renderer.ditherTable1[ address1 ];
 				word1 = (byte1<<8) + byte1;
 
-				byte2 = engine.renderer.dither3x2EvenP2[ address1 ];
+				byte2 = engine.renderer.ditherTable2[ address1 ];
 				word2 = (byte2<<8) + byte2;
 
-				byte3 = engine.renderer.dither3x2EvenP3[ address1 ];
+				byte3 = engine.renderer.ditherTable3[ address1 ];
 				word3 = (byte3<<8) + byte3;
 
-				byte4 = engine.renderer.dither3x2EvenP4[ address1 ];
+				byte4 = engine.renderer.ditherTable4[ address1 ];
 				word4 = (byte4<<8) + byte4;
 
 
@@ -635,13 +508,13 @@ void ProcessRayCastsProgressiveNonInterleaved(WORD (*rayCastX), WORD (*rayCastY)
 	}
 }
 
-void ProcessRayCastsFull3x2(WORD (*rayCastX), WORD (*rayCastY), UWORD (*map)[128],
+void ProcessRayCastsFull3x2(WORD (*rayCastX), WORD (*rayCastY), UWORD (*map)[MAPSIZE],
 UBYTE px, UBYTE py, UBYTE ph, UBYTE screenStart, UBYTE screenEnd, UBYTE zStart)
 {
 
     
 	UWORD yOffset = (256 - YSIZEODD*2)/2 * PLANEWIDTHWORD;
-    UBYTE baseX = XTURNBUFFOR + engine.renderer.xOffsetOdd + screenStart*6;
+    WORD baseX = XTURNBUFFOR + engine.renderer.xOffsetOdd + screenStart*6;
 
 	//for each vertical line
     
@@ -653,9 +526,9 @@ UBYTE px, UBYTE py, UBYTE ph, UBYTE screenStart, UBYTE screenEnd, UBYTE zStart)
         {
             UBYTE sy = 0;
             UWORD tz = zStart;
-            UWORD *rayXPtr = rayCastX + baseX*TERRAINDEPTH + tz;
-            UWORD *rayYPtr = rayCastY + tz;
-            UBYTE *screenPtr = engine.renderer.screen3x2 + ((YSIZEODD)-1)*6 + i;
+            WORD *rayXPtr = rayCastX + baseX*TERRAINDEPTH + tz;
+            WORD *rayYPtr = rayCastY + tz;
+            UBYTE *screenPtr = engine.renderer.screenPatch + ((YSIZEODD)-1)*6 + i;
 	        UBYTE mx,my;
 	        UWORD mapValue;
 
@@ -719,26 +592,26 @@ UBYTE px, UBYTE py, UBYTE ph, UBYTE screenStart, UBYTE screenEnd, UBYTE zStart)
         for(UBYTE y=0;y<YSIZEODD;y++)
 	    {
 
-			UWORD address1 = (engine.renderer.screen3x2[sp]<<10) + (engine.renderer.screen3x2[sp+1]<<5) + (engine.renderer.screen3x2[sp+2]);
-			UWORD address2 = (engine.renderer.screen3x2[sp+3]<<10) + (engine.renderer.screen3x2[sp+4]<<5) + (engine.renderer.screen3x2[sp+5]);
+			UWORD address1 = (engine.renderer.screenPatch[sp]<<10) + (engine.renderer.screenPatch[sp+1]<<5) + (engine.renderer.screenPatch[sp+2]);
+			UWORD address2 = (engine.renderer.screenPatch[sp+3]<<10) + (engine.renderer.screenPatch[sp+4]<<5) + (engine.renderer.screenPatch[sp+5]);
 
             
-			UWORD word = (engine.renderer.dither3x2EvenP1[ address1 ]<<8) + engine.renderer.dither3x2EvenP1[ address2 ];
+			UWORD word = (engine.renderer.ditherTable1[ address1 ]<<8) + engine.renderer.ditherTable1[ address2 ];
 			*planePos1 = word;
             planePos1 += PLANEWIDTHWORD;
 			*planePos1 = (word << 1)|((word>>1) & 1);
             planePos1 += PLANEWIDTHWORD;
-			word = (engine.renderer.dither3x2EvenP2[ address1 ]<<8) + engine.renderer.dither3x2EvenP2[ address2 ];
+			word = (engine.renderer.ditherTable2[ address1 ]<<8) + engine.renderer.ditherTable2[ address2 ];
 			*planePos2 = word;
             planePos2 += PLANEWIDTHWORD;
 			*planePos2 = (word << 1)|((word>>1) & 1);
             planePos2 += PLANEWIDTHWORD;
-			word = (engine.renderer.dither3x2EvenP3[ address1 ]<<8) + engine.renderer.dither3x2EvenP3[ address2 ];
+			word = (engine.renderer.ditherTable3[ address1 ]<<8) + engine.renderer.ditherTable3[ address2 ];
 			*planePos3 = word;
             planePos3 += PLANEWIDTHWORD;
 			*planePos3 = word = (word << 1)|((word>>1) & 1);
             planePos3 += PLANEWIDTHWORD;
-			word = (engine.renderer.dither3x2EvenP4[ address1 ]<<8) + engine.renderer.dither3x2EvenP4[ address2 ];
+			word = (engine.renderer.ditherTable4[ address1 ]<<8) + engine.renderer.ditherTable4[ address2 ];
 			*planePos4 = word;
             planePos4 += PLANEWIDTHWORD;
 			*planePos4 = word = (word << 1)|((word>>1) & 1);
@@ -752,7 +625,7 @@ UBYTE px, UBYTE py, UBYTE ph, UBYTE screenStart, UBYTE screenEnd, UBYTE zStart)
 }
 
 
-void ProcessRayCastsFull4x4(WORD (*rayCastX), WORD (*rayCastY), UWORD (*map)[128],
+void ProcessRayCastsFull4x4(WORD (*rayCastX), WORD (*rayCastY), UWORD (*map)[MAPSIZE],
 UBYTE px, UBYTE py, UBYTE ph, UBYTE screenStart, UBYTE screenEnd, UBYTE zStart)
 {
 
@@ -772,7 +645,7 @@ UBYTE px, UBYTE py, UBYTE ph, UBYTE screenStart, UBYTE screenEnd, UBYTE zStart)
             UWORD tz = zStart;
             UWORD *rayXPtr = rayCastX + baseX*TERRAINDEPTH + tz;
             UWORD *rayYPtr = rayCastY + tz;
-            UBYTE *screenPtr = engine.renderer.screen4x4 + ((YSIZEEVEN)-1)*4 + i;
+            UBYTE *screenPtr = engine.renderer.screenPatch + ((YSIZEEVEN)-1)*4 + i;
 	        UBYTE mx,my;
 	        UWORD mapValue;
 
@@ -830,11 +703,11 @@ UBYTE px, UBYTE py, UBYTE ph, UBYTE screenStart, UBYTE screenEnd, UBYTE zStart)
         for(UBYTE y=0;y<YSIZEEVEN;y++)
 	    {
 
-			UWORD address1 = ((engine.renderer.screen4x4[sp])<<5) + (engine.renderer.screen4x4[sp+1]);
-			UWORD address2 = ((engine.renderer.screen4x4[sp+2])<<5) + (engine.renderer.screen4x4[sp+3]);
+			UWORD address1 = ((engine.renderer.screenPatch[sp])<<5) + (engine.renderer.screenPatch[sp+1]);
+			UWORD address2 = ((engine.renderer.screenPatch[sp+2])<<5) + (engine.renderer.screenPatch[sp+3]);
 
             
-			UWORD word = (engine.renderer.dither4x4EvenP1[ address1 ]<<8) + engine.renderer.dither4x4EvenP1[ address2 ];
+			UWORD word = (engine.renderer.ditherTable1[ address1 ]<<8) + engine.renderer.ditherTable1[ address2 ];
             UWORD otherWord = (word << 1)|((word>>1) & 1);
 			*planePos1 = word;
             planePos1 += PLANEWIDTHWORD;
@@ -844,7 +717,7 @@ UBYTE px, UBYTE py, UBYTE ph, UBYTE screenStart, UBYTE screenEnd, UBYTE zStart)
             planePos1 += PLANEWIDTHWORD;
             *planePos1 = otherWord;
             planePos1 += PLANEWIDTHWORD;
-			word = (engine.renderer.dither4x4EvenP2[ address1 ]<<8) + engine.renderer.dither4x4EvenP2[ address2 ];
+			word = (engine.renderer.ditherTable2[ address1 ]<<8) + engine.renderer.ditherTable2[ address2 ];
             otherWord = (word << 1)|((word>>1) & 1);
 			*planePos2 = word;
             planePos2 += PLANEWIDTHWORD;
@@ -854,7 +727,7 @@ UBYTE px, UBYTE py, UBYTE ph, UBYTE screenStart, UBYTE screenEnd, UBYTE zStart)
             planePos2 += PLANEWIDTHWORD;
 			*planePos2 = otherWord;
             planePos2 += PLANEWIDTHWORD;
-			word = (engine.renderer.dither4x4EvenP3[ address1 ]<<8) + engine.renderer.dither4x4EvenP3[ address2 ];
+			word = (engine.renderer.ditherTable3[ address1 ]<<8) + engine.renderer.ditherTable3[ address2 ];
             otherWord = (word << 1)|((word>>1) & 1);
 			*planePos3 = word;
             planePos3 += PLANEWIDTHWORD;
@@ -864,7 +737,7 @@ UBYTE px, UBYTE py, UBYTE ph, UBYTE screenStart, UBYTE screenEnd, UBYTE zStart)
             planePos3 += PLANEWIDTHWORD;
 			*planePos3 = otherWord;
             planePos3 += PLANEWIDTHWORD;
-			word = (engine.renderer.dither4x4EvenP4[ address1 ]<<8) + engine.renderer.dither4x4EvenP4[ address2 ];
+			word = (engine.renderer.ditherTable4[ address1 ]<<8) + engine.renderer.ditherTable4[ address2 ];
             otherWord = (word << 1)|((word>>1) & 1);
 			*planePos4 = word;
             planePos4 += PLANEWIDTHWORD;
@@ -903,7 +776,7 @@ UBYTE px, UBYTE py, UBYTE ph, UBYTE screenStart, UBYTE screenEnd, UBYTE zStart)
             UWORD tz = zStart;
             UWORD *rayXPtr = rayCastX + baseX*TERRAINDEPTH + tz;
             UWORD *rayYPtr = rayCastY + tz;
-            UBYTE *screenPtr = engine.renderer.screen3x2 + ((YSIZEODD)-1)*6 + i;
+            UBYTE *screenPtr = engine.renderer.screenPatch + ((YSIZEODD)-1)*6 + i;
 	        UBYTE mx,my;
 	        UWORD mapValue;
 
@@ -956,26 +829,26 @@ UBYTE px, UBYTE py, UBYTE ph, UBYTE screenStart, UBYTE screenEnd, UBYTE zStart)
         for(UBYTE y=0;y<YSIZEODD;y++)
 	    {
 
-			UWORD address1 = (engine.renderer.screen3x2[sp]<<10) + (engine.renderer.screen3x2[sp+1]<<5) + (engine.renderer.screen3x2[sp+2]);
-			UWORD address2 = (engine.renderer.screen3x2[sp+3]<<10) + (engine.renderer.screen3x2[sp+4]<<5) + (engine.renderer.screen3x2[sp+5]);
+			UWORD address1 = (engine.renderer.screenPatch[sp]<<10) + (engine.renderer.screenPatch[sp+1]<<5) + (engine.renderer.screenPatch[sp+2]);
+			UWORD address2 = (engine.renderer.screenPatch[sp+3]<<10) + (engine.renderer.screenPatch[sp+4]<<5) + (engine.renderer.screenPatch[sp+5]);
 
             
-			UWORD word = (engine.renderer.dither3x2EvenP1[ address1 ]<<8) + engine.renderer.dither3x2EvenP1[ address2 ];
+			UWORD word = (engine.renderer.ditherTable1[ address1 ]<<8) + engine.renderer.ditherTable1[ address2 ];
 			*planePos1 = word;
             planePos1 += PLANEWIDTHWORD;
 			*planePos1 = (word << 1)|((word>>1) & 1);
             planePos1 += PLANEWIDTHWORD;
-			word = (engine.renderer.dither3x2EvenP2[ address1 ]<<8) + engine.renderer.dither3x2EvenP2[ address2 ];
+			word = (engine.renderer.ditherTable2[ address1 ]<<8) + engine.renderer.ditherTable2[ address2 ];
 			*planePos2 = word;
             planePos2 += PLANEWIDTHWORD;
 			*planePos2 = (word << 1)|((word>>1) & 1);
             planePos2 += PLANEWIDTHWORD;
-			word = (engine.renderer.dither3x2EvenP3[ address1 ]<<8) + engine.renderer.dither3x2EvenP3[ address2 ];
+			word = (engine.renderer.ditherTable3[ address1 ]<<8) + engine.renderer.ditherTable3[ address2 ];
 			*planePos3 = word;
             planePos3 += PLANEWIDTHWORD;
 			*planePos3 = word = (word << 1)|((word>>1) & 1);
             planePos3 += PLANEWIDTHWORD;
-			word = (engine.renderer.dither3x2EvenP4[ address1 ]<<8) + engine.renderer.dither3x2EvenP4[ address2 ];
+			word = (engine.renderer.ditherTable4[ address1 ]<<8) + engine.renderer.ditherTable4[ address2 ];
 			*planePos4 = word;
             planePos4 += PLANEWIDTHWORD;
 			*planePos4 = word = (word << 1)|((word>>1) & 1);
@@ -1007,7 +880,7 @@ UBYTE px, UBYTE py, UBYTE ph, UBYTE screenStart, UBYTE screenEnd, UBYTE zStart)
             UWORD tz = zStart;
             UWORD *rayXPtr = rayCastX + baseX*TERRAINDEPTH + tz;
             UWORD *rayYPtr = rayCastY + tz;
-            UBYTE *screenPtr = engine.renderer.screen4x4 + ((YSIZEEVEN)-1)*4 + i;
+            UBYTE *screenPtr = engine.renderer.screenPatch + ((YSIZEEVEN)-1)*4 + i;
 	        UBYTE mx,my;
 	        UWORD mapValue;
 
@@ -1056,11 +929,11 @@ UBYTE px, UBYTE py, UBYTE ph, UBYTE screenStart, UBYTE screenEnd, UBYTE zStart)
         for(UBYTE y=0;y<YSIZEEVEN;y++)
 	    {
 
-			UWORD address1 = ((engine.renderer.screen4x4[sp])<<5) + (engine.renderer.screen4x4[sp+1]);
-			UWORD address2 = ((engine.renderer.screen4x4[sp+2])<<5) + (engine.renderer.screen4x4[sp+3]);
+			UWORD address1 = ((engine.renderer.screenPatch[sp])<<5) + (engine.renderer.screenPatch[sp+1]);
+			UWORD address2 = ((engine.renderer.screenPatch[sp+2])<<5) + (engine.renderer.screenPatch[sp+3]);
 
             
-			UWORD word = (engine.renderer.dither4x4EvenP1[ address1 ]<<8) + engine.renderer.dither4x4EvenP1[ address2 ];
+			UWORD word = (engine.renderer.ditherTable1[ address1 ]<<8) + engine.renderer.ditherTable1[ address2 ];
             UWORD otherWord = (word << 1)|((word>>1) & 1);
 			*planePos1 = word;
             planePos1 += PLANEWIDTHWORD;
@@ -1070,7 +943,7 @@ UBYTE px, UBYTE py, UBYTE ph, UBYTE screenStart, UBYTE screenEnd, UBYTE zStart)
             planePos1 += PLANEWIDTHWORD;
             *planePos1 = otherWord;
             planePos1 += PLANEWIDTHWORD;
-			word = (engine.renderer.dither4x4EvenP2[ address1 ]<<8) + engine.renderer.dither4x4EvenP2[ address2 ];
+			word = (engine.renderer.ditherTable2[ address1 ]<<8) + engine.renderer.ditherTable2[ address2 ];
             otherWord = (word << 1)|((word>>1) & 1);
 			*planePos2 = word;
             planePos2 += PLANEWIDTHWORD;
@@ -1080,7 +953,7 @@ UBYTE px, UBYTE py, UBYTE ph, UBYTE screenStart, UBYTE screenEnd, UBYTE zStart)
             planePos2 += PLANEWIDTHWORD;
 			*planePos2 = otherWord;
             planePos2 += PLANEWIDTHWORD;
-			word = (engine.renderer.dither4x4EvenP3[ address1 ]<<8) + engine.renderer.dither4x4EvenP3[ address2 ];
+			word = (engine.renderer.ditherTable3[ address1 ]<<8) + engine.renderer.ditherTable3[ address2 ];
             otherWord = (word << 1)|((word>>1) & 1);
 			*planePos3 = word;
             planePos3 += PLANEWIDTHWORD;
@@ -1090,7 +963,7 @@ UBYTE px, UBYTE py, UBYTE ph, UBYTE screenStart, UBYTE screenEnd, UBYTE zStart)
             planePos3 += PLANEWIDTHWORD;
 			*planePos3 = otherWord;
             planePos3 += PLANEWIDTHWORD;
-			word = (engine.renderer.dither4x4EvenP4[ address1 ]<<8) + engine.renderer.dither4x4EvenP4[ address2 ];
+			word = (engine.renderer.ditherTable4[ address1 ]<<8) + engine.renderer.ditherTable4[ address2 ];
             otherWord = (word << 1)|((word>>1) & 1);
 			*planePos4 = word;
             planePos4 += PLANEWIDTHWORD;

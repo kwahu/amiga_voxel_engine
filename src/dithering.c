@@ -43,7 +43,7 @@ void GenerateColorBytesDither3x2()
 			c1 = c/2;
 			c2 = c/2-1;
 		}
-		engine.renderer.dither3x2EvenP1[address]=
+		engine.renderer.ditherTable1[address]=
 		((a1>>0) & 1) *0b10000000+
 		((a2>>0) & 1) *0b01000000+
 		((a1>>0) & 1) *0b00100000+
@@ -53,7 +53,7 @@ void GenerateColorBytesDither3x2()
 		((c1>>0) & 1) *0b00000010+
 		((c2>>0) & 1) *0b00000001;
 
-		engine.renderer.dither3x2EvenP2[address]=
+		engine.renderer.ditherTable2[address]=
 		((a1>>1) & 1) *0b10000000+
 		((a2>>1) & 1) *0b01000000+
 		((a1>>1) & 1) *0b00100000+
@@ -63,7 +63,7 @@ void GenerateColorBytesDither3x2()
 		((c1>>1) & 1) *0b00000010+
 		((c2>>1) & 1) *0b00000001;
 
-		engine.renderer.dither3x2EvenP3[address]=
+		engine.renderer.ditherTable3[address]=
 		((a1>>2) & 1) *0b10000000+
 		((a2>>2) & 1) *0b01000000+
 		((a1>>2) & 1) *0b00100000+
@@ -73,7 +73,7 @@ void GenerateColorBytesDither3x2()
 		((c1>>2) & 1) *0b00000010+
 		((c2>>2) & 1) *0b00000001;
 
-		engine.renderer.dither3x2EvenP4[address]=
+		engine.renderer.ditherTable4[address]=
 		((a1>>3) & 1) *0b10000000+
 		((a2>>3) & 1) *0b01000000+
 		((a1>>3) & 1) *0b00100000+
@@ -83,45 +83,6 @@ void GenerateColorBytesDither3x2()
 		((c1>>3) & 1) *0b00000010+
 		((c2>>3) & 1) *0b00000001;
 
-		// engine.renderer.dither3x2OddP1[address]=
-		// ((a2>>0) & 1) *0b10000000+
-		// ((a1>>0) & 1) *0b01000000+
-		// ((b2>>0) & 1) *0b00100000+
-		// ((b1>>0) & 1) *0b00010000+
-		// ((b2>>0) & 1) *0b00001000+
-		// ((b1>>0) & 1) *0b00000100+
-		// ((c2>>0) & 1) *0b00000010+
-		// ((c1>>0) & 1) *0b00000001;
-
-		// engine.renderer.dither3x2OddP2[address]=
-		// ((a2>>1) & 1) *0b10000000+
-		// ((a1>>1) & 1) *0b01000000+
-		// ((b2>>1) & 1) *0b00100000+
-		// ((b1>>1) & 1) *0b00010000+
-		// ((b2>>1) & 1) *0b00001000+
-		// ((b1>>1) & 1) *0b00000100+
-		// ((c2>>1) & 1) *0b00000010+
-		// ((c1>>1) & 1) *0b00000001;
-
-		// engine.renderer.dither3x2OddP3[address]=
-		// ((a2>>2) & 1) *0b10000000+
-		// ((a1>>2) & 1) *0b01000000+
-		// ((b2>>2) & 1) *0b00100000+
-		// ((b1>>2) & 1) *0b00010000+
-		// ((b2>>2) & 1) *0b00001000+
-		// ((b1>>2) & 1) *0b00000100+
-		// ((c2>>2) & 1) *0b00000010+
-		// ((c1>>2) & 1) *0b00000001;
-
-		// engine.renderer.dither3x2OddP4[address]=
-		// ((a2>>3) & 1) *0b10000000+
-		// ((a1>>3) & 1) *0b01000000+
-		// ((b2>>3) & 1) *0b00100000+
-		// ((b1>>3) & 1) *0b00010000+
-		// ((b2>>3) & 1) *0b00001000+
-		// ((b1>>3) & 1) *0b00000100+
-		// ((c2>>3) & 1) *0b00000010+
-		// ((c1>>3) & 1) *0b00000001;
 
 	}
 }
@@ -178,7 +139,7 @@ void GenerateColorBytesDither4x4()
 			c2 = c/2-1;
 		}
 
-		engine.renderer.dither4x4EvenP1[address]=
+		engine.renderer.ditherTable1[address]=
 		((a1>>0) & 1) *0b10000000+
 		((a2>>0) & 1) *0b01000000+
 		((b1>>0) & 1) *0b00100000+
@@ -188,7 +149,7 @@ void GenerateColorBytesDither4x4()
 		((d1>>0) & 1) *0b00000010+
 		((d2>>0) & 1) *0b00000001;
 
-		engine.renderer.dither4x4EvenP2[address]=
+		engine.renderer.ditherTable2[address]=
 		((a1>>1) & 1) *0b10000000+
 		((a2>>1) & 1) *0b01000000+
 		((b1>>1) & 1) *0b00100000+
@@ -198,7 +159,7 @@ void GenerateColorBytesDither4x4()
 		((d1>>1) & 1) *0b00000010+
 		((d2>>1) & 1) *0b00000001;
 
-		engine.renderer.dither4x4EvenP3[address]=
+		engine.renderer.ditherTable3[address]=
 		((a1>>2) & 1) *0b10000000+
 		((a2>>2) & 1) *0b01000000+
 		((b1>>2) & 1) *0b00100000+
@@ -208,7 +169,7 @@ void GenerateColorBytesDither4x4()
 		((d1>>2) & 1) *0b00000010+
 		((d2>>2) & 1) *0b00000001;
 
-		engine.renderer.dither4x4EvenP4[address]=
+		engine.renderer.ditherTable4[address]=
 		((a1>>3) & 1) *0b10000000+
 		((a2>>3) & 1) *0b01000000+
 		((b1>>3) & 1) *0b00100000+
@@ -218,45 +179,6 @@ void GenerateColorBytesDither4x4()
 		((d1>>3) & 1) *0b00000010+
 		((d2>>3) & 1) *0b00000001;
 
-		// engine.renderer.dither4x4OddP1[address]=
-		// ((a2>>0) & 1) *0b10000000+
-		// ((a1>>0) & 1) *0b01000000+
-		// ((b2>>0) & 1) *0b00100000+
-		// ((b1>>0) & 1) *0b00010000+
-		// ((c2>>0) & 1) *0b00001000+
-		// ((c1>>0) & 1) *0b00000100+
-		// ((d2>>0) & 1) *0b00000010+
-		// ((d1>>0) & 1) *0b00000001;
-
-		// engine.renderer.dither4x4OddP2[address]=
-		// ((a2>>1) & 1) *0b10000000+
-		// ((a1>>1) & 1) *0b01000000+
-		// ((b2>>1) & 1) *0b00100000+
-		// ((b1>>1) & 1) *0b00010000+
-		// ((c2>>1) & 1) *0b00001000+
-		// ((c1>>1) & 1) *0b00000100+
-		// ((d2>>1) & 1) *0b00000010+
-		// ((d1>>1) & 1) *0b00000001;
-
-		// engine.renderer.dither4x4OddP3[address]=
-		// ((a2>>2) & 1) *0b10000000+
-		// ((a1>>2) & 1) *0b01000000+
-		// ((b2>>2) & 1) *0b00100000+
-		// ((b1>>2) & 1) *0b00010000+
-		// ((c2>>2) & 1) *0b00001000+
-		// ((c1>>2) & 1) *0b00000100+
-		// ((d2>>2) & 1) *0b00000010+
-		// ((d1>>2) & 1) *0b00000001;
-
-		// engine.renderer.dither4x4OddP4[address]=
-		// ((a2>>3) & 1) *0b10000000+
-		// ((a1>>3) & 1) *0b01000000+
-		// ((b2>>3) & 1) *0b00100000+
-		// ((b1>>3) & 1) *0b00010000+
-		// ((c2>>3) & 1) *0b00001000+
-		// ((c1>>3) & 1) *0b00000100+
-		// ((d2>>3) & 1) *0b00000010+
-		// ((d1>>3) & 1) *0b00000001;
 
 	}
 }
@@ -313,7 +235,7 @@ void GenerateColorBytesNoDither4x4()
 			c2 = c/2-1;
 		}
 
-		engine.renderer.dither4x4EvenP1[address]=
+		engine.renderer.ditherTable1[address]=
 		((a1>>0) & 1) *0b10000000+
 		((a2>>0) & 1) *0b01000000+
 		((a1>>0) & 1) *0b00100000+
@@ -323,7 +245,7 @@ void GenerateColorBytesNoDither4x4()
 		((d1>>0) & 1) *0b00000010+
 		((d2>>0) & 1) *0b00000001;
 
-		engine.renderer.dither4x4EvenP2[address]=
+		engine.renderer.ditherTable2[address]=
 		((a1>>1) & 1) *0b10000000+
 		((a2>>1) & 1) *0b01000000+
 		((a1>>1) & 1) *0b00100000+
@@ -333,7 +255,7 @@ void GenerateColorBytesNoDither4x4()
 		((d1>>1) & 1) *0b00000010+
 		((d2>>1) & 1) *0b00000001;
 
-		engine.renderer.dither4x4EvenP3[address]=
+		engine.renderer.ditherTable3[address]=
 		((a1>>2) & 1) *0b10000000+
 		((a2>>2) & 1) *0b01000000+
 		((a1>>2) & 1) *0b00100000+
@@ -343,7 +265,7 @@ void GenerateColorBytesNoDither4x4()
 		((d1>>2) & 1) *0b00000010+
 		((d2>>2) & 1) *0b00000001;
 
-		engine.renderer.dither4x4EvenP4[address]=
+		engine.renderer.ditherTable4[address]=
 		((a1>>3) & 1) *0b10000000+
 		((a2>>3) & 1) *0b01000000+
 		((a1>>3) & 1) *0b00100000+
@@ -352,46 +274,6 @@ void GenerateColorBytesNoDither4x4()
 		((d2>>3) & 1) *0b00000100+
 		((d1>>3) & 1) *0b00000010+
 		((d2>>3) & 1) *0b00000001;
-
-		// engine.renderer.dither4x4OddP1[address]=
-		// ((a2>>0) & 1) *0b10000000+
-		// ((a1>>0) & 1) *0b01000000+
-		// ((a2>>0) & 1) *0b00100000+
-		// ((a1>>0) & 1) *0b00010000+
-		// ((d2>>0) & 1) *0b00001000+
-		// ((d1>>0) & 1) *0b00000100+
-		// ((d2>>0) & 1) *0b00000010+
-		// ((d1>>0) & 1) *0b00000001;
-
-		// engine.renderer.dither4x4OddP2[address]=
-		// ((a2>>1) & 1) *0b10000000+
-		// ((a1>>1) & 1) *0b01000000+
-		// ((a2>>1) & 1) *0b00100000+
-		// ((a1>>1) & 1) *0b00010000+
-		// ((d2>>1) & 1) *0b00001000+
-		// ((d1>>1) & 1) *0b00000100+
-		// ((d2>>1) & 1) *0b00000010+
-		// ((d1>>1) & 1) *0b00000001;
-
-		// engine.renderer.dither4x4OddP3[address]=
-		// ((a2>>2) & 1) *0b10000000+
-		// ((a1>>2) & 1) *0b01000000+
-		// ((a2>>2) & 1) *0b00100000+
-		// ((a1>>2) & 1) *0b00010000+
-		// ((d2>>2) & 1) *0b00001000+
-		// ((d1>>2) & 1) *0b00000100+
-		// ((d2>>2) & 1) *0b00000010+
-		// ((d1>>2) & 1) *0b00000001;
-
-		// engine.renderer.dither4x4OddP4[address]=
-		// ((a2>>3) & 1) *0b10000000+
-		// ((a1>>3) & 1) *0b01000000+
-		// ((a2>>3) & 1) *0b00100000+
-		// ((a1>>3) & 1) *0b00010000+
-		// ((d2>>3) & 1) *0b00001000+
-		// ((d1>>3) & 1) *0b00000100+
-		// ((d2>>3) & 1) *0b00000010+
-		// ((d1>>3) & 1) *0b00000001;
 
 	}
 }

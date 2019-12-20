@@ -8,12 +8,14 @@ void RenderQuality()
 	if(engine.renderer.renderingType == 1)
 	{
 		ProcessRayCastsFull4x4(engine.renderer.rayCastX, engine.renderer.rayCastY, engine.renderer.mapHigh, engine.gameState.shipParams.pX,engine.gameState.shipParams.pZ,engine.gameState.shipParams.pY, 4, 16, 12);
+
 	}
 	else if(engine.renderer.renderingType == 2)
 	{
 
+		ProcessRayCastsFull4x4(engine.renderer.rayCastX, engine.renderer.rayCastY, engine.renderer.mapHigh, engine.gameState.shipParams.pX,engine.gameState.shipParams.pZ,engine.gameState.shipParams.pY, 2, 18, 12);
 
-		ProcessRayCasts164x4(engine.renderer.rayCastX, engine.renderer.rayCastY, engine.renderer.mapHigh, engine.gameState.shipParams.pX,engine.gameState.shipParams.pZ,engine.gameState.shipParams.pY, 0, 20, 1);
+		//ProcessRayCasts164x4(engine.renderer.rayCastX, engine.renderer.rayCastY, engine.renderer.mapHigh, engine.gameState.shipParams.pX,engine.gameState.shipParams.pZ,engine.gameState.shipParams.pY, 0, 20, 1);
 		
 	}
 	else if(engine.renderer.renderingType == 3)
@@ -21,7 +23,8 @@ void RenderQuality()
 
 
 		//ProcessRayCasts164x4(engine.renderer.rayCastX, engine.renderer.rayCastY, engine.renderer.mapHigh, engine.gameState.shipParams.pX,engine.gameState.shipParams.pZ,engine.gameState.shipParams.pY, 0, 8, 1);
-		ProcessRayCasts163x2(engine.renderer.rayCastX, engine.renderer.rayCastY, engine.renderer.mapHigh, engine.gameState.shipParams.pX,engine.gameState.shipParams.pZ,engine.gameState.shipParams.pY, 8, 12, 1);
+		ProcessRayCastsFull4x4(engine.renderer.rayCastX, engine.renderer.rayCastY, engine.renderer.mapHigh, engine.gameState.shipParams.pX,engine.gameState.shipParams.pZ,engine.gameState.shipParams.pY, 0, 20, 12);
+		//ProcessRayCasts163x2(engine.renderer.rayCastX, engine.renderer.rayCastY, engine.renderer.mapHigh, engine.gameState.shipParams.pX,engine.gameState.shipParams.pZ,engine.gameState.shipParams.pY, 8, 12, 1);
 		//ProcessRayCasts164x4(engine.renderer.rayCastX, engine.renderer.rayCastY, engine.renderer.mapHigh, engine.gameState.shipParams.pX,engine.gameState.shipParams.pZ,engine.gameState.shipParams.pY, 12, PLANEWIDTHWORD, 1);
 	
 	}
@@ -37,7 +40,7 @@ void RenderQuality()
 	{
 
 		//ProcessRayCastsFull4x4(engine.renderer.rayCastX, engine.renderer.rayCastY, engine.renderer.mapHigh, engine.gameState.shipParams.pX,engine.gameState.shipParams.pZ,engine.gameState.shipParams.pY, 0, 4, 12);
-		ProcessRayCastsFull3x2(engine.renderer.rayCastX, engine.renderer.rayCastY, engine.renderer.mapHigh, engine.gameState.shipParams.pX,engine.gameState.shipParams.pZ,engine.gameState.shipParams.pY, 4, 16, 12);
+		ProcessRayCastsFull3x2(engine.renderer.rayCastX, engine.renderer.rayCastY, engine.renderer.mapHigh, engine.gameState.shipParams.pX,engine.gameState.shipParams.pZ,engine.gameState.shipParams.pY, 2, 18, 12);
 		//ProcessRayCastsFull4x4(engine.renderer.rayCastX, engine.renderer.rayCastY, engine.renderer.mapHigh, engine.gameState.shipParams.pX,engine.gameState.shipParams.pZ,engine.gameState.shipParams.pY, 16, 20, 12);
 	
 	}

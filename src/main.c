@@ -48,8 +48,6 @@ void InitEngine(void)
 
 	SetupMaps();
 
-	GenerateColorBytesNoDither4x4();
-	GenerateColorBytesDither3x2();
 
 	engine.pBitmapVelocity = CreateBitmapFromText(engine.font, "1234");
 	engine.pBitmapScore = CreateBitmapFromText(engine.font, "1234567");
@@ -66,11 +64,31 @@ void InitEngine(void)
 
 
 	//*********************************** SELECT HARDWARE ***********************************************
-	engine.informationText = CreateBitmapFromText(engine.font, "KEY 1 = A500   KEY 2 = A1200   KEY 3 = A3000");
+	engine.informationText = CreateBitmapFromText(engine.font, "KEY 1 = 1 MB RAM   KEY 2 = MORE THAN 1 MB RAM");
 	#ifdef AMIGA
 	DrawTextBitmap(engine.informationText, 50, PLANEHEIGHT/2, 3);
 	#else
-	printf("KEY 1 ATARI ST     KEY 2 ATARI FALCON / TT\r\n");
+	printf("KEY 1 = 1 MB RAM   KEY 2 = MORE THAN 1 MB RAM\r\n");
+	printf("\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n");
+	#endif
+
+	engine.renderer.ditherTable1 = 0;
+
+	while(engine.renderer.ditherTable1 == 0)
+	{
+		GetPlayerMemorySetting();
+		
+	}
+
+	ClearBuffor();
+	VSyncAndDraw();
+	FreeTextBitmap(engine.informationText);
+	
+	engine.informationText = CreateBitmapFromText(engine.font, "KEY 3 = A500   KEY 4 = A1200   KEY 5 = A3000");
+	#ifdef AMIGA
+	DrawTextBitmap(engine.informationText, 50, PLANEHEIGHT/2, 3);
+	#else
+	printf("KEY 3 ATARI ST     KEY 4 ATARI FALCON / TT\r\n");
 	printf("Change quality at any time KEYS 1-8\r\n");
 	printf("\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n");
 	#endif
@@ -80,6 +98,8 @@ void InitEngine(void)
 		GetPlayerRendererSetting();
 		
 	}
+
+
 	FreeTextBitmap(engine.informationText);
 	InitLogoState();
 	//*********************************** SELECT HARDWARE ***********************************************
@@ -154,6 +174,10 @@ void EngineDestroy(void)
 	free(engine.activeBitmap);
 	free(engine.shipBitmap);
 	free(engine.paletteBitmap);
+	free(engine.renderer.ditherTable1);
+	free(engine.renderer.screenPatch);
+	free(engine.renderer.rayCastX);
+	free(engine.renderer.rayCastY);
 
 }
 

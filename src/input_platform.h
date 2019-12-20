@@ -42,47 +42,78 @@ void ExitGame()
 
 void GetPlayerRendererSetting()
 {
-	if (getKey(1))
+	if (getKey(3))
 	{
-		engine.renderer.renderingDepth = 16;
-		engine.renderer.renderingType = 1;
+		engine.renderer.renderingDepth = 24;
 		engine.renderer.calculationDepthDivider = 2;
 		engine.renderer.calculationDepthStep = 4;
-		engine.renderer.renderingDepthStep = 2;
+		engine.renderer.renderingDepthStep = 1;
 		engine.renderer.lastOverwrittenLine = 0;
 
 		engine.renderer.stepModifier = 16;
-		engine.renderer.xFOV = 32;
-		engine.renderer.yFOV = 12;
-		RecalculateEven();
+		if(engine.renderer.highMemory)
+		{
+			engine.renderer.xFOV = 20;
+			engine.renderer.yFOV = 30;
+			engine.renderer.renderingType = 4;
+		RecalculateOdd();
+		}
+		else
+		{
+			engine.renderer.xFOV = 23;
+			engine.renderer.yFOV = 15;
+			engine.renderer.renderingType = 1;
+			RecalculateEven();
+		}
+		
 	}
-	if (getKey(2)) //A1200
+	if (getKey(4)) //A1200
 	{
 		engine.renderer.renderingDepth = 32;
-		engine.renderer.renderingType = 4;
 		engine.renderer.calculationDepthDivider = 2;
-		engine.renderer.calculationDepthStep = 2;
+		engine.renderer.calculationDepthStep = 3;
 		engine.renderer.renderingDepthStep = 1;
 		engine.renderer.lastOverwrittenLine = 0;
 
 		engine.renderer.stepModifier = 16;
-		engine.renderer.xFOV = 20;
-		engine.renderer.yFOV = 24;
+		if(engine.renderer.highMemory)
+		{
+			engine.renderer.xFOV = 12;
+			engine.renderer.yFOV = 20;
+			engine.renderer.renderingType = 5;
 		RecalculateOdd();
+		}
+		else
+		{
+			engine.renderer.xFOV = 18;
+			engine.renderer.yFOV = 12;
+			engine.renderer.renderingType = 2;
+			RecalculateEven();
+		}
 	}
-	if (getKey(3)) //A3000
+	if (getKey(5)) //A3000
 	{
 		engine.renderer.renderingDepth = 64;
-		engine.renderer.renderingType = 6;
 		engine.renderer.calculationDepthDivider = 2;
 		engine.renderer.calculationDepthStep = 2;
 		engine.renderer.renderingDepthStep = 1;
 		engine.renderer.lastOverwrittenLine = 0;
 
 		engine.renderer.stepModifier = 16;
+		if(engine.renderer.highMemory)
+		{
 		engine.renderer.xFOV = 10;
 		engine.renderer.yFOV = 18;
+			engine.renderer.renderingType = 6;
 		RecalculateOdd();
+		}
+		else
+		{
+			engine.renderer.xFOV = 18;
+			engine.renderer.yFOV = 10;
+			engine.renderer.renderingType = 3;
+			RecalculateEven();	
+		}
 	}
 }
 
@@ -229,10 +260,9 @@ void InitInput()
 	IKBD_Install();
 }
 
-
 void GetPlayerRendererSetting()
 {
-	if (getKey(1))
+	if (getKey(3))
 	{
 		engine.renderer.renderingType = 4;
 		engine.renderer.xFOV = 28;
@@ -245,7 +275,7 @@ void GetPlayerRendererSetting()
 		engine.renderer.stepModifier = 16;
 		RecalculateOdd();
 	}
-	if (getKey(2)) 
+	if (getKey(4)) 
 	{
 		engine.renderer.renderingType = 8;
 		engine.renderer.xFOV = 25;
@@ -347,5 +377,33 @@ void ProcessQualityInput()
 }
 
 #endif
+
+void GetPlayerMemorySetting()
+{
+	if(getKey(1))
+	{
+		engine.renderer.ditherTable1 = (UBYTE *)malloc(4*COLORS*COLORS*sizeof(UBYTE));
+		engine.renderer.ditherTable2 = engine.renderer.ditherTable1 + COLORS*COLORS;
+		engine.renderer.ditherTable3 = engine.renderer.ditherTable1 + 2*COLORS*COLORS;
+		engine.renderer.ditherTable4 = engine.renderer.ditherTable1 + 3*COLORS*COLORS;
+		engine.renderer.screenPatch = (UBYTE *)malloc(4*45*sizeof(UBYTE));
+		engine.renderer.rayCastX = (WORD *)malloc(XSIZEEVEN*TERRAINDEPTH*sizeof(WORD));
+		engine.renderer.rayCastY = (WORD *)malloc(YSIZEEVEN*TERRAINDEPTH*sizeof(WORD));
+		engine.renderer.highMemory = 0;
+		GenerateColorBytesNoDither4x4();
+	}
+	if(getKey(2))
+	{	
+		engine.renderer.ditherTable1 = (UBYTE *)malloc(4*COLORS*COLORS*COLORS*sizeof(UBYTE));
+		engine.renderer.ditherTable2 = engine.renderer.ditherTable1 + COLORS*COLORS*COLORS;
+		engine.renderer.ditherTable3 = engine.renderer.ditherTable1 + 2*COLORS*COLORS*COLORS;
+		engine.renderer.ditherTable4 = engine.renderer.ditherTable1 + 3*COLORS*COLORS*COLORS;
+		engine.renderer.screenPatch = (UBYTE *)malloc(6*90*sizeof(UBYTE));
+		engine.renderer.rayCastX = (WORD *)malloc(XSIZEODD*TERRAINDEPTH*sizeof(WORD));
+		engine.renderer.rayCastY = (WORD *)malloc(YSIZEODD*TERRAINDEPTH*sizeof(WORD));
+		engine.renderer.highMemory = 1;
+		GenerateColorBytesDither3x2();
+	}
+}
 
 #define getCurrentTime() timerGetPrec()

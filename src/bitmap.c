@@ -124,42 +124,7 @@ void SmoothColorMap(UBYTE (*map)[MAPSIZE])
 		map[x][y] = value/4;
 	}
 }
-/*
-void SmoothScreen(UBYTE player)
-{
-	UBYTE *screen;//,*screenDepth;
-	UBYTE value = 0;
 
-	if(player == 1)
-	{
-		screen = screenP1;
-	}
-	else
-	{
-		screen = screenP1;
-	}
-
-	for (UWORD position = 0; position < XSIZE*YSIZE; position++)
-	{
-		value = (value + screen[position+1])/2;
-		screen[position] = value;
-	}
-}*/
-/*
-void GenerateColorMap()
-{
-	int value;
-	for (int x = 0; x < MAPSIZE; x++)
-	for (int y = 0; y < MAPSIZE; y++)
-	{
-		value = 4;
-		value += heightMap0[x][y]/16;
-		value += heightMap0[x][y] - heightMap0[x+1][y];//  + heightMap0[x][y] - heightMap0[x][y-1];
-		if(value < 1) value = 1;
-		if(value > 28) value = 28;
-		colorMap0[x][y] = (UBYTE)(value);
-	}
-}*/
 //add more light to higher ground
 void AddHeightToColorMap(UBYTE (*mapColor)[MAPSIZE], UBYTE (*mapHeight)[MAPSIZE])
 {
