@@ -90,6 +90,7 @@ WORD (*rayCastX), WORD (*rayCastY), UWORD (*map)[MAPSIZE], UBYTE threshold)
 		{	
             rayXPtr++;
             rayYPtr++;
+                ++tz;
 			//go step in depth if no height hit
 		}
 	}
@@ -135,6 +136,7 @@ WORD (*rayCastX), WORD (*rayCastY), UWORD (*map)[MAPSIZE], UBYTE threshold)
 			{	
                 rayXPtr++;
                 rayYPtr++;
+                ++tz;
 				//go step in depth if no height hit
 			}
 		}
@@ -183,6 +185,7 @@ WORD (*rayCastX), WORD (*rayCastY), UWORD (*map)[MAPSIZE], UBYTE threshold)
 			{	
                 rayXPtr++;
                 rayYPtr++;
+                ++tz;
 				//go step in depth if no height hit
 			}
 		}

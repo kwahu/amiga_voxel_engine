@@ -75,11 +75,12 @@ void RenderQuality()
     }
     else if(engine.renderer.renderingType == 3)
     {
-        ProcessRayCastsProgressive(engine.renderer.rayCastX, engine.renderer.rayCastY,engine.renderer.mapHigh,engine.gameState.shipParams.pX,engine.gameState.shipParams.pZ,engine.gameState.shipParams.pY,6, 14,1);
+        ProcessRayCastsProgressive(engine.renderer.rayCastX, engine.renderer.rayCastY,engine.renderer.mapHigh,engine.gameState.shipParams.pX,engine.gameState.shipParams.pZ,engine.gameState.shipParams.pY,2, 18,1);
     }
     else if(engine.renderer.renderingType == 4)
     {
-        ProcessRayCastsProgressive(engine.renderer.rayCastX, engine.renderer.rayCastY,engine.renderer.mapHigh,engine.gameState.shipParams.pX,engine.gameState.shipParams.pZ,engine.gameState.shipParams.pY,5,   15,1);
+        ProcessRayCastsProgressiveNonInterleaved(engine.renderer.rayCastX, engine.renderer.rayCastY,engine.renderer.mapHigh,engine.gameState.shipParams.pX,engine.gameState.shipParams.pZ,engine.gameState.shipParams.pY,0,   20,1);
+        //ProcessRayCastsProgressive(engine.renderer.rayCastX, engine.renderer.rayCastY,engine.renderer.mapHigh,engine.gameState.shipParams.pX,engine.gameState.shipParams.pZ,engine.gameState.shipParams.pY,5,   15,1);
     }
     else if(engine.renderer.renderingType == 5)
     {

@@ -264,29 +264,51 @@ void GetPlayerRendererSetting()
 {
 	if (getKey(3))
 	{
-		engine.renderer.renderingType = 4;
-		engine.renderer.xFOV = 28;
-		engine.renderer.yFOV = 14;
 		engine.renderer.renderingDepth = TERRAINDEPTH;
 		engine.renderer.calculationDepthDivider = 2;
 		engine.renderer.calculationDepthStep = 2;
 		engine.renderer.renderingDepthStep = 1;
+		engine.renderer.lastOverwrittenLine = 0;
 
 		engine.renderer.stepModifier = 16;
+		if(engine.renderer.highMemory)
+		{
+		engine.renderer.xFOV = 28;
+		engine.renderer.yFOV = 14;
+			engine.renderer.renderingType = 3;
 		RecalculateOdd();
+		}
+		else
+		{
+		engine.renderer.xFOV = 28;
+		engine.renderer.yFOV = 14;
+			engine.renderer.renderingType = 1;
+			RecalculateEven();
+		}
 	}
 	if (getKey(4)) 
 	{
-		engine.renderer.renderingType = 8;
-		engine.renderer.xFOV = 25;
-		engine.renderer.yFOV = 14;
 		engine.renderer.renderingDepth = TERRAINDEPTH;
 		engine.renderer.calculationDepthDivider = 2;
 		engine.renderer.calculationDepthStep = 2;
 		engine.renderer.renderingDepthStep = 1;
+		engine.renderer.lastOverwrittenLine = 0;
 
 		engine.renderer.stepModifier = 16;
+		if(engine.renderer.highMemory)
+		{
+		engine.renderer.xFOV = 25;
+		engine.renderer.yFOV = 14;
+			engine.renderer.renderingType = 4;
 		RecalculateOdd();
+		}
+		else
+		{
+		engine.renderer.xFOV = 28;
+		engine.renderer.yFOV = 14;
+			engine.renderer.renderingType = 2;
+			RecalculateEven();
+		}
 	}
 }
 
