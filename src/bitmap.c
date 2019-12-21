@@ -63,6 +63,11 @@ UBYTE *LoadBitmapFile(BYTE *filename, BITMAPINFOHEADER *bitmapInfoHeader, UBYTE 
     //move file point to the begging of bitmap data
     fseek(filePtr, bitmapFileHeader.bfOffBits, SEEK_SET);
 
+	if(bitmapImage != NULL)
+	{
+		free(bitmapImage);
+	}
+
     //allocate enough memory for the bitmap image data
     bitmapImage = (unsigned char *)malloc(bitmapInfoHeader->biSizeImage);
 

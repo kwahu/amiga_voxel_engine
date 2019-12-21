@@ -57,6 +57,10 @@ void InitEngine(void)
 	engine.pBitmapScoreLabel = CreateBitmapFromText(engine.font, "SCORE");
 	engine.pBitmapTimeLabel = CreateBitmapFromText(engine.font, "TIME");
 	engine.pBitmapHeightLabel = CreateBitmapFromText(engine.font, "RELATIVE HEIGHT");
+	for(int i = 0; i < 10; ++i)
+	{
+		engine.pBitmapInfo[i] = CreateFontBitmap(engine.font);
+	}
 
 	ResetTime();
 
@@ -82,9 +86,8 @@ void InitEngine(void)
 
 	ClearBuffor();
 	VSyncAndDraw();
-	FreeTextBitmap(engine.informationText);
 	
-	engine.informationText = CreateBitmapFromText(engine.font, "KEY 3 = A500   KEY 4 = A1200   KEY 5 = A3000");
+	FillTextBitmap(engine.font, engine.informationText, "KEY 3 = A500   KEY 4 = A1200   KEY 5 = A3000");
 	#ifdef AMIGA
 	DrawTextBitmap(engine.informationText, 50, PLANEHEIGHT/2, 3);
 	#else
@@ -178,6 +181,10 @@ void EngineDestroy(void)
 	free(engine.renderer.screenPatch);
 	free(engine.renderer.rayCastX);
 	free(engine.renderer.rayCastY);
+	for(int i = 0; i < 10; ++i)
+	{
+		FreeTextBitmap(engine.pBitmapInfo[i]);
+	}
 
 }
 

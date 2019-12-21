@@ -5,7 +5,6 @@
 void ShowDeathCutscene()
 {
     ClearBuffor();
-#ifdef AMIGA
     SetBitmapPalette(engine.activePalette);
     DrawBitmap4bCenter(engine.activeBitmap, &engine.activeBitmapHeader);
     VSyncAndDraw();
@@ -14,9 +13,9 @@ void ShowDeathCutscene()
 
     if(engine.accTime & 1)
     {
-        engine.pBitmapInfo[0] = CreateBitmapFromText(engine.font, "You are dead!");
-        engine.pBitmapInfo[1] = CreateBitmapFromText(engine.font, "The Revolt won't have any use of");
-        engine.pBitmapInfo[2] = CreateBitmapFromText(engine.font, "you in this state!");
+        FillTextBitmap(engine.font, engine.pBitmapInfo[0], "You are dead!");
+        FillTextBitmap(engine.font, engine.pBitmapInfo[1], "The Revolt won't have any use of");
+        FillTextBitmap(engine.font, engine.pBitmapInfo[2], "you in this state!");
         lines = 3;
     }
     else
@@ -25,60 +24,60 @@ void ShowDeathCutscene()
         {
             case 0:
             {
-                engine.pBitmapInfo[0] = CreateBitmapFromText(engine.font, "Whoops");
-                engine.pBitmapInfo[1] = CreateBitmapFromText(engine.font, "This had to hurt");
+                FillTextBitmap(engine.font, engine.pBitmapInfo[0], "Whoops");
+                FillTextBitmap(engine.font, engine.pBitmapInfo[1], "This had to hurt");
                 lines = 2;
         
             } break;
             case 1:
             {
-                engine.pBitmapInfo[0] = CreateBitmapFromText(engine.font, "Maybe piloting the aircraft");
-                engine.pBitmapInfo[1] = CreateBitmapFromText(engine.font, "wasn't your strongest trait");
+                FillTextBitmap(engine.font, engine.pBitmapInfo[0], "Maybe piloting the aircraft");
+                FillTextBitmap(engine.font, engine.pBitmapInfo[1], "wasn't your strongest trait");
                 lines = 2;
             } break;
             case 2:
             {
-                engine.pBitmapInfo[0] = CreateBitmapFromText(engine.font, "Hope you had your");
-                engine.pBitmapInfo[1] = CreateBitmapFromText(engine.font, "seatbelts fastened");
+                FillTextBitmap(engine.font, engine.pBitmapInfo[0], "Hope you had your");
+                FillTextBitmap(engine.font, engine.pBitmapInfo[1], "seatbelts fastened");
                 lines = 2;
             } break;
             case 3:
             {
-                engine.pBitmapInfo[0] = CreateBitmapFromText(engine.font, "You died.");
-                engine.pBitmapInfo[1] = CreateBitmapFromText(engine.font, "But don't worry, your problems");
-                engine.pBitmapInfo[2] = CreateBitmapFromText(engine.font, "are over, forever");
+                FillTextBitmap(engine.font, engine.pBitmapInfo[0], "You died.");
+                FillTextBitmap(engine.font, engine.pBitmapInfo[1], "But don't worry, your problems");
+                FillTextBitmap(engine.font, engine.pBitmapInfo[2], "are over, forever");
                 lines = 3;
             } break;
             case 4:
             {
-                engine.pBitmapInfo[0] = CreateBitmapFromText(engine.font, "Who taught you to fly?");
+                FillTextBitmap(engine.font, engine.pBitmapInfo[0], "Who taught you to fly?");
                 lines = 1;
             } break;
             case 5:
             {
-                engine.pBitmapInfo[0] = CreateBitmapFromText(engine.font, "Here lies Nix.");
-                engine.pBitmapInfo[1] = CreateBitmapFromText(engine.font, "Good friend, but a terrible pilot");
+                FillTextBitmap(engine.font, engine.pBitmapInfo[0], "Here lies Nix.");
+                FillTextBitmap(engine.font, engine.pBitmapInfo[1], "Good friend, but a terrible pilot");
                 lines = 2;
             } break;
             case 6:
             {
-                engine.pBitmapInfo[0] = CreateBitmapFromText(engine.font, "Tis but a scratch!");
+                FillTextBitmap(engine.font, engine.pBitmapInfo[0], "Tis but a scratch!");
                 lines = 1;
             } break;
             case 7:
             {
-                engine.pBitmapInfo[0] = CreateBitmapFromText(engine.font, "Wasted!");
+                FillTextBitmap(engine.font, engine.pBitmapInfo[0], "Wasted!");
                 lines = 1;
             } break;
             case 8:
             {
-                engine.pBitmapInfo[0] = CreateBitmapFromText(engine.font, "This is the best you can do?");
-                engine.pBitmapInfo[1] = CreateBitmapFromText(engine.font, "I've seen better");
+                FillTextBitmap(engine.font, engine.pBitmapInfo[0], "This is the best you can do?");
+                FillTextBitmap(engine.font, engine.pBitmapInfo[1], "I've seen better");
                 lines = 2;
             } break;
             case 9:
             {
-                engine.pBitmapInfo[0] = CreateBitmapFromText(engine.font, "Rest in peace, Nix");
+                FillTextBitmap(engine.font, engine.pBitmapInfo[0], "Rest in peace, Nix");
                 lines = 1;
             } break;
         }
@@ -91,19 +90,6 @@ void ShowDeathCutscene()
         DrawTextBitmap(engine.pBitmapInfo[i], 100, y, 4);
         y += 6;
     }
-    for(int i = 0; i < lines; ++i)
-    {
-        FreeTextBitmap(engine.pBitmapInfo[i]);
-    }
-#else
-    Cursconf(1, 0);
-    
-                
-    printf("You are dead! Press fire to try again!\r");
-    
-    fflush(stdout);
-            
-#endif
     
     ProcessJoystick();
     UBYTE cont = 0;
@@ -124,11 +110,6 @@ void ShowDeathCutscene()
         
     }
 
-#ifdef AMIGA
-#else
-    printf("                                      \r");
-    Cursconf(0, 0);
-#endif
 
     ClearBuffor();
     SetGamePaletter();
@@ -142,7 +123,6 @@ void ShowTooLateCutscene()
 {
     ClearBuffor();
  
-#ifdef AMIGA
    SetBitmapPalette(engine.activePalette);
     DrawBitmap4bCenter(engine.activeBitmap, &engine.activeBitmapHeader);
     VSyncAndDraw();
@@ -154,29 +134,29 @@ void ShowTooLateCutscene()
     {
         case 0:
         {
-            engine.pBitmapInfo[0] = CreateBitmapFromText(engine.font, "Is this all you've got?");
-            engine.pBitmapInfo[1] = CreateBitmapFromText(engine.font, "You call yourself a pilot?");
+            FillTextBitmap(engine.font, engine.pBitmapInfo[0], "Is this all you've got?");
+            FillTextBitmap(engine.font, engine.pBitmapInfo[1], "You call yourself a pilot?");
             lines = 2;
     
         } break;
         case 1:
         {
-            engine.pBitmapInfo[0] = CreateBitmapFromText(engine.font, "At this speed you wouldn't outrace");
-            engine.pBitmapInfo[1] = CreateBitmapFromText(engine.font, "a cargo ship!");
-            engine.pBitmapInfo[2] = CreateBitmapFromText(engine.font, "Get out and train!");
+            FillTextBitmap(engine.font, engine.pBitmapInfo[0], "At this speed you wouldn't outrace");
+            FillTextBitmap(engine.font, engine.pBitmapInfo[1], "a cargo ship!");
+            FillTextBitmap(engine.font, engine.pBitmapInfo[2], "Get out and train!");
             lines = 3;
         } break;
         case 2:
         {
-            engine.pBitmapInfo[0] = CreateBitmapFromText(engine.font, "You wouldn't survive a second");
-            engine.pBitmapInfo[1] = CreateBitmapFromText(engine.font, "as a Carrier!");
-            engine.pBitmapInfo[2] = CreateBitmapFromText(engine.font, "Get lost!");
+            FillTextBitmap(engine.font, engine.pBitmapInfo[0], "You wouldn't survive a second");
+            FillTextBitmap(engine.font, engine.pBitmapInfo[1], "as a Carrier!");
+            FillTextBitmap(engine.font, engine.pBitmapInfo[2], "Get lost!");
             lines = 3;
         } break;
         case 3:
         {
-            engine.pBitmapInfo[0] = CreateBitmapFromText(engine.font, "Well, about time!");
-            engine.pBitmapInfo[1] = CreateBitmapFromText(engine.font, "No stop wasting our time and scram!");
+            FillTextBitmap(engine.font, engine.pBitmapInfo[0], "Well, about time!");
+            FillTextBitmap(engine.font, engine.pBitmapInfo[1], "No stop wasting our time and scram!");
             lines = 2;
         } break;
         
@@ -189,17 +169,6 @@ void ShowTooLateCutscene()
         y += 6;
     }
 
-    for(int i = 0; i < lines; ++i)
-    {
-        FreeTextBitmap(engine.pBitmapInfo[i]);
-    }
-
-#else
-
-    Cursconf(1, 0);
-    printf("You failed! Press fire to try again!\r");
-    fflush(stdout);
-#endif
 
 
     ProcessJoystick();
@@ -221,12 +190,6 @@ void ShowTooLateCutscene()
         
         
     }
-
-#ifdef AMIGA
-#else
-    printf("                                      \r");
-    Cursconf(0, 0);
-#endif
 
 
     ClearBuffor();
@@ -251,90 +214,90 @@ void ShowWinCutscene()
     {
         case 0:
         {
-            engine.pBitmapInfo[0] = CreateBitmapFromText(engine.font, "Good job, pilot!");
-            engine.pBitmapInfo[1] = CreateBitmapFromText(engine.font, "You have proven yourself");
-            engine.pBitmapInfo[2] = CreateBitmapFromText(engine.font, "worthy of becoming a Carrier");
-            engine.pBitmapInfo[3] = CreateBitmapFromText(engine.font, "of the Revolt!");
+            FillTextBitmap(engine.font, engine.pBitmapInfo[0], "Good job, pilot!");
+            FillTextBitmap(engine.font, engine.pBitmapInfo[1], "You have proven yourself");
+            FillTextBitmap(engine.font, engine.pBitmapInfo[2], "worthy of becoming a Carrier");
+            FillTextBitmap(engine.font, engine.pBitmapInfo[3], "of the Revolt!");
             lines = 4;
     
         } break;
         case 1:
         {
-            engine.pBitmapInfo[0] = CreateBitmapFromText(engine.font, "This is what I call flying!");
-            engine.pBitmapInfo[1] = CreateBitmapFromText(engine.font, "Great job!");
+            FillTextBitmap(engine.font, engine.pBitmapInfo[0], "This is what I call flying!");
+            FillTextBitmap(engine.font, engine.pBitmapInfo[1], "Great job!");
             lines = 2;
         } break;
         case 2:
         {
-            engine.pBitmapInfo[0] = CreateBitmapFromText(engine.font, "You're faster than a");
-            engine.pBitmapInfo[1] = CreateBitmapFromText(engine.font, "swooping Vertiraptor!");
+            FillTextBitmap(engine.font, engine.pBitmapInfo[0], "You're faster than a");
+            FillTextBitmap(engine.font, engine.pBitmapInfo[1], "swooping Vertiraptor!");
             lines = 2;
         } break;
         case 3:
         {
-            engine.pBitmapInfo[0] = CreateBitmapFromText(engine.font, "Impressive!");
-            engine.pBitmapInfo[1] = CreateBitmapFromText(engine.font, "You surely know how to handle");
-            engine.pBitmapInfo[2] = CreateBitmapFromText(engine.font, "this baby!");
+            FillTextBitmap(engine.font, engine.pBitmapInfo[0], "Impressive!");
+            FillTextBitmap(engine.font, engine.pBitmapInfo[1], "You surely know how to handle");
+            FillTextBitmap(engine.font, engine.pBitmapInfo[2], "this baby!");
             lines = 3;
         } break;
         case 4:
         {
-            engine.pBitmapInfo[0] = CreateBitmapFromText(engine.font, "The Revolt is going to have");
-            engine.pBitmapInfo[1] = CreateBitmapFromText(engine.font, "great use of you, pilot!");
-            engine.pBitmapInfo[2] = CreateBitmapFromText(engine.font, "Welcome aboard!");
+            FillTextBitmap(engine.font, engine.pBitmapInfo[0], "The Revolt is going to have");
+            FillTextBitmap(engine.font, engine.pBitmapInfo[1], "great use of you, pilot!");
+            FillTextBitmap(engine.font, engine.pBitmapInfo[2], "Welcome aboard!");
             lines = 3;
         } break;
         case 5:
         {
-            engine.pBitmapInfo[0] = CreateBitmapFromText(engine.font, "Those pilots serving the Reign");
-            engine.pBitmapInfo[1] = CreateBitmapFromText(engine.font, "are no match for you!");
-            engine.pBitmapInfo[2] = CreateBitmapFromText(engine.font, "Time to kick some ass, pilot!");
+            FillTextBitmap(engine.font, engine.pBitmapInfo[0], "Those pilots serving the Reign");
+            FillTextBitmap(engine.font, engine.pBitmapInfo[1], "are no match for you!");
+            FillTextBitmap(engine.font, engine.pBitmapInfo[2], "Time to kick some ass, pilot!");
             lines = 3;
         } break;
         case 6:
         {
-            engine.pBitmapInfo[0] = CreateBitmapFromText(engine.font, "Congrats, you are in!");
-            engine.pBitmapInfo[1] = CreateBitmapFromText(engine.font, "Something tells me the Reign");
-            engine.pBitmapInfo[2] = CreateBitmapFromText(engine.font, "is going to remember your name");
-            engine.pBitmapInfo[3] = CreateBitmapFromText(engine.font, "real soon...");
+            FillTextBitmap(engine.font, engine.pBitmapInfo[0], "Congrats, you are in!");
+            FillTextBitmap(engine.font, engine.pBitmapInfo[1], "Something tells me the Reign");
+            FillTextBitmap(engine.font, engine.pBitmapInfo[2], "is going to remember your name");
+            FillTextBitmap(engine.font, engine.pBitmapInfo[3], "real soon...");
             lines = 4;
         } break;
         case 7:
         {
-            engine.pBitmapInfo[0] = CreateBitmapFromText(engine.font, "This was crazy!");
-            engine.pBitmapInfo[1] = CreateBitmapFromText(engine.font, "With that speed, you can");
-            engine.pBitmapInfo[2] = CreateBitmapFromText(engine.font, "probably get out of the orbit!");
+            FillTextBitmap(engine.font, engine.pBitmapInfo[0], "This was crazy!");
+            FillTextBitmap(engine.font, engine.pBitmapInfo[1], "With that speed, you can");
+            FillTextBitmap(engine.font, engine.pBitmapInfo[2], "probably get out of the orbit!");
             lines = 3;
         } break;
         case 8:
         {
-            engine.pBitmapInfo[0] = CreateBitmapFromText(engine.font, "This is incredible!");
-            engine.pBitmapInfo[1] = CreateBitmapFromText(engine.font, "And you did it with a");
-            engine.pBitmapInfo[2] = CreateBitmapFromText(engine.font, "twin-engine drive!");
-            engine.pBitmapInfo[3] = CreateBitmapFromText(engine.font, "I've seen quad-engine crafts");
-            engine.pBitmapInfo[4] = CreateBitmapFromText(engine.font, "do worse!");
-            engine.pBitmapInfo[5] = CreateBitmapFromText(engine.font, "Respect, pilot!");
+            FillTextBitmap(engine.font, engine.pBitmapInfo[0], "This is incredible!");
+            FillTextBitmap(engine.font, engine.pBitmapInfo[1], "And you did it with a");
+            FillTextBitmap(engine.font, engine.pBitmapInfo[2], "twin-engine drive!");
+            FillTextBitmap(engine.font, engine.pBitmapInfo[3], "I've seen quad-engine crafts");
+            FillTextBitmap(engine.font, engine.pBitmapInfo[4], "do worse!");
+            FillTextBitmap(engine.font, engine.pBitmapInfo[5], "Respect, pilot!");
             lines = 6;
         } break;
         case 9:
         {
-            engine.pBitmapInfo[0] = CreateBitmapFromText(engine.font, "The Revolt will have good use");
-            engine.pBitmapInfo[1] = CreateBitmapFromText(engine.font, "of you, pilot!");
-            engine.pBitmapInfo[2] = CreateBitmapFromText(engine.font, "You're in!");
+            FillTextBitmap(engine.font, engine.pBitmapInfo[0], "The Revolt will have good use");
+            FillTextBitmap(engine.font, engine.pBitmapInfo[1], "of you, pilot!");
+            FillTextBitmap(engine.font, engine.pBitmapInfo[2], "You're in!");
             lines = 3;
         } break;
         case 10:
         {
-            engine.pBitmapInfo[0] = CreateBitmapFromText(engine.font, "I haven't seen anyone fly like");
-            engine.pBitmapInfo[1] = CreateBitmapFromText(engine.font, "this since my younger days!");
-            engine.pBitmapInfo[2] = CreateBitmapFromText(engine.font, "Congrats!");
+            FillTextBitmap(engine.font, engine.pBitmapInfo[0], "I haven't seen anyone fly like");
+            FillTextBitmap(engine.font, engine.pBitmapInfo[1], "this since my younger days!");
+            FillTextBitmap(engine.font, engine.pBitmapInfo[2], "Congrats!");
             lines = 3;
         } break;
         case 11:
         {
-            engine.pBitmapInfo[0] = CreateBitmapFromText(engine.font, "Great time!");
-            engine.pBitmapInfo[1] = CreateBitmapFromText(engine.font, "I hope you're ready to repeat");
-            engine.pBitmapInfo[2] = CreateBitmapFromText(engine.font, "it in the future, you're in!");
+            FillTextBitmap(engine.font, engine.pBitmapInfo[0], "Great time!");
+            FillTextBitmap(engine.font, engine.pBitmapInfo[1], "I hope you're ready to repeat");
+            FillTextBitmap(engine.font, engine.pBitmapInfo[2], "it in the future, you're in!");
             lines = 3;
         } break;
         
@@ -346,10 +309,6 @@ void ShowWinCutscene()
     {	
         DrawTextBitmap(engine.pBitmapInfo[i], 170, y, 1);
         y += 6;
-    }
-    for(int i = 0; i < lines; ++i)
-    {
-        FreeTextBitmap(engine.pBitmapInfo[i]);
     }
 
     ProcessJoystick();

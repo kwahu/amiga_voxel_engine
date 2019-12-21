@@ -51,14 +51,32 @@ void RunMenuState()
                     
                     SetBitmapPalette(engine.activePalette);
                     VSyncAndDraw();
+                    FillTextBitmap(engine.font, engine.pBitmapInfo[0], "After setting off the Earth in enormous");
+                    FillTextBitmap(engine.font, engine.pBitmapInfo[1], "Generation ships, humanity reached the nearest");
+                    FillTextBitmap(engine.font, engine.pBitmapInfo[2], "star system and colonized it's only suitable");
+                    FillTextBitmap(engine.font, engine.pBitmapInfo[3], "planet, renaming it The Kingdom.");
+                    FillTextBitmap(engine.font, engine.pBitmapInfo[4], "The harsh evironment was one problem, the");
+                    FillTextBitmap(engine.font, engine.pBitmapInfo[5], "ideological differences were the other.");
+                    FillTextBitmap(engine.font, engine.pBitmapInfo[6], "People of The Kingdom fell prey to their nature");
+                    FillTextBitmap(engine.font, engine.pBitmapInfo[7], "which pushed them to the open conflict");
+                    FillTextBitmap(engine.font, engine.pBitmapInfo[8], "between The Reign, and The Revolt.");
 
+                    DrawTextBitmap(engine.pBitmapInfo[0], 2, 30, 14);
+                    DrawTextBitmap(engine.pBitmapInfo[1], 2, 36, 14);
+                    DrawTextBitmap(engine.pBitmapInfo[2], 2, 42, 14);
+                    DrawTextBitmap(engine.pBitmapInfo[3], 2, 48, 14);
+                    DrawTextBitmap(engine.pBitmapInfo[4], 2, 54, 14);
+                    DrawTextBitmap(engine.pBitmapInfo[5], 2, 60, 14);
+                    DrawTextBitmap(engine.pBitmapInfo[6], 2, 66, 14);
+                    DrawTextBitmap(engine.pBitmapInfo[7], 2, 72, 14);
+                    DrawTextBitmap(engine.pBitmapInfo[8], 2, 78, 14);
                     FireDown = 1;
                 } break;
                 case 2:
                 {
                     LoadBitmapToMemory(
                         #ifdef AMIGA
-                        "data/m2"
+                        "data/m1"
                         #else
                         "data_a/i3"
                         #endif
@@ -68,6 +86,30 @@ void RunMenuState()
                     
                     SetBitmapPalette(engine.activePalette);
                     VSyncAndDraw();
+
+                    FillTextBitmap(engine.font, engine.pBitmapInfo[0], "You are Nix, the pilot of Icarus, who feels");
+                    FillTextBitmap(engine.font, engine.pBitmapInfo[1], "the urge to help The Revolt in overthrowing");
+                    FillTextBitmap(engine.font, engine.pBitmapInfo[2], "The Reign.");
+                    FillTextBitmap(engine.font, engine.pBitmapInfo[3], "You want to become The Carrier, who supplies");
+                    FillTextBitmap(engine.font, engine.pBitmapInfo[4], "the military units of The Revolt.");
+                    FillTextBitmap(engine.font, engine.pBitmapInfo[5], "As Carriers can move freely only in the deep");
+                    FillTextBitmap(engine.font, engine.pBitmapInfo[6], "canyons covering the planet, The Revolt wants");
+                    FillTextBitmap(engine.font, engine.pBitmapInfo[7], "you to prove your abilities and loyalty");
+                    FillTextBitmap(engine.font, engine.pBitmapInfo[8], "by beating the route leading through");
+                    FillTextBitmap(engine.font, engine.pBitmapInfo[9], "narrow valleys as fast as possible.");
+
+                    DrawTextBitmap(engine.pBitmapInfo[0], 2, 30, 14);
+                    DrawTextBitmap(engine.pBitmapInfo[1], 2, 36, 14);
+                    DrawTextBitmap(engine.pBitmapInfo[2], 2, 42, 14);
+                    DrawTextBitmap(engine.pBitmapInfo[3], 2, 48, 14);
+                    DrawTextBitmap(engine.pBitmapInfo[4], 2, 54, 14);
+                    DrawTextBitmap(engine.pBitmapInfo[5], 2, 60, 14);
+                    DrawTextBitmap(engine.pBitmapInfo[6], 2, 66, 14);
+                    DrawTextBitmap(engine.pBitmapInfo[7], 2, 72, 14);
+                    DrawTextBitmap(engine.pBitmapInfo[8], 2, 78, 14);
+                    DrawTextBitmap(engine.pBitmapInfo[9], 2, 84, 14);
+                    
+                        
 
                     FireDown = 1;
                 } break;
@@ -87,16 +129,16 @@ void RunMenuState()
                     SetBitmapPalette(engine.activePalette);
                     VSyncAndDraw();
 
-                    engine.pBitmapInfo[0] = CreateBitmapFromText(engine.font, "The ship's Anti-G engine uses the");
-                    engine.pBitmapInfo[1] = CreateBitmapFromText(engine.font, "planet's magnetic field to move");
-                    engine.pBitmapInfo[2] = CreateBitmapFromText(engine.font, "vertically.");
-                    engine.pBitmapInfo[3] = CreateBitmapFromText(engine.font, "The closer you get to the surface,");
-                    engine.pBitmapInfo[4] = CreateBitmapFromText(engine.font, "the more energy is generated.");
-                    engine.pBitmapInfo[5] = CreateBitmapFromText(engine.font, "This energy is converted to power");
-                    engine.pBitmapInfo[6] = CreateBitmapFromText(engine.font, "ship's propulsion engines and");
-                    engine.pBitmapInfo[7] = CreateBitmapFromText(engine.font, "accelerate it.");
-                    engine.pBitmapInfo[8] = CreateBitmapFromText(engine.font, "Remember, the lower you fly,");
-                    engine.pBitmapInfo[9] = CreateBitmapFromText(engine.font, "the faster you go.");
+                    FillTextBitmap(engine.font, engine.pBitmapInfo[0], "The ship's Anti-G engine uses the");
+                    FillTextBitmap(engine.font, engine.pBitmapInfo[1], "planet's magnetic field to move");
+                    FillTextBitmap(engine.font, engine.pBitmapInfo[2], "vertically.");
+                    FillTextBitmap(engine.font, engine.pBitmapInfo[3], "The closer you get to the surface,");
+                    FillTextBitmap(engine.font, engine.pBitmapInfo[4], "the more energy is generated.");
+                    FillTextBitmap(engine.font, engine.pBitmapInfo[5], "This energy is converted to power");
+                    FillTextBitmap(engine.font, engine.pBitmapInfo[6], "ship's propulsion engines and");
+                    FillTextBitmap(engine.font, engine.pBitmapInfo[7], "accelerate it.");
+                    FillTextBitmap(engine.font, engine.pBitmapInfo[8], "Remember, the lower you fly,");
+                    FillTextBitmap(engine.font, engine.pBitmapInfo[9], "the faster you go.");
 
                     DrawTextBitmap(engine.pBitmapInfo[0], 100, 70, 4);
                     DrawTextBitmap(engine.pBitmapInfo[1], 100, 76, 4);
@@ -114,10 +156,6 @@ void RunMenuState()
                 } break;
                 case 4:
                 {
-                    for(int i = 0; i < 10; ++i)
-                    {
-                        FreeTextBitmap(engine.pBitmapInfo[i]);
-                    }
                     ClearBuffor();
                     SetGamePaletter();
                     VSyncAndDraw();

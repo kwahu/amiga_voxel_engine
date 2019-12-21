@@ -90,8 +90,6 @@ void RenderShipAndCrossHair()
 
 void DrawGameStats()
 {
-    
-    #ifdef AMIGA
     ConvertIntToChar(engine.gameState.points, engine.gameState.sScore, 8);
     ConvertIntToChar(engine.gameState.shipParams.dP, engine.gameState.sVelocity, 5);
     ConvertIntToChar(engine.accTime/2500, engine.gameState.sTime, 8);
@@ -111,12 +109,6 @@ void DrawGameStats()
     DrawTextBitmap(engine.pBitmapScoreLabel, 0, 225, 12);
     DrawTextBitmap(engine.pBitmapHeightLabel, 135, 225, 12);
     DrawTextBitmap(engine.pBitmapTimeLabel, 230, 225, 12);
-    #else
-    
-    printf("SC:%d  SP:%d  RH:%d  T:%d\r", engine.gameState.points, engine.gameState.shipParams.dP, engine.gameState.shipParams.relHeight, engine.accTime/2500);
-    
-    fflush(stdout);
-    #endif
 
 }
 

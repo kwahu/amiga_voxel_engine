@@ -8,6 +8,11 @@ Font * InitFont(char *fileName)
     return fontCreate(fileName);
 }
 
+Font *CreateFontBitmap(Font *font)
+{
+    return fontCreateTextBitMapFromStr(font, "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
+}
+
 Font *CreateBitmapFromText(Font *font, char * text)
 {
     return fontCreateTextBitMapFromStr(font, text);
@@ -37,6 +42,10 @@ void FreeFont()
 
 #else
 
+Font *CreateFontBitmap(Font *font)
+{
+    return 0;
+}
 Font *CreateBitmapFromText(Font *font, char * text)
 {
     return 0;
