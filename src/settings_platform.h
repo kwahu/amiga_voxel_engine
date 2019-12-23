@@ -63,7 +63,22 @@ typedef tTextBitMap TextBitmap;
 
 #else
 
-typedef UBYTE Font;
-typedef UBYTE TextBitmap; 
+typedef struct Font {
+	UWORD Width;       ///< Packed font bitmap width.
+	UWORD Height;      ///< Packed font bitmap height.
+	UBYTE Chars;       ///< Glyph count in font.
+	UWORD *CharOffsets; ///< Glyph offsets in packed bitmap.
+	UWORD *RawData;   ///< Pointer to packed bitmap.
+} Font;
+
+
+typedef struct TextBitMap {
+	UWORD *BitMap;    ///< Word-aligned bitmap buffer with pre-drawn text.
+	UWORD ActualWidth; ///< Actual text width for precise blitting.
+	UWORD ActualHeight; ///< Actual text height for precise blitting.
+	UWORD Width; ///< Actual text width for precise blitting.
+	UWORD Height; ///< Actual text height for precise blitting.
+} TextBitMap;
+ 
 
 #endif

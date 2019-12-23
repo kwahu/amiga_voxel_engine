@@ -68,13 +68,12 @@ void InitEngine(void)
 
 
 	//*********************************** SELECT HARDWARE ***********************************************
-	engine.informationText = CreateBitmapFromText(engine.font, "KEY 1 = 1 MB RAM   KEY 2 = MORE THAN 1 MB RAM");
-	#ifdef AMIGA
+	engine.informationText = CreateBitmapFromText(engine.font, 
+	"KEY 1 = 1 MB RAM   KEY 2 = MORE THAN 1 MB RAM"
+	);
 	DrawTextBitmap(engine.informationText, 50, PLANEHEIGHT/2, 3);
-	#else
-	printf("KEY 1 = 1 MB RAM   KEY 2 = MORE THAN 1 MB RAM\r\n");
-	printf("\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n");
-	#endif
+	
+	VSyncAndDraw();
 
 	engine.renderer.ditherTable1 = 0;
 
@@ -85,16 +84,16 @@ void InitEngine(void)
 	}
 
 	ClearBuffor();
-	VSyncAndDraw();
 	
-	FillTextBitmap(engine.font, engine.informationText, "KEY 3 = A500   KEY 4 = A1200   KEY 5 = A3000");
+	FillTextBitmap(engine.font, engine.informationText, 
 	#ifdef AMIGA
-	DrawTextBitmap(engine.informationText, 50, PLANEHEIGHT/2, 3);
+	"KEY 3 = A500   KEY 4 = A1200   KEY 5 = A3000"
 	#else
-	printf("KEY 3 ATARI ST     KEY 4 ATARI FALCON / TT\r\n");
-	printf("Change quality at any time KEYS 1-8\r\n");
-	printf("\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n");
+	"KEY 4 = ATARI ST   KEY 4 = ATARI FALCON OR TT"
 	#endif
+	);
+	DrawTextBitmap(engine.informationText, 50, PLANEHEIGHT/2, 3);
+	VSyncAndDraw();
 
 	while(engine.renderer.renderingType == 0)
 	{

@@ -101,20 +101,20 @@ void DrawGameStats()
     FillTextBitmap(engine.font, engine.pBitmapTime, engine.gameState.sTime);
     FillTextBitmap(engine.font, engine.pBitmapHeight, engine.gameState.sPlayerY);
 
-    DrawTextBitmap(engine.pBitmapVelocity, 100, 225, 12);
-    DrawTextBitmap(engine.pBitmapScore, 35, 225, 12);
-    DrawTextBitmap(engine.pBitmapHeight, 195, 225, 12);
-    DrawTextBitmap(engine.pBitmapTime, 250, 225, 12);
-    DrawTextBitmap(engine.pBitmapVelocityLabel, 75, 225, 12);
-    DrawTextBitmap(engine.pBitmapScoreLabel, 0, 225, 12);
-    DrawTextBitmap(engine.pBitmapHeightLabel, 135, 225, 12);
-    DrawTextBitmap(engine.pBitmapTimeLabel, 230, 225, 12);
+    DrawTextBitmapOverwrite(engine.pBitmapVelocity, 100, PLANEHEIGHT-6, 12);
+    DrawTextBitmapOverwrite(engine.pBitmapScore, 35, PLANEHEIGHT-6, 12);
+    DrawTextBitmapOverwrite(engine.pBitmapHeight, 195, PLANEHEIGHT-6, 12);
+    DrawTextBitmapOverwrite(engine.pBitmapTime, 250, PLANEHEIGHT-6, 12);
+    DrawTextBitmap(engine.pBitmapVelocityLabel, 75, PLANEHEIGHT-6, 12);
+    DrawTextBitmap(engine.pBitmapScoreLabel, 0, PLANEHEIGHT-6, 12);
+    DrawTextBitmap(engine.pBitmapHeightLabel, 135, PLANEHEIGHT-6, 12);
+    DrawTextBitmap(engine.pBitmapTimeLabel, 230, PLANEHEIGHT-6, 12);
 
 }
 
 void RunGameState()
 {
-    
+
     UpdatePlayerPosition();
     if(CheckPlayerCollision())
     {

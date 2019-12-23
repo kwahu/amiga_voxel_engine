@@ -539,21 +539,21 @@ void DrawPixel(UWORD x, UWORD y, UBYTE color)
   UWORD firstPos = y*PLANEWIDTHWORD+posX*4;
   UWORD secondPos = firstPos+4;
 
-  WORD leftUpPattern = 0b1000100110010001 >> leftGap;
-  WORD rightUpPattern = 0b1111111111111111 << rightGap;
+  WORD leftPixelPattern = 0b1000100110010001 >> leftGap;
+  WORD leftScreenPattern = 0b1111111111111111 << rightGap;
 
-  WORD leftDownPattern = 0b1000100110010001 << rightGap;
-  WORD rightDownPattern = 0b1111111111111111 >> leftGap;
+  WORD rightPixelPattern = 0b1000100110010001 << rightGap;
+  WORD rightScreenPattern = 0b1111111111111111 >> leftGap;
 
-  engine.renderer.planes[firstPos] = (leftUpPattern) + (engine.renderer.planes[firstPos] & (rightUpPattern));
-  engine.renderer.planes[firstPos+1] = (leftUpPattern) + (engine.renderer.planes[firstPos+1] & (rightUpPattern));
-  engine.renderer.planes[firstPos+2] = (leftUpPattern) + (engine.renderer.planes[firstPos+2] & (rightUpPattern));
-  engine.renderer.planes[firstPos+3] = (leftUpPattern) + (engine.renderer.planes[firstPos+3] & (rightUpPattern));
+  engine.renderer.planes[firstPos] = (leftPixelPattern) + (engine.renderer.planes[firstPos] & (leftScreenPattern));
+  engine.renderer.planes[firstPos+1] = (leftPixelPattern) + (engine.renderer.planes[firstPos+1] & (leftScreenPattern));
+  engine.renderer.planes[firstPos+2] = (leftPixelPattern) + (engine.renderer.planes[firstPos+2] & (leftScreenPattern));
+  engine.renderer.planes[firstPos+3] = (leftPixelPattern) + (engine.renderer.planes[firstPos+3] & (leftScreenPattern));
   
-  engine.renderer.planes[secondPos] = (leftDownPattern) + (engine.renderer.planes[secondPos] & (rightDownPattern));
-  engine.renderer.planes[secondPos+1] = (leftDownPattern) + (engine.renderer.planes[secondPos+1] & (rightDownPattern));
-  engine.renderer.planes[secondPos+2] = (leftDownPattern) + (engine.renderer.planes[secondPos+2] & (rightDownPattern));
-  engine.renderer.planes[secondPos+3] = (leftDownPattern) + (engine.renderer.planes[secondPos+3] & (rightDownPattern));
+  engine.renderer.planes[secondPos] = (rightPixelPattern) + (engine.renderer.planes[secondPos] & (rightScreenPattern));
+  engine.renderer.planes[secondPos+1] = (rightPixelPattern) + (engine.renderer.planes[secondPos+1] & (rightScreenPattern));
+  engine.renderer.planes[secondPos+2] = (rightPixelPattern) + (engine.renderer.planes[secondPos+2] & (rightScreenPattern));
+  engine.renderer.planes[secondPos+3] = (rightPixelPattern) + (engine.renderer.planes[secondPos+3] & (rightScreenPattern));
 }
 
 void DrawPixelWord(UWORD x, UWORD y, UBYTE color)

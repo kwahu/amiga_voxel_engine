@@ -25,6 +25,8 @@
 #define LOGORUNTIME 7500000
 #define SKY_COLOR 33
 
+
+
 typedef struct tagBITMAPFILEHEADER
 {
     UWORD bfType;      //specifies the file type
@@ -168,8 +170,8 @@ typedef struct Engine
     UBYTE *activeBitmap, *paletteBitmap, *shipBitmap;
 
     Font *font;
-    TextBitmap *pBitmapHeightLabel, *pBitmapHeight, *pBitmapTime, *pBitmapTimeLabel, *informationText;
-    TextBitmap *pBitmapVelocityLabel, *pBitmapVelocity, *pBitmapScore, *pBitmapScoreLabel, *pBitmapInfo[10];
+    TextBitMap *pBitmapHeightLabel, *pBitmapHeight, *pBitmapTime, *pBitmapTimeLabel, *informationText;
+    TextBitMap *pBitmapVelocityLabel, *pBitmapVelocity, *pBitmapScore, *pBitmapScoreLabel, *pBitmapInfo[10];
 
     UBYTE exitFlag;
 

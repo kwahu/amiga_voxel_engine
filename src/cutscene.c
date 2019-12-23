@@ -84,13 +84,14 @@ void ShowDeathCutscene()
         
     }
 
-    UBYTE y = 70;
+    UBYTE y = BASELINE+42;
     for(int i = 0; i < lines; ++i)
     {	
         DrawTextBitmap(engine.pBitmapInfo[i], 100, y, 4);
         y += 6;
     }
     
+    VSyncAndDraw();
     ProcessJoystick();
     UBYTE cont = 0;
     //wait 2 seconds
@@ -162,7 +163,7 @@ void ShowTooLateCutscene()
         
     }
 
-    UBYTE y = 70;
+    UBYTE y = BASELINE+42;
     for(int i = 0; i < lines; ++i)
     {	
         DrawTextBitmap(engine.pBitmapInfo[i], 100, y, 4);
@@ -171,6 +172,7 @@ void ShowTooLateCutscene()
 
 
 
+    VSyncAndDraw();
     ProcessJoystick();
     UBYTE cont = 0;
     //wait 2 seconds
@@ -304,13 +306,14 @@ void ShowWinCutscene()
     }
 
 
-    UBYTE y = 30;
+    UBYTE y = BASELINE+2;
     for(int i = 0; i < lines; ++i)
     {	
         DrawTextBitmap(engine.pBitmapInfo[i], 170, y, 1);
         y += 6;
     }
 
+    VSyncAndDraw();
     ProcessJoystick();
     UBYTE cont = 0;
     //wait 2 seconds

@@ -12,11 +12,7 @@ void InitMenuState()
 void RunMenuState()
 {
     LoadBitmapToMemory(
-        #ifdef AMIGA
         "data/m0"
-        #else
-        "data_a/i1"
-        #endif
         );
     ClearBuffor();
     DrawBitmap4bCenter(engine.activeBitmap, &engine.activeBitmapHeader);
@@ -40,11 +36,7 @@ void RunMenuState()
                 case 1:
                 {
                     LoadBitmapToMemory(
-                        #ifdef AMIGA
                         "data/m1"
-                        #else
-                        "data_a/i2"
-                        #endif
                         );
                     ClearBuffor();
                     DrawBitmap4bCenter(engine.activeBitmap, &engine.activeBitmapHeader);
@@ -61,25 +53,21 @@ void RunMenuState()
                     FillTextBitmap(engine.font, engine.pBitmapInfo[7], "which pushed them to the open conflict");
                     FillTextBitmap(engine.font, engine.pBitmapInfo[8], "between The Reign, and The Revolt.");
 
-                    DrawTextBitmap(engine.pBitmapInfo[0], 2, 30, 14);
-                    DrawTextBitmap(engine.pBitmapInfo[1], 2, 36, 14);
-                    DrawTextBitmap(engine.pBitmapInfo[2], 2, 42, 14);
-                    DrawTextBitmap(engine.pBitmapInfo[3], 2, 48, 14);
-                    DrawTextBitmap(engine.pBitmapInfo[4], 2, 54, 14);
-                    DrawTextBitmap(engine.pBitmapInfo[5], 2, 60, 14);
-                    DrawTextBitmap(engine.pBitmapInfo[6], 2, 66, 14);
-                    DrawTextBitmap(engine.pBitmapInfo[7], 2, 72, 14);
-                    DrawTextBitmap(engine.pBitmapInfo[8], 2, 78, 14);
+                    DrawTextBitmap(engine.pBitmapInfo[0], 2, BASELINE+2, 14);
+                    DrawTextBitmap(engine.pBitmapInfo[1], 2, BASELINE+8, 14);
+                    DrawTextBitmap(engine.pBitmapInfo[2], 2, BASELINE+14, 14);
+                    DrawTextBitmap(engine.pBitmapInfo[3], 2, BASELINE+20, 14);
+                    DrawTextBitmap(engine.pBitmapInfo[4], 2, BASELINE+26, 14);
+                    DrawTextBitmap(engine.pBitmapInfo[5], 2, BASELINE+32, 14);
+                    DrawTextBitmap(engine.pBitmapInfo[6], 2, BASELINE+38, 14);
+                    DrawTextBitmap(engine.pBitmapInfo[7], 2, BASELINE+44, 14);
+                    DrawTextBitmap(engine.pBitmapInfo[8], 2, BASELINE+50, 14);
                     FireDown = 1;
                 } break;
                 case 2:
                 {
                     LoadBitmapToMemory(
-                        #ifdef AMIGA
                         "data/m1"
-                        #else
-                        "data_a/i3"
-                        #endif
                     );
                     ClearBuffor();
                     DrawBitmap4bCenter(engine.activeBitmap, &engine.activeBitmapHeader);
@@ -98,16 +86,16 @@ void RunMenuState()
                     FillTextBitmap(engine.font, engine.pBitmapInfo[8], "by beating the route leading through");
                     FillTextBitmap(engine.font, engine.pBitmapInfo[9], "narrow valleys as fast as possible.");
 
-                    DrawTextBitmap(engine.pBitmapInfo[0], 2, 30, 14);
-                    DrawTextBitmap(engine.pBitmapInfo[1], 2, 36, 14);
-                    DrawTextBitmap(engine.pBitmapInfo[2], 2, 42, 14);
-                    DrawTextBitmap(engine.pBitmapInfo[3], 2, 48, 14);
-                    DrawTextBitmap(engine.pBitmapInfo[4], 2, 54, 14);
-                    DrawTextBitmap(engine.pBitmapInfo[5], 2, 60, 14);
-                    DrawTextBitmap(engine.pBitmapInfo[6], 2, 66, 14);
-                    DrawTextBitmap(engine.pBitmapInfo[7], 2, 72, 14);
-                    DrawTextBitmap(engine.pBitmapInfo[8], 2, 78, 14);
-                    DrawTextBitmap(engine.pBitmapInfo[9], 2, 84, 14);
+                    DrawTextBitmap(engine.pBitmapInfo[0], 2, BASELINE+2, 14);
+                    DrawTextBitmap(engine.pBitmapInfo[1], 2, BASELINE+8, 14);
+                    DrawTextBitmap(engine.pBitmapInfo[2], 2, BASELINE+14, 14);
+                    DrawTextBitmap(engine.pBitmapInfo[3], 2, BASELINE+20, 14);
+                    DrawTextBitmap(engine.pBitmapInfo[4], 2, BASELINE+26, 14);
+                    DrawTextBitmap(engine.pBitmapInfo[5], 2, BASELINE+32, 14);
+                    DrawTextBitmap(engine.pBitmapInfo[6], 2, BASELINE+38, 14);
+                    DrawTextBitmap(engine.pBitmapInfo[7], 2, BASELINE+44, 14);
+                    DrawTextBitmap(engine.pBitmapInfo[8], 2, BASELINE+50, 14);
+                    DrawTextBitmap(engine.pBitmapInfo[9], 2, BASELINE+56, 14);
                     
                         
 
@@ -117,11 +105,7 @@ void RunMenuState()
                 {
 
                     LoadBitmapToMemory(
-                        #ifdef AMIGA
                         "data/msg"
-                        #else
-                        "data_a/i4"
-                        #endif
                         );
                     ClearBuffor();
                     DrawBitmap4bCenter(engine.activeBitmap, &engine.activeBitmapHeader);
@@ -140,16 +124,16 @@ void RunMenuState()
                     FillTextBitmap(engine.font, engine.pBitmapInfo[8], "Remember, the lower you fly,");
                     FillTextBitmap(engine.font, engine.pBitmapInfo[9], "the faster you go.");
 
-                    DrawTextBitmap(engine.pBitmapInfo[0], 100, 70, 4);
-                    DrawTextBitmap(engine.pBitmapInfo[1], 100, 76, 4);
-                    DrawTextBitmap(engine.pBitmapInfo[2], 100, 82, 4);
-                    DrawTextBitmap(engine.pBitmapInfo[3], 100, 88, 4);
-                    DrawTextBitmap(engine.pBitmapInfo[4], 100, 94, 4);
-                    DrawTextBitmap(engine.pBitmapInfo[5], 100, 100, 4);
-                    DrawTextBitmap(engine.pBitmapInfo[6], 100, 106, 4);
-                    DrawTextBitmap(engine.pBitmapInfo[7], 100, 112, 4);
-                    DrawTextBitmap(engine.pBitmapInfo[8], 100, 118, 4);
-                    DrawTextBitmap(engine.pBitmapInfo[9], 100, 124, 4);
+                    DrawTextBitmap(engine.pBitmapInfo[0], 100, BASELINE+42, 4);
+                    DrawTextBitmap(engine.pBitmapInfo[1], 100, BASELINE+48, 4);
+                    DrawTextBitmap(engine.pBitmapInfo[2], 100, BASELINE+54, 4);
+                    DrawTextBitmap(engine.pBitmapInfo[3], 100, BASELINE+60, 4);
+                    DrawTextBitmap(engine.pBitmapInfo[4], 100, BASELINE+66, 4);
+                    DrawTextBitmap(engine.pBitmapInfo[5], 100, BASELINE+72, 4);
+                    DrawTextBitmap(engine.pBitmapInfo[6], 100, BASELINE+78, 4);
+                    DrawTextBitmap(engine.pBitmapInfo[7], 100, BASELINE+84, 4);
+                    DrawTextBitmap(engine.pBitmapInfo[8], 100, BASELINE+90, 4);
+                    DrawTextBitmap(engine.pBitmapInfo[9], 100, BASELINE+96, 4);
                         
 
                     FireDown = 1;
