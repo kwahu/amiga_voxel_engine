@@ -73,9 +73,9 @@ void InitEngine(void)
 	engine.informationText = CreateBitmapFromText(engine.font, 
 	"KEY 1 = 1 MB RAM   KEY 2 = MORE THAN 1 MB RAM"
 	);
+	VSyncAndDraw();
 	DrawTextBitmap(engine.informationText, 50, PLANEHEIGHT/2, 3);
 	
-	VSyncAndDraw();
 
 	engine.renderer.ditherTable1 = 0;
 
@@ -94,8 +94,8 @@ void InitEngine(void)
 	"KEY 4 = ATARI ST   KEY 4 = ATARI FALCON OR TT"
 	#endif
 	);
-	DrawTextBitmap(engine.informationText, 50, PLANEHEIGHT/2, 3);
 	VSyncAndDraw();
+	DrawTextBitmap(engine.informationText, 50, PLANEHEIGHT/2, 3);
 
 	while(engine.renderer.renderingType == 0)
 	{
@@ -121,24 +121,27 @@ void InitEngine(void)
 //****************************** LOOP
 void EngineLoop(void)
 {
-	while(1)
-	{
 	
+	if(!engine.musicOn)
+	{
 		systemUnuse();
-		if(!engine.musicOn)
-		{
-			engine.musicOn = 1;
-			mt_install_cia(g_pCustom,0,0);
-			//InitAudio();
-		}	
+
+		engine.musicOn = 1;
+		mt_install_cia(g_pCustom,0,0);
+
 		mt_init(g_pCustom, engine.music, 0, 1);
 		mt_Enable = 1;
 		mt_MusicChannels = 2;
-		mt_music(g_pCustom);
+		while(!getKey(ESCAPE))
+		{
+			mt_music(g_pCustom);
+			int a = 5;
+		}
 		mt_end(g_pCustom);
 
 		systemUse();
 	}
+
 	while(!engine.exitFlag)
 	{
 		ProcessJoystick();

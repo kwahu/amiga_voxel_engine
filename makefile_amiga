@@ -45,7 +45,7 @@ OBJECTS=src/ptplayer.o
 
 
 $(APP): src/main.c depend
-	$(ASM) $(ASMFLAGS) src/ptplayer.asm -o src/ptplayer.o
+	$(ASM) $(ASMFLAGS) src/music.s -o src/ptplayer.o
 	$(CC) $(CFLAGS) src/main.c $(OBJECTS) $(INC) $(LIB) -o $(APP)
 	/opt/amiga/bin/m68k-amigaos-strip $(APP)
 #/opt/amiga/bin/vlink $(OBJECTS) $(APP) -o icarus.exe

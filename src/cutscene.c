@@ -84,6 +84,7 @@ void ShowDeathCutscene()
         
     }
 
+    VSyncAndDraw();
     UBYTE y = BASELINE+42;
     for(int i = 0; i < lines; ++i)
     {	
@@ -91,7 +92,6 @@ void ShowDeathCutscene()
         y += 6;
     }
     
-    VSyncAndDraw();
     ProcessJoystick();
     UBYTE cont = 0;
     //wait 2 seconds
@@ -163,6 +163,7 @@ void ShowTooLateCutscene()
         
     }
 
+    VSyncAndDraw();
     UBYTE y = BASELINE+42;
     for(int i = 0; i < lines; ++i)
     {	
@@ -172,7 +173,6 @@ void ShowTooLateCutscene()
 
 
 
-    VSyncAndDraw();
     ProcessJoystick();
     UBYTE cont = 0;
     //wait 2 seconds
@@ -306,6 +306,7 @@ void ShowWinCutscene()
     }
 
 
+    VSyncAndDraw();
     UBYTE y = BASELINE+2;
     for(int i = 0; i < lines; ++i)
     {	
@@ -313,7 +314,6 @@ void ShowWinCutscene()
         y += 6;
     }
 
-    VSyncAndDraw();
     ProcessJoystick();
     UBYTE cont = 0;
     //wait 2 seconds
