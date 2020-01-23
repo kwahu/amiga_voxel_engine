@@ -7,12 +7,13 @@ void EngineLoop(void);
 void EngineDestroy(void);
 
 #ifdef AMIGA
+#include "SDI_compiler.h"
+#include "SDI_hook.h"
+#include "SDI_interrupt.h"
+#include "SDI_lib.h"
+#include "SDI_misc.h"
+#include "SDI_stdarg.h"
 #include <ace/generic/main.h>
-#include <ace/managers/game.h>
-#include <ace/managers/timer.h>
-#include <ace/managers/system.h>
-#include <ace/managers/blit.h>
-#include <ace/utils/file.h>
 void genericCreate(void)
 {
 	gamePushState(InitEngine, EngineLoop, EngineDestroy);
