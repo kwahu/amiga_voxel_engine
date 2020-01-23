@@ -165,6 +165,4 @@ extern UBYTE mt_E8Trigger;
 
 extern UBYTE mt_MusicChannels;
 
-extern void * module;
-
 #endif

@@ -131,7 +131,7 @@ void EngineLoop(void)
 			mt_install_cia(g_pCustom,0,0);
 			//InitAudio();
 		}	
-		mt_init(g_pCustom, module, 0, 1);
+		mt_init(g_pCustom, engine.music, 0, 1);
 		mt_Enable = 1;
 		mt_MusicChannels = 2;
 		mt_music(g_pCustom);
