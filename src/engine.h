@@ -5,6 +5,7 @@
 #include <stdint.h>
 #include <stdio.h>
 #include "settings_platform.h"
+#include "sound_platform.h"
 
 #define ULONG 	uint32_t
 #define LONG	int32_t
@@ -172,6 +173,9 @@ typedef struct Engine
     Font *font;
     TextBitMap *pBitmapHeightLabel, *pBitmapHeight, *pBitmapTime, *pBitmapTimeLabel, *informationText;
     TextBitMap *pBitmapVelocityLabel, *pBitmapVelocity, *pBitmapScore, *pBitmapScoreLabel, *pBitmapInfo[10];
+
+    UBYTE musicOn;
+    UBYTE *music;
 
     UBYTE exitFlag;
 

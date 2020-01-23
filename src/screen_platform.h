@@ -146,6 +146,7 @@ void InitScreen()
     memset(engine.platformScreen.logBase,0,32000);
     memset(engine.platformScreen.physBase,0,32000);
     VsetMode(0x80|2|0x20);
+	EsetSmear( 1 );
 
 	for(int i=0;i<16;i++)
 	{

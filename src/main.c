@@ -33,6 +33,8 @@ void InitEngine(void)
 {
 	engine.exitFlag = 0;
 
+	engine.musicOn = 0;
+	engine.music = ReadModFile("Szit_Czip.mod");
 	InitScreen();
 	InitInput();
 
@@ -109,6 +111,7 @@ void InitEngine(void)
 	DrawBitmap4bCenter(engine.activeBitmap, &engine.activeBitmapHeader);
 	
 	VSyncAndDraw();
+	//PlaySample(engine.audioSample, 0, 64);
 	
 
 
@@ -118,6 +121,24 @@ void InitEngine(void)
 //****************************** LOOP
 void EngineLoop(void)
 {
+	while(1)
+	{
+	
+		systemUnuse();
+		if(!engine.musicOn)
+		{
+			engine.musicOn = 1;
+			mt_install_cia(g_pCustom,0,0);
+			//InitAudio();
+		}	
+		mt_init(g_pCustom, module, 0, 1);
+		mt_Enable = 1;
+		mt_MusicChannels = 2;
+		mt_music(g_pCustom);
+		mt_end(g_pCustom);
+
+		systemUse();
+	}
 	while(!engine.exitFlag)
 	{
 		ProcessJoystick();
@@ -162,6 +183,8 @@ void EngineDestroy(void)
 	CloseJoystick();
 	ViewOff();
 	FreeView();
+	StopSample(0);
+	DestroyAudio();
 
 	FreeTextBitmap(engine.pBitmapVelocity);
 	FreeTextBitmap(engine.pBitmapScore);
@@ -172,6 +195,7 @@ void EngineDestroy(void)
 	FreeTextBitmap(engine.pBitmapScoreLabel);
 	FreeTextBitmap(engine.pBitmapTimeLabel);
 	FreeTextBitmap(engine.pBitmapHeightLabel);
+	
 
 	free(engine.activeBitmap);
 	free(engine.shipBitmap);

@@ -59,7 +59,7 @@ typedef struct PlatformScreen
 #ifdef AMIGA
 #include <ace/utils/font.h>
 typedef tFont Font;
-typedef tTextBitMap TextBitmap; 
+typedef tTextBitMap TextBitMap; 
 
 #else
 
