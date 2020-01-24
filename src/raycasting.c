@@ -329,11 +329,19 @@ void ProcessRayCastsProgressive4x4(WORD (*rayCastX), WORD (*rayCastY), UWORD (*m
 
 	//for each vertical line
     
+ #if AMIGA
 
+    UWORD *firstCol = engine.renderer.plane1W + (YSIZEEVEN+1)*PLANEWIDTHWORD*2;
+    UWORD *secondCol = engine.renderer.plane2W + (YSIZEEVEN+1)*PLANEWIDTHWORD*2;
+    UWORD *thirdCol = engine.renderer.plane3W + (YSIZEEVEN+1)*PLANEWIDTHWORD*2;
+    UWORD *fourthCol = engine.renderer.plane4W + (YSIZEEVEN+1)*PLANEWIDTHWORD*2;
+
+    #else
     UWORD *firstCol = engine.renderer.planes + (YSIZEEVEN+1)*PLANEWIDTHWORD*8;
     UWORD *secondCol = engine.renderer.planes + (YSIZEEVEN+1)*PLANEWIDTHWORD*8 + 1;
     UWORD *thirdCol = engine.renderer.planes + (YSIZEEVEN+1)*PLANEWIDTHWORD*8 + 2;
     UWORD *fourthCol = engine.renderer.planes + (YSIZEEVEN+1)*PLANEWIDTHWORD*8 + 3;
+	#endif
 
 
     UWORD planeStride = PLANEWIDTHWORD*2;
@@ -341,11 +349,17 @@ void ProcessRayCastsProgressive4x4(WORD (*rayCastX), WORD (*rayCastY), UWORD (*m
 	UWORD word1, word2, word3, word4;
 	for(UBYTE iVert=screenStart;iVert<screenEnd;iVert++)
 	{
-        
+        #if AMIGA
+        UWORD *firstPos = firstCol + iVert;
+        UWORD *secondPos = secondCol + iVert;
+        UWORD *thirdPos = thirdCol + iVert;
+        UWORD *fourthPos = fourthCol + iVert;
+        #else
         UWORD *firstPos = firstCol + iVert*4;
         UWORD *secondPos = secondCol + iVert*4;
         UWORD *thirdPos = thirdCol + iVert*4;
         UWORD *fourthPos = fourthCol + iVert*4;
+		#endif
 
 		//start from the bottom
 		sy = 0;
@@ -445,9 +459,13 @@ void ProcessRayCastsProgressive4x4(WORD (*rayCastX), WORD (*rayCastY), UWORD (*m
             *fourthPos = otherWord4;
             fourthPos -= planeStride;
 			//go step higher in the raycast table
-            
+            #if AMIGA
+            sy+=2;
+            #else
             sy += 1;
+			#endif
 		}
+		
 		sx += 4;//go to the next vertical line
 	}
 }
@@ -475,11 +493,19 @@ void ProcessRayCastsProgressive4x4NonInterleaved(WORD (*rayCastX), WORD (*rayCas
 
 	//for each vertical line
     
+#if AMIGA
 
+    UWORD *firstCol = engine.renderer.plane1W + (YSIZEEVEN+1)*PLANEWIDTHWORD*2;
+    UWORD *secondCol = engine.renderer.plane2W + (YSIZEEVEN+1)*PLANEWIDTHWORD*2;
+    UWORD *thirdCol = engine.renderer.plane3W + (YSIZEEVEN+1)*PLANEWIDTHWORD*2;
+    UWORD *fourthCol = engine.renderer.plane4W + (YSIZEEVEN+1)*PLANEWIDTHWORD*2;
+
+    #else
     UWORD *firstCol = engine.renderer.planes + (YSIZEEVEN+1)*PLANEWIDTHWORD*8;
     UWORD *secondCol = engine.renderer.planes + (YSIZEEVEN+1)*PLANEWIDTHWORD*8 + 1;
     UWORD *thirdCol = engine.renderer.planes + (YSIZEEVEN+1)*PLANEWIDTHWORD*8 + 2;
     UWORD *fourthCol = engine.renderer.planes + (YSIZEEVEN+1)*PLANEWIDTHWORD*8 + 3;
+	#endif
 
 
     UWORD planeStride = PLANEWIDTHWORD;
@@ -487,11 +513,17 @@ void ProcessRayCastsProgressive4x4NonInterleaved(WORD (*rayCastX), WORD (*rayCas
 	UWORD word1, word2, word3, word4;
 	for(UBYTE iVert=screenStart;iVert<screenEnd;iVert++)
 	{
-        
+        #if AMIGA
+        UWORD *firstPos = firstCol + iVert;
+        UWORD *secondPos = secondCol + iVert;
+        UWORD *thirdPos = thirdCol + iVert;
+        UWORD *fourthPos = fourthCol + iVert;
+        #else
         UWORD *firstPos = firstCol + iVert*4;
         UWORD *secondPos = secondCol + iVert*4;
         UWORD *thirdPos = thirdCol + iVert*4;
         UWORD *fourthPos = fourthCol + iVert*4;
+		#endif
 
 		//start from the bottom
 		sy = 0;
@@ -623,8 +655,11 @@ void ProcessRayCastsProgressive4x4NonInterleaved(WORD (*rayCastX), WORD (*rayCas
             *fourthPos = otherWord4;
             fourthPos -= planeStride;
 			//go step higher in the raycast table
-            
+            #if AMIGA
+            sy+=2;
+            #else
             sy += 1;
+			#endif
 		}
 		sx += 4;//go to the next vertical line
 	}
@@ -653,11 +688,19 @@ void ProcessRayCastsProgressive(WORD (*rayCastX), WORD (*rayCastY), UWORD (*map)
 
 	//for each vertical line
     
+ 	#if AMIGA
 
+    UWORD *firstCol = engine.renderer.plane1W + (YSIZEODD+1)*PLANEWIDTHWORD*2;
+    UWORD *secondCol = engine.renderer.plane2W + (YSIZEODD+1)*PLANEWIDTHWORD*2;
+    UWORD *thirdCol = engine.renderer.plane3W + (YSIZEODD+1)*PLANEWIDTHWORD*2;
+    UWORD *fourthCol = engine.renderer.plane4W + (YSIZEODD+1)*PLANEWIDTHWORD*2;
+
+    #else
     UWORD *firstCol = engine.renderer.planes + (YSIZEODD+1)*PLANEWIDTHWORD*4;
     UWORD *secondCol = engine.renderer.planes + (YSIZEODD+1)*PLANEWIDTHWORD*4 + 1;
     UWORD *thirdCol = engine.renderer.planes + (YSIZEODD+1)*PLANEWIDTHWORD*4 + 2;
     UWORD *fourthCol = engine.renderer.planes + (YSIZEODD+1)*PLANEWIDTHWORD*4 + 3;
+	#endif
 
 
     UWORD planeStride = PLANEWIDTHWORD*2;
@@ -665,11 +708,18 @@ void ProcessRayCastsProgressive(WORD (*rayCastX), WORD (*rayCastY), UWORD (*map)
 	UWORD word1, word2, word3, word4;
 	for(UBYTE iVert=screenStart;iVert<screenEnd;iVert++)
 	{
-        
+         
+        #if AMIGA
+        UWORD *firstPos = firstCol + iVert;
+        UWORD *secondPos = secondCol + iVert;
+        UWORD *thirdPos = thirdCol + iVert;
+        UWORD *fourthPos = fourthCol + iVert;
+        #else
         UWORD *firstPos = firstCol + iVert*4;
         UWORD *secondPos = secondCol + iVert*4;
         UWORD *thirdPos = thirdCol + iVert*4;
         UWORD *fourthPos = fourthCol + iVert*4;
+		#endif
 
 		//start from the bottom
 		sy = 0;
@@ -775,8 +825,11 @@ void ProcessRayCastsProgressive(WORD (*rayCastX), WORD (*rayCastY), UWORD (*map)
             *fourthPos = word4;
             fourthPos -= planeStride;
 			//go step higher in the raycast table
-            
+            #if AMIGA
+            sy+=4;
+            #else
             sy += 2;
+			#endif
 		}
 		sx += 6;//go to the next vertical line
 	}
@@ -805,12 +858,21 @@ void ProcessRayCastsProgressiveNonInterleaved(WORD (*rayCastX), WORD (*rayCastY)
 
 
 	//for each vertical line
-    
+    #if AMIGA
+
+    UWORD *firstCol = engine.renderer.plane1W + (YSIZEODD+1)*PLANEWIDTHWORD*2;
+    UWORD *secondCol = engine.renderer.plane2W + (YSIZEODD+1)*PLANEWIDTHWORD*2;
+    UWORD *thirdCol = engine.renderer.plane3W + (YSIZEODD+1)*PLANEWIDTHWORD*2;
+    UWORD *fourthCol = engine.renderer.plane4W + (YSIZEODD+1)*PLANEWIDTHWORD*2;
+
+    #else
 
     UWORD *firstCol = engine.renderer.planes + (YSIZEODD+1)*PLANEWIDTHWORD*4;
     UWORD *secondCol = engine.renderer.planes + (YSIZEODD+1)*PLANEWIDTHWORD*4 + 1;
     UWORD *thirdCol = engine.renderer.planes + (YSIZEODD+1)*PLANEWIDTHWORD*4 + 2;
     UWORD *fourthCol = engine.renderer.planes + (YSIZEODD+1)*PLANEWIDTHWORD*4 + 3;
+
+	#endif
 
 
     UWORD planeStride = PLANEWIDTHWORD;
@@ -818,11 +880,17 @@ void ProcessRayCastsProgressiveNonInterleaved(WORD (*rayCastX), WORD (*rayCastY)
 	UWORD word1, word2, word3, word4;
 	for(UBYTE iVert=screenStart;iVert<screenEnd;iVert++)
 	{
-        
+        #if AMIGA
+        UWORD *firstPos = firstCol + iVert;
+        UWORD *secondPos = secondCol + iVert;
+        UWORD *thirdPos = thirdCol + iVert;
+        UWORD *fourthPos = fourthCol + iVert;
+        #else
         UWORD *firstPos = firstCol + iVert*4;
         UWORD *secondPos = secondCol + iVert*4;
         UWORD *thirdPos = thirdCol + iVert*4;
         UWORD *fourthPos = fourthCol + iVert*4;
+		#endif
 
 		//start from the bottom
 		sy = 0;
@@ -933,8 +1001,11 @@ void ProcessRayCastsProgressiveNonInterleaved(WORD (*rayCastX), WORD (*rayCastY)
             *fourthPos = word41;
             fourthPos -= planeStride;
 			//go step higher in the raycast table
-            
+            #if AMIGA
+            sy+=2;
+            #else
             sy += 1;
+			#endif
 		}
 		sx += 6;//go to the next vertical line
 	}
@@ -1014,11 +1085,19 @@ UBYTE px, UBYTE py, UBYTE ph, UBYTE screenStart, UBYTE screenEnd, UBYTE zStart)
             baseX++;
         }
 
+#if AMIGA
 
+    UWORD *planePos1 = engine.renderer.plane1W + yOffset + x;
+    UWORD *planePos2 = engine.renderer.plane2W + yOffset + x;
+    UWORD *planePos3 = engine.renderer.plane3W + yOffset + x;
+    UWORD *planePos4 = engine.renderer.plane4W + yOffset + x;
+    
+    #else
         UWORD *planePos1 = engine.renderer.planes + yOffset + x*4;
         UWORD *planePos2 = engine.renderer.planes + yOffset + x*4 + 1;
         UWORD *planePos3 = engine.renderer.planes + yOffset + x*4 + 2;
         UWORD *planePos4 = engine.renderer.planes + yOffset + x*4 + 3;
+		#endif
         UWORD sp = 0;
 
         for(UBYTE y=0;y<YSIZEODD;y++)
@@ -1125,13 +1204,21 @@ UBYTE px, UBYTE py, UBYTE ph, UBYTE screenStart, UBYTE screenEnd, UBYTE zStart)
             baseX++;
         }
 
+#if AMIGA
 
+    UWORD *planePos1 = engine.renderer.plane1W + yOffset + x;
+    UWORD *planePos2 = engine.renderer.plane2W + yOffset + x;
+    UWORD *planePos3 = engine.renderer.plane3W + yOffset + x;
+    UWORD *planePos4 = engine.renderer.plane4W + yOffset + x;
+    
+    #else
         UWORD *planePos1 = engine.renderer.planes + yOffset + x*4;
         UWORD *planePos2 = engine.renderer.planes + yOffset + x*4 + 1;
         UWORD *planePos3 = engine.renderer.planes + yOffset + x*4 + 2;
         UWORD *planePos4 = engine.renderer.planes + yOffset + x*4 + 3;
-        UWORD sp = 0;
-
+        
+		#endif
+		UWORD sp = 0;
         for(UBYTE y=0;y<YSIZEEVEN;y++)
 	    {
 
@@ -1251,11 +1338,19 @@ UBYTE px, UBYTE py, UBYTE ph, UBYTE screenStart, UBYTE screenEnd, UBYTE zStart)
 
             baseX++;
         }
+#if AMIGA
 
+    UWORD *planePos1 = engine.renderer.plane1W + yOffset + x;
+    UWORD *planePos2 = engine.renderer.plane2W + yOffset + x;
+    UWORD *planePos3 = engine.renderer.plane3W + yOffset + x;
+    UWORD *planePos4 = engine.renderer.plane4W + yOffset + x;
+    
+    #else
         UWORD *planePos1 = engine.renderer.planes + yOffset + x*4;
         UWORD *planePos2 = engine.renderer.planes + yOffset + x*4 + 1;
         UWORD *planePos3 = engine.renderer.planes + yOffset + x*4 + 2;
         UWORD *planePos4 = engine.renderer.planes + yOffset + x*4 + 3;
+		#endif
         UWORD sp = 0;
 
         for(UBYTE y=0;y<YSIZEODD;y++)
@@ -1352,10 +1447,19 @@ UBYTE px, UBYTE py, UBYTE ph, UBYTE screenStart, UBYTE screenEnd, UBYTE zStart)
         }
 
 
+#if AMIGA
+
+    UWORD *planePos1 = engine.renderer.plane1W + yOffset + x;
+    UWORD *planePos2 = engine.renderer.plane2W + yOffset + x;
+    UWORD *planePos3 = engine.renderer.plane3W + yOffset + x;
+    UWORD *planePos4 = engine.renderer.plane4W + yOffset + x;
+    
+    #else
         UWORD *planePos1 = engine.renderer.planes + yOffset + x*4;
         UWORD *planePos2 = engine.renderer.planes + yOffset + x*4 + 1;
         UWORD *planePos3 = engine.renderer.planes + yOffset + x*4 + 2;
         UWORD *planePos4 = engine.renderer.planes + yOffset + x*4 + 3;
+		#endif
         UWORD sp = 0;
 
         for(UBYTE y=0;y<YSIZEEVEN;y++)

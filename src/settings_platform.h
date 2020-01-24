@@ -4,6 +4,8 @@
 
 #include <ace/managers/viewport/simplebuffer.h>
 
+#define PLANEWIDTH 40
+#define PLANEWIDTHWORD 20
 #define TERRAINDEPTH 64
 #define PLANEHEIGHT 256
 #define XTURNBUFFOR 55
@@ -27,6 +29,8 @@
 #define UBYTE  unsigned char
 #define BYTE	signed char
 
+#define PLANEWIDTH 160
+#define PLANEWIDTHWORD 80
 #define TERRAINDEPTH 32
 #define PLANEHEIGHT 200
 #define XTURNBUFFOR 55

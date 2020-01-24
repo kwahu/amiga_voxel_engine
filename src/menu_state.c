@@ -26,6 +26,8 @@ void RunMenuState()
 
     while(!engine.menuState.infoScreen)
     {
+        
+  		mt_music();
         ProcessJoystick();
         if(getJoy(1, FIRE) && !FireDown)
         {
@@ -160,6 +162,7 @@ void RunMenuState()
             engine.menuState.infoScreen = 1;
             engine.exitFlag = 1;
         }
+        VSyncWait();
     }
 
     InitGameState();

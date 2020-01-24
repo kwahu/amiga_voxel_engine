@@ -2,15 +2,20 @@
 #ifdef AMIGA
 
 #include <exec/types.h>
-#include "ptplayer.h"
+//#include "ptplayer.h"
 
 //#include <ace/managers/audio.h>
 #include <ace/utils/custom.h>
+//#include "verge.h"
 //#include <ace/utils/ptplayer.h>
 //#include "SDI_compiler.h"
 //#include "p61.h"
 
+CHIP const unsigned char music[168660];
 
+long mt_init(const unsigned char*);
+void mt_music();
+void mt_end();
 
 void Play()
 {
@@ -18,19 +23,15 @@ void Play()
 }
 
 
-UBYTE *ReadModFile(char *fileName)
+void ReadModFile(char *fileName)
 {
     tFile *file = fileOpen(fileName, "rb");
 
     ULONG fileSize = fileGetSize(fileName);
 
-    systemUse();
-    UBYTE *fileMem = (UBYTE *)malloc(58360);
-    systemUnuse();
-    fileRead(file, fileMem, 58360);
+    fileRead(file, music, fileSize);
     fileClose(file);
 
-    return fileMem;
 }
 
 void InitAudio()

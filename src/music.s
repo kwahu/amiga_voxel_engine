@@ -1,8 +1,58 @@
 
+	XDEF _mt_init
+	XDEF _mt_music
+	XDEF _mt_end
+	XDEF _wait1
+	XDEF _wait2
+	XDEF _waitblit
+	XDEF _chan3played
+
+
+	Section	HYPERX,CODE_C
+
+_chan3played:
+	tst.w   mt_chan3temp
+	beq.s   chan3played
+	moveq #1,d0
+	rts
+chan3played:
+	moveq #0,d0
+	rts
+
+
+_waitblit:        
+        btst    #6,$dff002
+waitblit1 
+        btst    #6,$dff002    
+        bne.s   waitblit1
+        rts
+
+_wait1:
+	move.l	#$1ff00,D1	; bit per la selezione tramite AND
+	MOVE.L	#$13000,d2	; linea da aspettare = $130, ossia 304
+Waity1:
+	MOVE.L	$dff004,D0	; VPOSR e VHPOSR - $dff004/$dff006
+	AND.L	D1,D0		; Seleziona solo i bit della pos. verticale
+	CMP.L	D2,D0		; aspetta la linea $130 (304)
+	BNE.S	Waity1
+	rts
+
+_wait2:
+	MOVE.L	#$1ff00,d1	; bit per la selezione tramite AND
+	MOVE.L	#$13000,d2	; linea da aspettare = $130, ossia 304
+Aspetta:
+	MOVE.L	$dff004,D0	; VPOSR e VHPOSR - $dff004/$dff006
+	AND.L	D1,D0		; Seleziona solo i bit della pos. verticale
+	CMP.L	D2,D0		; aspetta la linea $130 (304)
+	BEQ.S	Aspetta
+	rts
+	
 ;**************************************************
 ;*    ----- Protracker V2.1A Playroutine -----    *
 ;* Peter "CRAYON" Hanning / Mushroom Studios 1992 *
 ;*     Vinterstigen 12, 14440 Ronninge, Sweden    *
+;*						  *
+;* Fixata 100% by Fabio "Randy" Ciucci /Ram Jam   *
 ;**************************************************
 
 n_note		EQU	0  ; W
@@ -32,8 +82,9 @@ n_funkoffset	EQU	35 ; B
 n_wavestart	EQU	36 ; L
 n_reallength	EQU	40 ; W
 
-mt_init:
-	LEA	mt_data,A0
+_mt_init:
+	move.l	mt_data,A0
+	move.l 4(sp),a0
 	MOVE.L	A0,mt_SongDataPtr
 	MOVE.L	A0,A1
 	LEA	952(A1),A1
@@ -63,7 +114,7 @@ mtloop3:
 	MOVE.W	42(A0),D1
 	ASL.L	#1,D1
 	ADD.L	D1,A2
-	ADD.L	#30,A0
+	ADD.w	#30,A0
 	DBRA	D0,mtloop3
 
 	OR.B	#2,$BFE001
@@ -71,7 +122,7 @@ mtloop3:
 	CLR.B	mt_counter
 	CLR.B	mt_SongPos
 	CLR.W	mt_PatternPos
-mt_end:
+_mt_end:
 	CLR.W	$DFF0A8
 	CLR.W	$DFF0B8
 	CLR.W	$DFF0C8
@@ -79,7 +130,7 @@ mt_end:
 	MOVE.W	#$F,$DFF096
 	RTS
 
-mt_music:
+_mt_music:
 	MOVEM.L	D0-D4/A0-A6,-(SP)
 	ADDQ.B	#1,mt_counter
 	MOVE.B	mt_counter(PC),D0
@@ -151,7 +202,7 @@ mt_plvskip:
 	MOVE.B	(A6),D0
 	AND.B	#$F0,D0
 	OR.B	D0,D2
-	TST.B	D2
+;	TST.B	D2
 	BEQ.w	mt_SetRegs
 	MOVEQ	#0,D3
 	LEA	mt_SampleStarts(PC),A1
@@ -165,10 +216,10 @@ mt_plvskip:
 	MOVE.B	2(A3,D4.L),n_finetune(A6)
 	MOVE.B	3(A3,D4.L),n_volume(A6)
 	MOVE.W	4(A3,D4.L),D3 ; Get repeat
-	TST.W	D3
+;	TST.W	D3
 	BEQ.S	mt_NoLoop
 	MOVE.L	n_start(A6),D2	; Get start
-	ASL.W	#1,D3
+	add.w	d3,d3
 	ADD.L	D3,D2		; Add repeat
 	MOVE.L	D2,n_loopstart(A6)
 	MOVE.L	D2,n_wavestart(A6)
@@ -258,27 +309,27 @@ mt_trenoc:
 	MOVE.W	n_dmabit(A6),D0
 	OR.W	D0,mt_DMACONtemp
 	BRA.w	mt_CheckMoreEfx
- 
-mt_SetDMA:
-	moveq	#4,d0
+
+WaitaDMA:
+	move.l	d1,-(SP)
+	moveq	#5,d0
 mt_wai2:
 	move.b	$DFF006,d1
 mt_wai3:
 	cmp.b	$DFF006,d1
 	beq.s	mt_wai3
 	dbra	d0,mt_wai2
+	move.l	(SP)+,d1
+	rts
+ 
+mt_SetDMA:
+	bsr.s	WaitaDMA
 
 	MOVE.W	mt_DMACONtemp(PC),D0
 	OR.W	#$8000,D0
 	MOVE.W	D0,$DFF096
 
-	moveq	#4,d0
-mt_wai4:
-	move.b	$DFF006,d1
-mt_wai5:
-	cmp.b	$DFF006,d1
-	beq.s	mt_wai5
-	dbra	d0,mt_wai4
+	bsr.s	WaitaDMA
 
 	LEA	$DFF000,A5
 	LEA	mt_chan4temp(PC),A6
@@ -398,7 +449,7 @@ mt_Arpeggio2:
 	BRA.S	mt_Arpeggio4
 
 mt_Arpeggio3:
-	ASL.W	#1,D0
+	add.w	d0,d0
 	MOVEQ	#0,D1
 	MOVE.B	n_finetune(A6),D1
 	MULU.w	#36*2,D1
@@ -427,7 +478,7 @@ mt_PortaUp:
 	MOVEQ	#0,D0
 	MOVE.B	n_cmdlo(A6),D0
 	AND.B	mt_LowMask(PC),D0
-	MOVE.B	#$FF,mt_LowMask
+	st.B	mt_LowMask
 	SUB.W	D0,n_period(A6)
 	MOVE.W	n_period(A6),D0
 	AND.W	#$0FFF,D0
@@ -449,7 +500,7 @@ mt_PortaDown:
 	CLR.W	D0
 	MOVE.B	n_cmdlo(A6),D0
 	AND.B	mt_LowMask(PC),D0
-	MOVE.B	#$FF,mt_LowMask
+	st.B	mt_LowMask
 	ADD.W	D0,n_period(A6)
 	MOVE.W	n_period(A6),D0
 	AND.W	#$0FFF,D0
@@ -840,7 +891,7 @@ mt_E_Commands:
 mt_FilterOnOff:
 	MOVE.B	n_cmdlo(A6),D0
 	AND.B	#1,D0
-	ASL.B	#1,D0
+	add.b	d0,d0
 	AND.B	#$FD,$BFE001
 	OR.B	D0,$BFE001
 	RTS	
@@ -921,23 +972,15 @@ mt_DoRetrig:
 	MOVE.W	n_dmabit(A6),$DFF096	; Channel DMA off
 	MOVE.L	n_start(A6),(A5)	; Set sampledata pointer
 	MOVE.W	n_length(A6),4(A5)	; Set length
-	moveq	#4,d0
-mt_wai4b:
-	move.b	$DFF006,d1
-mt_wai5b:
-	cmp.b	$DFF006,d1
-	beq.s	mt_wai5b
-	dbra	d0,mt_wai4b
+
+	bsr.w	WaitaDMA
+
 	MOVE.W	n_dmabit(A6),D0
-	BSET	#15,D0
+	ori.w	#$8000,d0
 	MOVE.W	D0,$DFF096
-	moveq	#4,d0
-mt_wai6:
-	move.b	$DFF006,d1
-mt_wai7:
-	cmp.b	$DFF006,d1
-	beq.s	mt_wai7
-	dbra	d0,mt_wai6
+
+	bsr.w	WaitaDMA
+
 	MOVE.L	n_loopstart(A6),(A5)
 	MOVE.L	n_replen(A6),4(A5)
 mt_rtnend:
@@ -1036,14 +1079,20 @@ mt_funkend:
 	RTS
 
 
+	cnop	0,4
+
 mt_FunkTable:
 	dc.b 0,5,6,7,8,10,11,13,16,19,22,26,32,43,64,128
+
+	cnop	0,4
 
 mt_VibratoTable:
 	dc.b	0,24,49,74,97,120,141,161
 	dc.b	180,197,212,224,235,244,250,253
 	dc.b	255,253,250,244,235,224,212,197
 	dc.b	180,161,141,120,97,74,49,24
+
+	cnop	0,4
 
 mt_PeriodTable:
 ; Tuning 0, Normal
@@ -1111,30 +1160,48 @@ mt_PeriodTable:
 	dc.w	431,407,384,363,342,323,305,288,272,256,242,228
 	dc.w	216,203,192,181,171,161,152,144,136,128,121,114
 
+	cnop	0,4
+
 mt_chan1temp:	dc.l	0,0,0,0,0,$10000,0,0,0,0,0
+	cnop	0,4
 mt_chan2temp:	dc.l	0,0,0,0,0,$20000,0,0,0,0,0
+	cnop	0,4
 mt_chan3temp:	dc.l	0,0,0,0,0,$40000,0,0,0,0,0
+	cnop	0,4
 mt_chan4temp:	dc.l	0,0,0,0,0,$80000,0,0,0,0,0
 
+	cnop	0,4
 mt_SampleStarts:
 	dc.l	0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
 	dc.l	0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
 
+	cnop	0,4
 mt_SongDataPtr:	dc.l 0
 
+	cnop	0,4
 mt_speed:	dc.b 6
+	cnop	0,4
 mt_counter:	dc.b 0
+	cnop	0,4
 mt_SongPos:	dc.b 0
+	cnop	0,4
 mt_PBreakPos:	dc.b 0
+	cnop	0,4
 mt_PosJumpFlag:	dc.b 0
+	cnop	0,4
 mt_PBreakFlag:	dc.b 0
+	cnop	0,4
 mt_LowMask:	dc.b 0
+	cnop	0,4
 mt_PattDelTime:	dc.b 0
+	cnop	0,4
 mt_PattDelTime2:
 		dc.b 0,0
-
+	cnop	0,4
 mt_PatternPos:	dc.w 0
+	cnop	0,4
 mt_DMACONtemp:	dc.w 0
 
-mt_data	incbin  "Szit_Czip.mod"
+	SECTION GRAPHICS,DATA_C
 
+mt_data	dc.l 0

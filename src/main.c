@@ -34,7 +34,7 @@ void InitEngine(void)
 	engine.exitFlag = 0;
 
 	engine.musicOn = 0;
-	engine.music = ReadModFile("Szit_Czip.mod");
+	ReadModFile("data/verge.mod");
 	InitScreen();
 	InitInput();
 
@@ -112,6 +112,8 @@ void InitEngine(void)
 	
 	VSyncAndDraw();
 	//PlaySample(engine.audioSample, 0, 64);
+
+  	mt_init(music);
 	
 
 
@@ -122,28 +124,26 @@ void InitEngine(void)
 void EngineLoop(void)
 {
 	
-	if(!engine.musicOn)
-	{
-		systemUnuse();
+	// if(!engine.musicOn)
+	// {
+	// 	systemUnuse();
 
-		engine.musicOn = 1;
-		mt_install_cia(g_pCustom,0,0);
+	// 	engine.musicOn = 1;
+	// 	mt_install_cia(g_pCustom,0,0);
 
-		mt_init(g_pCustom, engine.music, 0, 1);
-		mt_Enable = 1;
-		mt_MusicChannels = 2;
-		while(!getKey(ESCAPE))
-		{
-			mt_music(g_pCustom);
-			int a = 5;
-		}
-		mt_end(g_pCustom);
+	// 	mt_init(g_pCustom, engine.music, 0, 1);
+	// 	mt_Enable = 1;
+	// 	mt_MusicChannels = 2;
+	// 	while(!getKey(ESCAPE))
+	// 	{
+	// 		mt_music(g_pCustom);
+	// 		int a = 5;
+	// 	}
+	// 	mt_end(g_pCustom);
 
-		systemUse();
-	}
+	// 	systemUse();
+	// }
 
-	while(!engine.exitFlag)
-	{
 		ProcessJoystick();
 		
 		TimeStep();
@@ -176,7 +176,6 @@ void EngineLoop(void)
 
 
 		engine.loopEndTime = getCurrentTime();
-	}
 }
 
 //****************************** DESTROY

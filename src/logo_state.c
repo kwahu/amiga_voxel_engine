@@ -16,6 +16,8 @@ void InitLogoState()
 
 void RunLogoState()
 {
+	
+  	mt_music();
     animateIntro();
 
     engine.logoState.screenDuration -= engine.deltaTime;
@@ -26,6 +28,7 @@ void RunLogoState()
         engine.logoState.screenIndex = (engine.logoState.screenIndex + 1) % 4;
         switchIntroScreen();
     }
+    VSyncAndDraw();
 
 }
 
@@ -89,7 +92,7 @@ void animateIntro()
 			engine.renderer.bitmapPalette[i] = ((((engine.activePalette[i * 4 + 2]/4) >> PALETTE_SHIFT) << 8) +
 								(((engine.activePalette[i * 4 + 1]/4) >> PALETTE_SHIFT) << 4) + ((engine.activePalette[i * 4 + 0]/4) >> PALETTE_SHIFT));
 		}
-		//SetPalette();
+		SetPalette();
 		engine.logoState.fadeInStatus[3] = 1;
 	}
 	if(engine.logoState.screenDuration < 7300000 && !engine.logoState.fadeInStatus[2])
@@ -99,7 +102,7 @@ void animateIntro()
 			engine.renderer.bitmapPalette[i] = ((((engine.activePalette[i * 4 + 2]/2) >> PALETTE_SHIFT) << 8) +
 								(((engine.activePalette[i * 4 + 1]/2) >> PALETTE_SHIFT) << 4) + ((engine.activePalette[i * 4 + 0]/2) >> PALETTE_SHIFT));
 		}
-		//SetPalette();
+		SetPalette();
 		engine.logoState.fadeInStatus[2] = 1;
 	}
 	if(engine.logoState.screenDuration < 7200000 && !engine.logoState.fadeInStatus[1])
@@ -109,7 +112,7 @@ void animateIntro()
 			engine.renderer.bitmapPalette[i] = ((((engine.activePalette[i * 4 + 2]*3/4) >> PALETTE_SHIFT) << 8) +
 								(((engine.activePalette[i * 4 + 1]*3/4) >> PALETTE_SHIFT) << 4) + ((engine.activePalette[i * 4 + 0]*3/4) >> PALETTE_SHIFT));
 		}
-		//SetPalette();
+		SetPalette();
 		engine.logoState.fadeInStatus[1] = 1;
 	}
 	if(engine.logoState.screenDuration < 7100000 && !engine.logoState.fadeInStatus[0])
@@ -119,7 +122,7 @@ void animateIntro()
 			engine.renderer.bitmapPalette[i] = (((engine.activePalette[i * 4 + 2] >> PALETTE_SHIFT) << 8) +
 								((engine.activePalette[i * 4 + 1] >> PALETTE_SHIFT) << 4) + (engine.activePalette[i * 4 + 0] >> PALETTE_SHIFT));
 		}
-		//SetPalette();
+		SetPalette();
 		engine.logoState.fadeInStatus[0] = 1;
 	}
 
@@ -130,7 +133,7 @@ void animateIntro()
 			engine.renderer.bitmapPalette[i] = ((((engine.activePalette[i * 4 + 2]*3/4) >> PALETTE_SHIFT) << 8) +
 								(((engine.activePalette[i * 4 + 1]*3/4) >> PALETTE_SHIFT) << 4) + ((engine.activePalette[i * 4 + 0]*3/4) >> PALETTE_SHIFT));
 		}
-		//SetPalette();
+		SetPalette();
 		engine.logoState.fadeOutStatus[0] = 1;
 	}
 	if(engine.logoState.screenDuration < 300000 && !engine.logoState.fadeOutStatus[1])
@@ -140,7 +143,7 @@ void animateIntro()
 			engine.renderer.bitmapPalette[i] = ((((engine.activePalette[i * 4 + 2]/2) >> PALETTE_SHIFT) << 8) +
 								(((engine.activePalette[i * 4 + 1]/2) >> PALETTE_SHIFT) << 4) + ((engine.activePalette[i * 4 + 0]/2) >> PALETTE_SHIFT));
 		}
-		//SetPalette();
+		SetPalette();
 		engine.logoState.fadeOutStatus[1] = 1;
 	}
 	if(engine.logoState.screenDuration < 200000 && !engine.logoState.fadeOutStatus[2])
@@ -150,7 +153,7 @@ void animateIntro()
 			engine.renderer.bitmapPalette[i] = ((((engine.activePalette[i * 4 + 2]/4) >> PALETTE_SHIFT) << 8) +
 								(((engine.activePalette[i * 4 + 1]/4) >> PALETTE_SHIFT) << 4) + ((engine.activePalette[i * 4 + 0]/4) >> PALETTE_SHIFT));
 		}
-		//SetPalette();
+		SetPalette();
 		engine.logoState.fadeOutStatus[2] = 1;
 	}
 	if(engine.logoState.screenDuration < 100000 && !engine.logoState.fadeOutStatus[3])
@@ -159,7 +162,7 @@ void animateIntro()
 		{
 			engine.renderer.bitmapPalette[i] = 0;
 		}
-		//SetPalette();
+		SetPalette();
 		engine.logoState.fadeOutStatus[3] = 1;
 	}
 }

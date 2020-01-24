@@ -4,6 +4,7 @@
 #include <stdlib.h>
 #include <stdint.h>
 #include <stdio.h>
+#include <stddef.h>
 #include "settings_platform.h"
 #include "sound_platform.h"
 
@@ -19,9 +20,6 @@
 
 #define MAPSIZE 128
 #define MAPLENGTH 11
-
-#define PLANEWIDTH 160
-#define PLANEWIDTHWORD 80
 
 #define LOGORUNTIME 7500000
 #define SKY_COLOR 33
@@ -108,7 +106,10 @@ typedef enum Cutscene
 typedef struct Renderer
 {
     #ifdef AMIGA
-    UWORD planes[PLANEWIDTHWORD*PLANEHEIGHT];
+    UWORD plane1W[PLANEWIDTHWORD*PLANEHEIGHT];
+    UWORD plane2W[PLANEWIDTHWORD*PLANEHEIGHT];
+    UWORD plane3W[PLANEWIDTHWORD*PLANEHEIGHT];
+    UWORD plane4W[PLANEWIDTHWORD*PLANEHEIGHT];
     #else
     uint16_t *planes;
     #endif
@@ -148,6 +149,7 @@ typedef struct Renderer
 
 } Renderer;
 
+
 typedef struct Engine
 {
     State currentState;
@@ -175,7 +177,6 @@ typedef struct Engine
     TextBitMap *pBitmapVelocityLabel, *pBitmapVelocity, *pBitmapScore, *pBitmapScoreLabel, *pBitmapInfo[10];
 
     UBYTE musicOn;
-    UBYTE *music;
 
     UBYTE exitFlag;
 
