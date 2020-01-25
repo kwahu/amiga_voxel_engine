@@ -17,7 +17,6 @@ void InitLogoState()
 void RunLogoState()
 {
 	
-  	mt_music();
     animateIntro();
 
     engine.logoState.screenDuration -= engine.deltaTime;
@@ -28,7 +27,7 @@ void RunLogoState()
         engine.logoState.screenIndex = (engine.logoState.screenIndex + 1) % 4;
         switchIntroScreen();
     }
-    VSyncAndDraw();
+    VSyncWait();
 
 }
 

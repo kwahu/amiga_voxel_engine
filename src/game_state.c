@@ -115,7 +115,6 @@ void DrawGameStats()
 void RunGameState()
 {
 
-  	mt_music();
     UpdatePlayerPosition();
     if(CheckPlayerCollision())
     {

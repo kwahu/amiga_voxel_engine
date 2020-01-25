@@ -105,7 +105,8 @@ void InitEngine(void)
 
 
 	FreeTextBitmap(engine.informationText);
-	InitLogoState();
+	//InitLogoState();
+	InitGameState();
 	//*********************************** SELECT HARDWARE ***********************************************
 	ClearBuffor();
 	DrawBitmap4bCenter(engine.activeBitmap, &engine.activeBitmapHeader);
@@ -113,6 +114,9 @@ void InitEngine(void)
 	VSyncAndDraw();
 	//PlaySample(engine.audioSample, 0, 64);
 
+	//mt_install_cia(1);
+	mt_install_ciaNOPE(0, 1);
+	mt_initNOPE();
   	mt_init(music);
 	
 

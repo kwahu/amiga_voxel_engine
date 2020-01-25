@@ -27,7 +27,6 @@ void RunMenuState()
     while(!engine.menuState.infoScreen)
     {
         
-  		mt_music();
         ProcessJoystick();
         if(getJoy(1, FIRE) && !FireDown)
         {

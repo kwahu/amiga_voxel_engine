@@ -13,41 +13,18 @@ void CopyFastToChipW(tBitMap *bm)
 void DrawPanelsToScreen()
 {
 	CopyFastToChipW(engine.platformScreen.s_pBuffer->pBack);
-	// UBYTE * plane1 = engine.platformScreen.s_pBuffer->pBack->Planes[0];
-	// UBYTE * plane2 = engine.platformScreen.s_pBuffer->pBack->Planes[1];
-	// UBYTE * plane3 = engine.platformScreen.s_pBuffer->pBack->Planes[2];
-	// UBYTE * plane4 = engine.platformScreen.s_pBuffer->pBack->Planes[3];
-	// for(int i = 0; i < PLANEHEIGHT; ++i)
-	// {
-	// 	for(int j = 0; j < PLANEWIDTHWORD/4; ++j)
-	// 	{
-	// 		UBYTE shift = 0;
-	// 		UWORD plane1Val = engine.renderer.planes[i*PLANEWIDTHWORD + j*4];
-	// 		UWORD plane2Val = engine.renderer.planes[i*PLANEWIDTHWORD + j*4 + 1];
-	// 		UWORD plane3Val = engine.renderer.planes[i*PLANEWIDTHWORD + j*4 + 2];
-	// 		UWORD plane4Val = engine.renderer.planes[i*PLANEWIDTHWORD + j*4 + 3];
-
-	// 		plane1[i*(PLANEWIDTHWORD/2) + j*2] = plane1Val >> 8;
-	// 		plane2[i*(PLANEWIDTHWORD/2) + j*2] = plane2Val >> 8;
-	// 		plane3[i*(PLANEWIDTHWORD/2) + j*2] = plane3Val >> 8;
-	// 		plane4[i*(PLANEWIDTHWORD/2) + j*2] = plane4Val >> 8;
-
-	// 		plane1[i*(PLANEWIDTHWORD/2) + j*2 + 1] = plane1Val;
-	// 		plane2[i*(PLANEWIDTHWORD/2) + j*2 + 1] = plane2Val;
-	// 		plane3[i*(PLANEWIDTHWORD/2) + j*2 + 1] = plane3Val;
-	// 		plane4[i*(PLANEWIDTHWORD/2) + j*2 + 1] = plane4Val;
-	// 	}
-	// }
 }
 
 #define VSyncAndDraw() \
     viewLoad(engine.platformScreen.s_pView);	\
     vPortWaitForEnd(engine.platformScreen.s_pVPort);	\
-    DrawPanelsToScreen();	
+    DrawPanelsToScreen();	\
+	//mt_music();
 
 #define VSyncWait() \
     viewLoad(engine.platformScreen.s_pView);	\
-    vPortWaitForEnd(engine.platformScreen.s_pVPort);	
+    vPortWaitForEnd(engine.platformScreen.s_pVPort);	\
+	//mt_music();	
 
 void SetBitmapPalette(UBYTE *Palette)	
 {				

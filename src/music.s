@@ -1,4 +1,3 @@
-
 	XDEF _mt_init
 	XDEF _mt_music
 	XDEF _mt_end
@@ -83,7 +82,6 @@ n_wavestart	EQU	36 ; L
 n_reallength	EQU	40 ; W
 
 _mt_init:
-	move.l	mt_data,A0
 	move.l 4(sp),a0
 	MOVE.L	A0,mt_SongDataPtr
 	MOVE.L	A0,A1

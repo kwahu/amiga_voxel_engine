@@ -4,7 +4,6 @@
 
 void ShowDeathCutscene()
 {
-    mt_music();
     ClearBuffor();
     SetBitmapPalette(engine.activePalette);
     DrawBitmap4bCenter(engine.activeBitmap, &engine.activeBitmapHeader);
@@ -85,7 +84,6 @@ void ShowDeathCutscene()
         
     }
 
-    mt_music();
     VSyncAndDraw();
     UBYTE y = BASELINE+42;
     for(int i = 0; i < lines; ++i)
@@ -99,7 +97,6 @@ void ShowDeathCutscene()
     //wait 2 seconds
     while(!cont)
     {
-        mt_music();
         ProcessJoystick();
         if (getKey(ESCAPE))
         {
@@ -125,7 +122,6 @@ void ShowDeathCutscene()
 
 void ShowTooLateCutscene()
 {
-        mt_music();
     ClearBuffor();
  
    SetBitmapPalette(engine.activePalette);
@@ -167,7 +163,6 @@ void ShowTooLateCutscene()
         
     }
 
-        mt_music();
     VSyncAndDraw();
     UBYTE y = BASELINE+42;
     for(int i = 0; i < lines; ++i)
@@ -184,7 +179,6 @@ void ShowTooLateCutscene()
     while(!cont)
     {
 
-        mt_music();
         ProcessJoystick();
         if (getKey(ESCAPE))
         {
@@ -209,7 +203,6 @@ void ShowTooLateCutscene()
 void ShowWinCutscene()
 {
 
-        mt_music();
     LoadBitmapToMemory("data/fin");
     ClearBuffor();
     SetBitmapPalette(engine.activePalette);
@@ -314,7 +307,6 @@ void ShowWinCutscene()
     }
 
 
-        mt_music();
     VSyncAndDraw();
     UBYTE y = BASELINE+2;
     for(int i = 0; i < lines; ++i)
@@ -329,7 +321,6 @@ void ShowWinCutscene()
     while(!cont)
     {
 
-        mt_music();
     ProcessJoystick();
         if (getKey(ESCAPE))
         {

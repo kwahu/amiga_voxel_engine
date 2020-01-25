@@ -7,7 +7,7 @@
 //#include <ace/managers/audio.h>
 #include <ace/utils/custom.h>
 //#include "verge.h"
-//#include <ace/utils/ptplayer.h>
+#include <ace/utils/ptplayer.h>
 //#include "SDI_compiler.h"
 //#include "p61.h"
 
@@ -16,6 +16,7 @@ CHIP const unsigned char music[168660];
 long mt_init(const unsigned char*);
 void mt_music();
 void mt_end();
+
 
 void Play()
 {
