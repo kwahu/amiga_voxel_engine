@@ -46,16 +46,16 @@ void ASM mt_remove_cia(REG(a6, void *custom));
     When a1 is NULL the samples are assumed to be stored after the patterns.
 */
 
-//void ASM mt_init(REG(a6, void *custom),
-//	REG(a0, void *TrackerModule), REG(a1, void *Samples),
-//	REG(d0, UBYTE InitialSongPos));
+void ASM mt_init(REG(a6, void *custom),
+	REG(a0, void *TrackerModule), REG(a1, void *Samples),
+	REG(d0, UBYTE InitialSongPos));
 
 /*
   mt_end(a6=CUSTOM)
     Stop playing current module.
 */
 
-//void ASM mt_end(REG(a6, void *custom));
+void ASM mt_end(REG(a6, void *custom));
 
 /*
   mt_soundfx(a6=CUSTOM, a0=SamplePointer,

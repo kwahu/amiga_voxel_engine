@@ -105,7 +105,6 @@ void InitEngine(void)
 
 
 	FreeTextBitmap(engine.informationText);
-	//InitLogoState();
 	InitGameState();
 	//*********************************** SELECT HARDWARE ***********************************************
 	ClearBuffor();
@@ -114,10 +113,8 @@ void InitEngine(void)
 	VSyncAndDraw();
 	//PlaySample(engine.audioSample, 0, 64);
 
-	//mt_install_cia(1);
-	mt_install_ciaNOPE(0, 1);
-	mt_initNOPE();
-  	mt_init(music);
+	InitAudio();
+	PlaySample(0);
 	
 
 
@@ -127,59 +124,40 @@ void InitEngine(void)
 //****************************** LOOP
 void EngineLoop(void)
 {
+
+
+	ProcessJoystick();
 	
-	// if(!engine.musicOn)
-	// {
-	// 	systemUnuse();
-
-	// 	engine.musicOn = 1;
-	// 	mt_install_cia(g_pCustom,0,0);
-
-	// 	mt_init(g_pCustom, engine.music, 0, 1);
-	// 	mt_Enable = 1;
-	// 	mt_MusicChannels = 2;
-	// 	while(!getKey(ESCAPE))
-	// 	{
-	// 		mt_music(g_pCustom);
-	// 		int a = 5;
-	// 	}
-	// 	mt_end(g_pCustom);
-
-	// 	systemUse();
-	// }
-
-		ProcessJoystick();
+	TimeStep();
+	if (engine.currentState == State_Logo)   //turned off
+	{
+		RunLogoState();
 		
-		TimeStep();
-		if (engine.currentState == State_Logo)   //turned off
+		if (getKey(ESCAPE))
 		{
-			RunLogoState();
-			
-			if (getKey(ESCAPE))
-			{
-				engine.exitFlag = 1;
-				ExitGame();
-			}
-				
-		}
-		else if(engine.currentState == State_Menu)
-		{
-			RunMenuState();
-		}
-		else if(engine.currentState == State_Game)
-		{
-				
-			RunGameState();
-		}
-
-		if (getKey(ESCAPE) || engine.exitFlag)
-		{
-			ExitGame();
 			engine.exitFlag = 1;
+			ExitGame();
 		}
+			
+	}
+	else if(engine.currentState == State_Menu)
+	{
+		RunMenuState();
+	}
+	else if(engine.currentState == State_Game)
+	{
+			
+		RunGameState();
+	}
+
+	if (getKey(ESCAPE) || engine.exitFlag)
+	{
+		ExitGame();
+		engine.exitFlag = 1;
+	}
 
 
-		engine.loopEndTime = getCurrentTime();
+	engine.loopEndTime = getCurrentTime();
 }
 
 //****************************** DESTROY

@@ -46,7 +46,7 @@ OBJECTS=src/music_ptr_linkable.o
 
 
 $(APP): src/main.c depend
-	$(ASM) $(ASMFLAGS) src/music.s -o src/ptplayer.o -I/usr/local/amiga/os-include
+	$(ASM) $(ASMFLAGS) src/ptplayer.asm -o src/music_ptr_linkable.o -I/usr/local/amiga/os-include
 	$(CC) $(CFLAGS) src/main.c $(OBJECTS) $(INC) $(LIB) -o $(APP)
 	/opt/amiga/bin/m68k-amigaos-strip $(APP)
 #/opt/amiga/bin/vlink $(OBJECTS) $(APP) -o icarus.exe

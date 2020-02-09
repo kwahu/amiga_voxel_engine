@@ -39,7 +39,7 @@ void switchIntroScreen()
 	case 2:
 	{
         LoadBitmapToMemory("data/l2");
-		
+
 		ClearBuffor();
 		DrawBitmap4bCenter(engine.activeBitmap, &engine.activeBitmapHeader);
 		

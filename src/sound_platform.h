@@ -2,26 +2,11 @@
 #ifdef AMIGA
 
 #include <exec/types.h>
-//#include "ptplayer.h"
+#include "ptplayer.h"
 
-//#include <ace/managers/audio.h>
 #include <ace/utils/custom.h>
-//#include "verge.h"
-#include <ace/utils/ptplayer.h>
-//#include "SDI_compiler.h"
-//#include "p61.h"
 
 CHIP const unsigned char music[168660];
-
-long mt_init(const unsigned char*);
-void mt_music();
-void mt_end();
-
-
-void Play()
-{
-    //loadsong(0xdff000);
-}
 
 
 void ReadModFile(char *fileName)
@@ -37,28 +22,34 @@ void ReadModFile(char *fileName)
 
 void InitAudio()
 {
-    //mt_install_cia(0,1);
+    
+	mt_install_cia(g_pCustom, 0, 1);
+
 }
 
 void DestroyAudio()
 {
 }
 
-void PlaySample(void *module, UBYTE pos)
+void PlaySample(UBYTE pos)
 {
+    mt_init(g_pCustom, music, 0, pos);
+  	mt_Enable = 1;
     
+}
+void ContinueSample()
+{
+	mt_install_cia(g_pCustom, 0, 1);
+  	mt_Enable = 1;
     
-    //mt_init(module, 0, pos);
-    //mt_Enable = 1;
-    //mt_MusicChannels = 4;
-   // mt_music();
 }
 
-void StopSample(UBYTE channelIndex)
+void StopSample()
 {
+    mt_remove_cia(g_pCustom);
 }
 
-void DestroySample(UBYTE *sample)
+void DestroySample()
 {
 }
 
@@ -82,11 +73,11 @@ void PlaySample(AudioSample *sample, UBYTE channelIndex, UBYTE volume)
     
 }
 
-void StopSample(UBYTE channelIndex)
+void StopSample()
 {
 }
 
-void DestroySample(AudioSample *sample)
+void DestroySample()
 {
 }
 
