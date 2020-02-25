@@ -66,6 +66,9 @@ typedef struct ShipParams
 typedef struct MenuState
 {
     UBYTE infoScreen;
+    UBYTE *menu[3];
+    BITMAPINFOHEADER headers[3];
+    UBYTE Palette[16 * 4];
 } MenuState;
 
 typedef struct LogoState
@@ -74,6 +77,8 @@ typedef struct LogoState
     UBYTE screenIndex;
     ULONG screenDuration;
     char fadeInStatus[4], fadeOutStatus[4];
+    UBYTE *logo[3];
+    BITMAPINFOHEADER headers[3];
 } LogoState;
 
 

@@ -84,6 +84,7 @@ void switchIntroScreen()
 		free(engine.logoState.logo[1]);
 		free(engine.logoState.logo[2]);
 
+		InitMenuState();
 		UnuseSystem();
 		InitAudio();
 		PlaySample(0);

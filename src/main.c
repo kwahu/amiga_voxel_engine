@@ -106,8 +106,6 @@ void InitEngine(void)
 
 	FreeTextBitmap(engine.informationText);
 	InitLogoState();
-	//*********************************** SELECT HARDWARE ***********************************************
-	//PlaySample(engine.audioSample, 0, 64);
 
 	
 
