@@ -4,6 +4,11 @@
 
 void ShowDeathCutscene()
 {
+    
+    StopSample();
+    PlaySample(16);
+    ContinueSample();
+
     ClearBuffor();
     SetBitmapPalette(engine.activePalette);
     DrawBitmap4bCenter(engine.activeBitmap, &engine.activeBitmapHeader);
@@ -117,11 +122,18 @@ void ShowDeathCutscene()
     VSyncAndDraw();
 
     InitGameState();
+    
+    StopSample();
+    PlaySample(6);
+    ContinueSample();
 
 }
 
 void ShowTooLateCutscene()
 {
+    StopSample();
+    PlaySample(16);
+    ContinueSample();
     ClearBuffor();
  
    SetBitmapPalette(engine.activePalette);
@@ -198,12 +210,18 @@ void ShowTooLateCutscene()
     SetGamePaletter();
     VSyncAndDraw();
     InitGameState();
+    StopSample();
+    PlaySample(6);
+    ContinueSample();
 }
 
 void ShowWinCutscene()
 {
 
+    StopSample();
     LoadBitmapToMemory("data/fin");
+    PlaySample(18);
+    ContinueSample();
     ClearBuffor();
     SetBitmapPalette(engine.activePalette);
     DrawBitmap4bCenter(engine.activeBitmap, &engine.activeBitmapHeader);
@@ -340,7 +358,14 @@ void ShowWinCutscene()
     ClearBuffor();
     SetGamePaletter();
     VSyncAndDraw();
+    
+    StopSample();
+    UseSystem();
     InitMenuState();
+    
+    UnuseSystem();
+    PlaySample(0);
+    ContinueSample();
 }
 
 void ShowCutscene(Cutscene cutsceneType)

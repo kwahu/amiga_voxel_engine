@@ -161,10 +161,10 @@ void RunGameState()
         
                 //draw only even lines 
         
-        DrawGameStats();
                             
 
         VSyncAndDraw();
+        DrawGameStats();
 
 
         // 	if(keyCheck(KEY_Q)){calculationDepthDivider=1;Recalculate();}
