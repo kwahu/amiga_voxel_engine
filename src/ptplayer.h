@@ -127,7 +127,7 @@ void ASM mt_mastervol(REG(a6, void *custom),
     The replayer routine. Is called automatically after mt_install_cia().
 */
 
-//void ASM mt_music(REG(a6, void *custom));
+void ASM mt_music(REG(a6, void *custom));
 
 /*
   mt_Enable

@@ -12,6 +12,17 @@ void InitLogoState()
 	}
 	engine.logoState.screenIndex = 1;
 	engine.logoState.screenDuration = LOGORUNTIME;
+	UseSystem();
+	engine.logoState.logo[1] = LoadBitmapFile("data/l2", &engine.logoState.headers[1], engine.activePalette);
+	engine.logoState.logo[2] = LoadBitmapFile("data/l3", &engine.logoState.headers[2], engine.activePalette);
+	UnuseSystem();
+
+	ClearBuffor();
+	DrawBitmap4bCenter(engine.logoState.logo[0], &engine.logoState.headers[0]);
+	
+	VSyncAndDraw();
+	
+	
 }
 
 void RunLogoState()
@@ -38,10 +49,9 @@ void switchIntroScreen()
 	{
 	case 2:
 	{
-        LoadBitmapToMemory("data/l2");
-
+		
 		ClearBuffor();
-		DrawBitmap4bCenter(engine.activeBitmap, &engine.activeBitmapHeader);
+		DrawBitmap4bCenter(engine.logoState.logo[1], &engine.logoState.headers[1]);
 		
         VSyncAndDraw();
 
@@ -54,10 +64,9 @@ void switchIntroScreen()
 	break;
 	case 3:
 	{
-        LoadBitmapToMemory("data/l3");
 
 		ClearBuffor();
-		DrawBitmap4bCenter(engine.activeBitmap, &engine.activeBitmapHeader);
+		DrawBitmap4bCenter(engine.logoState.logo[2], &engine.logoState.headers[2]);
 		
         VSyncAndDraw();
 
@@ -70,8 +79,14 @@ void switchIntroScreen()
 	break;
 	default:
 	{
-		engine.currentState = State_Menu;
-		engine.menuState.infoScreen = 0;
+		UseSystem();
+		free(engine.logoState.logo[0]);
+		free(engine.logoState.logo[1]);
+		free(engine.logoState.logo[2]);
+
+		UnuseSystem();
+		InitAudio();
+		PlaySample(0);
 	} break;
 	}
 }

@@ -22,7 +22,7 @@ void ReadModFile(char *fileName)
 
 void InitAudio()
 {
-    
+ 
 	mt_install_cia(g_pCustom, 0, 1);
 
 }

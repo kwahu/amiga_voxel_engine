@@ -39,7 +39,7 @@ void InitEngine(void)
 	InitInput();
 
 	engine.shipBitmap = LoadBitmapFile("data/icar48", &engine.shipHeader, engine.palettePalette);
-	engine.activeBitmap = LoadBitmapFile("data/l1", &engine.activeBitmapHeader, engine.activePalette);
+	engine.logoState.logo[0] = LoadBitmapFile("data/l1", &engine.logoState.headers[0], engine.activePalette);
 	engine.paletteBitmap = LoadBitmapFile("data/plt", &engine.paletteHeader, engine.palettePalette);
 
 	//process paletter from an image
@@ -105,16 +105,10 @@ void InitEngine(void)
 
 
 	FreeTextBitmap(engine.informationText);
-	InitGameState();
+	InitLogoState();
 	//*********************************** SELECT HARDWARE ***********************************************
-	ClearBuffor();
-	DrawBitmap4bCenter(engine.activeBitmap, &engine.activeBitmapHeader);
-	
-	VSyncAndDraw();
 	//PlaySample(engine.audioSample, 0, 64);
 
-	InitAudio();
-	PlaySample(0);
 	
 
 
