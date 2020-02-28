@@ -6,18 +6,20 @@ void InitMenuState()
     ResetTime();
 	engine.currentState = State_Menu;
     
+ 
     engine.menuState.infoScreen = 0;
+
+    engine.menuState.menu[0] = LoadBitmapFile("data/m0", &engine.menuState.headers[0], engine.menuState.Palette);
+    engine.menuState.menu[1] = LoadBitmapFile("data/m1", &engine.menuState.headers[1], engine.activePalette);
+    LoadBitmapToMemory("data/msg");
 }
 
 void RunMenuState()
 {
-    LoadBitmapToMemory(
-        "data/m0"
-        );
     ClearBuffor();
-    DrawBitmap4bCenter(engine.activeBitmap, &engine.activeBitmapHeader);
+    DrawBitmap4bCenter(engine.menuState.menu[0], &engine.menuState.headers[0]);
     
-    SetBitmapPalette(engine.activePalette);
+    SetBitmapPalette(engine.menuState.Palette);
     VSyncAndDraw();
 
     UBYTE infoIndex = 0;
@@ -26,6 +28,7 @@ void RunMenuState()
 
     while(!engine.menuState.infoScreen)
     {
+        
         ProcessJoystick();
         if(getJoy(1, FIRE) && !FireDown)
         {
@@ -35,11 +38,8 @@ void RunMenuState()
             {
                 case 1:
                 {
-                    LoadBitmapToMemory(
-                        "data/m1"
-                        );
                     ClearBuffor();
-                    DrawBitmap4bCenter(engine.activeBitmap, &engine.activeBitmapHeader);
+                    DrawBitmap4bCenter(engine.menuState.menu[1], &engine.menuState.headers[1]);
                     
                     SetBitmapPalette(engine.activePalette);
                     VSyncAndDraw();
@@ -66,11 +66,8 @@ void RunMenuState()
                 } break;
                 case 2:
                 {
-                    LoadBitmapToMemory(
-                        "data/m1"
-                    );
                     ClearBuffor();
-                    DrawBitmap4bCenter(engine.activeBitmap, &engine.activeBitmapHeader);
+                    DrawBitmap4bCenter(engine.menuState.menu[1], &engine.menuState.headers[1]);
                     
                     SetBitmapPalette(engine.activePalette);
                     VSyncAndDraw();
@@ -104,9 +101,6 @@ void RunMenuState()
                 case 3:
                 {
 
-                    LoadBitmapToMemory(
-                        "data/msg"
-                        );
                     ClearBuffor();
                     DrawBitmap4bCenter(engine.activeBitmap, &engine.activeBitmapHeader);
                     
@@ -140,13 +134,17 @@ void RunMenuState()
                 } break;
                 case 4:
                 {
+                    
+
                     ClearBuffor();
                     SetGamePaletter();
                     VSyncAndDraw();
                     engine.menuState.infoScreen = 1;
                     
+                    free(engine.menuState.menu[0]);
+                    free(engine.menuState.menu[1]);
+                    free(engine.menuState.menu[2]);
                     
-
                 } break;
             }
         }
@@ -160,6 +158,7 @@ void RunMenuState()
             engine.menuState.infoScreen = 1;
             engine.exitFlag = 1;
         }
+        VSyncWait();
     }
 
     InitGameState();

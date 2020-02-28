@@ -1,6 +1,6 @@
 
-#include "platform.h"
 #include "engine.h"
+#include "platform.h"
 #include "bitmap.c"
 #include "file_platform.h"
 
@@ -33,11 +33,13 @@ void InitEngine(void)
 {
 	engine.exitFlag = 0;
 
+	engine.musicOn = 0;
+	ReadModFile("data/verge.mod");
 	InitScreen();
 	InitInput();
 
 	engine.shipBitmap = LoadBitmapFile("data/icar48", &engine.shipHeader, engine.palettePalette);
-	engine.activeBitmap = LoadBitmapFile("data/l1", &engine.activeBitmapHeader, engine.activePalette);
+	engine.logoState.logo[0] = LoadBitmapFile("data/l1", &engine.logoState.headers[0], engine.activePalette);
 	engine.paletteBitmap = LoadBitmapFile("data/plt", &engine.paletteHeader, engine.palettePalette);
 
 	//process paletter from an image
@@ -71,9 +73,9 @@ void InitEngine(void)
 	engine.informationText = CreateBitmapFromText(engine.font, 
 	"KEY 1 = 1 MB RAM   KEY 2 = MORE THAN 1 MB RAM"
 	);
+	VSyncAndDraw();
 	DrawTextBitmap(engine.informationText, 50, PLANEHEIGHT/2, 3);
 	
-	VSyncAndDraw();
 
 	engine.renderer.ditherTable1 = 0;
 
@@ -89,11 +91,11 @@ void InitEngine(void)
 	#ifdef AMIGA
 	"KEY 3 = A500   KEY 4 = A1200   KEY 5 = A3000"
 	#else
-	"KEY 4 = ATARI ST   KEY 4 = ATARI FALCON OR TT"
+	"KEY 3 = ATARI ST   KEY 4 = ATARI FALCON OR TT"
 	#endif
 	);
-	DrawTextBitmap(engine.informationText, 50, PLANEHEIGHT/2, 3);
 	VSyncAndDraw();
+	DrawTextBitmap(engine.informationText, 50, PLANEHEIGHT/2, 3);
 
 	while(engine.renderer.renderingType == 0)
 	{
@@ -104,11 +106,7 @@ void InitEngine(void)
 
 	FreeTextBitmap(engine.informationText);
 	InitLogoState();
-	//*********************************** SELECT HARDWARE ***********************************************
-	ClearBuffor();
-	DrawBitmap4bCenter(engine.activeBitmap, &engine.activeBitmapHeader);
-	
-	VSyncAndDraw();
+
 	
 
 
@@ -118,41 +116,40 @@ void InitEngine(void)
 //****************************** LOOP
 void EngineLoop(void)
 {
-	while(!engine.exitFlag)
+
+
+	ProcessJoystick();
+	
+	TimeStep();
+	if (engine.currentState == State_Logo)   //turned off
 	{
-		ProcessJoystick();
+		RunLogoState();
 		
-		TimeStep();
-		if (engine.currentState == State_Logo)   //turned off
+		if (getKey(ESCAPE))
 		{
-			RunLogoState();
-			
-			if (getKey(ESCAPE))
-			{
-				engine.exitFlag = 1;
-				ExitGame();
-			}
-				
-		}
-		else if(engine.currentState == State_Menu)
-		{
-			RunMenuState();
-		}
-		else if(engine.currentState == State_Game)
-		{
-				
-			RunGameState();
-		}
-
-		if (getKey(ESCAPE) || engine.exitFlag)
-		{
-			ExitGame();
 			engine.exitFlag = 1;
+			ExitGame();
 		}
-
-
-		engine.loopEndTime = getCurrentTime();
+			
 	}
+	else if(engine.currentState == State_Menu)
+	{
+		RunMenuState();
+	}
+	else if(engine.currentState == State_Game)
+	{
+			
+		RunGameState();
+	}
+
+	if (getKey(ESCAPE) || engine.exitFlag)
+	{
+		ExitGame();
+		engine.exitFlag = 1;
+	}
+
+
+	engine.loopEndTime = getCurrentTime();
 }
 
 //****************************** DESTROY
@@ -162,6 +159,8 @@ void EngineDestroy(void)
 	CloseJoystick();
 	ViewOff();
 	FreeView();
+	StopSample(0);
+	DestroyAudio();
 
 	FreeTextBitmap(engine.pBitmapVelocity);
 	FreeTextBitmap(engine.pBitmapScore);
@@ -172,6 +171,7 @@ void EngineDestroy(void)
 	FreeTextBitmap(engine.pBitmapScoreLabel);
 	FreeTextBitmap(engine.pBitmapTimeLabel);
 	FreeTextBitmap(engine.pBitmapHeightLabel);
+	
 
 	free(engine.activeBitmap);
 	free(engine.shipBitmap);

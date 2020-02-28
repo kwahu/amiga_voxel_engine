@@ -9,12 +9,12 @@ Font * InitFont(char *fileName)
     return fontCreate(fileName);
 }
 
-TextBitmap *CreateFontBitmap(Font *font)
+TextBitMap *CreateFontBitmap(Font *font)
 {
     return fontCreateTextBitMapFromStr(font, "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
 }
 
-TextBitmap *CreateBitmapFromText(Font *font, char * text)
+TextBitMap *CreateBitmapFromText(Font *font, char * text)
 {
     return fontCreateTextBitMapFromStr(font, text);
 }

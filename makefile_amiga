@@ -5,6 +5,7 @@
 TOOLCHAIN_PREFIX=/opt/amiga/bin/m68k-amigaos-
 CC=$(TOOLCHAIN_PREFIX)gcc
 AR=$(TOOLCHAIN_PREFIX)ar
+ASM=/opt/amiga/bin/vasmm68k_mot
 
 UNAME := $(shell uname)
 ifeq ($(UNAME),Linux)
@@ -26,6 +27,11 @@ CFLAGS=-m68000\
 	#-mshort\
 	#-nostdlib
 	
+ASMFLAGS= -Fhunk\
+	-quiet\
+	-esc\
+	-DINTERLACE=0
+	
 ASFLAGS=$(CFLAGS)	
 	
 ICARUS=icarus
@@ -36,18 +42,25 @@ all: $(LIB) $(APP)
 
 INC = -Ideps/ace/include
 
-$(APP): $(OBJECTS) src/main.c depend
-	$(CC) $(CFLAGS) src/main.c  $(INC) $(LIB) -o $(APP)
-	/opt/amiga/bin/m68k-amigaos-strip $(APP)
+OBJECTS=src/music_ptr_linkable.o
 
-$(LIB): $(OBJECTS)
-	$(CC) $(INC) $(LIB) $(OBJECTS) 
+
+$(APP): src/main.c depend
+	$(ASM) $(ASMFLAGS) src/ptplayer.asm -o src/music_ptr_linkable.o -I/usr/local/amiga/os-include
+	$(CC) $(CFLAGS) src/main.c $(OBJECTS) $(INC) $(LIB) -o $(APP)
+	/opt/amiga/bin/m68k-amigaos-strip $(APP)
+#/opt/amiga/bin/vlink $(OBJECTS) $(APP) -o icarus.exe
+
+$(LIB):
+	$(CC) $(INC) $(LIB)
+
 		
 .PHONY clean:
 	- rm -rf *.o depend $(APP)
 
-depend: $(CSOURCES) src/main.c 
-		$(CC) $(CFLAGS) $(INC) -M $(CSOURCES) src/main.c  > depend
+depend: $(CSOURCES) src/main.c
+		$(CC) $(CFLAGS) $(INC) -M $(CSOURCES) src/main.c > depend
+
 
 	
 ifneq (clean,$(MAKECMDGOALS))

@@ -30,22 +30,23 @@ ASFLAGS=$(CFLAGS)
 	
 ICARUS=icarus
 APP=$(ICARUS).tos
-LIB=libikbd.a
+LIB=libikbd.a 
+SNDHLIB=libsndh.a
 
 all: $(LIB) $(APP) 
 
-INC = #-Iikbd
+INC = -Iikbd -Isndh 
 
-CSOURCES=ikbd/keys.c ikbd/mouse.c
+CSOURCES=ikbd/keys.c ikbd/mouse.c sndh/sndh.c
 		
 OBJECTS=ikbd/keys.o ikbd/mouse.o ikbd/ikbd.o
 
 $(APP): $(OBJECTS) ikbd/startup.o src/main.c depend
-	$(CC) $(CFLAGS) ikbd/startup.o src/main.c $(INC) $(LIB) libcmini.a -o $(APP)  -s -L$LIBCMINI -lgcc
+	$(CC) $(CFLAGS) ikbd/startup.o src/main.c $(INC) $(LIB) $(SNDHLIB) libcmini.a -o $(APP)  -s -L$LIBCMINI -lgcc
 	m68k-atari-mint-strip $(APP)
 
 $(LIB): $(OBJECTS)
-	$(AR) rcs $(INC) $(LIB) $(OBJECTS) 
+	$(AR) rcs $(LIB) $(OBJECTS) 
 		
 .PHONY clean:
 	- rm -rf *.o $(LIB) depend $(APP)

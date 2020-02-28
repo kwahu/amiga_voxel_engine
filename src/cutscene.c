@@ -4,6 +4,11 @@
 
 void ShowDeathCutscene()
 {
+    
+    StopSample();
+    PlaySample(16);
+    ContinueSample();
+
     ClearBuffor();
     SetBitmapPalette(engine.activePalette);
     DrawBitmap4bCenter(engine.activeBitmap, &engine.activeBitmapHeader);
@@ -84,6 +89,7 @@ void ShowDeathCutscene()
         
     }
 
+    VSyncAndDraw();
     UBYTE y = BASELINE+42;
     for(int i = 0; i < lines; ++i)
     {	
@@ -91,7 +97,6 @@ void ShowDeathCutscene()
         y += 6;
     }
     
-    VSyncAndDraw();
     ProcessJoystick();
     UBYTE cont = 0;
     //wait 2 seconds
@@ -107,7 +112,7 @@ void ShowDeathCutscene()
         {
             cont = 1;
         }
-        
+        VSyncWait();
         
     }
 
@@ -117,11 +122,18 @@ void ShowDeathCutscene()
     VSyncAndDraw();
 
     InitGameState();
+    
+    StopSample();
+    PlaySample(6);
+    ContinueSample();
 
 }
 
 void ShowTooLateCutscene()
 {
+    StopSample();
+    PlaySample(16);
+    ContinueSample();
     ClearBuffor();
  
    SetBitmapPalette(engine.activePalette);
@@ -163,6 +175,7 @@ void ShowTooLateCutscene()
         
     }
 
+    VSyncAndDraw();
     UBYTE y = BASELINE+42;
     for(int i = 0; i < lines; ++i)
     {	
@@ -172,7 +185,6 @@ void ShowTooLateCutscene()
 
 
 
-    VSyncAndDraw();
     ProcessJoystick();
     UBYTE cont = 0;
     //wait 2 seconds
@@ -189,7 +201,7 @@ void ShowTooLateCutscene()
         {
             cont = 1;
         }
-        
+        VSyncWait();
         
     }
 
@@ -198,11 +210,18 @@ void ShowTooLateCutscene()
     SetGamePaletter();
     VSyncAndDraw();
     InitGameState();
+    StopSample();
+    PlaySample(6);
+    ContinueSample();
 }
 
 void ShowWinCutscene()
 {
+
+    StopSample();
     LoadBitmapToMemory("data/fin");
+    PlaySample(18);
+    ContinueSample();
     ClearBuffor();
     SetBitmapPalette(engine.activePalette);
     DrawBitmap4bCenter(engine.activeBitmap, &engine.activeBitmapHeader);
@@ -306,6 +325,7 @@ void ShowWinCutscene()
     }
 
 
+    VSyncAndDraw();
     UBYTE y = BASELINE+2;
     for(int i = 0; i < lines; ++i)
     {	
@@ -313,7 +333,6 @@ void ShowWinCutscene()
         y += 6;
     }
 
-    VSyncAndDraw();
     ProcessJoystick();
     UBYTE cont = 0;
     //wait 2 seconds
@@ -330,7 +349,7 @@ void ShowWinCutscene()
         {
             cont = 1;
         }
-        
+        VSyncWait();
         
     }
 
@@ -339,7 +358,14 @@ void ShowWinCutscene()
     ClearBuffor();
     SetGamePaletter();
     VSyncAndDraw();
+    
+    StopSample();
+    UseSystem();
     InitMenuState();
+    
+    UnuseSystem();
+    PlaySample(0);
+    ContinueSample();
 }
 
 void ShowCutscene(Cutscene cutsceneType)

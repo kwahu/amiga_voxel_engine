@@ -1,12 +1,21 @@
 #include "engine.h"
 
 
-
-
+#ifdef AMIGA
+void ClearBuffor()
+{
+	memset(engine.renderer.plane1W, 0, PLANEWIDTH*PLANEHEIGHT);
+	memset(engine.renderer.plane2W, 0, PLANEWIDTH*PLANEHEIGHT);
+	memset(engine.renderer.plane3W, 0, PLANEWIDTH*PLANEHEIGHT);
+	memset(engine.renderer.plane4W, 0, PLANEWIDTH*PLANEHEIGHT);
+	
+}
+#else
 void ClearBuffor()
 {
 	memset(engine.renderer.planes, 0, PLANEWIDTH*PLANEHEIGHT);
 }
+#endif
 
 #define UnpackSpriteByte(byte, value, b1, m1, n1, b2, m2, n2, howMany)  \
 if((howMany) < 0)						\
@@ -86,17 +95,25 @@ void DrawSprite4b(unsigned char *bLogo, BITMAPINFOHEADER *bhLogo,
 	UWORD baseX = spriteIndexX*spriteSizeX/16;
 	UWORD baseY = spriteIndexY*spriteSizeY;
 
+#ifdef AMIGA
+	position = (posY - (spriteSizeY/2)) * PLANEWIDTHWORD + planePosX - spriteSizeX/32;
+    UWORD *firstCol = engine.renderer.plane1W + position;
+    UWORD *secondCol = engine.renderer.plane2W + position;
+    UWORD *thirdCol = engine.renderer.plane3W + position;
+    UWORD *fourthCol = engine.renderer.plane4W + position;
+    #else 
 	position = (posY - (spriteSizeY/2)) * PLANEWIDTHWORD + planePosX*4 - spriteSizeX/32*4;
     UWORD *firstCol = engine.renderer.planes + position;
     UWORD *secondCol = engine.renderer.planes + position + 1;
     UWORD *thirdCol = engine.renderer.planes + position + 2;
     UWORD *fourthCol = engine.renderer.planes + position + 3;
+	#endif
 
 
 	for (ULONG y =baseY+spriteSizeY; y > baseY; y--)
 	{
 		yy = (y - 1) * bhLogo->biWidth/2;
-
+		
         UWORD *firstPos = firstCol;
         UWORD *secondPos = secondCol;
         UWORD *thirdPos = thirdCol;
@@ -252,11 +269,17 @@ void DrawSprite4b(unsigned char *bLogo, BITMAPINFOHEADER *bhLogo,
 								BlendSprite(plane4Value, 2, b14, m14, n14, 3) +
 								BlendSprite(plane4Value, 1, b15, m15, n15, 3) +
 								BlendSprite(plane4Value, 0, b16, m16, n16, 3);
-			
+			#ifdef AMIGA
+		firstPos++;
+		secondPos++;
+		thirdPos++;
+		fourthPos++;
+		#else
             firstPos+=4;
             secondPos+=4;
             thirdPos+=4;
             fourthPos+=4;
+			#endif
 			howManyPixels = 0;
 		}
 
@@ -276,10 +299,17 @@ void DrawBitmap4b(unsigned char *bLogo, BITMAPINFOHEADER *bhLogo, UWORD offsety)
 	ULONG xx, yy;
 
 	position = offsety * PLANEWIDTHWORD;
+	#ifdef AMIGA
+    UWORD *firstCol = engine.renderer.plane1W + position;
+    UWORD *secondCol = engine.renderer.plane2W + position;
+    UWORD *thirdCol = engine.renderer.plane3W + position;
+    UWORD *fourthCol = engine.renderer.plane4W + position;
+    #else 
     UWORD *firstCol = engine.renderer.planes + position;
     UWORD *secondCol = engine.renderer.planes + position + 1;
     UWORD *thirdCol = engine.renderer.planes + position + 2;
     UWORD *fourthCol = engine.renderer.planes + position + 3;
+	#endif
 
 
 	//position = startOffset;
@@ -386,11 +416,18 @@ void DrawBitmap4b(unsigned char *bLogo, BITMAPINFOHEADER *bhLogo, UWORD offsety)
 								((b14 >> 3) & 1) * 0b0000000000000100 +
 								((b15 >> 3) & 1) * 0b0000000000000010 +
 								((b16 >> 3) & 1) * 0b0000000000000001;
-                                
+
+			#ifdef AMIGA
+            firstPos++;
+            secondPos++;
+            thirdPos++;
+            fourthPos++;
+            #else       
             firstPos+=4;
             secondPos+=4;
             thirdPos+=4;
             fourthPos+=4;
+			#endif
 		}
 
         firstCol += PLANEWIDTHWORD;
@@ -406,12 +443,19 @@ void DrawBitmap4bCenter(unsigned char *bLogo, BITMAPINFOHEADER *bhLogo)
 	unsigned char b1, b2, b3, b4, b5, b6, b7, b8, b9, b10, b11, b12, b13, b14, b15, b16;
 	unsigned char byte;
 	ULONG xx, yy;
-
+#ifdef AMIGA
+	position = ((PLANEHEIGHT-bhLogo->biHeight)/2) * PLANEWIDTHWORD + (320-bhLogo->biWidth)/32;
+    UWORD *firstCol = engine.renderer.plane1W + position;
+    UWORD *secondCol = engine.renderer.plane2W + position;
+    UWORD *thirdCol = engine.renderer.plane3W + position;
+    UWORD *fourthCol = engine.renderer.plane4W + position;
+    #else 
 	position = ((PLANEHEIGHT-bhLogo->biHeight)/2) * PLANEWIDTHWORD + (320-bhLogo->biWidth)/32*4;
     UWORD *firstCol = engine.renderer.planes + position;
     UWORD *secondCol = engine.renderer.planes + position + 1;
     UWORD *thirdCol = engine.renderer.planes + position + 2;
     UWORD *fourthCol = engine.renderer.planes + position + 3;
+	#endif
 
 
 	//position = startOffset;
@@ -518,10 +562,18 @@ void DrawBitmap4bCenter(unsigned char *bLogo, BITMAPINFOHEADER *bhLogo)
 								((b14 >> 3) & 1) * 0b0000000000000100 +
 								((b15 >> 3) & 1) * 0b0000000000000010 +
 								((b16 >> 3) & 1) * 0b0000000000000001;   
+
+			 #ifdef AMIGA
+            firstPos++;
+            secondPos++;
+            thirdPos++;
+            fourthPos++;
+            #else
             firstPos+=4;
             secondPos+=4;
             thirdPos+=4;
             fourthPos+=4;
+			#endif
 		}
         firstCol += PLANEWIDTHWORD;
         secondCol += PLANEWIDTHWORD;
@@ -536,8 +588,13 @@ void DrawPixel(UWORD x, UWORD y, UBYTE color)
   UWORD leftGap = x - posX*16;
   UWORD rightGap = 16 - leftGap;
 
+#ifdef AMIGA
+  UWORD firstPos = y*PLANEWIDTHWORD+posX;
+  UWORD secondPos = firstPos+1;
+  #else
   UWORD firstPos = y*PLANEWIDTHWORD+posX*4;
   UWORD secondPos = firstPos+4;
+  #endif
 
   WORD leftPixelPattern = 0b1000100110010001 >> leftGap;
   WORD leftScreenPattern = 0b1111111111111111 << rightGap;
@@ -545,6 +602,17 @@ void DrawPixel(UWORD x, UWORD y, UBYTE color)
   WORD rightPixelPattern = 0b1000100110010001 << rightGap;
   WORD rightScreenPattern = 0b1111111111111111 >> leftGap;
 
+#ifdef AMIGA
+  engine.renderer.plane1W[firstPos] = (leftPixelPattern) + (engine.renderer.plane1W[firstPos] & (leftScreenPattern));
+  engine.renderer.plane2W[firstPos] = (leftPixelPattern) + (engine.renderer.plane2W[firstPos] & (leftScreenPattern));
+  engine.renderer.plane3W[firstPos] = (leftPixelPattern) + (engine.renderer.plane3W[firstPos] & (leftScreenPattern));
+  engine.renderer.plane4W[firstPos] = (leftPixelPattern) + (engine.renderer.plane4W[firstPos] & (leftScreenPattern));
+  
+  engine.renderer.plane1W[secondPos] = (rightPixelPattern) + (engine.renderer.plane1W[secondPos] & (rightScreenPattern));
+  engine.renderer.plane2W[secondPos] = (rightPixelPattern) + (engine.renderer.plane2W[secondPos] & (rightScreenPattern));
+  engine.renderer.plane3W[secondPos] = (rightPixelPattern) + (engine.renderer.plane3W[secondPos] & (rightScreenPattern));
+  engine.renderer.plane4W[secondPos] = (rightPixelPattern) + (engine.renderer.plane4W[secondPos] & (rightScreenPattern));
+  #else
   engine.renderer.planes[firstPos] = (leftPixelPattern) + (engine.renderer.planes[firstPos] & (leftScreenPattern));
   engine.renderer.planes[firstPos+1] = (leftPixelPattern) + (engine.renderer.planes[firstPos+1] & (leftScreenPattern));
   engine.renderer.planes[firstPos+2] = (leftPixelPattern) + (engine.renderer.planes[firstPos+2] & (leftScreenPattern));
@@ -554,15 +622,23 @@ void DrawPixel(UWORD x, UWORD y, UBYTE color)
   engine.renderer.planes[secondPos+1] = (rightPixelPattern) + (engine.renderer.planes[secondPos+1] & (rightScreenPattern));
   engine.renderer.planes[secondPos+2] = (rightPixelPattern) + (engine.renderer.planes[secondPos+2] & (rightScreenPattern));
   engine.renderer.planes[secondPos+3] = (rightPixelPattern) + (engine.renderer.planes[secondPos+3] & (rightScreenPattern));
+  #endif
 }
 
 void DrawPixelWord(UWORD x, UWORD y, UBYTE color)
 {
   
+#ifdef AMIGA
+  engine.renderer.plane1W[y * PLANEWIDTHWORD + x] = ( (color>>0) & 1) * 0xffff;
+  engine.renderer.plane2W[y * PLANEWIDTHWORD + x] = ( (color>>1) & 1) * 0xffff;
+  engine.renderer.plane3W[y * PLANEWIDTHWORD + x] = ( (color>>2) & 1) * 0xffff;
+  engine.renderer.plane4W[y * PLANEWIDTHWORD + x] = ( (color>>3) & 1) * 0xffff;
+  #else
   engine.renderer.planes[y * PLANEWIDTHWORD + x*4] = ( (color>>0) & 1) * 0xffff;
   engine.renderer.planes[y * PLANEWIDTHWORD + x*4 + 1] = ( (color>>1) & 1) * 0xffff;
   engine.renderer.planes[y * PLANEWIDTHWORD + x*4 + 2] = ( (color>>2) & 1) * 0xffff;
   engine.renderer.planes[y * PLANEWIDTHWORD + x*4 + 3] = ( (color>>3) & 1) * 0xffff;
+  #endif
 }
 
 

@@ -4,6 +4,8 @@
 
 #include <ace/managers/viewport/simplebuffer.h>
 
+#define PLANEWIDTH 40
+#define PLANEWIDTHWORD 20
 #define TERRAINDEPTH 64
 #define PLANEHEIGHT 256
 #define XTURNBUFFOR 55
@@ -20,6 +22,10 @@
 
 #else
 
+#include "key_map_atari.h"
+#include <osbind.h>
+#include <mint/sysbind.h>
+
 #define ULONG 	uint32_t
 #define LONG	int32_t
 #define UWORD 	uint16_t
@@ -27,6 +33,8 @@
 #define UBYTE  unsigned char
 #define BYTE	signed char
 
+#define PLANEWIDTH 160
+#define PLANEWIDTHWORD 80
 #define TERRAINDEPTH 32
 #define PLANEHEIGHT 200
 #define XTURNBUFFOR 55
@@ -59,7 +67,7 @@ typedef struct PlatformScreen
 #ifdef AMIGA
 #include <ace/utils/font.h>
 typedef tFont Font;
-typedef tTextBitMap TextBitmap; 
+typedef tTextBitMap TextBitMap; 
 
 #else
 
