@@ -15,7 +15,7 @@
 #endif
 
 #ifndef SDI_COMPILER_H
-#include <SDI_compiler.h>
+#include "SDI_compiler.h"
 #endif
 
 /*

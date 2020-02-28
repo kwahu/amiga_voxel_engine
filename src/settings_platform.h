@@ -22,6 +22,10 @@
 
 #else
 
+#include "key_map_atari.h"
+#include <osbind.h>
+#include <mint/sysbind.h>
+
 #define ULONG 	uint32_t
 #define LONG	int32_t
 #define UWORD 	uint16_t

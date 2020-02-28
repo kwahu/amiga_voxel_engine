@@ -55,9 +55,22 @@ void DestroySample()
 
 #else
 
+#include <sndh.h>
+UBYTE ramdisk[20000];
+
+SNDHTune mytune;
+UBYTE* tuneptr;
 
 UBYTE *ReadModFile(char *fileName)
 {
+
+    tuneptr = &ramdisk[0];
+    long handle;
+    handle = Fopen ( "heroques.snd", 0 );
+    Fseek ( 0,handle, 0 );
+    Fread ( handle, 20000, tuneptr );
+    Fclose ( handle );
+ 
     return 0;
 }
 
@@ -68,13 +81,21 @@ void DestroyAudio()
 {
 }
 
-void PlaySample(AudioSample *sample, UBYTE channelIndex, UBYTE volume)
+void PlaySample(UBYTE pos)
 {
     
+    SNDH_GetTuneInfo ( tuneptr,&mytune );
+    
+    SNDH_PlayTune ( &mytune,0 );   
 }
 
+void ContinueSample()
+{
+}
 void StopSample()
 {
+    
+        SNDH_StopTune();
 }
 
 void DestroySample()

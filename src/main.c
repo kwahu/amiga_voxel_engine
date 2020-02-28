@@ -1,6 +1,6 @@
 
-#include "platform.h"
 #include "engine.h"
+#include "platform.h"
 #include "bitmap.c"
 #include "file_platform.h"
 
@@ -91,7 +91,7 @@ void InitEngine(void)
 	#ifdef AMIGA
 	"KEY 3 = A500   KEY 4 = A1200   KEY 5 = A3000"
 	#else
-	"KEY 4 = ATARI ST   KEY 4 = ATARI FALCON OR TT"
+	"KEY 3 = ATARI ST   KEY 4 = ATARI FALCON OR TT"
 	#endif
 	);
 	VSyncAndDraw();

@@ -28,14 +28,14 @@ void genericDestroy(void)
 {
 }
 #else
-#include "key_map_atari.h"
-#include <osbind.h>
-#include <mint/sysbind.h>
 
 void main_supervisor() 
 {
 	InitEngine();
-	EngineLoop();
+	while(!engine.exitFlag)
+	{
+		EngineLoop();
+	}
 	EngineDestroy();
 }
 
