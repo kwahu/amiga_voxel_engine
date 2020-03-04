@@ -2,6 +2,7 @@
 
 void InitGameState()
 {
+    ResetTime();
 
     engine.currentState = State_Game;
 
@@ -22,6 +23,10 @@ void InitGameState()
     engine.gameState.runOver = 0;
     engine.renderer.lastOverwrittenLine = 0;
 
+    for(UBYTE i = 0; i < 40; ++i)
+    {
+        engine.renderer.depthBuffer[i] = 255;
+    }
  
 
     CopyMapWord(engine.renderer.mapSource[0], engine.renderer.mapHigh);
@@ -51,7 +56,10 @@ void UpdatePlayerPosition()
 
 BYTE CheckPlayerCollision()
 {
-    return (engine.gameState.shipParams.pY - 3) < (UBYTE)(engine.renderer.mapHigh[((UBYTE)(engine.gameState.shipParams.pX)) >>1][((UBYTE)(engine.gameState.shipParams.pZ + 15)) >>1]);
+    UBYTE shipCollisionY = (engine.gameState.shipParams.pY - 2);
+    UWORD shipCollisionX = engine.gameState.shipParams.pX;
+
+    return shipCollisionY < (UBYTE)(engine.renderer.mapHigh[((UBYTE)(shipCollisionX)) >>1][((UBYTE)(engine.gameState.shipParams.pZ + engine.renderer.zStart + 8)) >>1]);
 }
 
 void RenderShipAndCrossHair()
@@ -59,7 +67,7 @@ void RenderShipAndCrossHair()
     UWORD crossPX =  (160 + (engine.gameState.crossHairX / 400));
     UWORD crossPY = ( 130 + (engine.gameState.crossHairY / 400) );
 
-    UWORD shipDirX = 160 + (engine.gameState.crossHairX/1600);
+    UWORD shipDirX = 160 + engine.renderer.xTurnOffset;
     UWORD shipDirY = 135 + (engine.gameState.crossHairY/1600);
 
     WORD spriteIndexX = 1;
@@ -81,11 +89,46 @@ void RenderShipAndCrossHair()
         spriteIndexY = 2;
     }
 
-    DrawPixel( crossPX, crossPY + 4, 0);
-    DrawPixel( crossPX, crossPY - 4, 0);
+                
+    UBYTE bestFit = engine.renderer.depthBufferHeight + 1;
+    UBYTE bestValue = 255;
+
+    for(BYTE i = 0; i < engine.renderer.depthBufferHeight/2; ++i)
+    {
+        WORD value = ((WORD)engine.renderer.depthBuffer[i] - (WORD)(3*engine.renderer.zStart - i));
+        if(value > 0 && value < bestValue)
+        {
+            bestValue = value;
+            bestFit = i;
+        }
+    }
+
+    if(bestFit < (engine.renderer.depthBufferHeight + 1))
+    {
+        UBYTE relHeightCoeff = (bestFit)/6;  
+     
+        
+        for(UBYTE y = 0; y < relHeightCoeff; ++y)
+        {
+            DrawPixel(shipDirX - relHeightCoeff + y, 200 - bestFit*2 - y*2-1, 0);
+            DrawPixel(shipDirX + relHeightCoeff - y, 200 - bestFit*2 - y*2-1, 0);   
+            //  DrawPixel(shipDirX - relHeightCoeff + y, 200 - bestFit*2 - y*2, 0);
+            //  DrawPixel(shipDirX + relHeightCoeff - y, 200 - bestFit*2 - y*2, 0);   
+            DrawPixel(shipDirX - relHeightCoeff + y, 200 - bestFit*2 + y*2+1, 0);
+            DrawPixel(shipDirX + relHeightCoeff - y, 200 - bestFit*2 + y*2+1, 0);   
+            // DrawPixel(shipDirX - relHeightCoeff + y, 200 - bestFit*2 + y*2 + 1, 0);
+            // DrawPixel(shipDirX + relHeightCoeff - y, 200 - bestFit*2 + y*2 + 1, 0);   
+        }
+
+    }
+
+
+    DrawCrosshair( crossPX, crossPY + 4);
+    DrawCrosshair( crossPX, crossPY - 4);
     DrawSprite4b(engine.shipBitmap, &engine.shipHeader, shipDirX, shipDirY,
                     spriteIndexX, spriteIndexY, 48, 48, 3);
-
+    
+     
 }
 
 void DrawGameStats()
@@ -115,7 +158,73 @@ void DrawGameStats()
 void RunGameState()
 {
 
+
     UpdatePlayerPosition();
+    //ProcessQualityInput();
+    
+
+    
+    if(engine.gameState.shipParams.pZ > 11*256 && engine.gameState.shipParams.dPDenom < 3*255)
+    {
+        engine.gameState.shipParams.dPDenom = engine.gameState.shipParams.dPDenom + 4;
+    }
+    else if(engine.gameState.shipParams.dPDenom >= 3*255)
+    {
+        engine.gameState.runOver = 1;
+    }
+
+
+
+    engine.renderer.xTurnOffset = engine.gameState.crossHairX / engine.renderer.turnDenom;
+
+
+    RenderQuality();
+
+//draw crosshair
+    
+    RenderShipAndCrossHair();
+    
+            //draw only even lines 
+    
+                        
+
+    VSyncAndDraw();
+    DrawGameStats();
+
+
+    // 	if(keyCheck(KEY_Q)){calculationDepthDivider=1;Recalculate();}
+    // if(keyCheck(KEY_W)){calculationDepthDivider=2;Recalculate();}
+    // if(keyCheck(KEY_E)){calculationDepthDivider=3;Recalculate();}
+    // if(keyCheck(KEY_R)){calculationDepthDivider=4;Recalculate();}
+    // if(keyCheck(KEY_T)){calculationDepthDivider=5;Recalculate();}
+    // if(keyCheck(KEY_Y)){calculationDepthDivider=6;Recalculate();}
+    // if(keyCheck(KEY_U)){calculationDepthDivider=7;Recalculate();}
+    // if(keyCheck(KEY_I)){calculationDepthDivider=8;Recalculate();}
+    // if(keyCheck(KEY_O)){calculationDepthDivider=9;Recalculate();}
+    // if(keyCheck(KEY_P)){calculationDepthDivider=10;Recalculate();}
+
+    // if(keyCheck(KEY_A)){calculationDepthStep=1;Recalculate();}
+    // if(keyCheck(KEY_S)){calculationDepthStep=2;Recalculate();}
+    // if(keyCheck(KEY_D)){calculationDepthStep=3;Recalculate();}
+    // if(keyCheck(KEY_F)){calculationDepthStep=4;Recalculate();}
+    // if(keyCheck(KEY_G)){calculationDepthStep=5;Recalculate();}
+    // if(keyCheck(KEY_H)){calculationDepthStep=6;Recalculate();}
+    // if(keyCheck(KEY_J)){calculationDepthStep=7;Recalculate();}
+    // if(keyCheck(KEY_K)){calculationDepthStep=8;Recalculate();}
+    // if(keyCheck(KEY_L)){calculationDepthStep=9;Recalculate();}
+    // if(keyCheck(KEY_SEMICOLON)){calculationDepthStep=10;Recalculate();}
+
+    // if(keyCheck(KEY_Z)){renderingDepthStep=1;}
+    // if(keyCheck(KEY_X)){renderingDepthStep=2;}
+    // if(keyCheck(KEY_C)){renderingDepthStep=3;}
+    // if(keyCheck(KEY_V)){renderingDepthStep=4;}
+    // if(keyCheck(KEY_B)){renderingDepthStep=5;}
+    // if(keyCheck(KEY_N)){renderingDepthStep=6;}
+    // if(keyCheck(KEY_M)){renderingDepthStep=7;}
+    // if(keyCheck(KEY_COMMA)){renderingDepthStep=8;}
+    // if(keyCheck(KEY_PERIOD)){renderingDepthStep=9;}
+    // if(keyCheck(KEY_SLASH)){renderingDepthStep=10;}
+
     if(CheckPlayerCollision())
     {
         ShowCutscene(Cutscene_Death);
@@ -131,74 +240,6 @@ void RunGameState()
             ShowCutscene(Cutscene_Win);
 
         }
-    }
-    else
-    {
-    
-        //ProcessQualityInput();
-        
-
-        
-        if(engine.gameState.shipParams.pZ > 11*256 && engine.gameState.shipParams.dPDenom < 3*255)
-        {
-            engine.gameState.shipParams.dPDenom = engine.gameState.shipParams.dPDenom + 4;
-        }
-        else if(engine.gameState.shipParams.dPDenom >= 3*255)
-        {
-            engine.gameState.runOver = 1;
-        }
-    
-
-
-        engine.renderer.xOffsetOdd = engine.gameState.crossHairX / 600;
-        engine.renderer.xOffsetEven = engine.gameState.crossHairX / 900;
-
-        RenderQuality();
-
-    //draw crosshair
-        
-        RenderShipAndCrossHair();
-        
-                //draw only even lines 
-        
-                            
-
-        VSyncAndDraw();
-        DrawGameStats();
-
-
-        // 	if(keyCheck(KEY_Q)){calculationDepthDivider=1;Recalculate();}
-        // if(keyCheck(KEY_W)){calculationDepthDivider=2;Recalculate();}
-        // if(keyCheck(KEY_E)){calculationDepthDivider=3;Recalculate();}
-        // if(keyCheck(KEY_R)){calculationDepthDivider=4;Recalculate();}
-        // if(keyCheck(KEY_T)){calculationDepthDivider=5;Recalculate();}
-        // if(keyCheck(KEY_Y)){calculationDepthDivider=6;Recalculate();}
-        // if(keyCheck(KEY_U)){calculationDepthDivider=7;Recalculate();}
-        // if(keyCheck(KEY_I)){calculationDepthDivider=8;Recalculate();}
-        // if(keyCheck(KEY_O)){calculationDepthDivider=9;Recalculate();}
-        // if(keyCheck(KEY_P)){calculationDepthDivider=10;Recalculate();}
-
-        // if(keyCheck(KEY_A)){calculationDepthStep=1;Recalculate();}
-        // if(keyCheck(KEY_S)){calculationDepthStep=2;Recalculate();}
-        // if(keyCheck(KEY_D)){calculationDepthStep=3;Recalculate();}
-        // if(keyCheck(KEY_F)){calculationDepthStep=4;Recalculate();}
-        // if(keyCheck(KEY_G)){calculationDepthStep=5;Recalculate();}
-        // if(keyCheck(KEY_H)){calculationDepthStep=6;Recalculate();}
-        // if(keyCheck(KEY_J)){calculationDepthStep=7;Recalculate();}
-        // if(keyCheck(KEY_K)){calculationDepthStep=8;Recalculate();}
-        // if(keyCheck(KEY_L)){calculationDepthStep=9;Recalculate();}
-        // if(keyCheck(KEY_SEMICOLON)){calculationDepthStep=10;Recalculate();}
-
-        // if(keyCheck(KEY_Z)){renderingDepthStep=1;}
-        // if(keyCheck(KEY_X)){renderingDepthStep=2;}
-        // if(keyCheck(KEY_C)){renderingDepthStep=3;}
-        // if(keyCheck(KEY_V)){renderingDepthStep=4;}
-        // if(keyCheck(KEY_B)){renderingDepthStep=5;}
-        // if(keyCheck(KEY_N)){renderingDepthStep=6;}
-        // if(keyCheck(KEY_M)){renderingDepthStep=7;}
-        // if(keyCheck(KEY_COMMA)){renderingDepthStep=8;}
-        // if(keyCheck(KEY_PERIOD)){renderingDepthStep=9;}
-        // if(keyCheck(KEY_SLASH)){renderingDepthStep=10;}
     }
     
 

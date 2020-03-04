@@ -584,6 +584,52 @@ void DrawBitmap4bCenter(unsigned char *bLogo, BITMAPINFOHEADER *bhLogo)
 
 void DrawPixel(UWORD x, UWORD y, UBYTE color)
 {
+	UWORD posX = x/16;
+  UWORD leftGap = x - posX*16;
+  UWORD rightGap = 16 - leftGap;
+
+#ifdef AMIGA
+  UWORD firstPos = y*PLANEWIDTHWORD+posX;
+  UWORD secondPos = firstPos+1;
+  #else
+  UWORD firstPos = y*PLANEWIDTHWORD+posX*4;
+  UWORD secondPos = firstPos+4;
+  #endif
+
+	UBYTE col = color & 15;
+	WORD pattern = col|(col << 4)|(col << 8)|(col << 12);
+
+  WORD leftPixelPattern = pattern >> leftGap;
+  WORD leftScreenPattern = 0b1111111111111111 << rightGap;
+
+  WORD rightPixelPattern = pattern << rightGap;
+  WORD rightScreenPattern = 0b1111111111111111 >> leftGap;
+
+#ifdef AMIGA
+  engine.renderer.plane1W[firstPos] = (leftPixelPattern) + (engine.renderer.plane1W[firstPos] & (leftScreenPattern));
+  engine.renderer.plane2W[firstPos] = (leftPixelPattern) + (engine.renderer.plane2W[firstPos] & (leftScreenPattern));
+  engine.renderer.plane3W[firstPos] = (leftPixelPattern) + (engine.renderer.plane3W[firstPos] & (leftScreenPattern));
+  engine.renderer.plane4W[firstPos] = (leftPixelPattern) + (engine.renderer.plane4W[firstPos] & (leftScreenPattern));
+  
+  engine.renderer.plane1W[secondPos] = (rightPixelPattern) + (engine.renderer.plane1W[secondPos] & (rightScreenPattern));
+  engine.renderer.plane2W[secondPos] = (rightPixelPattern) + (engine.renderer.plane2W[secondPos] & (rightScreenPattern));
+  engine.renderer.plane3W[secondPos] = (rightPixelPattern) + (engine.renderer.plane3W[secondPos] & (rightScreenPattern));
+  engine.renderer.plane4W[secondPos] = (rightPixelPattern) + (engine.renderer.plane4W[secondPos] & (rightScreenPattern));
+  #else
+  engine.renderer.planes[firstPos] = (leftPixelPattern) + (engine.renderer.planes[firstPos] & (leftScreenPattern));
+  engine.renderer.planes[firstPos+1] = (leftPixelPattern) + (engine.renderer.planes[firstPos+1] & (leftScreenPattern));
+  engine.renderer.planes[firstPos+2] = (leftPixelPattern) + (engine.renderer.planes[firstPos+2] & (leftScreenPattern));
+  engine.renderer.planes[firstPos+3] = (leftPixelPattern) + (engine.renderer.planes[firstPos+3] & (leftScreenPattern));
+  
+  engine.renderer.planes[secondPos] = (rightPixelPattern) + (engine.renderer.planes[secondPos] & (rightScreenPattern));
+  engine.renderer.planes[secondPos+1] = (rightPixelPattern) + (engine.renderer.planes[secondPos+1] & (rightScreenPattern));
+  engine.renderer.planes[secondPos+2] = (rightPixelPattern) + (engine.renderer.planes[secondPos+2] & (rightScreenPattern));
+  engine.renderer.planes[secondPos+3] = (rightPixelPattern) + (engine.renderer.planes[secondPos+3] & (rightScreenPattern));
+  #endif
+}
+
+void DrawCrosshair(UWORD x, UWORD y)
+{
   UWORD posX = x/16;
   UWORD leftGap = x - posX*16;
   UWORD rightGap = 16 - leftGap;

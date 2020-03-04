@@ -42,6 +42,7 @@ void ExitGame()
 
 void GetPlayerRendererSetting()
 {
+	engine.renderer.zStart = 12;
 	if (getKey(3))
 	{
 		engine.renderer.renderingDepth = 24;
@@ -53,6 +54,7 @@ void GetPlayerRendererSetting()
 		engine.renderer.stepModifier = 16;
 		if(engine.renderer.highMemory)
 		{
+		engine.renderer.turnDenom = 2000;
 			engine.renderer.xFOV = 20;
 			engine.renderer.yFOV = 30;
 			engine.renderer.renderingType = 4;
@@ -60,6 +62,7 @@ void GetPlayerRendererSetting()
 		}
 		else
 		{
+		engine.renderer.turnDenom = 3000;
 			engine.renderer.xFOV = 23;
 			engine.renderer.yFOV = 15;
 			engine.renderer.renderingType = 1;
@@ -78,6 +81,7 @@ void GetPlayerRendererSetting()
 		engine.renderer.stepModifier = 16;
 		if(engine.renderer.highMemory)
 		{
+		engine.renderer.turnDenom = 2000;
 			engine.renderer.xFOV = 12;
 			engine.renderer.yFOV = 20;
 			engine.renderer.renderingType = 5;
@@ -85,6 +89,7 @@ void GetPlayerRendererSetting()
 		}
 		else
 		{
+		engine.renderer.turnDenom = 3000;
 			engine.renderer.xFOV = 18;
 			engine.renderer.yFOV = 12;
 			engine.renderer.renderingType = 2;
@@ -102,13 +107,15 @@ void GetPlayerRendererSetting()
 		engine.renderer.stepModifier = 16;
 		if(engine.renderer.highMemory)
 		{
-		engine.renderer.xFOV = 10;
+		engine.renderer.turnDenom = 2000;
+		engine.renderer.xFOV = 8;
 		engine.renderer.yFOV = 18;
 			engine.renderer.renderingType = 6;
 		RecalculateOdd();
 		}
 		else
 		{
+		engine.renderer.turnDenom = 3000;
 			engine.renderer.xFOV = 18;
 			engine.renderer.yFOV = 10;
 			engine.renderer.renderingType = 3;
@@ -262,6 +269,8 @@ void InitInput()
 
 void GetPlayerRendererSetting()
 {
+	engine.renderer.zStart = 12;
+		engine.renderer.turnDenom = 2000;
 	if (getKey(3))
 	{
 		engine.renderer.renderingDepth = TERRAINDEPTH;
@@ -400,10 +409,25 @@ void ProcessQualityInput()
 
 #endif
 
+void GetYAxisSetting()
+{
+	if (getKey(9))
+	{
+		engine.yAxis = -1;
+	}
+	if (getKey(0))
+	{
+		engine.yAxis = 1;
+	}
+	
+}
+
 void GetPlayerMemorySetting()
 {
 	if(getKey(1))
 	{
+		engine.renderer.depthBufferHeight = YSIZEEVEN;
+		engine.renderer.depthBuffer = (UBYTE *)malloc(YSIZEEVEN*sizeof(UBYTE));
 		engine.renderer.ditherTable1 = (UBYTE *)malloc(4*COLORS*COLORS*sizeof(UBYTE));
 		engine.renderer.ditherTable2 = engine.renderer.ditherTable1 + COLORS*COLORS;
 		engine.renderer.ditherTable3 = engine.renderer.ditherTable1 + 2*COLORS*COLORS;
@@ -416,6 +440,8 @@ void GetPlayerMemorySetting()
 	}
 	if(getKey(2))
 	{	
+		engine.renderer.depthBufferHeight = YSIZEODD;
+		engine.renderer.depthBuffer = (UBYTE *)malloc(YSIZEODD*sizeof(UBYTE));
 		engine.renderer.ditherTable1 = (UBYTE *)malloc(4*COLORS*COLORS*COLORS*sizeof(UBYTE));
 		engine.renderer.ditherTable2 = engine.renderer.ditherTable1 + COLORS*COLORS*COLORS;
 		engine.renderer.ditherTable3 = engine.renderer.ditherTable1 + 2*COLORS*COLORS*COLORS;

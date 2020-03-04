@@ -28,22 +28,13 @@ ULONG getDeltaTime(ULONG *refTime)
 void updateShipParams(LONG deltaTime, UWORD terrainHeight)
 {
     ShipParams shipParams = engine.gameState.shipParams;
-	shipParams.relHeight = ((shipParams.pY - 3) - terrainHeight);
+	shipParams.relHeight = ((shipParams.pY - 2) - terrainHeight);
 	shipParams.ddP = 5*((256 - shipParams.relHeight) - (shipParams.dP/4));
 	
 	LONG addedVelocity = 5*(shipParams.ddP/48);
 	if(addedVelocity > 1000)
 	{
-		if(shipParams.ddP < 0)
-		{
-			shipParams.ddP = 5*((256 - shipParams.relHeight) - (shipParams.dP/4));
-			addedVelocity = 5*(shipParams.ddP/48);
-		}
-		else
-		{
 			addedVelocity = 1000 - shipParams.dP;	
-		}
-		
 		
 	}
 	shipParams.dP = shipParams.dP + addedVelocity;
@@ -60,8 +51,8 @@ void updateShipParams(LONG deltaTime, UWORD terrainHeight)
 	shipParams.precZ += deltaTime*shipParams.dP/shipParams.dPDenom;
 
 
-	shipParams.precX += (LONG)deltaTime * engine.gameState.crossHairX / 2000;
-	shipParams.precY -= (LONG)deltaTime * engine.gameState.crossHairY / 1000;
+	shipParams.precX += (LONG)deltaTime * engine.gameState.crossHairX / 3000;
+	shipParams.precY -= (LONG)deltaTime * engine.gameState.crossHairY / 1500;
 
 	if (shipParams.precY > 7000)
 		shipParams.precY = 7000; //block going above hills
@@ -109,12 +100,12 @@ void ProcessInput()
 
 	if (getJoy(1, DOWN))
 	{
-		engine.gameState.crossHairY += engine.deltaTime / 60;
+		engine.gameState.crossHairY += engine.yAxis*(LONG)(engine.deltaTime / 60);
 		//engine.gameState.crossHairY += deltaTime / 10;
 	}
 	else if (getJoy(1, UP))
 	{
-		engine.gameState.crossHairY -= engine.deltaTime / 60;
+		engine.gameState.crossHairY -= engine.yAxis*(LONG)(engine.deltaTime / 60);
 	}
 	else if (engine.gameState.crossHairY != 0)
 	{
@@ -126,5 +117,5 @@ void ProcessInput()
 
 UWORD getTerrainHeight(ShipParams shipParams, UWORD map[][128])
 {
-    return ((UBYTE)(map[((UBYTE)(shipParams.pX)) >> 1][((UBYTE)(shipParams.pZ + 15)) >> 1]));
+    return ((UBYTE)(map[((UBYTE)(shipParams.pX)) >> 1][((UBYTE)(shipParams.pZ + engine.renderer.zStart + 8)) >> 1]));
 }

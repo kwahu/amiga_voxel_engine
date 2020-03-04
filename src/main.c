@@ -103,6 +103,22 @@ void InitEngine(void)
 		
 	}
 
+	ClearBuffor();
+	
+	FillTextBitmap(engine.font, engine.informationText, 
+	"INVERT Y AXIS?   KEY 9 = YES   KEY 0 = NO"
+	);
+	VSyncAndDraw();
+	DrawTextBitmap(engine.informationText, 50, PLANEHEIGHT/2, 3);
+
+	engine.yAxis = 0;
+
+	while(engine.yAxis == 0)
+	{
+		GetYAxisSetting();
+		
+	}
+
 
 	FreeTextBitmap(engine.informationText);
 	InitLogoState();

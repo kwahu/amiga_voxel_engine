@@ -308,7 +308,7 @@ WORD (*rayCastX), WORD (*rayCastY), UWORD (*map)[MAPSIZE], UBYTE threshold)
 }
 
 void ProcessRayCastsProgressive4x4(WORD (*rayCastX), WORD (*rayCastY), UWORD (*map)[MAPSIZE],
-	UBYTE px, UBYTE py, UBYTE ph, UBYTE screenStart, UBYTE screenEnd, UBYTE zStart)
+	UBYTE px, UBYTE py, UBYTE ph, UBYTE screenStart, UBYTE screenEnd)
 {
 	UBYTE sx,sy,mist;
 	UWORD tz,tzz[6];
@@ -323,7 +323,7 @@ void ProcessRayCastsProgressive4x4(WORD (*rayCastX), WORD (*rayCastY), UWORD (*m
 
 
 	//start with the buffor + vertical stripe start + turning amount
-	sx = XTURNBUFFOR + engine.renderer.xOffsetOdd + screenStart*4;
+	sx = XTURNBUFFOR + engine.renderer.xTurnOffset + screenStart*4;
 	//currentScreenYStepSize = xCycles;
 
 
@@ -366,9 +366,9 @@ void ProcessRayCastsProgressive4x4(WORD (*rayCastX), WORD (*rayCastY), UWORD (*m
 		//position = positionStart + iVert ;//+ 80*12;
 		
 		//init values for this vertical line
-		tzz[0]=zStart;tzz[1]=zStart;tzz[2]=zStart;
-		//tzz[3]=zStart;tzz[4]=zStart;tzz[5]=zStart;
-		tz = zStart;
+		tzz[0]=engine.renderer.zStart;tzz[1]=engine.renderer.zStart;tzz[2]=engine.renderer.zStart;
+		//tzz[3]=engine.renderer.zStart;tzz[4]=engine.renderer.zStart;tzz[5]=engine.renderer.zStart;
+		tz = engine.renderer.zStart;
 
 		//process this vertical line
 		while(sy < YSIZEEVEN)
@@ -472,7 +472,7 @@ void ProcessRayCastsProgressive4x4(WORD (*rayCastX), WORD (*rayCastY), UWORD (*m
 
 
 void ProcessRayCastsProgressive4x4NonInterleaved(WORD (*rayCastX), WORD (*rayCastY), UWORD (*map)[MAPSIZE],
-	UBYTE px, UBYTE py, UBYTE ph, UBYTE screenStart, UBYTE screenEnd, UBYTE zStart)
+	UBYTE px, UBYTE py, UBYTE ph, UBYTE screenStart, UBYTE screenEnd)
 {
 	UBYTE sx,sy,mist;
 	UWORD tz,tzz[6];
@@ -487,7 +487,7 @@ void ProcessRayCastsProgressive4x4NonInterleaved(WORD (*rayCastX), WORD (*rayCas
 
 
 	//start with the buffor + vertical stripe start + turning amount
-	sx = XTURNBUFFOR + engine.renderer.xOffsetOdd + screenStart*4;
+	sx = XTURNBUFFOR + engine.renderer.xTurnOffset + screenStart*4;
 	//currentScreenYStepSize = xCycles;
 
 
@@ -530,9 +530,9 @@ void ProcessRayCastsProgressive4x4NonInterleaved(WORD (*rayCastX), WORD (*rayCas
 		//position = positionStart + iVert ;//+ 80*12;
 		
 		//init values for this vertical line
-		tzz[0]=zStart;tzz[1]=zStart;tzz[2]=zStart;
-		//tzz[3]=zStart;tzz[4]=zStart;tzz[5]=zStart;
-		tz = zStart;
+		tzz[0]=engine.renderer.zStart;tzz[1]=engine.renderer.zStart;tzz[2]=engine.renderer.zStart;
+		//tzz[3]=engine.renderer.zStart;tzz[4]=engine.renderer.zStart;tzz[5]=engine.renderer.zStart;
+		tz = engine.renderer.zStart;
 
 		//process this vertical line
 		while(sy < YSIZEEVEN)
@@ -666,7 +666,7 @@ void ProcessRayCastsProgressive4x4NonInterleaved(WORD (*rayCastX), WORD (*rayCas
 }
 
 void ProcessRayCastsProgressive(WORD (*rayCastX), WORD (*rayCastY), UWORD (*map)[MAPSIZE],
-	UBYTE px, UBYTE py, UBYTE ph, UBYTE screenStart, UBYTE screenEnd, UBYTE zStart)
+	UBYTE px, UBYTE py, UBYTE ph, UBYTE screenStart, UBYTE screenEnd)
 {
 	UBYTE sx,sy,mist;
 	UWORD tz,tzz[6];
@@ -682,7 +682,7 @@ void ProcessRayCastsProgressive(WORD (*rayCastX), WORD (*rayCastY), UWORD (*map)
 
 
 	//start with the buffor + vertical stripe start + turning amount
-	sx = XTURNBUFFOR + engine.renderer.xOffsetOdd + screenStart*6;
+	sx = XTURNBUFFOR + engine.renderer.xTurnOffset + screenStart*6;
 	//currentScreenYStepSize = xCycles;
 
 
@@ -726,9 +726,9 @@ void ProcessRayCastsProgressive(WORD (*rayCastX), WORD (*rayCastY), UWORD (*map)
 		//position = positionStart + iVert ;//+ 80*12;
 		
 		//init values for this vertical line
-		tzz[0]=zStart;tzz[1]=zStart;tzz[2]=zStart;
-		//tzz[3]=zStart;tzz[4]=zStart;tzz[5]=zStart;
-		tz = zStart;
+		tzz[0]=engine.renderer.zStart;tzz[1]=engine.renderer.zStart;tzz[2]=engine.renderer.zStart;
+		//tzz[3]=engine.renderer.zStart;tzz[4]=engine.renderer.zStart;tzz[5]=engine.renderer.zStart;
+		tz = engine.renderer.zStart;
 
 		//process this vertical line
 		while(sy < YSIZEODD)
@@ -837,7 +837,7 @@ void ProcessRayCastsProgressive(WORD (*rayCastX), WORD (*rayCastY), UWORD (*map)
 
 
 void ProcessRayCastsProgressiveNonInterleaved(WORD (*rayCastX), WORD (*rayCastY), UWORD (*map)[MAPSIZE],
-	UBYTE px, UBYTE py, UBYTE ph, UBYTE screenStart, UBYTE screenEnd, UBYTE zStart)
+	UBYTE px, UBYTE py, UBYTE ph, UBYTE screenStart, UBYTE screenEnd)
 {
 	UBYTE sx,sy,mist;
 	UWORD tz,tzz[6];
@@ -853,7 +853,7 @@ void ProcessRayCastsProgressiveNonInterleaved(WORD (*rayCastX), WORD (*rayCastY)
 
 
 	//start with the buffor + vertical stripe start + turning amount
-	sx = XTURNBUFFOR + engine.renderer.xOffsetOdd + screenStart*6;
+	sx = XTURNBUFFOR + engine.renderer.xTurnOffset + screenStart*6;
 	//currentScreenYStepSize = xCycles;
 
 
@@ -897,9 +897,9 @@ void ProcessRayCastsProgressiveNonInterleaved(WORD (*rayCastX), WORD (*rayCastY)
 		//position = positionStart + iVert ;//+ 80*12;
 		
 		//init values for this vertical line
-		tzz[0]=zStart;tzz[1]=zStart;tzz[2]=zStart;
-		//tzz[3]=zStart;tzz[4]=zStart;tzz[5]=zStart;
-		tz = zStart;
+		tzz[0]=engine.renderer.zStart;tzz[1]=engine.renderer.zStart;tzz[2]=engine.renderer.zStart;
+		//tzz[3]=engine.renderer.zStart;tzz[4]=engine.renderer.zStart;tzz[5]=engine.renderer.zStart;
+		tz = engine.renderer.zStart;
 
 		//process this vertical line
 		while(sy < YSIZEODD)
@@ -1012,14 +1012,15 @@ void ProcessRayCastsProgressiveNonInterleaved(WORD (*rayCastX), WORD (*rayCastY)
 }
 
 void ProcessRayCastsFull3x2(WORD (*rayCastX), WORD (*rayCastY), UWORD (*map)[MAPSIZE],
-UBYTE px, UBYTE py, UBYTE ph, UBYTE screenStart, UBYTE screenEnd, UBYTE zStart)
+UBYTE px, UBYTE py, UBYTE ph, UBYTE screenStart, UBYTE screenEnd)
 {
 
     
 	UWORD yOffset = (256 - YSIZEODD*2)/2 * PLANEWIDTHWORD;
-    WORD baseX = XTURNBUFFOR + engine.renderer.xOffsetOdd + screenStart*6;
+    WORD baseX = XTURNBUFFOR + engine.renderer.xTurnOffset + screenStart*6;
 
 	//for each vertical line
+
     
 
     for(UBYTE x = screenStart; x < screenEnd; ++x)
@@ -1028,7 +1029,7 @@ UBYTE px, UBYTE py, UBYTE ph, UBYTE screenStart, UBYTE screenEnd, UBYTE zStart)
         for(UBYTE i = 0; i < 6; ++i)
         {
             UBYTE sy = 0;
-            UWORD tz = zStart;
+            UWORD tz = engine.renderer.zStart;
             WORD *rayXPtr = rayCastX + baseX*TERRAINDEPTH + tz;
             WORD *rayYPtr = rayCastY + tz;
             UBYTE *screenPtr = engine.renderer.screenPatch + ((YSIZEODD)-1)*6 + i;
@@ -1046,7 +1047,20 @@ UBYTE px, UBYTE py, UBYTE ph, UBYTE screenStart, UBYTE screenEnd, UBYTE zStart)
 
                 if(slope > tz>>2)
                 {
-                    *screenPtr = ((mapValue >> 8) + ((slope/4) & 1));
+                    if(tz == engine.renderer.zStart)
+                    {
+                        *screenPtr = 0;
+                    }
+                    else
+                    {
+                        *screenPtr = ((mapValue >> 8) + ((slope/4) & 1));
+                    }
+
+                    if(x == (screenStart + ((screenEnd - screenStart)/2)) && sy < YSIZEODD)
+                    {
+                        engine.renderer.depthBuffer[sy] = (UBYTE)tz;
+                    }
+                    
                     sy+=1;//go step higher in the raycast table
                     rayYPtr += TERRAINDEPTH;
                     screenPtr-=6;//go step higher on screen
@@ -1054,7 +1068,21 @@ UBYTE px, UBYTE py, UBYTE ph, UBYTE screenStart, UBYTE screenEnd, UBYTE zStart)
                 }
                 else if(slope > 0)
                 {
-                    *screenPtr = (mapValue >> 8) + 2;
+                    if(tz == engine.renderer.zStart)
+                    {
+                        *screenPtr = 0;
+                    }
+                    else
+                    {
+                        *screenPtr = (mapValue >> 8) + 2;
+                    }
+
+
+                    if(x == (screenStart + ((screenEnd - screenStart)/2)) && sy < YSIZEODD)
+                    {
+                        engine.renderer.depthBuffer[sy] = (UBYTE)tz;
+                    }
+
                     sy+=1;//go step higher in the raycast table
                     rayYPtr += TERRAINDEPTH;
                     screenPtr-=6;//go step higher on screen
@@ -1075,6 +1103,7 @@ UBYTE px, UBYTE py, UBYTE ph, UBYTE screenStart, UBYTE screenEnd, UBYTE zStart)
                 //	sy = YSIZE;
                 //else
                 {
+                    engine.renderer.depthBuffer[sy] = 0xFF;
                     *screenPtr =  32 - ph/32 -sy/8;
                     sy+=1;
                     screenPtr-=6;
@@ -1099,6 +1128,8 @@ UBYTE px, UBYTE py, UBYTE ph, UBYTE screenStart, UBYTE screenEnd, UBYTE zStart)
         UWORD *planePos4 = engine.renderer.planes + yOffset + x*4 + 3;
 		#endif
         UWORD sp = 0;
+
+        
 
         for(UBYTE y=0;y<YSIZEODD;y++)
 	    {
@@ -1137,12 +1168,12 @@ UBYTE px, UBYTE py, UBYTE ph, UBYTE screenStart, UBYTE screenEnd, UBYTE zStart)
 
 
 void ProcessRayCastsFull4x4(WORD (*rayCastX), WORD (*rayCastY), UWORD (*map)[MAPSIZE],
-UBYTE px, UBYTE py, UBYTE ph, UBYTE screenStart, UBYTE screenEnd, UBYTE zStart)
+UBYTE px, UBYTE py, UBYTE ph, UBYTE screenStart, UBYTE screenEnd)
 {
 
     
 	UWORD yOffset = (256 - YSIZEEVEN*4)/2 * PLANEWIDTHWORD;
-    UBYTE baseX = XTURNBUFFOR + engine.renderer.xOffsetEven + screenStart*4;
+    UBYTE baseX = XTURNBUFFOR + engine.renderer.xTurnOffset + screenStart*4;
 
 	//for each vertical line
     
@@ -1153,7 +1184,7 @@ UBYTE px, UBYTE py, UBYTE ph, UBYTE screenStart, UBYTE screenEnd, UBYTE zStart)
         for(UBYTE i = 0; i < 4; ++i)
         {
             UBYTE sy = 0;
-            UWORD tz = zStart;
+            UWORD tz = engine.renderer.zStart;
             UWORD *rayXPtr = rayCastX + baseX*TERRAINDEPTH + tz;
             UWORD *rayYPtr = rayCastY + tz;
             UBYTE *screenPtr = engine.renderer.screenPatch + ((YSIZEEVEN)-1)*4 + i;
@@ -1171,6 +1202,12 @@ UBYTE px, UBYTE py, UBYTE ph, UBYTE screenStart, UBYTE screenEnd, UBYTE zStart)
 
                 if(slope > tz>>2)
                 {
+
+                    if(x == (screenStart + ((screenEnd - screenStart)/2)) && sy < YSIZEEVEN)
+                    {
+                        engine.renderer.depthBuffer[sy] = (UBYTE)tz;
+                    }
+
                     *screenPtr = ((mapValue >> 8) + ((slope/4) & 1));
                     sy+=1;//go step higher in the raycast table
                     rayYPtr += TERRAINDEPTH;
@@ -1179,6 +1216,11 @@ UBYTE px, UBYTE py, UBYTE ph, UBYTE screenStart, UBYTE screenEnd, UBYTE zStart)
                 }
                 else if(slope > 0)
                 {
+                    
+                    if(x == (screenStart + ((screenEnd - screenStart)/2)) && sy < YSIZEEVEN)
+                    {
+                        engine.renderer.depthBuffer[sy] = (UBYTE)tz;
+                    }
                     *screenPtr = (mapValue >> 8) + 2;
                     sy+=1;//go step higher in the raycast table
                     rayYPtr += TERRAINDEPTH;
@@ -1195,6 +1237,7 @@ UBYTE px, UBYTE py, UBYTE ph, UBYTE screenStart, UBYTE screenEnd, UBYTE zStart)
             
             while(sy < YSIZEEVEN)
             {
+                engine.renderer.depthBuffer[sy] = 0xFF;
                 *screenPtr =  32 - ph/32 -sy/8;
                 sy+=1;
                 screenPtr-=4;
@@ -1275,13 +1318,13 @@ UBYTE px, UBYTE py, UBYTE ph, UBYTE screenStart, UBYTE screenEnd, UBYTE zStart)
 }
 
 void ProcessRayCasts163x2( WORD (*rayCastX), WORD (*rayCastY), UWORD (*map)[MAPSIZE],
-UBYTE px, UBYTE py, UBYTE ph, UBYTE screenStart, UBYTE screenEnd, UBYTE zStart)
+UBYTE px, UBYTE py, UBYTE ph, UBYTE screenStart, UBYTE screenEnd)
 {
 
     
     
 	UWORD yOffset = (256 - YSIZEODD*2)/2 * PLANEWIDTHWORD;
-    UBYTE baseX = XTURNBUFFOR + engine.renderer.xOffsetOdd + screenStart*6;
+    UBYTE baseX = XTURNBUFFOR + engine.renderer.xTurnOffset + screenStart*6;
 
 	//for each vertical line
     
@@ -1292,7 +1335,7 @@ UBYTE px, UBYTE py, UBYTE ph, UBYTE screenStart, UBYTE screenEnd, UBYTE zStart)
         for(UBYTE i = 0; i < 6; ++i)
         {
             UBYTE sy = 0;
-            UWORD tz = zStart;
+            UWORD tz = engine.renderer.zStart;
             UWORD *rayXPtr = rayCastX + baseX*TERRAINDEPTH + tz;
             UWORD *rayYPtr = rayCastY + tz;
             UBYTE *screenPtr = engine.renderer.screenPatch + ((YSIZEODD)-1)*6 + i;
@@ -1388,12 +1431,12 @@ UBYTE px, UBYTE py, UBYTE ph, UBYTE screenStart, UBYTE screenEnd, UBYTE zStart)
 }
 
 void ProcessRayCasts164x4(WORD (*rayCastX), WORD (*rayCastY), UWORD (*map)[MAPSIZE],
-UBYTE px, UBYTE py, UBYTE ph, UBYTE screenStart, UBYTE screenEnd, UBYTE zStart)
+UBYTE px, UBYTE py, UBYTE ph, UBYTE screenStart, UBYTE screenEnd)
 {
 
     
 	UWORD yOffset = (256 - YSIZEEVEN*4)/2 * PLANEWIDTHWORD;
-    UBYTE baseX = XTURNBUFFOR + engine.renderer.xOffsetEven + screenStart*4;
+    UBYTE baseX = XTURNBUFFOR + engine.renderer.xTurnOffset + screenStart*4;
 
 	//for each vertical line
     
@@ -1404,7 +1447,7 @@ UBYTE px, UBYTE py, UBYTE ph, UBYTE screenStart, UBYTE screenEnd, UBYTE zStart)
         for(UBYTE i = 0; i < 4; ++i)
         {
             UBYTE sy = 0;
-            UWORD tz = zStart;
+            UWORD tz = engine.renderer.zStart;
             UWORD *rayXPtr = rayCastX + baseX*TERRAINDEPTH + tz;
             UWORD *rayYPtr = rayCastY + tz;
             UBYTE *screenPtr = engine.renderer.screenPatch + ((YSIZEEVEN)-1)*4 + i;

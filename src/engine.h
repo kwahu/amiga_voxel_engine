@@ -132,10 +132,13 @@ typedef struct Renderer
     UBYTE renderingType, calculationDepthDivider, calculationDepthStep, renderingDepthStep, stepModifier, xFOV, yFOV;
     UBYTE renderingDepth;
     UBYTE highMemory;
+    UBYTE zStart;
+    UBYTE depthBufferHeight;
 
         
     UWORD bitmapPalette[16];
 
+    UBYTE *depthBuffer;
     UBYTE *screenPatch;
     UBYTE *ditherTable1;
     UBYTE *ditherTable2;
@@ -149,7 +152,8 @@ typedef struct Renderer
     //WORD rayCastX[XSIZEODD][TERRAINDEPTH]; //29k AMIGA / 14k ATARI
     //WORD rayCastY[YSIZEODD][TERRAINDEPTH]; //12k AMIGA / 3k ATARI
     
-    BYTE xOffsetEven, xOffsetOdd; //camera rotation offsett when turning
+    BYTE xTurnOffset; //camera rotation offsett when turning
+    WORD turnDenom;
 
 
 } Renderer;
@@ -182,6 +186,7 @@ typedef struct Engine
     TextBitMap *pBitmapVelocityLabel, *pBitmapVelocity, *pBitmapScore, *pBitmapScoreLabel, *pBitmapInfo[10];
 
     UBYTE musicOn;
+    LONG yAxis;
 
     UBYTE exitFlag;
 
