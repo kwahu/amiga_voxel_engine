@@ -1,5 +1,3 @@
-#include "engine.h"
-
 void RecalculateEven()
 {
 	CalculateRayCasts(engine.renderer.rayCastX, engine.renderer.rayCastY, XSIZEEVEN, YSIZEEVEN, 2); //było 2
@@ -1368,245 +1366,245 @@ UBYTE px, UBYTE py, UBYTE ph, UBYTE screenStart, UBYTE screenEnd)
 
 }
 
-void ProcessRayCasts163x2( WORD (*rayCastX), WORD (*rayCastY), UWORD (*map)[MAPSIZE],
-UBYTE px, UBYTE py, UBYTE ph, UBYTE screenStart, UBYTE screenEnd)
-{
+// void ProcessRayCasts163x2( WORD (*rayCastX), WORD (*rayCastY), UWORD (*map)[MAPSIZE],
+// UBYTE px, UBYTE py, UBYTE ph, UBYTE screenStart, UBYTE screenEnd)
+// {
 
     
     
-	UWORD yOffset = (256 - YSIZEODD*2)/2 * PLANEWIDTHWORD;
-    UBYTE baseX = XTURNBUFFOR + engine.renderer.xTurnOffset + screenStart*6;
+// 	UWORD yOffset = (256 - YSIZEODD*2)/2 * PLANEWIDTHWORD;
+//     UBYTE baseX = XTURNBUFFOR + engine.renderer.xTurnOffset + screenStart*6;
 
-	//for each vertical line
+// 	//for each vertical line
     
 
-    for(UBYTE x = screenStart; x < screenEnd; ++x)
-    {
+//     for(UBYTE x = screenStart; x < screenEnd; ++x)
+//     {
 
-        for(UBYTE i = 0; i < 6; ++i)
-        {
-            UBYTE sy = 0;
-            UWORD tz = engine.renderer.zStart;
-            UWORD *rayXPtr = rayCastX + baseX*TERRAINDEPTH + tz;
-            UWORD *rayYPtr = rayCastY + tz;
-            UBYTE *screenPtr = engine.renderer.screenPatch + ((YSIZEODD)-1)*6 + i;
-	        UBYTE mx,my;
-	        UWORD mapValue;
+//         for(UBYTE i = 0; i < 6; ++i)
+//         {
+//             UBYTE sy = 0;
+//             UWORD tz = engine.renderer.zStart;
+//             UWORD *rayXPtr = rayCastX + baseX*TERRAINDEPTH + tz;
+//             UWORD *rayYPtr = rayCastY + tz;
+//             UBYTE *screenPtr = engine.renderer.screenPatch + ((YSIZEODD)-1)*6 + i;
+// 	        UBYTE mx,my;
+// 	        UWORD mapValue;
 
-            while(tz < engine.renderer.renderingDepth)
-            {
-                mx = px + *rayXPtr;
-                my = (py + (tz<<engine.renderer.renderingDepthStep));
-                mapValue = map[ mx >> 1 ][ my >> 1 ];
-                UBYTE th = mapValue;
+//             while(tz < engine.renderer.renderingDepth)
+//             {
+//                 mx = px + *rayXPtr;
+//                 my = (py + (tz<<engine.renderer.renderingDepthStep));
+//                 mapValue = map[ mx >> 1 ][ my >> 1 ];
+//                 UBYTE th = mapValue;
 
-                if(th > ph + *rayYPtr)//tz>>3)
-                {
-                    *screenPtr = (mapValue >> 8);// - (mist>>4);//+ ((slope/4) & 1);//( ( 13 - (mapValue >> 8) ) >> (mist>>5) )+ 13 + ((slope/4) & 1);// + (((tz+py)>>2) & 1);//write pixel color
+//                 if(th > ph + *rayYPtr)//tz>>3)
+//                 {
+//                     *screenPtr = (mapValue >> 8);// - (mist>>4);//+ ((slope/4) & 1);//( ( 13 - (mapValue >> 8) ) >> (mist>>5) )+ 13 + ((slope/4) & 1);// + (((tz+py)>>2) & 1);//write pixel color
                     
-                    sy+=1;//go step higher in the raycast table
-                    rayYPtr += TERRAINDEPTH;
-                    screenPtr-=6;//go step higher on screen
-                }
-                else
-                {	
-                    //screen[position] = 0;
-                    tz++;//go step in depth if no height hit
-                    rayXPtr++;
-                    rayYPtr++;
-                }
-            }
+//                     sy+=1;//go step higher in the raycast table
+//                     rayYPtr += TERRAINDEPTH;
+//                     screenPtr-=6;//go step higher on screen
+//                 }
+//                 else
+//                 {	
+//                     //screen[position] = 0;
+//                     tz++;//go step in depth if no height hit
+//                     rayXPtr++;
+//                     rayYPtr++;
+//                 }
+//             }
             
-            while(sy < YSIZEODD)
-            {
-                //if(screen[position] == 31)
-                //	sy = YSIZE;
-                //else
-                {
-                    *screenPtr =  32 - ph/32 -sy/8;
-                    sy+=1;
-                    screenPtr-=6;
-                }
+//             while(sy < YSIZEODD)
+//             {
+//                 //if(screen[position] == 31)
+//                 //	sy = YSIZE;
+//                 //else
+//                 {
+//                     *screenPtr =  32 - ph/32 -sy/8;
+//                     sy+=1;
+//                     screenPtr-=6;
+//                 }
 
-            }
+//             }
 
-            baseX++;
-        }
-#if AMIGA
+//             baseX++;
+//         }
+// #if AMIGA
 
-    UWORD *planePos1 = engine.renderer.plane1W + yOffset + x;
-    UWORD *planePos2 = engine.renderer.plane2W + yOffset + x;
-    UWORD *planePos3 = engine.renderer.plane3W + yOffset + x;
-    UWORD *planePos4 = engine.renderer.plane4W + yOffset + x;
+//     UWORD *planePos1 = engine.renderer.plane1W + yOffset + x;
+//     UWORD *planePos2 = engine.renderer.plane2W + yOffset + x;
+//     UWORD *planePos3 = engine.renderer.plane3W + yOffset + x;
+//     UWORD *planePos4 = engine.renderer.plane4W + yOffset + x;
     
-    #else
-        UWORD *planePos1 = engine.renderer.planes + yOffset + x*4;
-        UWORD *planePos2 = engine.renderer.planes + yOffset + x*4 + 1;
-        UWORD *planePos3 = engine.renderer.planes + yOffset + x*4 + 2;
-        UWORD *planePos4 = engine.renderer.planes + yOffset + x*4 + 3;
-		#endif
-        UWORD sp = 0;
+//     #else
+//         UWORD *planePos1 = engine.renderer.planes + yOffset + x*4;
+//         UWORD *planePos2 = engine.renderer.planes + yOffset + x*4 + 1;
+//         UWORD *planePos3 = engine.renderer.planes + yOffset + x*4 + 2;
+//         UWORD *planePos4 = engine.renderer.planes + yOffset + x*4 + 3;
+// 		#endif
+//         UWORD sp = 0;
 
-        for(UBYTE y=0;y<YSIZEODD;y++)
-	    {
+//         for(UBYTE y=0;y<YSIZEODD;y++)
+// 	    {
 
-			UWORD address1 = (engine.renderer.screenPatch[sp]<<10) + (engine.renderer.screenPatch[sp+1]<<5) + (engine.renderer.screenPatch[sp+2]);
-			UWORD address2 = (engine.renderer.screenPatch[sp+3]<<10) + (engine.renderer.screenPatch[sp+4]<<5) + (engine.renderer.screenPatch[sp+5]);
+// 			UWORD address1 = (engine.renderer.screenPatch[sp]<<10) + (engine.renderer.screenPatch[sp+1]<<5) + (engine.renderer.screenPatch[sp+2]);
+// 			UWORD address2 = (engine.renderer.screenPatch[sp+3]<<10) + (engine.renderer.screenPatch[sp+4]<<5) + (engine.renderer.screenPatch[sp+5]);
 
             
-			UWORD word = (engine.renderer.ditherTable1[ address1 ]<<8) + engine.renderer.ditherTable1[ address2 ];
-			*planePos1 = word;
-            planePos1 += PLANEWIDTHWORD;
-			*planePos1 = (word << 1)|((word>>1) & 1);
-            planePos1 += PLANEWIDTHWORD;
-			word = (engine.renderer.ditherTable2[ address1 ]<<8) + engine.renderer.ditherTable2[ address2 ];
-			*planePos2 = word;
-            planePos2 += PLANEWIDTHWORD;
-			*planePos2 = (word << 1)|((word>>1) & 1);
-            planePos2 += PLANEWIDTHWORD;
-			word = (engine.renderer.ditherTable3[ address1 ]<<8) + engine.renderer.ditherTable3[ address2 ];
-			*planePos3 = word;
-            planePos3 += PLANEWIDTHWORD;
-			*planePos3 = word = (word << 1)|((word>>1) & 1);
-            planePos3 += PLANEWIDTHWORD;
-			word = (engine.renderer.ditherTable4[ address1 ]<<8) + engine.renderer.ditherTable4[ address2 ];
-			*planePos4 = word;
-            planePos4 += PLANEWIDTHWORD;
-			*planePos4 = word = (word << 1)|((word>>1) & 1);
-            planePos4 += PLANEWIDTHWORD;
+// 			UWORD word = (engine.renderer.ditherTable1[ address1 ]<<8) + engine.renderer.ditherTable1[ address2 ];
+// 			*planePos1 = word;
+//             planePos1 += PLANEWIDTHWORD;
+// 			*planePos1 = (word << 1)|((word>>1) & 1);
+//             planePos1 += PLANEWIDTHWORD;
+// 			word = (engine.renderer.ditherTable2[ address1 ]<<8) + engine.renderer.ditherTable2[ address2 ];
+// 			*planePos2 = word;
+//             planePos2 += PLANEWIDTHWORD;
+// 			*planePos2 = (word << 1)|((word>>1) & 1);
+//             planePos2 += PLANEWIDTHWORD;
+// 			word = (engine.renderer.ditherTable3[ address1 ]<<8) + engine.renderer.ditherTable3[ address2 ];
+// 			*planePos3 = word;
+//             planePos3 += PLANEWIDTHWORD;
+// 			*planePos3 = word = (word << 1)|((word>>1) & 1);
+//             planePos3 += PLANEWIDTHWORD;
+// 			word = (engine.renderer.ditherTable4[ address1 ]<<8) + engine.renderer.ditherTable4[ address2 ];
+// 			*planePos4 = word;
+//             planePos4 += PLANEWIDTHWORD;
+// 			*planePos4 = word = (word << 1)|((word>>1) & 1);
+//             planePos4 += PLANEWIDTHWORD;
 
-            sp += 6;
-        }
+//             sp += 6;
+//         }
 
-    }
-}
+//     }
+// }
 
-void ProcessRayCasts164x4(WORD (*rayCastX), WORD (*rayCastY), UWORD (*map)[MAPSIZE],
-UBYTE px, UBYTE py, UBYTE ph, UBYTE screenStart, UBYTE screenEnd)
-{
+// void ProcessRayCasts164x4(WORD (*rayCastX), WORD (*rayCastY), UWORD (*map)[MAPSIZE],
+// UBYTE px, UBYTE py, UBYTE ph, UBYTE screenStart, UBYTE screenEnd)
+// {
 
     
-	UWORD yOffset = (256 - YSIZEEVEN*4)/2 * PLANEWIDTHWORD;
-    UBYTE baseX = XTURNBUFFOR + engine.renderer.xTurnOffset + screenStart*4;
+// 	UWORD yOffset = (256 - YSIZEEVEN*4)/2 * PLANEWIDTHWORD;
+//     UBYTE baseX = XTURNBUFFOR + engine.renderer.xTurnOffset + screenStart*4;
 
-	//for each vertical line
+// 	//for each vertical line
     
 
-    for(UBYTE x = screenStart; x < screenEnd; ++x)
-    {
+//     for(UBYTE x = screenStart; x < screenEnd; ++x)
+//     {
 
-        for(UBYTE i = 0; i < 4; ++i)
-        {
-            UBYTE sy = 0;
-            UWORD tz = engine.renderer.zStart;
-            UWORD *rayXPtr = rayCastX + baseX*TERRAINDEPTH + tz;
-            UWORD *rayYPtr = rayCastY + tz;
-            UBYTE *screenPtr = engine.renderer.screenPatch + ((YSIZEEVEN)-1)*4 + i;
-	        UBYTE mx,my;
-	        UWORD mapValue;
+//         for(UBYTE i = 0; i < 4; ++i)
+//         {
+//             UBYTE sy = 0;
+//             UWORD tz = engine.renderer.zStart;
+//             UWORD *rayXPtr = rayCastX + baseX*TERRAINDEPTH + tz;
+//             UWORD *rayYPtr = rayCastY + tz;
+//             UBYTE *screenPtr = engine.renderer.screenPatch + ((YSIZEEVEN)-1)*4 + i;
+// 	        UBYTE mx,my;
+// 	        UWORD mapValue;
 
-            while(tz < engine.renderer.renderingDepth)
-            {
-                mx = px + *rayXPtr;
-                my = (py + (tz<<engine.renderer.renderingDepthStep));
-                mapValue = map[ mx >> 1 ][ my >> 1 ];
-                UBYTE th = mapValue;
+//             while(tz < engine.renderer.renderingDepth)
+//             {
+//                 mx = px + *rayXPtr;
+//                 my = (py + (tz<<engine.renderer.renderingDepthStep));
+//                 mapValue = map[ mx >> 1 ][ my >> 1 ];
+//                 UBYTE th = mapValue;
 
-                if(th > ph + *rayYPtr)//tz>>3)
-                {
-                    *screenPtr = (mapValue >> 8);// - (mist>>4);//+ ((slope/4) & 1);//( ( 13 - (mapValue >> 8) ) >> (mist>>5) )+ 13 + ((slope/4) & 1);// + (((tz+py)>>2) & 1);//write pixel color
+//                 if(th > ph + *rayYPtr)//tz>>3)
+//                 {
+//                     *screenPtr = (mapValue >> 8);// - (mist>>4);//+ ((slope/4) & 1);//( ( 13 - (mapValue >> 8) ) >> (mist>>5) )+ 13 + ((slope/4) & 1);// + (((tz+py)>>2) & 1);//write pixel color
                     
-                    sy+=1;//go step higher in the raycast table
-                    rayYPtr += TERRAINDEPTH;
-                    screenPtr-=4;//go step higher on screen
-                }
-                else
-                {	
-                    //screen[position] = 0;
-                    tz++;//go step in depth if no height hit
-                    rayXPtr++;
-                    rayYPtr++;
-                }
-            }
+//                     sy+=1;//go step higher in the raycast table
+//                     rayYPtr += TERRAINDEPTH;
+//                     screenPtr-=4;//go step higher on screen
+//                 }
+//                 else
+//                 {	
+//                     //screen[position] = 0;
+//                     tz++;//go step in depth if no height hit
+//                     rayXPtr++;
+//                     rayYPtr++;
+//                 }
+//             }
             
-            while(sy < YSIZEEVEN)
-            {
-                *screenPtr =  32 - ph/32 -sy/8;
-                sy+=1;
-                screenPtr-=4;
+//             while(sy < YSIZEEVEN)
+//             {
+//                 *screenPtr =  32 - ph/32 -sy/8;
+//                 sy+=1;
+//                 screenPtr-=4;
 
-            }
+//             }
 
-            baseX++;
-        }
+//             baseX++;
+//         }
 
 
-#if AMIGA
+// #if AMIGA
 
-    UWORD *planePos1 = engine.renderer.plane1W + yOffset + x;
-    UWORD *planePos2 = engine.renderer.plane2W + yOffset + x;
-    UWORD *planePos3 = engine.renderer.plane3W + yOffset + x;
-    UWORD *planePos4 = engine.renderer.plane4W + yOffset + x;
+//     UWORD *planePos1 = engine.renderer.plane1W + yOffset + x;
+//     UWORD *planePos2 = engine.renderer.plane2W + yOffset + x;
+//     UWORD *planePos3 = engine.renderer.plane3W + yOffset + x;
+//     UWORD *planePos4 = engine.renderer.plane4W + yOffset + x;
     
-    #else
-        UWORD *planePos1 = engine.renderer.planes + yOffset + x*4;
-        UWORD *planePos2 = engine.renderer.planes + yOffset + x*4 + 1;
-        UWORD *planePos3 = engine.renderer.planes + yOffset + x*4 + 2;
-        UWORD *planePos4 = engine.renderer.planes + yOffset + x*4 + 3;
-		#endif
-        UWORD sp = 0;
+//     #else
+//         UWORD *planePos1 = engine.renderer.planes + yOffset + x*4;
+//         UWORD *planePos2 = engine.renderer.planes + yOffset + x*4 + 1;
+//         UWORD *planePos3 = engine.renderer.planes + yOffset + x*4 + 2;
+//         UWORD *planePos4 = engine.renderer.planes + yOffset + x*4 + 3;
+// 		#endif
+//         UWORD sp = 0;
 
-        for(UBYTE y=0;y<YSIZEEVEN;y++)
-	    {
+//         for(UBYTE y=0;y<YSIZEEVEN;y++)
+// 	    {
 
-			UWORD address1 = ((engine.renderer.screenPatch[sp])<<5) + (engine.renderer.screenPatch[sp+1]);
-			UWORD address2 = ((engine.renderer.screenPatch[sp+2])<<5) + (engine.renderer.screenPatch[sp+3]);
+// 			UWORD address1 = ((engine.renderer.screenPatch[sp])<<5) + (engine.renderer.screenPatch[sp+1]);
+// 			UWORD address2 = ((engine.renderer.screenPatch[sp+2])<<5) + (engine.renderer.screenPatch[sp+3]);
 
             
-			UWORD word = (engine.renderer.ditherTable1[ address1 ]<<8) + engine.renderer.ditherTable1[ address2 ];
-            UWORD otherWord = (word << 1)|((word>>1) & 1);
-			*planePos1 = word;
-            planePos1 += PLANEWIDTHWORD;
-			*planePos1 = otherWord;
-            planePos1 += PLANEWIDTHWORD;
-            *planePos1 = word;
-            planePos1 += PLANEWIDTHWORD;
-            *planePos1 = otherWord;
-            planePos1 += PLANEWIDTHWORD;
-			word = (engine.renderer.ditherTable2[ address1 ]<<8) + engine.renderer.ditherTable2[ address2 ];
-            otherWord = (word << 1)|((word>>1) & 1);
-			*planePos2 = word;
-            planePos2 += PLANEWIDTHWORD;
-			*planePos2 = otherWord;
-            planePos2 += PLANEWIDTHWORD;
-			*planePos2 = word;
-            planePos2 += PLANEWIDTHWORD;
-			*planePos2 = otherWord;
-            planePos2 += PLANEWIDTHWORD;
-			word = (engine.renderer.ditherTable3[ address1 ]<<8) + engine.renderer.ditherTable3[ address2 ];
-            otherWord = (word << 1)|((word>>1) & 1);
-			*planePos3 = word;
-            planePos3 += PLANEWIDTHWORD;
-			*planePos3 = otherWord;
-            planePos3 += PLANEWIDTHWORD;
-			*planePos3 = word;
-            planePos3 += PLANEWIDTHWORD;
-			*planePos3 = otherWord;
-            planePos3 += PLANEWIDTHWORD;
-			word = (engine.renderer.ditherTable4[ address1 ]<<8) + engine.renderer.ditherTable4[ address2 ];
-            otherWord = (word << 1)|((word>>1) & 1);
-			*planePos4 = word;
-            planePos4 += PLANEWIDTHWORD;
-			*planePos4 = otherWord;
-            planePos4 += PLANEWIDTHWORD;
-			*planePos4 = word;
-            planePos4 += PLANEWIDTHWORD;
-			*planePos4 = otherWord;
-            planePos4 += PLANEWIDTHWORD;
+// 			UWORD word = (engine.renderer.ditherTable1[ address1 ]<<8) + engine.renderer.ditherTable1[ address2 ];
+//             UWORD otherWord = (word << 1)|((word>>1) & 1);
+// 			*planePos1 = word;
+//             planePos1 += PLANEWIDTHWORD;
+// 			*planePos1 = otherWord;
+//             planePos1 += PLANEWIDTHWORD;
+//             *planePos1 = word;
+//             planePos1 += PLANEWIDTHWORD;
+//             *planePos1 = otherWord;
+//             planePos1 += PLANEWIDTHWORD;
+// 			word = (engine.renderer.ditherTable2[ address1 ]<<8) + engine.renderer.ditherTable2[ address2 ];
+//             otherWord = (word << 1)|((word>>1) & 1);
+// 			*planePos2 = word;
+//             planePos2 += PLANEWIDTHWORD;
+// 			*planePos2 = otherWord;
+//             planePos2 += PLANEWIDTHWORD;
+// 			*planePos2 = word;
+//             planePos2 += PLANEWIDTHWORD;
+// 			*planePos2 = otherWord;
+//             planePos2 += PLANEWIDTHWORD;
+// 			word = (engine.renderer.ditherTable3[ address1 ]<<8) + engine.renderer.ditherTable3[ address2 ];
+//             otherWord = (word << 1)|((word>>1) & 1);
+// 			*planePos3 = word;
+//             planePos3 += PLANEWIDTHWORD;
+// 			*planePos3 = otherWord;
+//             planePos3 += PLANEWIDTHWORD;
+// 			*planePos3 = word;
+//             planePos3 += PLANEWIDTHWORD;
+// 			*planePos3 = otherWord;
+//             planePos3 += PLANEWIDTHWORD;
+// 			word = (engine.renderer.ditherTable4[ address1 ]<<8) + engine.renderer.ditherTable4[ address2 ];
+//             otherWord = (word << 1)|((word>>1) & 1);
+// 			*planePos4 = word;
+//             planePos4 += PLANEWIDTHWORD;
+// 			*planePos4 = otherWord;
+//             planePos4 += PLANEWIDTHWORD;
+// 			*planePos4 = word;
+//             planePos4 += PLANEWIDTHWORD;
+// 			*planePos4 = otherWord;
+//             planePos4 += PLANEWIDTHWORD;
 
-            sp += 4;
-        }
+//             sp += 4;
+//         }
 
-    }
+//     }
 
-}
+// }

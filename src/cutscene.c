@@ -1,6 +1,4 @@
-#include "engine.h"
-#include "font_platform.h"
-#include "input_platform.h"
+
 
 void ShowDeathCutscene()
 {

@@ -1,4 +1,3 @@
-#include "engine.h"
 
 void InitGameState()
 {
@@ -8,7 +7,7 @@ void InitGameState()
 
     engine.gameState.shipParams.precX = 60 * 100;
     engine.gameState.shipParams.precZ = 0;
-    engine.gameState.shipParams.precY = 80 * 100;
+    engine.gameState.shipParams.precY = 40 * 100;
     engine.gameState.shipParams.pX = 0;
     engine.gameState.shipParams.pZ = 0;
     engine.gameState.shipParams.pY = 0;
@@ -65,10 +64,10 @@ BYTE CheckPlayerCollision()
 void RenderShipAndCrossHair()
 {
     UWORD crossPX =  (160 + (engine.gameState.crossHairX / 400));
-    UWORD crossPY = ( GAME_SCREEN_BASELINE/2 - 5 + (engine.gameState.crossHairY / 400) );
+    UWORD crossPY = ( GAME_SHIP_POS - 5 + (engine.gameState.crossHairY / 400) );
 
     UWORD shipDirX = 160 + engine.renderer.xTurnOffset;
-    UWORD shipDirY = GAME_SCREEN_BASELINE/2 + (engine.gameState.crossHairY/1600);
+    UWORD shipDirY = GAME_SHIP_POS + (engine.gameState.crossHairY/1600);
 
     WORD spriteIndexX = 1;
     WORD spriteIndexY = 1;

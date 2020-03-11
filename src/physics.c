@@ -1,6 +1,4 @@
 
-#include "engine.h"
-
 void ResetTime()
 {
 	engine.accTime = 0;
@@ -85,7 +83,7 @@ void ProcessInput()
 	}
 	else if (engine.gameState.crossHairX != 0)
 	{
-		engine.gameState.crossHairX = engine.gameState.crossHairX - engine.gameState.crossHairX / (lowerDelta);
+		engine.gameState.crossHairX = engine.gameState.crossHairX - 8*(engine.gameState.crossHairX / (lowerDelta));
 	}
 
 	if (engine.gameState.crossHairX > 0x4000)
@@ -109,7 +107,7 @@ void ProcessInput()
 	}
 	else if (engine.gameState.crossHairY != 0)
 	{
-		engine.gameState.crossHairY = engine.gameState.crossHairY - engine.gameState.crossHairY / (lowerDelta);
+		engine.gameState.crossHairY = engine.gameState.crossHairY - 8*(engine.gameState.crossHairY / (lowerDelta));
 	}
 
 

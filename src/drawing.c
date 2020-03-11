@@ -1,5 +1,3 @@
-#include "engine.h"
-
 
 #ifdef AMIGA
 void ClearBuffor()
@@ -209,91 +207,91 @@ void DrawBitmap4bCenter(unsigned char *bLogo, BITMAPINFOHEADER *bhLogo)
 
 void DrawPixel(UWORD x, UWORD y, UBYTE color)
 {
-	UWORD posX = x/16;
-  UWORD leftGap = x - posX*16;
-  UWORD rightGap = 16 - leftGap;
+		UWORD posX = x/16;
+	UWORD leftGap = x - posX*16;
+	UWORD rightGap = 16 - leftGap;
 
-#ifdef AMIGA
-  UWORD firstPos = y*PLANEWIDTHWORD+posX;
-  UWORD secondPos = firstPos+1;
-  #else
-  UWORD firstPos = y*PLANEWIDTHWORD+posX*4;
-  UWORD secondPos = firstPos+4;
-  #endif
+	#ifdef AMIGA
+	UWORD firstPos = y*PLANEWIDTHWORD+posX;
+	UWORD secondPos = firstPos+1;
+	#else
+	UWORD firstPos = y*PLANEWIDTHWORD+posX*4;
+	UWORD secondPos = firstPos+4;
+	#endif
 
 	UBYTE col = color & 15;
 	WORD pattern = col|(col << 4)|(col << 8)|(col << 12);
 
-  WORD leftPixelPattern = pattern >> leftGap;
-  WORD leftScreenPattern = 0b1111111111111111 << rightGap;
+	WORD leftPixelPattern = pattern >> leftGap;
+	WORD leftScreenPattern = 0b1111111111111111 << rightGap;
 
-  WORD rightPixelPattern = pattern << rightGap;
-  WORD rightScreenPattern = 0b1111111111111111 >> leftGap;
+	WORD rightPixelPattern = pattern << rightGap;
+	WORD rightScreenPattern = 0b1111111111111111 >> leftGap;
 
-#ifdef AMIGA
-  engine.renderer.plane1W[firstPos] = (leftPixelPattern) + (engine.renderer.plane1W[firstPos] & (leftScreenPattern));
-  engine.renderer.plane2W[firstPos] = (leftPixelPattern) + (engine.renderer.plane2W[firstPos] & (leftScreenPattern));
-  engine.renderer.plane3W[firstPos] = (leftPixelPattern) + (engine.renderer.plane3W[firstPos] & (leftScreenPattern));
-  engine.renderer.plane4W[firstPos] = (leftPixelPattern) + (engine.renderer.plane4W[firstPos] & (leftScreenPattern));
-  
-  engine.renderer.plane1W[secondPos] = (rightPixelPattern) + (engine.renderer.plane1W[secondPos] & (rightScreenPattern));
-  engine.renderer.plane2W[secondPos] = (rightPixelPattern) + (engine.renderer.plane2W[secondPos] & (rightScreenPattern));
-  engine.renderer.plane3W[secondPos] = (rightPixelPattern) + (engine.renderer.plane3W[secondPos] & (rightScreenPattern));
-  engine.renderer.plane4W[secondPos] = (rightPixelPattern) + (engine.renderer.plane4W[secondPos] & (rightScreenPattern));
-  #else
-  engine.renderer.planes[firstPos] = (leftPixelPattern) + (engine.renderer.planes[firstPos] & (leftScreenPattern));
-  engine.renderer.planes[firstPos+1] = (leftPixelPattern) + (engine.renderer.planes[firstPos+1] & (leftScreenPattern));
-  engine.renderer.planes[firstPos+2] = (leftPixelPattern) + (engine.renderer.planes[firstPos+2] & (leftScreenPattern));
-  engine.renderer.planes[firstPos+3] = (leftPixelPattern) + (engine.renderer.planes[firstPos+3] & (leftScreenPattern));
-  
-  engine.renderer.planes[secondPos] = (rightPixelPattern) + (engine.renderer.planes[secondPos] & (rightScreenPattern));
-  engine.renderer.planes[secondPos+1] = (rightPixelPattern) + (engine.renderer.planes[secondPos+1] & (rightScreenPattern));
-  engine.renderer.planes[secondPos+2] = (rightPixelPattern) + (engine.renderer.planes[secondPos+2] & (rightScreenPattern));
-  engine.renderer.planes[secondPos+3] = (rightPixelPattern) + (engine.renderer.planes[secondPos+3] & (rightScreenPattern));
-  #endif
+	#ifdef AMIGA
+	engine.renderer.plane1W[firstPos] = (leftPixelPattern) + (engine.renderer.plane1W[firstPos] & (leftScreenPattern));
+	engine.renderer.plane2W[firstPos] = (leftPixelPattern) + (engine.renderer.plane2W[firstPos] & (leftScreenPattern));
+	engine.renderer.plane3W[firstPos] = (leftPixelPattern) + (engine.renderer.plane3W[firstPos] & (leftScreenPattern));
+	engine.renderer.plane4W[firstPos] = (leftPixelPattern) + (engine.renderer.plane4W[firstPos] & (leftScreenPattern));
+	
+	engine.renderer.plane1W[secondPos] = (rightPixelPattern) + (engine.renderer.plane1W[secondPos] & (rightScreenPattern));
+	engine.renderer.plane2W[secondPos] = (rightPixelPattern) + (engine.renderer.plane2W[secondPos] & (rightScreenPattern));
+	engine.renderer.plane3W[secondPos] = (rightPixelPattern) + (engine.renderer.plane3W[secondPos] & (rightScreenPattern));
+	engine.renderer.plane4W[secondPos] = (rightPixelPattern) + (engine.renderer.plane4W[secondPos] & (rightScreenPattern));
+	#else
+	engine.renderer.planes[firstPos] = (leftPixelPattern) + (engine.renderer.planes[firstPos] & (leftScreenPattern));
+	engine.renderer.planes[firstPos+1] = (leftPixelPattern) + (engine.renderer.planes[firstPos+1] & (leftScreenPattern));
+	engine.renderer.planes[firstPos+2] = (leftPixelPattern) + (engine.renderer.planes[firstPos+2] & (leftScreenPattern));
+	engine.renderer.planes[firstPos+3] = (leftPixelPattern) + (engine.renderer.planes[firstPos+3] & (leftScreenPattern));
+	
+	engine.renderer.planes[secondPos] = (rightPixelPattern) + (engine.renderer.planes[secondPos] & (rightScreenPattern));
+	engine.renderer.planes[secondPos+1] = (rightPixelPattern) + (engine.renderer.planes[secondPos+1] & (rightScreenPattern));
+	engine.renderer.planes[secondPos+2] = (rightPixelPattern) + (engine.renderer.planes[secondPos+2] & (rightScreenPattern));
+	engine.renderer.planes[secondPos+3] = (rightPixelPattern) + (engine.renderer.planes[secondPos+3] & (rightScreenPattern));
+	#endif
 }
 
 void DrawCrosshair(UWORD x, UWORD y)
 {
-  UWORD posX = x/16;
-  UWORD leftGap = x - posX*16;
-  UWORD rightGap = 16 - leftGap;
+	UWORD posX = x/16;
+	UWORD leftGap = x - posX*16;
+	UWORD rightGap = 16 - leftGap;
 
-#ifdef AMIGA
-  UWORD firstPos = y*PLANEWIDTHWORD+posX;
-  UWORD secondPos = firstPos+1;
-  #else
-  UWORD firstPos = y*PLANEWIDTHWORD+posX*4;
-  UWORD secondPos = firstPos+4;
-  #endif
+	#ifdef AMIGA
+	UWORD firstPos = y*PLANEWIDTHWORD+posX;
+	UWORD secondPos = firstPos+1;
+	#else
+	UWORD firstPos = y*PLANEWIDTHWORD+posX*4;
+	UWORD secondPos = firstPos+4;
+	#endif
 
-  WORD leftPixelPattern = 0b1000100110010001 >> leftGap;
-  WORD leftScreenPattern = 0b1111111111111111 << rightGap;
+	WORD leftPixelPattern = 0b1000100110010001 >> leftGap;
+	WORD leftScreenPattern = 0b1111111111111111 << rightGap;
 
-  WORD rightPixelPattern = 0b1000100110010001 << rightGap;
-  WORD rightScreenPattern = 0b1111111111111111 >> leftGap;
+	WORD rightPixelPattern = 0b1000100110010001 << rightGap;
+	WORD rightScreenPattern = 0b1111111111111111 >> leftGap;
 
-#ifdef AMIGA
-  engine.renderer.plane1W[firstPos] = (leftPixelPattern) + (engine.renderer.plane1W[firstPos] & (leftScreenPattern));
-  engine.renderer.plane2W[firstPos] = (leftPixelPattern) + (engine.renderer.plane2W[firstPos] & (leftScreenPattern));
-  engine.renderer.plane3W[firstPos] = (leftPixelPattern) + (engine.renderer.plane3W[firstPos] & (leftScreenPattern));
-  engine.renderer.plane4W[firstPos] = (leftPixelPattern) + (engine.renderer.plane4W[firstPos] & (leftScreenPattern));
-  
-  engine.renderer.plane1W[secondPos] = (rightPixelPattern) + (engine.renderer.plane1W[secondPos] & (rightScreenPattern));
-  engine.renderer.plane2W[secondPos] = (rightPixelPattern) + (engine.renderer.plane2W[secondPos] & (rightScreenPattern));
-  engine.renderer.plane3W[secondPos] = (rightPixelPattern) + (engine.renderer.plane3W[secondPos] & (rightScreenPattern));
-  engine.renderer.plane4W[secondPos] = (rightPixelPattern) + (engine.renderer.plane4W[secondPos] & (rightScreenPattern));
-  #else
-  engine.renderer.planes[firstPos] = (leftPixelPattern) + (engine.renderer.planes[firstPos] & (leftScreenPattern));
-  engine.renderer.planes[firstPos+1] = (leftPixelPattern) + (engine.renderer.planes[firstPos+1] & (leftScreenPattern));
-  engine.renderer.planes[firstPos+2] = (leftPixelPattern) + (engine.renderer.planes[firstPos+2] & (leftScreenPattern));
-  engine.renderer.planes[firstPos+3] = (leftPixelPattern) + (engine.renderer.planes[firstPos+3] & (leftScreenPattern));
-  
-  engine.renderer.planes[secondPos] = (rightPixelPattern) + (engine.renderer.planes[secondPos] & (rightScreenPattern));
-  engine.renderer.planes[secondPos+1] = (rightPixelPattern) + (engine.renderer.planes[secondPos+1] & (rightScreenPattern));
-  engine.renderer.planes[secondPos+2] = (rightPixelPattern) + (engine.renderer.planes[secondPos+2] & (rightScreenPattern));
-  engine.renderer.planes[secondPos+3] = (rightPixelPattern) + (engine.renderer.planes[secondPos+3] & (rightScreenPattern));
-  #endif
+	#ifdef AMIGA
+	engine.renderer.plane1W[firstPos] = (leftPixelPattern) + (engine.renderer.plane1W[firstPos] & (leftScreenPattern));
+	engine.renderer.plane2W[firstPos] = (leftPixelPattern) + (engine.renderer.plane2W[firstPos] & (leftScreenPattern));
+	engine.renderer.plane3W[firstPos] = (leftPixelPattern) + (engine.renderer.plane3W[firstPos] & (leftScreenPattern));
+	engine.renderer.plane4W[firstPos] = (leftPixelPattern) + (engine.renderer.plane4W[firstPos] & (leftScreenPattern));
+	
+	engine.renderer.plane1W[secondPos] = (rightPixelPattern) + (engine.renderer.plane1W[secondPos] & (rightScreenPattern));
+	engine.renderer.plane2W[secondPos] = (rightPixelPattern) + (engine.renderer.plane2W[secondPos] & (rightScreenPattern));
+	engine.renderer.plane3W[secondPos] = (rightPixelPattern) + (engine.renderer.plane3W[secondPos] & (rightScreenPattern));
+	engine.renderer.plane4W[secondPos] = (rightPixelPattern) + (engine.renderer.plane4W[secondPos] & (rightScreenPattern));
+	#else
+	engine.renderer.planes[firstPos] = (leftPixelPattern) + (engine.renderer.planes[firstPos] & (leftScreenPattern));
+	engine.renderer.planes[firstPos+1] = (leftPixelPattern) + (engine.renderer.planes[firstPos+1] & (leftScreenPattern));
+	engine.renderer.planes[firstPos+2] = (leftPixelPattern) + (engine.renderer.planes[firstPos+2] & (leftScreenPattern));
+	engine.renderer.planes[firstPos+3] = (leftPixelPattern) + (engine.renderer.planes[firstPos+3] & (leftScreenPattern));
+	
+	engine.renderer.planes[secondPos] = (rightPixelPattern) + (engine.renderer.planes[secondPos] & (rightScreenPattern));
+	engine.renderer.planes[secondPos+1] = (rightPixelPattern) + (engine.renderer.planes[secondPos+1] & (rightScreenPattern));
+	engine.renderer.planes[secondPos+2] = (rightPixelPattern) + (engine.renderer.planes[secondPos+2] & (rightScreenPattern));
+	engine.renderer.planes[secondPos+3] = (rightPixelPattern) + (engine.renderer.planes[secondPos+3] & (rightScreenPattern));
+	#endif
 }
 
 void DrawPixelWord(UWORD x, UWORD y, UBYTE color)
@@ -322,39 +320,7 @@ void ConvertIntToChar(int number, char *test, int size)
 	{
 		temp = number % 10;
 		number /= 10;
-		switch (temp)
-		{
-		case 1:
-			test[i] = '1';
-			break;
-		case 2:
-			test[i] = '2';
-			break;
-		case 3:
-			test[i] = '3';
-			break;
-		case 4:
-			test[i] = '4';
-			break;
-		case 5:
-			test[i] = '5';
-			break;
-		case 6:
-			test[i] = '6';
-			break;
-		case 7:
-			test[i] = '7';
-			break;
-		case 8:
-			test[i] = '8';
-			break;
-		case 9:
-			test[i] = '9';
-			break;
-		case 0:
-			test[i] = '0';
-			break;
-		}
+		test[i] = '0' + temp;
 		i--;
 	}
 	while (i >= 0)
@@ -363,122 +329,4 @@ void ConvertIntToChar(int number, char *test, int size)
 		i--;
 	}
 	test[size-1] = 0;
-}
-
-void ConvertWordToChar(UWORD number, char *test)
-{
-	UWORD temp;
-	int i = 4;
-	while (i >= 0)
-	{
-		temp = number % 16;
-		number /= 16;
-		switch (temp)
-		{
-		case 0:
-			test[i] = '0';
-			break;
-		case 1:
-			test[i] = '1';
-			break;
-		case 2:
-			test[i] = '2';
-			break;
-		case 3:
-			test[i] = '3';
-			break;
-		case 4:
-			test[i] = '4';
-			break;
-		case 5:
-			test[i] = '5';
-			break;
-		case 6:
-			test[i] = '6';
-			break;
-		case 7:
-			test[i] = '7';
-			break;
-		case 8:
-			test[i] = '8';
-			break;
-		case 9:
-			test[i] = '9';
-			break;
-		case 10:
-			test[i] = 'a';
-			break;
-		case 11:
-			test[i] = 'b';
-			break;
-		case 12:
-			test[i] = 'c';
-			break;
-		case 13:
-			test[i] = 'd';
-			break;
-		case 14:
-			test[i] = 'e';
-			break;
-		case 15:
-			test[i] = 'f';
-			break;
-		}
-		i--;
-	}
-	//  while(i>=0)
-	//  {
-	//  	test[i] = '_';
-	//  	i--;
-	//  }
-}
-
-void ConvertByteToChar(UBYTE number, char *test)
-{
-	UBYTE temp;
-	int i = 3;
-	while (number != 0)
-	{
-		temp = number % 10;
-		number /= 10;
-		switch (temp)
-		{
-		case 1:
-			test[i] = '1';
-			break;
-		case 2:
-			test[i] = '2';
-			break;
-		case 3:
-			test[i] = '3';
-			break;
-		case 4:
-			test[i] = '4';
-			break;
-		case 5:
-			test[i] = '5';
-			break;
-		case 6:
-			test[i] = '6';
-			break;
-		case 7:
-			test[i] = '7';
-			break;
-		case 8:
-			test[i] = '8';
-			break;
-		case 9:
-			test[i] = '9';
-			break;
-		case 0:
-			test[i] = '0';
-			break;
-		}
-		i--;
-	}
-	while (i >= 0)
-	{
-		test[i] = ' ';
-		i--;
-	}
 }

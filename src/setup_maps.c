@@ -1,5 +1,3 @@
-#include "engine.h"
-#include "bitmap.c"
 
 void LoadMap(const char *heightName, const char *colorName,
 			 UWORD (*high)[MAPSIZE])
@@ -35,52 +33,101 @@ void LoadMap(const char *heightName, const char *colorName,
 }
 
 
-void MakeMap2(UBYTE bezierPoints [289] , UWORD (*high)[MAPSIZE])
+// void MakeMap2(UBYTE bezierPoints [289] , UWORD (*high)[MAPSIZE])
+// {
+
+// 	UWORD powers[16] = 
+// 	{
+// 		0, 1, 4, 9, 16, 25, 36, 49, 64, 81, 100, 121, 144, 169, 196, 225
+// 	};
+// 	UWORD powers2[16] = 
+// 	{
+// 		0, 28, 52, 72, 88, 100, 108, 112, 112, 108, 100, 88, 72, 52, 28, 0
+// 	};
+	
+// 	for(UBYTE mapY = 0; mapY < 128; ++mapY)
+// 	{
+
+// 		UWORD v = mapY & 0xF;
+
+// 		UWORD TV1 = powers[15-v];
+// 		UWORD TV2 = powers2[v];
+// 		UWORD TV3 = powers[v];
+
+// 		UBYTE yStride = 16 - ((mapY/16)*2);
+// 		for(UBYTE mapX = 0; mapX < 128; ++mapX)
+// 		{
+// 			UBYTE xStride = ((mapX/16)*2);
+
+// 			UWORD u = mapX & 0xF;
+
+// 			UWORD TU1 = powers[15-u];
+// 			UWORD TU2 = powers2[u];
+// 			UWORD TU3 = powers[u];
+
+
+// 			UBYTE *bez = bezierPoints + yStride*17 + xStride;
+// 			UWORD P1 = (TU1*(*bez) + TU2*(*(bez+1)) + TU3*(*(bez+2)))/225;
+// 			bez -= 17;
+// 			UWORD P2 = (TU1*(*bez) + TU2*(*(bez+1)) + TU3*(*(bez+2)))/225;
+// 			bez -= 17;
+// 			UWORD P3 = (TU1*(*bez) + TU2*(*(bez+1)) + TU3*(*(bez+2)))/225;
+			
+// 			UWORD P = ((TV1*P1) + (TV2*P2) + (TV3*P3))/225; 
+			
+// 			//UWORD oldValue = high[mapX][mapY];
+// 			UWORD t = timerGetPrec();
+// 			t *= 532;
+// 			UWORD setP = P + (t%20) - 10;
+// 			if(setP > 255)
+// 			{
+// 				setP = P;
+// 			}
+			
+// 			setP |= ((( 29 -  (setP/28)) << 8) & 0xFF00);
+// 			//UWORD newValue = (setP & 0xFF) + (oldValue & 0xFF00);
+			
+// 			 high[mapX][mapY] = setP;
+// 		}
+// 	}
+// }
+
+void MakeMap3(UBYTE bezierPoints [289] , UWORD (*high)[MAPSIZE])
 {
 
-	UWORD powers[16] = 
-	{
-		0, 1, 4, 9, 16, 25, 36, 49, 64, 81, 100, 121, 144, 169, 196, 225
-	};
-	UWORD powers2[16] = 
-	{
-		0, 28, 52, 72, 88, 100, 108, 112, 112, 108, 100, 88, 72, 52, 28, 0
-	};
 	
 	for(UBYTE mapY = 0; mapY < 128; ++mapY)
 	{
 
-		UWORD v = mapY & 0xF;
+		UWORD v = mapY & 0x7;
 
-		UWORD TV1 = powers[15-v];
-		UWORD TV2 = powers2[v];
-		UWORD TV3 = powers[v];
+		UWORD TV1 = 8-v;
+		UWORD TV2 = v;
 
-		UBYTE yStride = 16 - ((mapY/16)*2);
+		UBYTE yStride = (16 - ((mapY>>3)))*17;
 		for(UBYTE mapX = 0; mapX < 128; ++mapX)
 		{
-			UBYTE xStride = ((mapX/16)*2);
+			UBYTE xStride = ((mapX>>3));
+			UBYTE *ptr = bezierPoints + yStride + xStride;
 
-			UWORD u = mapX & 0xF;
+			UWORD u = mapX & 0x7;
 
-			UWORD TU1 = powers[15-u];
-			UWORD TU2 = powers2[u];
-			UWORD TU3 = powers[u];
+			UWORD TU1 = 8-u;
+			UWORD TU2 = u;
 
 
-			UBYTE *bez = bezierPoints + yStride*17 + xStride;
-			UWORD P1 = (TU1*(*bez) + TU2*(*(bez+1)) + TU3*(*(bez+2)))/225;
-			bez -= 17;
-			UWORD P2 = (TU1*(*bez) + TU2*(*(bez+1)) + TU3*(*(bez+2)))/225;
-			bez -= 17;
-			UWORD P3 = (TU1*(*bez) + TU2*(*(bez+1)) + TU3*(*(bez+2)))/225;
+			UWORD bez = *((UWORD *)ptr);
+			UWORD bez2 = *((UWORD *)(ptr-17));
+			UWORD P1 = (TU1*((bez>>8)&0xFF) + TU2*(bez&0xFF));
 			
-			UWORD P = ((TV1*P1) + (TV2*P2) + (TV3*P3))/225; 
+			UWORD P2 = (TU1*((bez2>>8)&0xFF) + TU2*(bez2&0xFF));
+			
+			UWORD P = ((TV1*P1) + (TV2*P2))>>6; 
 			
 			//UWORD oldValue = high[mapX][mapY];
 			UWORD t = timerGetPrec();
 			t *= 532;
-			UWORD setP = P + (t%20) - 10;
+			UWORD setP = P + (t&0xF) - 10;
 			if(setP > 255)
 			{
 				setP = P;
@@ -135,39 +182,39 @@ void SetupMaps()
 };
 	
 
-	LoadMap("data/h11", "data/c11", engine.renderer.mapSource[0]);
-	engine.renderer.mapLoaded0 = 1;
-	LoadMap("data/h10", "data/c10", engine.renderer.mapSource[1]);
-	engine.renderer.mapLoaded1=1;
-	LoadMap("data/h9", "data/c9", engine.renderer.mapSource[2]);
-	engine.renderer.mapLoaded2=1;
-	LoadMap("data/h8", "data/c8", engine.renderer.mapSource[3]);
-	engine.renderer.mapLoaded3=1;
-	LoadMap("data/h7", "data/c7", engine.renderer.mapSource[4]);
-	engine.renderer.mapLoaded4=1;
-	LoadMap("data/h6", "data/c6", engine.renderer.mapSource[5]);
-	engine.renderer.mapLoaded5=1;
-	LoadMap("data/h5", "data/c5", engine.renderer.mapSource[6]);
-	engine.renderer.mapLoaded6=1;
-	LoadMap("data/h4", "data/c4", engine.renderer.mapSource[7]);
-	engine.renderer.mapLoaded7=1;
-	LoadMap("data/h3", "data/c3", engine.renderer.mapSource[8]);
-	engine.renderer.mapLoaded8=1;
-	LoadMap("data/h7", "data/c7", engine.renderer.mapSource[9]);
-	engine.renderer.mapLoaded9=1;
-	LoadMap("data/h1", "data/c1", engine.renderer.mapSource[10]);
-	engine.renderer.mapLoaded10=1;
-	// MakeMap2(bezier2, engine.renderer.mapSource[0]);
-	// MakeMap2(bezier2, engine.renderer.mapSource[1]);
-	// MakeMap2(bezier2, engine.renderer.mapSource[2]);
-	// MakeMap2(bezier2, engine.renderer.mapSource[3]);
-	// MakeMap2(bezier2, engine.renderer.mapSource[4]);
-	// MakeMap2(bezier2, engine.renderer.mapSource[5]);
-	// MakeMap2(bezier2, engine.renderer.mapSource[6]);
-	// MakeMap2(bezier2, engine.renderer.mapSource[7]);
-	// MakeMap2(bezier2, engine.renderer.mapSource[8]);
-	// MakeMap2(bezier2, engine.renderer.mapSource[9]);
-	// MakeMap2(bezier2, engine.renderer.mapSource[10]);
+	// LoadMap("data/h11", "data/c11", engine.renderer.mapSource[0]);
+	// engine.renderer.mapLoaded0 = 1;
+	// LoadMap("data/h10", "data/c10", engine.renderer.mapSource[1]);
+	// engine.renderer.mapLoaded1=1;
+	// LoadMap("data/h9", "data/c9", engine.renderer.mapSource[2]);
+	// engine.renderer.mapLoaded2=1;
+	// LoadMap("data/h8", "data/c8", engine.renderer.mapSource[3]);
+	// engine.renderer.mapLoaded3=1;
+	// LoadMap("data/h7", "data/c7", engine.renderer.mapSource[4]);
+	// engine.renderer.mapLoaded4=1;
+	// LoadMap("data/h6", "data/c6", engine.renderer.mapSource[5]);
+	// engine.renderer.mapLoaded5=1;
+	// LoadMap("data/h5", "data/c5", engine.renderer.mapSource[6]);
+	// engine.renderer.mapLoaded6=1;
+	// LoadMap("data/h4", "data/c4", engine.renderer.mapSource[7]);
+	// engine.renderer.mapLoaded7=1;
+	// LoadMap("data/h3", "data/c3", engine.renderer.mapSource[8]);
+	// engine.renderer.mapLoaded8=1;
+	// LoadMap("data/h7", "data/c7", engine.renderer.mapSource[9]);
+	// engine.renderer.mapLoaded9=1;
+	// LoadMap("data/h1", "data/c1", engine.renderer.mapSource[10]);
+	// engine.renderer.mapLoaded10=1;
+	MakeMap3(bezier2, engine.renderer.mapSource[0]);
+	MakeMap3(bezier2, engine.renderer.mapSource[1]);
+	MakeMap3(bezier2, engine.renderer.mapSource[2]);
+	MakeMap3(bezier2, engine.renderer.mapSource[3]);
+	MakeMap3(bezier2, engine.renderer.mapSource[4]);
+	MakeMap3(bezier2, engine.renderer.mapSource[5]);
+	MakeMap3(bezier2, engine.renderer.mapSource[6]);
+	MakeMap3(bezier2, engine.renderer.mapSource[7]);
+	MakeMap3(bezier2, engine.renderer.mapSource[8]);
+	MakeMap3(bezier2, engine.renderer.mapSource[9]);
+	MakeMap3(bezier2, engine.renderer.mapSource[10]);
 	
 	//prepare starting map
 	CopyMapWord(engine.renderer.mapSource[0], engine.renderer.mapHigh);

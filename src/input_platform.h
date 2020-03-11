@@ -124,106 +124,106 @@ void GetPlayerRendererSetting()
 	}
 }
 
-void ProcessQualityInput()
-{
+// void ProcessQualityInput()
+// {
 
-	if (getKey(1) && engine.renderer.renderingType != 1)
-	{
-		engine.renderer.renderingDepth = 16;
-		engine.renderer.renderingType = 1;
-		engine.renderer.calculationDepthDivider = 2;
-		engine.renderer.calculationDepthStep = 4;
-		engine.renderer.renderingDepthStep = 2;
-		engine.renderer.stepModifier = 16;
-		engine.renderer.xFOV = 32;
-		engine.renderer.yFOV = 12;
-		ClearBuffor();
-	 	RecalculateEven();
-	}
-	if (getKey(2) && engine.renderer.renderingType != 2)
-	{
-		engine.renderer.renderingDepth = 16;
-		engine.renderer.renderingType = 2;
-		engine.renderer.calculationDepthDivider = 2;
-		engine.renderer.calculationDepthStep = 3;
-		engine.renderer.renderingDepthStep = 2;
-		engine.renderer.stepModifier = 16;
-		engine.renderer.xFOV = 28;
-		engine.renderer.yFOV = 12;
-		ClearBuffor();
-		RecalculateEven();
-	}
-	if (getKey(3) && engine.renderer.renderingType != 3)
-	{
-		engine.renderer.renderingDepth = 16;
-		engine.renderer.renderingType = 3;
-		engine.renderer.calculationDepthDivider = 2;
-		engine.renderer.calculationDepthStep = 2;
-		engine.renderer.renderingDepthStep = 2;
-		engine.renderer.stepModifier = 16;
-		engine.renderer.xFOV = 24;
-		engine.renderer.yFOV = 12;
-		ClearBuffor();
-		RecalculateOdd();
-	}
-	if (getKey(4) && engine.renderer.renderingType != 4)
-	{
-		engine.renderer.renderingDepth = 32;
-		engine.renderer.renderingType = 4;
-		engine.renderer.calculationDepthDivider = 2;
-		engine.renderer.calculationDepthStep = 2;
-		engine.renderer.renderingDepthStep = 1;
-		engine.renderer.stepModifier = 16;
-		engine.renderer.xFOV = 20;
-		engine.renderer.yFOV = 24;
-		ClearBuffor();
-		RecalculateOdd();
-	}
-	if (getKey(5) && engine.renderer.renderingType != 5)
-	{
-		engine.renderer.renderingDepth = 32;
-		engine.renderer.renderingType = 5;
-		engine.renderer.calculationDepthDivider = 2;
-		engine.renderer.calculationDepthStep = 2;
-		engine.renderer.renderingDepthStep = 1;
-		ClearBuffor();
-		RecalculateOdd();
-	}
-	if (getKey(6) && engine.renderer.renderingType != 6)
-	{
-		engine.renderer.renderingDepth = 64;
-		engine.renderer.renderingType = 6;
-		engine.renderer.calculationDepthDivider = 2;
-		engine.renderer.calculationDepthStep = 2;
-		engine.renderer.renderingDepthStep = 1;
-		engine.renderer.stepModifier = 16;
-		engine.renderer.xFOV = 10;
-		engine.renderer.yFOV = 18;
-		ClearBuffor();
-		RecalculateOdd();
-	}
-	if (getKey(7) && engine.renderer.renderingType != 7 )
-	{
-		engine.renderer.renderingDepth = 64;
-		engine.renderer.renderingType = 7;
-		engine.renderer.calculationDepthDivider = 2;
-		engine.renderer.calculationDepthStep = 2;
-		engine.renderer.renderingDepthStep = 1;
-		ClearBuffor();
-		RecalculateOdd();
-	}
-	if (getKey(8) && engine.renderer.renderingType != 8 )
-	{
-		engine.renderer.renderingDepth = 64;
-		engine.renderer.renderingType = 8;
-		engine.renderer.calculationDepthDivider = 2;
-		engine.renderer.calculationDepthStep = 2;
-		engine.renderer.renderingDepthStep = 1;
-		ClearBuffor();
-		RecalculateOdd();
-	}
+// 	if (getKey(1) && engine.renderer.renderingType != 1)
+// 	{
+// 		engine.renderer.renderingDepth = 16;
+// 		engine.renderer.renderingType = 1;
+// 		engine.renderer.calculationDepthDivider = 2;
+// 		engine.renderer.calculationDepthStep = 4;
+// 		engine.renderer.renderingDepthStep = 2;
+// 		engine.renderer.stepModifier = 16;
+// 		engine.renderer.xFOV = 32;
+// 		engine.renderer.yFOV = 12;
+// 		ClearBuffor();
+// 	 	RecalculateEven();
+// 	}
+// 	if (getKey(2) && engine.renderer.renderingType != 2)
+// 	{
+// 		engine.renderer.renderingDepth = 16;
+// 		engine.renderer.renderingType = 2;
+// 		engine.renderer.calculationDepthDivider = 2;
+// 		engine.renderer.calculationDepthStep = 3;
+// 		engine.renderer.renderingDepthStep = 2;
+// 		engine.renderer.stepModifier = 16;
+// 		engine.renderer.xFOV = 28;
+// 		engine.renderer.yFOV = 12;
+// 		ClearBuffor();
+// 		RecalculateEven();
+// 	}
+// 	if (getKey(3) && engine.renderer.renderingType != 3)
+// 	{
+// 		engine.renderer.renderingDepth = 16;
+// 		engine.renderer.renderingType = 3;
+// 		engine.renderer.calculationDepthDivider = 2;
+// 		engine.renderer.calculationDepthStep = 2;
+// 		engine.renderer.renderingDepthStep = 2;
+// 		engine.renderer.stepModifier = 16;
+// 		engine.renderer.xFOV = 24;
+// 		engine.renderer.yFOV = 12;
+// 		ClearBuffor();
+// 		RecalculateOdd();
+// 	}
+// 	if (getKey(4) && engine.renderer.renderingType != 4)
+// 	{
+// 		engine.renderer.renderingDepth = 32;
+// 		engine.renderer.renderingType = 4;
+// 		engine.renderer.calculationDepthDivider = 2;
+// 		engine.renderer.calculationDepthStep = 2;
+// 		engine.renderer.renderingDepthStep = 1;
+// 		engine.renderer.stepModifier = 16;
+// 		engine.renderer.xFOV = 20;
+// 		engine.renderer.yFOV = 24;
+// 		ClearBuffor();
+// 		RecalculateOdd();
+// 	}
+// 	if (getKey(5) && engine.renderer.renderingType != 5)
+// 	{
+// 		engine.renderer.renderingDepth = 32;
+// 		engine.renderer.renderingType = 5;
+// 		engine.renderer.calculationDepthDivider = 2;
+// 		engine.renderer.calculationDepthStep = 2;
+// 		engine.renderer.renderingDepthStep = 1;
+// 		ClearBuffor();
+// 		RecalculateOdd();
+// 	}
+// 	if (getKey(6) && engine.renderer.renderingType != 6)
+// 	{
+// 		engine.renderer.renderingDepth = 64;
+// 		engine.renderer.renderingType = 6;
+// 		engine.renderer.calculationDepthDivider = 2;
+// 		engine.renderer.calculationDepthStep = 2;
+// 		engine.renderer.renderingDepthStep = 1;
+// 		engine.renderer.stepModifier = 16;
+// 		engine.renderer.xFOV = 10;
+// 		engine.renderer.yFOV = 18;
+// 		ClearBuffor();
+// 		RecalculateOdd();
+// 	}
+// 	if (getKey(7) && engine.renderer.renderingType != 7 )
+// 	{
+// 		engine.renderer.renderingDepth = 64;
+// 		engine.renderer.renderingType = 7;
+// 		engine.renderer.calculationDepthDivider = 2;
+// 		engine.renderer.calculationDepthStep = 2;
+// 		engine.renderer.renderingDepthStep = 1;
+// 		ClearBuffor();
+// 		RecalculateOdd();
+// 	}
+// 	if (getKey(8) && engine.renderer.renderingType != 8 )
+// 	{
+// 		engine.renderer.renderingDepth = 64;
+// 		engine.renderer.renderingType = 8;
+// 		engine.renderer.calculationDepthDivider = 2;
+// 		engine.renderer.calculationDepthStep = 2;
+// 		engine.renderer.renderingDepthStep = 1;
+// 		ClearBuffor();
+// 		RecalculateOdd();
+// 	}
 
-}
+// }
 
  #else
 
@@ -321,91 +321,91 @@ void GetPlayerRendererSetting()
 	}
 }
 
-void ProcessQualityInput()
-{
+// void ProcessQualityInput()
+// {
 	
 
-	if(getKey(1) && engine.renderer.renderingType!=1)
-	{
-		engine.renderer.renderingDepth = TERRAINDEPTH;
-		engine.renderer.renderingType = 1;
-		engine.renderer.calculationDepthDivider = 2;
-		engine.renderer.calculationDepthStep = 4;
-		engine.renderer.renderingDepthStep = 1;
-		ClearBuffor();
-		//DrawBitmap8b(bitmap1, &bitmapHeader1);
-	}
-	if(getKey(2) && engine.renderer.renderingType!=2)
-	{
-		engine.renderer.renderingDepth = TERRAINDEPTH;
-		engine.renderer.renderingType = 2;
-		engine.renderer.calculationDepthDivider = 2;
-		engine.renderer.calculationDepthStep = 4;
-		engine.renderer.renderingDepthStep = 1;
-		ClearBuffor();
-		//DrawBitmap8b(bitmap1, &bitmapHeader1);
-	}
-	if(getKey(3) && engine.renderer.renderingType!=3)
-	{
-		engine.renderer.renderingDepth = TERRAINDEPTH;
-		engine.renderer.renderingType = 3;
-		engine.renderer.calculationDepthDivider = 2;
-		engine.renderer.calculationDepthStep = 4;
-		engine.renderer.renderingDepthStep = 1;
-		ClearBuffor();
-		//DrawBitmap8b(bitmap1, &bitmapHeader1);
-	}
-	if(getKey(4)  && engine.renderer.renderingType!=4)
-	{
-		engine.renderer.renderingDepth = TERRAINDEPTH;
-		engine.renderer.renderingType = 4;
-		engine.renderer.calculationDepthDivider = 2;
-		engine.renderer.calculationDepthStep = 4;
-		engine.renderer.renderingDepthStep = 1;
-		ClearBuffor();
-		//DrawBitmap8b(bitmap1, &bitmapHeader1);
-	}
-	if(getKey(5) && engine.renderer.renderingType!=5)
-	{
-		engine.renderer.renderingDepth = TERRAINDEPTH;
-		engine.renderer.renderingType = 5;
-		engine.renderer.calculationDepthDivider = 2;
-		engine.renderer.calculationDepthStep = 4;
-		engine.renderer.renderingDepthStep = 1;
-		ClearBuffor();
-		//DrawBitmap8b(bitmap1, &bitmapHeader1);
-	}
-	if(getKey(6) && engine.renderer.renderingType!=6)
-	{
-		engine.renderer.renderingDepth = TERRAINDEPTH;
-		engine.renderer.renderingType = 6;
-		engine.renderer.calculationDepthDivider = 2;
-		engine.renderer.calculationDepthStep = 4;
-		engine.renderer.renderingDepthStep = 1;
-		ClearBuffor();
-		//DrawBitmap8b(bitmap1, &bitmapHeader1);
-	}
-	if(getKey(7) && engine.renderer.renderingType!=7)
-	{
-		engine.renderer.renderingDepth = TERRAINDEPTH;
-		engine.renderer.renderingType = 7;
-		engine.renderer.calculationDepthDivider = 2;
-		engine.renderer.calculationDepthStep = 2;
-		engine.renderer.renderingDepthStep = 1;
-		ClearBuffor();
-		//DrawBitmap8b(bitmap1, &bitmapHeader1);
-	}
-	if (getKey(8) && engine.renderer.renderingType!=8 )
-	{
-		engine.renderer.renderingDepth = TERRAINDEPTH;
-		engine.renderer.renderingType = 8;
-		engine.renderer.calculationDepthDivider = 2;
-		engine.renderer.calculationDepthStep = 2;
-		engine.renderer.renderingDepthStep = 1;
-	}
+// 	if(getKey(1) && engine.renderer.renderingType!=1)
+// 	{
+// 		engine.renderer.renderingDepth = TERRAINDEPTH;
+// 		engine.renderer.renderingType = 1;
+// 		engine.renderer.calculationDepthDivider = 2;
+// 		engine.renderer.calculationDepthStep = 4;
+// 		engine.renderer.renderingDepthStep = 1;
+// 		ClearBuffor();
+// 		//DrawBitmap8b(bitmap1, &bitmapHeader1);
+// 	}
+// 	if(getKey(2) && engine.renderer.renderingType!=2)
+// 	{
+// 		engine.renderer.renderingDepth = TERRAINDEPTH;
+// 		engine.renderer.renderingType = 2;
+// 		engine.renderer.calculationDepthDivider = 2;
+// 		engine.renderer.calculationDepthStep = 4;
+// 		engine.renderer.renderingDepthStep = 1;
+// 		ClearBuffor();
+// 		//DrawBitmap8b(bitmap1, &bitmapHeader1);
+// 	}
+// 	if(getKey(3) && engine.renderer.renderingType!=3)
+// 	{
+// 		engine.renderer.renderingDepth = TERRAINDEPTH;
+// 		engine.renderer.renderingType = 3;
+// 		engine.renderer.calculationDepthDivider = 2;
+// 		engine.renderer.calculationDepthStep = 4;
+// 		engine.renderer.renderingDepthStep = 1;
+// 		ClearBuffor();
+// 		//DrawBitmap8b(bitmap1, &bitmapHeader1);
+// 	}
+// 	if(getKey(4)  && engine.renderer.renderingType!=4)
+// 	{
+// 		engine.renderer.renderingDepth = TERRAINDEPTH;
+// 		engine.renderer.renderingType = 4;
+// 		engine.renderer.calculationDepthDivider = 2;
+// 		engine.renderer.calculationDepthStep = 4;
+// 		engine.renderer.renderingDepthStep = 1;
+// 		ClearBuffor();
+// 		//DrawBitmap8b(bitmap1, &bitmapHeader1);
+// 	}
+// 	if(getKey(5) && engine.renderer.renderingType!=5)
+// 	{
+// 		engine.renderer.renderingDepth = TERRAINDEPTH;
+// 		engine.renderer.renderingType = 5;
+// 		engine.renderer.calculationDepthDivider = 2;
+// 		engine.renderer.calculationDepthStep = 4;
+// 		engine.renderer.renderingDepthStep = 1;
+// 		ClearBuffor();
+// 		//DrawBitmap8b(bitmap1, &bitmapHeader1);
+// 	}
+// 	if(getKey(6) && engine.renderer.renderingType!=6)
+// 	{
+// 		engine.renderer.renderingDepth = TERRAINDEPTH;
+// 		engine.renderer.renderingType = 6;
+// 		engine.renderer.calculationDepthDivider = 2;
+// 		engine.renderer.calculationDepthStep = 4;
+// 		engine.renderer.renderingDepthStep = 1;
+// 		ClearBuffor();
+// 		//DrawBitmap8b(bitmap1, &bitmapHeader1);
+// 	}
+// 	if(getKey(7) && engine.renderer.renderingType!=7)
+// 	{
+// 		engine.renderer.renderingDepth = TERRAINDEPTH;
+// 		engine.renderer.renderingType = 7;
+// 		engine.renderer.calculationDepthDivider = 2;
+// 		engine.renderer.calculationDepthStep = 2;
+// 		engine.renderer.renderingDepthStep = 1;
+// 		ClearBuffor();
+// 		//DrawBitmap8b(bitmap1, &bitmapHeader1);
+// 	}
+// 	if (getKey(8) && engine.renderer.renderingType!=8 )
+// 	{
+// 		engine.renderer.renderingDepth = TERRAINDEPTH;
+// 		engine.renderer.renderingType = 8;
+// 		engine.renderer.calculationDepthDivider = 2;
+// 		engine.renderer.calculationDepthStep = 2;
+// 		engine.renderer.renderingDepthStep = 1;
+// 	}
 
 
-}
+// }
 
 #endif
 
