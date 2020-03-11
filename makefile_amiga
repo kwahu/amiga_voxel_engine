@@ -17,11 +17,11 @@ endif
 CFLAGS=-m68000\
 	-msoft-float\
 	-fomit-frame-pointer \
-	-Os\
+	-O2\
 	-std=c11\
 	-DAMIGA \
 	-s \
-	-noixemul
+	-noixemul 
 	#
 	#-Wall\
 	#-mshort\

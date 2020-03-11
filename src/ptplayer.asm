@@ -111,7 +111,6 @@ AUDLEN		equ	4
 AUDPER		equ	6
 AUDVOL		equ	8
 
-
 ; Sound effects structure, passed into _mt_playfx
 		rsreset
 sfx_ptr		rs.l	1
@@ -176,8 +175,7 @@ n_sizeof	rs.b	0
 	code
 	endc
 
-
-
+	section .text,code
 ;---------------------------------------------------------------------------
 	xdef	_mt_install_cia
 _mt_install_cia:

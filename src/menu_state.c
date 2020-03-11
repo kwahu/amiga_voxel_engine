@@ -9,8 +9,8 @@ void InitMenuState()
  
     engine.menuState.infoScreen = 0;
 
-    engine.menuState.menu[0] = LoadBitmapFile("data/m0", &engine.menuState.headers[0], engine.menuState.Palette);
-    engine.menuState.menu[1] = LoadBitmapFile("data/m1", &engine.menuState.headers[1], engine.activePalette);
+    engine.menuState.menu[0] = LoadBitmapFile("data/m0", &engine.menuState.headers[0], engine.menuState.Palette, 1, 0);
+    engine.menuState.menu[1] = LoadBitmapFile("data/m1", &engine.menuState.headers[1], engine.activePalette, 1, 0);
     LoadBitmapToMemory("data/msg");
 }
 

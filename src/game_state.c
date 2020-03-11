@@ -8,7 +8,7 @@ void InitGameState()
 
     engine.gameState.shipParams.precX = 60 * 100;
     engine.gameState.shipParams.precZ = 0;
-    engine.gameState.shipParams.precY = 20 * 100;
+    engine.gameState.shipParams.precY = 80 * 100;
     engine.gameState.shipParams.pX = 0;
     engine.gameState.shipParams.pZ = 0;
     engine.gameState.shipParams.pY = 0;
@@ -65,10 +65,10 @@ BYTE CheckPlayerCollision()
 void RenderShipAndCrossHair()
 {
     UWORD crossPX =  (160 + (engine.gameState.crossHairX / 400));
-    UWORD crossPY = ( 130 + (engine.gameState.crossHairY / 400) );
+    UWORD crossPY = ( GAME_SCREEN_BASELINE/2 - 5 + (engine.gameState.crossHairY / 400) );
 
     UWORD shipDirX = 160 + engine.renderer.xTurnOffset;
-    UWORD shipDirY = 135 + (engine.gameState.crossHairY/1600);
+    UWORD shipDirY = GAME_SCREEN_BASELINE/2 + (engine.gameState.crossHairY/1600);
 
     WORD spriteIndexX = 1;
     WORD spriteIndexY = 1;
@@ -91,33 +91,34 @@ void RenderShipAndCrossHair()
 
                 
     UBYTE bestFit = engine.renderer.depthBufferHeight + 1;
-    UBYTE bestValue = 255;
+    WORD bestValue = 1024;
 
     for(BYTE i = 0; i < engine.renderer.depthBufferHeight/2; ++i)
     {
-        WORD value = ((WORD)engine.renderer.depthBuffer[i] - (WORD)(3*engine.renderer.zStart - i));
-        if(value > 0 && value < bestValue)
+        UBYTE d = (engine.renderer.depthBuffer[i]);
+        WORD depth = (WORD)d;
+        WORD offset = (WORD)engine.renderer.zStart + (WORD)((WORD)(engine.renderer.depthBufferHeight/4) - i);
+        WORD value = (depth - offset);
+        if((value > 0) && (value < bestValue) && (depth > engine.renderer.zStart + 1))
         {
             bestValue = value;
             bestFit = i;
         }
     }
 
-    if(bestFit < (engine.renderer.depthBufferHeight + 1))
+    if(bestFit < (engine.renderer.depthBufferHeight)/2)
     {
-        UBYTE relHeightCoeff = (bestFit)/6;  
+        UBYTE relHeightCoeff = ((bestFit)/(engine.renderer.depthBufferHeight/10)) + 1;  
+        
+        bestFit = bestFit*engine.renderer.shadowStep;
      
         
-        for(UBYTE y = 0; y < relHeightCoeff; ++y)
+        for(UBYTE y = 0; y < relHeightCoeff; y++)
         {
-            DrawPixel(shipDirX - relHeightCoeff + y, 200 - bestFit*2 - y*2-1, 0);
-            DrawPixel(shipDirX + relHeightCoeff - y, 200 - bestFit*2 - y*2-1, 0);   
-            //  DrawPixel(shipDirX - relHeightCoeff + y, 200 - bestFit*2 - y*2, 0);
-            //  DrawPixel(shipDirX + relHeightCoeff - y, 200 - bestFit*2 - y*2, 0);   
-            DrawPixel(shipDirX - relHeightCoeff + y, 200 - bestFit*2 + y*2+1, 0);
-            DrawPixel(shipDirX + relHeightCoeff - y, 200 - bestFit*2 + y*2+1, 0);   
-            // DrawPixel(shipDirX - relHeightCoeff + y, 200 - bestFit*2 + y*2 + 1, 0);
-            // DrawPixel(shipDirX + relHeightCoeff - y, 200 - bestFit*2 + y*2 + 1, 0);   
+            DrawPixel(shipDirX - relHeightCoeff + y, GAME_SCREEN_BASELINE - bestFit - y*2-1, 0);
+            DrawPixel(shipDirX + relHeightCoeff - y, GAME_SCREEN_BASELINE - bestFit - y*2-1, 0);   
+            DrawPixel(shipDirX - relHeightCoeff + y, GAME_SCREEN_BASELINE - bestFit + y*2+1, 0);
+            DrawPixel(shipDirX + relHeightCoeff - y, GAME_SCREEN_BASELINE - bestFit + y*2+1, 0);      
         }
 
     }
@@ -125,8 +126,8 @@ void RenderShipAndCrossHair()
 
     DrawCrosshair( crossPX, crossPY + 4);
     DrawCrosshair( crossPX, crossPY - 4);
-    DrawSprite4b(engine.shipBitmap, &engine.shipHeader, shipDirX, shipDirY,
-                    spriteIndexX, spriteIndexY, 48, 48, 3);
+     DrawSprite4b(engine.shipBitmap, &engine.shipHeader, shipDirX, shipDirY,
+                     spriteIndexX, spriteIndexY, 48, 48, 3);
     
      
 }

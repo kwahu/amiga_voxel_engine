@@ -13,8 +13,8 @@ void InitLogoState()
 	engine.logoState.screenIndex = 1;
 	engine.logoState.screenDuration = LOGORUNTIME;
 	UseSystem();
-	engine.logoState.logo[1] = LoadBitmapFile("data/l2", &engine.logoState.headers[1], engine.activePalette);
-	engine.logoState.logo[2] = LoadBitmapFile("data/l3", &engine.logoState.headers[2], engine.activePalette);
+	engine.logoState.logo[1] = LoadBitmapFile("data/l2", &engine.logoState.headers[1], engine.activePalette, 1, 0);
+	engine.logoState.logo[2] = LoadBitmapFile("data/l3", &engine.logoState.headers[2], engine.activePalette, 1, 0);
 	UnuseSystem();
 
 	ClearBuffor();

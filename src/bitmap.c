@@ -2,6 +2,13 @@
 
 #include "engine.h"
 
+typedef enum BitmapType
+{
+	Bitmap_Map = 0,
+	Bitmap_Texture = 1,
+	Bitmap_Sprite = 2
+}BitmapType;
+
 ULONG ConvertEndianLONG(ULONG number)
 {
 
@@ -16,7 +23,7 @@ UWORD ConvertEndianWORD(UWORD number)
     return (number >> 8) | (number << 8);
 }
 
-UBYTE *LoadBitmapFile(BYTE *filename, BITMAPINFOHEADER *bitmapInfoHeader, UBYTE *bitmapColorTable)
+UBYTE *LoadBitmapFile(BYTE *filename, BITMAPINFOHEADER *bitmapInfoHeader, UBYTE *bitmapColorTable, BitmapType type, UBYTE maskBit)
 {
     FILE *filePtr;                     //our file pointer
     BITMAPFILEHEADER bitmapFileHeader; //our bitmap file header
@@ -68,8 +75,18 @@ UBYTE *LoadBitmapFile(BYTE *filename, BITMAPINFOHEADER *bitmapInfoHeader, UBYTE 
 		free(bitmapImage);
 	}
 
+	switch(type)
+	{
+		default:
+		{
+		    bitmapImage = (unsigned char *)malloc(bitmapInfoHeader->biSizeImage);
+		} break;
+		case Bitmap_Sprite:
+		{
+		    bitmapImage = (unsigned char *)malloc(bitmapInfoHeader->biSizeImage + bitmapInfoHeader->biSizeImage/8);
+		} break;
+ 	}
     //allocate enough memory for the bitmap image data
-    bitmapImage = (unsigned char *)malloc(bitmapInfoHeader->biSizeImage);
 
     //verify memory allocation
     if (!bitmapImage)
@@ -83,6 +100,177 @@ UBYTE *LoadBitmapFile(BYTE *filename, BITMAPINFOHEADER *bitmapInfoHeader, UBYTE 
     //read in the bitmap image data
     fread(bitmapImage, bitmapInfoHeader->biSizeImage, 1, filePtr);
 
+	if(type == Bitmap_Sprite)
+	{
+		
+		for(UWORD wordIndex = 0; wordIndex < bitmapInfoHeader->biSizeImage/8; wordIndex++)
+		{
+			UWORD *maskPtr = ((UWORD *)bitmapImage);
+			maskPtr += bitmapInfoHeader->biSizeImage/2 + wordIndex;		
+			
+			UWORD *bitmapPtr = ((UWORD *)bitmapImage);
+			bitmapPtr += wordIndex*4;		
+
+			UWORD word1 = *bitmapPtr;
+			++bitmapPtr;
+			UWORD word2 = *bitmapPtr;
+			++bitmapPtr;
+			UWORD word3 = *bitmapPtr;
+			++bitmapPtr;
+			UWORD word4 = *bitmapPtr;
+		
+			UWORD packedMask = 0;
+			
+			UWORD shift = 0;
+			for(WORD bitIndex = 12; bitIndex < 16; ++bitIndex)
+			{
+				UBYTE checkedPixel = ((word1 >> shift) & 0xF) ^ maskBit;
+				if(checkedPixel != 0)
+				{
+					packedMask |= 1 << bitIndex;
+				}
+
+				shift += 4;
+			}
+			shift = 0;
+			for(WORD bitIndex = 8; bitIndex < 12; ++bitIndex)
+			{
+				UBYTE checkedPixel = ((word2 >> shift) & 0xF) ^ maskBit;
+				if(checkedPixel != 0)
+				{
+					packedMask |= 1 << bitIndex;
+				}
+
+				shift += 4;
+			}
+			shift = 0;
+			for(WORD bitIndex = 4; bitIndex < 8; ++bitIndex)
+			{
+				UBYTE checkedPixel = ((word3 >> shift) & 0xF) ^ maskBit;
+				if(checkedPixel != 0)
+				{
+					packedMask |= 1 << bitIndex;
+				}
+
+				shift += 4;
+			}
+			shift = 0;
+			for(WORD bitIndex = 0; bitIndex < 4; ++bitIndex)
+			{
+				UBYTE checkedPixel = ((word4 >> shift) & 0xF) ^ maskBit;
+				if(checkedPixel != 0)
+				{
+					packedMask |= 1 << bitIndex;
+				}
+
+				shift += 4;
+			}
+
+			*maskPtr = packedMask;
+		}
+	}
+
+	if(type != Bitmap_Map)
+	{
+		for(UWORD wordIndex = 0; wordIndex < bitmapInfoHeader->biSizeImage/8; wordIndex++)
+		{
+			UWORD *bitmapPtr = ((UWORD *)bitmapImage);
+			bitmapPtr += wordIndex*4;		
+
+			UWORD word1 = *bitmapPtr;
+			++bitmapPtr;
+			UWORD word2 = *bitmapPtr;
+			++bitmapPtr;
+			UWORD word3 = *bitmapPtr;
+			++bitmapPtr;
+			UWORD word4 = *bitmapPtr;
+			bitmapPtr -= 3;
+
+			UWORD packedWord1 = 0;
+			UWORD packedWord2 = 0;
+			UWORD packedWord3 = 0;
+			UWORD packedWord4 = 0;
+
+			UWORD shift1 = 0;
+			UWORD shift2 = 1;
+			UWORD shift3 = 2;
+			UWORD shift4 = 3;
+			for(WORD bitIndex = 12; bitIndex < 16; ++bitIndex)
+			{
+				packedWord1 |= ((word1 >> shift1) & 1) << bitIndex;
+				packedWord2 |= ((word1 >> shift2) & 1) << bitIndex;
+				packedWord3 |= ((word1 >> shift3) & 1) << bitIndex;
+				packedWord4 |= ((word1 >> shift4) & 1) << bitIndex;
+
+				shift1 += 4;
+				shift2 += 4;
+				shift3 += 4;
+				shift4 += 4;
+			}
+			
+			shift1 = 0;
+			shift2 = 1;
+			shift3 = 2;
+			shift4 = 3;
+			for(WORD bitIndex = 8; bitIndex < 12; ++bitIndex)
+			{
+				packedWord1 |= ((word2 >> shift1) & 1) << bitIndex;
+				packedWord2 |= ((word2 >> shift2) & 1) << bitIndex;
+				packedWord3 |= ((word2 >> shift3) & 1) << bitIndex;
+				packedWord4 |= ((word2 >> shift4) & 1) << bitIndex;
+
+				shift1 += 4;
+				shift2 += 4;
+				shift3 += 4;
+				shift4 += 4;
+			}
+			
+			shift1 = 0;
+			shift2 = 1;
+			shift3 = 2;
+			shift4 = 3;
+			for(WORD bitIndex = 4; bitIndex < 8; ++bitIndex)
+			{
+				packedWord1 |= ((word3 >> shift1) & 1) << bitIndex;
+				packedWord2 |= ((word3 >> shift2) & 1) << bitIndex;
+				packedWord3 |= ((word3 >> shift3) & 1) << bitIndex;
+				packedWord4 |= ((word3 >> shift4) & 1) << bitIndex;
+
+				shift1 += 4;
+				shift2 += 4;
+				shift3 += 4;
+				shift4 += 4;
+			}
+			
+			shift1 = 0;
+			shift2 = 1;
+			shift3 = 2;
+			shift4 = 3;
+			for(WORD bitIndex = 0; bitIndex < 4; ++bitIndex)
+			{
+				packedWord1 |= ((word4 >> shift1) & 1) << bitIndex;
+				packedWord2 |= ((word4 >> shift2) & 1) << bitIndex;
+				packedWord3 |= ((word4 >> shift3) & 1) << bitIndex;
+				packedWord4 |= ((word4 >> shift4) & 1) << bitIndex;
+
+				shift1 += 4;
+				shift2 += 4;
+				shift3 += 4;
+				shift4 += 4;
+			}
+
+			*bitmapPtr = packedWord1;
+			++bitmapPtr;
+			*bitmapPtr = packedWord2;
+			++bitmapPtr;
+			*bitmapPtr = packedWord3;
+			++bitmapPtr;
+			*bitmapPtr = packedWord4;
+
+		}
+	}
+
+
 
     //make sure bitmap image data was read
     if (bitmapImage == NULL)
@@ -91,6 +279,8 @@ UBYTE *LoadBitmapFile(BYTE *filename, BITMAPINFOHEADER *bitmapInfoHeader, UBYTE 
         fclose(filePtr);
         return NULL;
     }
+
+	
 
     //close file and return bitmap iamge data
     fclose(filePtr);

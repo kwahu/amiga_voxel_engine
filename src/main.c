@@ -38,9 +38,9 @@ void InitEngine(void)
 	InitScreen();
 	InitInput();
 
-	engine.shipBitmap = LoadBitmapFile("data/icar48", &engine.shipHeader, engine.palettePalette);
-	engine.logoState.logo[0] = LoadBitmapFile("data/l1", &engine.logoState.headers[0], engine.activePalette);
-	engine.paletteBitmap = LoadBitmapFile("data/plt", &engine.paletteHeader, engine.palettePalette);
+	engine.shipBitmap = LoadBitmapFile("data/icar48", &engine.shipHeader, engine.palettePalette, 2, 3);
+	engine.logoState.logo[0] = LoadBitmapFile("data/l1", &engine.logoState.headers[0], engine.activePalette, 1, 0);
+	engine.paletteBitmap = LoadBitmapFile("data/plt", &engine.paletteHeader, engine.palettePalette, 1, 0);
 
 	//process paletter from an image
 	SetBitmapPalette(engine.activePalette);
@@ -193,6 +193,7 @@ void EngineDestroy(void)
 	free(engine.shipBitmap);
 	free(engine.paletteBitmap);
 	free(engine.renderer.ditherTable1);
+	free(engine.renderer.depthBuffer);
 	free(engine.renderer.screenPatch);
 	free(engine.renderer.rayCastX);
 	free(engine.renderer.rayCastY);

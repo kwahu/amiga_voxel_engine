@@ -35,12 +35,14 @@ void PlaySample(UBYTE pos)
 {
     mt_init(g_pCustom, music, 0, pos);
   	mt_Enable = 1;
+      mt_MusicChannels = 4;
     
 }
 void ContinueSample()
 {
 	mt_install_cia(g_pCustom, 0, 1);
   	mt_Enable = 1;
+      mt_MusicChannels = 4;
     
 }
 

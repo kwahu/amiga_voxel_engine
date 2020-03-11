@@ -282,14 +282,14 @@ void GetPlayerRendererSetting()
 		engine.renderer.stepModifier = 16;
 		if(engine.renderer.highMemory)
 		{
-		engine.renderer.xFOV = 28;
+		engine.renderer.xFOV = 24;
 		engine.renderer.yFOV = 14;
 			engine.renderer.renderingType = 3;
 		RecalculateOdd();
 		}
 		else
 		{
-		engine.renderer.xFOV = 28;
+		engine.renderer.xFOV = 24;
 		engine.renderer.yFOV = 14;
 			engine.renderer.renderingType = 1;
 			RecalculateEven();
@@ -306,7 +306,7 @@ void GetPlayerRendererSetting()
 		engine.renderer.stepModifier = 16;
 		if(engine.renderer.highMemory)
 		{
-		engine.renderer.xFOV = 25;
+		engine.renderer.xFOV = 28;
 		engine.renderer.yFOV = 14;
 			engine.renderer.renderingType = 4;
 		RecalculateOdd();
@@ -427,6 +427,11 @@ void GetPlayerMemorySetting()
 	if(getKey(1))
 	{
 		engine.renderer.depthBufferHeight = YSIZEEVEN;
+		#ifdef AMIGA
+		engine.renderer.shadowStep = 4;
+		#else
+		engine.renderer.shadowStep = 8;
+		#endif
 		engine.renderer.depthBuffer = (UBYTE *)malloc(YSIZEEVEN*sizeof(UBYTE));
 		engine.renderer.ditherTable1 = (UBYTE *)malloc(4*COLORS*COLORS*sizeof(UBYTE));
 		engine.renderer.ditherTable2 = engine.renderer.ditherTable1 + COLORS*COLORS;
@@ -441,6 +446,11 @@ void GetPlayerMemorySetting()
 	if(getKey(2))
 	{	
 		engine.renderer.depthBufferHeight = YSIZEODD;
+		#ifdef AMIGA
+		engine.renderer.shadowStep = 2;
+		#else
+		engine.renderer.shadowStep = 4;
+		#endif
 		engine.renderer.depthBuffer = (UBYTE *)malloc(YSIZEODD*sizeof(UBYTE));
 		engine.renderer.ditherTable1 = (UBYTE *)malloc(4*COLORS*COLORS*COLORS*sizeof(UBYTE));
 		engine.renderer.ditherTable2 = engine.renderer.ditherTable1 + COLORS*COLORS*COLORS;

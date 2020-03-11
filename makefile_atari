@@ -18,7 +18,7 @@ endif
 CFLAGS=-m68000\
 	-msoft-float\
 	-fomit-frame-pointer \
-	-Os\
+	-O2\
 	-std=c99\
 	-nostdlib\
 	-DATARI

@@ -118,8 +118,6 @@ typedef struct Renderer
     #else
     uint16_t *planes;
     #endif
-    UBYTE heightMap[MAPSIZE][MAPSIZE]; //16k
-    UBYTE colorMap[MAPSIZE][MAPSIZE];  //16k
 
     UWORD mapHigh[MAPSIZE][MAPSIZE]; //32k
     UWORD lastOverwrittenLine;
@@ -131,6 +129,7 @@ typedef struct Renderer
 
     UBYTE renderingType, calculationDepthDivider, calculationDepthStep, renderingDepthStep, stepModifier, xFOV, yFOV;
     UBYTE renderingDepth;
+    UBYTE shadowStep;
     UBYTE highMemory;
     UBYTE zStart;
     UBYTE depthBufferHeight;

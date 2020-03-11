@@ -37,15 +37,15 @@ void RenderQuality()
             
     if(engine.renderer.renderingType == 1)
     {
-        ProcessRayCastsProgressive4x4(engine.renderer.rayCastX, engine.renderer.rayCastY,engine.renderer.mapHigh,engine.gameState.shipParams.pX,engine.gameState.shipParams.pZ,engine.gameState.shipParams.pY,5, 15);
+        ProcessRayCastsProgressive4x4NonInterleaved(engine.renderer.rayCastX, engine.renderer.rayCastY,engine.renderer.mapHigh,engine.gameState.shipParams.pX,engine.gameState.shipParams.pZ,engine.gameState.shipParams.pY,4, 16);
     }
     else if(engine.renderer.renderingType == 2)
     {
-        ProcessRayCastsProgressive4x4NonInterleaved(engine.renderer.rayCastX, engine.renderer.rayCastY,engine.renderer.mapHigh,engine.gameState.shipParams.pX,engine.gameState.shipParams.pZ,engine.gameState.shipParams.pY,3,   17);
+        ProcessRayCastsProgressive4x4NonInterleaved(engine.renderer.rayCastX, engine.renderer.rayCastY,engine.renderer.mapHigh,engine.gameState.shipParams.pX,engine.gameState.shipParams.pZ,engine.gameState.shipParams.pY,0,  20);
     }
     else if(engine.renderer.renderingType == 3)
     {
-        ProcessRayCastsProgressive(engine.renderer.rayCastX, engine.renderer.rayCastY,engine.renderer.mapHigh,engine.gameState.shipParams.pX,engine.gameState.shipParams.pZ,engine.gameState.shipParams.pY,2, 18);
+        ProcessRayCastsProgressiveNonInterleaved(engine.renderer.rayCastX, engine.renderer.rayCastY,engine.renderer.mapHigh,engine.gameState.shipParams.pX,engine.gameState.shipParams.pZ,engine.gameState.shipParams.pY,4, 16);
     }
     else if(engine.renderer.renderingType == 4)
     {
