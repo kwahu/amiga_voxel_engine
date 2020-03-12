@@ -375,7 +375,7 @@ UBYTE *LoadBitmapFile(BYTE *filename, BITMAPINFOHEADER *bitmapInfoHeader, UBYTE 
 // 		destination[x][y] = source[x][y];
 // 	}
 // }
-void CopyMapWord(UWORD (*source)[MAPSIZE], UWORD (*destination)[MAPSIZE])
+void CopyMapWord(UWORD (*source), UWORD (*destination)[MAPSIZE])
 {
 	UWORD word;
 	//CopyMemQuick(source, destination, MAPSIZE*MAPSIZE*2);
@@ -383,7 +383,7 @@ void CopyMapWord(UWORD (*source)[MAPSIZE], UWORD (*destination)[MAPSIZE])
 	for (int x = 0; x < MAPSIZE; x++)
 		for (int y = 0; y < MAPSIZE; y++)
 		{
-			word = source[x][y];
+			word = source[x*11*MAPSIZE + y];
 			destination[x][y] = word;
 		}
 }

@@ -122,7 +122,8 @@ typedef struct Renderer
     UWORD mapHigh[MAPSIZE][MAPSIZE]; //32k
     UWORD lastOverwrittenLine;
 
-    UWORD mapSource[11][MAPSIZE][MAPSIZE];  //360k
+    //UWORD mapSource[11][MAPSIZE][MAPSIZE];  //360k
+    UWORD *mapSource;
 
     UBYTE mapLoaded0, mapLoaded1, mapLoaded2, mapLoaded3, mapLoaded4, mapLoaded5, mapLoaded6,
         mapLoaded7, mapLoaded8, mapLoaded9, mapLoaded10;

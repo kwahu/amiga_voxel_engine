@@ -1,3 +1,4 @@
+#include "engine.h"
 
 void InitGameState()
 {
@@ -5,7 +6,7 @@ void InitGameState()
 
     engine.currentState = State_Game;
 
-    engine.gameState.shipParams.precX = 60 * 100;
+    engine.gameState.shipParams.precX = 50 * 100;
     engine.gameState.shipParams.precZ = 0;
     engine.gameState.shipParams.precY = 40 * 100;
     engine.gameState.shipParams.pX = 0;
@@ -28,7 +29,7 @@ void InitGameState()
     }
  
 
-    CopyMapWord(engine.renderer.mapSource[0], engine.renderer.mapHigh);
+    CopyMapWord(engine.renderer.mapSource, engine.renderer.mapHigh);
     
 }
 
