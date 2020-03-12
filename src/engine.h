@@ -119,7 +119,8 @@ typedef struct Renderer
     uint16_t *planes;
     #endif
 
-    UWORD mapHigh[MAPSIZE][MAPSIZE]; //32k
+    //UWORD mapHigh[MAPSIZE][MAPSIZE]; //32k
+    UWORD *mapHigh;
     UWORD lastOverwrittenLine;
 
     //UWORD mapSource[11][MAPSIZE][MAPSIZE];  //360k

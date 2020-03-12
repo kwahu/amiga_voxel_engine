@@ -580,7 +580,8 @@ void SetupMaps()
 	// MakeMap3(bezier2, engine.renderer.mapSource + 10*MAPSIZE*MAPSIZE, 17, 17);
 	
 	//prepare starting map
-	CopyMapWord(engine.renderer.mapSource, engine.renderer.mapHigh);
+	engine.renderer.mapHigh = engine.renderer.mapSource;
+	//CopyMapWord(engine.renderer.mapSource, engine.renderer.mapHigh);
 	//CopyMapWord(mapMed0, mapMed);
 	//CopyMapWord(mapLow0, mapLow);
 }

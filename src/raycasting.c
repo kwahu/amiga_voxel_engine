@@ -1047,7 +1047,7 @@ void ProcessRayCastsProgressiveNonInterleaved(WORD (*rayCastX), WORD (*rayCastY)
 	}
 }
 
-void ProcessRayCastsFull3x2(WORD (*rayCastX), WORD (*rayCastY), UWORD (*map)[MAPSIZE],
+void ProcessRayCastsFull3x2(WORD (*rayCastX), WORD (*rayCastY), UWORD (*map),
 UBYTE px, UBYTE py, UBYTE ph, UBYTE screenStart, UBYTE screenEnd)
 {
 
@@ -1072,11 +1072,13 @@ UBYTE px, UBYTE py, UBYTE ph, UBYTE screenStart, UBYTE screenEnd)
 	        UBYTE mx,my;
 	        UWORD mapValue;
 
+            UWORD offset = 11*MAPSIZE;
+
             while(tz < engine.renderer.renderingDepth)
             {
                 mx = px + *rayXPtr;
-                my = (py + (tz<<engine.renderer.renderingDepthStep));
-                mapValue = map[ mx >> 1 ][ my >> 1 ];
+                my = ((tz<<engine.renderer.renderingDepthStep));
+                mapValue = map[ (mx >> 1)*offset  + (my >> 1) ];
                 UBYTE th = mapValue;
 
                 WORD slope = th - (ph + *rayYPtr);
@@ -1203,7 +1205,7 @@ UBYTE px, UBYTE py, UBYTE ph, UBYTE screenStart, UBYTE screenEnd)
 }
 
 
-void ProcessRayCastsFull4x4(WORD (*rayCastX), WORD (*rayCastY), UWORD (*map)[MAPSIZE],
+void ProcessRayCastsFull4x4(WORD (*rayCastX), WORD (*rayCastY), UWORD (*map),
 UBYTE px, UBYTE py, UBYTE ph, UBYTE screenStart, UBYTE screenEnd)
 {
 
@@ -1226,12 +1228,14 @@ UBYTE px, UBYTE py, UBYTE ph, UBYTE screenStart, UBYTE screenEnd)
             UBYTE *screenPtr = engine.renderer.screenPatch + ((YSIZEEVEN)-1)*4 + i;
 	        UBYTE mx,my;
 	        UWORD mapValue;
+            
+            UWORD offset = 11*MAPSIZE;
 
             while(tz < engine.renderer.renderingDepth)
             {
                 mx = px + *rayXPtr;
-                my = (py + (tz<<engine.renderer.renderingDepthStep));
-                mapValue = map[ mx >> 1 ][ my >> 1 ];
+                my = ((tz<<engine.renderer.renderingDepthStep));
+                mapValue = map[ (mx >> 1)*offset + (my >> 1) ];
                 UBYTE th = mapValue;
 
                 WORD slope = th - (ph + *rayYPtr);

@@ -29,7 +29,8 @@ void InitGameState()
     }
  
 
-    CopyMapWord(engine.renderer.mapSource, engine.renderer.mapHigh);
+    engine.renderer.mapHigh = engine.renderer.mapSource;
+	//CopyMapWord(engine.renderer.mapSource, engine.renderer.mapHigh);
     
 }
 
@@ -59,7 +60,9 @@ BYTE CheckPlayerCollision()
     UBYTE shipCollisionY = (engine.gameState.shipParams.pY - 2);
     UWORD shipCollisionX = engine.gameState.shipParams.pX;
 
-    return shipCollisionY < (UBYTE)(engine.renderer.mapHigh[((UBYTE)(shipCollisionX)) >>1][((UBYTE)(engine.gameState.shipParams.pZ + engine.renderer.zStart + 8)) >>1]);
+    return shipCollisionY < (UBYTE)(engine.renderer.mapHigh[(((UBYTE)(shipCollisionX)) >> 1)*11*MAPSIZE + (((UBYTE)(engine.renderer.zStart + 8)) >> 1)]);
+    
+    //return shipCollisionY < (UBYTE)(engine.renderer.mapHigh[((UBYTE)(shipCollisionX)) >>1][((UBYTE)(engine.gameState.shipParams.pZ + engine.renderer.zStart + 8)) >>1]);
 }
 
 void RenderShipAndCrossHair()
