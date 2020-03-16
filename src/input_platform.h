@@ -54,7 +54,7 @@ void GetPlayerRendererSetting()
 		engine.renderer.stepModifier = 16;
 		if(engine.renderer.highMemory)
 		{
-		engine.renderer.turnDenom = 2000;
+		engine.renderer.turnDenom = 3000;
 			engine.renderer.xFOV = 20;
 			engine.renderer.yFOV = 30;
 			engine.renderer.renderingType = 4;
@@ -62,7 +62,7 @@ void GetPlayerRendererSetting()
 		}
 		else
 		{
-		engine.renderer.turnDenom = 3000;
+		engine.renderer.turnDenom = 4500;
 			engine.renderer.xFOV = 23;
 			engine.renderer.yFOV = 15;
 			engine.renderer.renderingType = 1;
@@ -81,7 +81,7 @@ void GetPlayerRendererSetting()
 		engine.renderer.stepModifier = 16;
 		if(engine.renderer.highMemory)
 		{
-		engine.renderer.turnDenom = 2000;
+		engine.renderer.turnDenom = 3000;
 			engine.renderer.xFOV = 12;
 			engine.renderer.yFOV = 20;
 			engine.renderer.renderingType = 5;
@@ -89,7 +89,7 @@ void GetPlayerRendererSetting()
 		}
 		else
 		{
-		engine.renderer.turnDenom = 3000;
+		engine.renderer.turnDenom = 4500;
 			engine.renderer.xFOV = 18;
 			engine.renderer.yFOV = 12;
 			engine.renderer.renderingType = 2;
@@ -107,7 +107,7 @@ void GetPlayerRendererSetting()
 		engine.renderer.stepModifier = 16;
 		if(engine.renderer.highMemory)
 		{
-		engine.renderer.turnDenom = 2000;
+		engine.renderer.turnDenom = 3000;
 		engine.renderer.xFOV = 8;
 		engine.renderer.yFOV = 18;
 			engine.renderer.renderingType = 6;
@@ -115,7 +115,7 @@ void GetPlayerRendererSetting()
 		}
 		else
 		{
-		engine.renderer.turnDenom = 3000;
+		engine.renderer.turnDenom = 4500;
 			engine.renderer.xFOV = 18;
 			engine.renderer.yFOV = 10;
 			engine.renderer.renderingType = 3;
@@ -270,7 +270,7 @@ void InitInput()
 void GetPlayerRendererSetting()
 {
 	engine.renderer.zStart = 12;
-		engine.renderer.turnDenom = 2000;
+		engine.renderer.turnDenom = 3000;
 	if (getKey(3))
 	{
 		engine.renderer.renderingDepth = TERRAINDEPTH;

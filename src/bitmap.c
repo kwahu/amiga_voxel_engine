@@ -389,11 +389,11 @@ void CopyMapWord(UWORD (*source), UWORD (*destination)[MAPSIZE])
 }
 
 
-void CombineMapsHigh(UBYTE (*height)[MAPSIZE], UBYTE (*color)[MAPSIZE], UWORD (*map)[MAPSIZE])
+void CombineMapsHigh(UBYTE (*height)[MAPSIZE], UBYTE (*color)[MAPSIZE], UWORD (*map))
 {
 	for (int x = 0; x < MAPSIZE; x++) {
 		for (int y = 0; y < MAPSIZE; y++) {
-			map[y][x] = (color[x][y] << 8) + height[x][y];
+			*(map + y*11*MAPSIZE + x) = (color[x][y] << 8) + height[x][y];
 		}
 	}
 }

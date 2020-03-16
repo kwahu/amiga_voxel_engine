@@ -4,7 +4,13 @@ void OverwriteMap()
 	UWORD word;
 	UBYTE yy;
 
-	engine.renderer.mapHigh = engine.renderer.mapSource + (engine.gameState.shipParams.pZ >> 1);
+	UWORD currentZ = engine.gameState.shipParams.pZ;
+	if(currentZ > 2816)
+	{
+		currentZ -= 2816;
+	}
+
+	engine.renderer.mapHigh = engine.renderer.mapSource + ((engine.gameState.shipParams.pZ) >> 1);
 
 	// for (UWORD x = 0; x < MAPSIZE; x++)
 	// {

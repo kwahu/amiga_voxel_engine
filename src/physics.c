@@ -49,7 +49,7 @@ void updateShipParams(LONG deltaTime, UWORD terrainHeight)
 	shipParams.precZ += deltaTime*shipParams.dP/shipParams.dPDenom;
 
 
-	shipParams.precX += (LONG)deltaTime * engine.gameState.crossHairX / 3000;
+	shipParams.precX += (LONG)deltaTime * engine.gameState.crossHairX / 4000;
 	shipParams.precY -= (LONG)deltaTime * engine.gameState.crossHairY / 1500;
 
 	if (shipParams.precY > 7000)
@@ -73,17 +73,24 @@ void ProcessInput()
 		lowerDelta = 1;
 	}
 
+	BYTE turnHorizontal = 0;
+
     if (getJoy(1, RIGHT))
 	{
-		engine.gameState.crossHairX += engine.deltaTime / 60;
+		turnHorizontal = 1;
 	}
 	else if (getJoy(1, LEFT))
 	{
-		engine.gameState.crossHairX -= engine.deltaTime / 60;
-	}
-	else if (engine.gameState.crossHairX != 0)
+		turnHorizontal = -1;
+	}	
+
+
+	engine.gameState.crossHairX += turnHorizontal*(LONG)engine.deltaTime / 60;
+	LONG crossHairHorizontalComeback = - 8*(engine.gameState.crossHairX / (lowerDelta));
+	
+	if (crossHairHorizontalComeback * turnHorizontal > 0 || turnHorizontal == 0)
 	{
-		engine.gameState.crossHairX = engine.gameState.crossHairX - 8*(engine.gameState.crossHairX / (lowerDelta));
+		engine.gameState.crossHairX = engine.gameState.crossHairX + crossHairHorizontalComeback;
 	}
 
 	if (engine.gameState.crossHairX > 0x4000)
@@ -96,24 +103,31 @@ void ProcessInput()
 	else if (engine.gameState.crossHairY < -0x2000)
 		engine.gameState.crossHairY = -0x2000;
 
-	if (getJoy(1, DOWN))
+	BYTE turnVertical = 0;
+
+    if (getJoy(1, DOWN))
 	{
-		engine.gameState.crossHairY += engine.yAxis*(LONG)(engine.deltaTime / 60);
-		//engine.gameState.crossHairY += deltaTime / 10;
+		turnVertical = 1;
 	}
 	else if (getJoy(1, UP))
 	{
-		engine.gameState.crossHairY -= engine.yAxis*(LONG)(engine.deltaTime / 60);
-	}
-	else if (engine.gameState.crossHairY != 0)
+		turnVertical = -1;
+	}	
+
+	
+	engine.gameState.crossHairY += turnVertical*engine.yAxis*(LONG)(engine.deltaTime / 60);
+	LONG crossHairVerticalComeback = - 8*(engine.gameState.crossHairY / (lowerDelta));
+	
+	if (crossHairVerticalComeback * turnVertical*engine.yAxis > 0 || turnVertical == 0)
 	{
-		engine.gameState.crossHairY = engine.gameState.crossHairY - 8*(engine.gameState.crossHairY / (lowerDelta));
+		engine.gameState.crossHairY = engine.gameState.crossHairY + crossHairVerticalComeback;
 	}
 
 
 }
 
-UWORD getTerrainHeight(ShipParams shipParams, UWORD map[][128])
+UWORD getTerrainHeight(ShipParams shipParams, UWORD *map)
 {
-    return ((UBYTE)(map[((UBYTE)(shipParams.pX)) >> 1][((UBYTE)(shipParams.pZ + engine.renderer.zStart + 8)) >> 1]));
+	return ((UBYTE)map[(((UBYTE)(shipParams.pX)) >> 1)*11*MAPSIZE + (((UBYTE)(engine.renderer.zStart + 8)) >> 1)]);
+    //return ((UBYTE)(map[((UBYTE)(shipParams.pX)) >> 1][((UBYTE)(shipParams.pZ + engine.renderer.zStart + 8)) >> 1]));
 }

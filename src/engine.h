@@ -125,6 +125,7 @@ typedef struct Renderer
 
     //UWORD mapSource[11][MAPSIZE][MAPSIZE];  //360k
     UWORD *mapSource;
+    UBYTE *noiseMap;
 
     UBYTE mapLoaded0, mapLoaded1, mapLoaded2, mapLoaded3, mapLoaded4, mapLoaded5, mapLoaded6,
         mapLoaded7, mapLoaded8, mapLoaded9, mapLoaded10;

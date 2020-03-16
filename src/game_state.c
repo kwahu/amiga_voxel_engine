@@ -8,11 +8,11 @@ void InitGameState()
 
     engine.gameState.shipParams.precX = 50 * 100;
     engine.gameState.shipParams.precZ = 0;
-    engine.gameState.shipParams.precY = 40 * 100;
+    engine.gameState.shipParams.precY = 60 * 100;
     engine.gameState.shipParams.pX = 0;
     engine.gameState.shipParams.pZ = 0;
     engine.gameState.shipParams.pY = 0;
-    engine.gameState.shipParams.dPDenom = 128;
+    engine.gameState.shipParams.dPDenom = 160;
     engine.gameState.shipParams.dP = 0;
     engine.gameState.shipParams.ddP = 0;
     engine.gameState.shipParams.relHeight = 0;
@@ -38,20 +38,18 @@ void UpdatePlayerPosition()
 {
     ProcessInput();
 
-    ULONG lowerDelta = (engine.deltaTime/10000);
 
     UWORD terrainHeight = getTerrainHeight(engine.gameState.shipParams, engine.renderer.mapHigh);
 
+    ULONG lowerDelta = (engine.deltaTime/10000);
     updateShipParams(lowerDelta, terrainHeight);
 
-    LONG addedpoints = (lowerDelta)*(128 - engine.gameState.shipParams.relHeight);
-    if(addedpoints > 0)
+    LONG addedpoints = (lowerDelta)*(112 - engine.gameState.shipParams.relHeight);
+    if(addedpoints > 0 && engine.gameState.shipParams.pZ < 2816)
     {
         engine.gameState.points += addedpoints;
     }
 
-    
-    OverwriteMap(); //this is how we go through many different maps, we just overwrite the main array with new content
 
 }
 
@@ -163,19 +161,51 @@ void RunGameState()
 {
 
 
-    UpdatePlayerPosition();
     //ProcessQualityInput();
     
 
     
     if(engine.gameState.shipParams.pZ > 11*256 && engine.gameState.shipParams.dPDenom < 3*255)
     {
-        engine.gameState.shipParams.dPDenom = engine.gameState.shipParams.dPDenom + 4;
+        engine.gameState.crossHairX = 0;
+
+        if((UWORD)engine.gameState.shipParams.relHeight > 0)
+        {
+            UWORD offset = (((UWORD)engine.gameState.shipParams.relHeight)*200);
+            if(offset > 0x7FFF)
+            {
+                offset = 0x7FFF;
+            }
+            engine.gameState.crossHairY = offset;
+        }
+
+        UWORD terrainHeight = getTerrainHeight(engine.gameState.shipParams, engine.renderer.mapHigh);
+
+        ULONG lowerDelta = (engine.deltaTime/10000);
+        updateShipParams(lowerDelta, terrainHeight);
+
+        
+        
+
+        engine.gameState.shipParams.dPDenom = engine.gameState.shipParams.dPDenom + 6;
     }
     else if(engine.gameState.shipParams.dPDenom >= 3*255)
     {
         engine.gameState.runOver = 1;
     }
+    else
+    {
+        
+        UpdatePlayerPosition();
+        if(CheckPlayerCollision())
+        {
+            ShowCutscene(Cutscene_Death);
+        }
+        
+    }
+    
+    
+    OverwriteMap(); //this is how we go through many different maps, we just overwrite the main array with new content
 
 
 
@@ -229,11 +259,7 @@ void RunGameState()
     // if(keyCheck(KEY_PERIOD)){renderingDepthStep=9;}
     // if(keyCheck(KEY_SLASH)){renderingDepthStep=10;}
 
-    if(CheckPlayerCollision())
-    {
-        ShowCutscene(Cutscene_Death);
-    }
-    else if(engine.gameState.runOver)
+    if(engine.gameState.runOver)
     {
         if(engine.gameState.points < 1000000)
         {
