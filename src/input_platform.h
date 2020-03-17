@@ -427,12 +427,13 @@ void GetPlayerMemorySetting()
 	if(getKey(1))
 	{
 		engine.renderer.depthBufferHeight = YSIZEEVEN;
+		engine.renderer.depthBufferWidth = 20;
 		#ifdef AMIGA
 		engine.renderer.shadowStep = 4;
 		#else
 		engine.renderer.shadowStep = 8;
 		#endif
-		engine.renderer.depthBuffer = (UBYTE *)malloc(YSIZEEVEN*sizeof(UBYTE));
+		engine.renderer.depthBuffer = (UBYTE *)malloc(engine.renderer.depthBufferWidth*YSIZEEVEN*sizeof(UBYTE));
 		engine.renderer.ditherTable1 = (UBYTE *)malloc(4*COLORS*COLORS*sizeof(UBYTE));
 		engine.renderer.ditherTable2 = engine.renderer.ditherTable1 + COLORS*COLORS;
 		engine.renderer.ditherTable3 = engine.renderer.ditherTable1 + 2*COLORS*COLORS;
@@ -446,12 +447,13 @@ void GetPlayerMemorySetting()
 	if(getKey(2))
 	{	
 		engine.renderer.depthBufferHeight = YSIZEODD;
+		engine.renderer.depthBufferWidth = 20;
 		#ifdef AMIGA
 		engine.renderer.shadowStep = 2;
 		#else
 		engine.renderer.shadowStep = 4;
 		#endif
-		engine.renderer.depthBuffer = (UBYTE *)malloc(YSIZEODD*sizeof(UBYTE));
+		engine.renderer.depthBuffer = (UBYTE *)malloc(engine.renderer.depthBufferWidth*YSIZEODD*sizeof(UBYTE));
 		engine.renderer.ditherTable1 = (UBYTE *)malloc(4*COLORS*COLORS*COLORS*sizeof(UBYTE));
 		engine.renderer.ditherTable2 = engine.renderer.ditherTable1 + COLORS*COLORS*COLORS;
 		engine.renderer.ditherTable3 = engine.renderer.ditherTable1 + 2*COLORS*COLORS*COLORS;

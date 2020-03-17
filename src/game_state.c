@@ -23,9 +23,11 @@ void InitGameState()
     engine.gameState.runOver = 0;
     engine.renderer.lastOverwrittenLine = 0;
 
-    for(UBYTE i = 0; i < 40; ++i)
+    UWORD depthBufferSize = (UWORD)engine.renderer.depthBufferHeight*(UWORD)engine.renderer.depthBufferWidth;
+
+    for(UWORD i = 0; i < depthBufferSize; ++i)
     {
-        engine.renderer.depthBuffer[i] = 255;
+        engine.renderer.depthBuffer[i] = 0xFF;
     }
  
 
@@ -93,10 +95,11 @@ void RenderShipAndCrossHair()
                 
     UBYTE bestFit = engine.renderer.depthBufferHeight + 1;
     WORD bestValue = 1024;
+    UBYTE *depthPtr = engine.renderer.depthBuffer + engine.renderer.depthBufferWidth/2;
 
     for(BYTE i = 0; i < engine.renderer.depthBufferHeight/2; ++i)
     {
-        UBYTE d = (engine.renderer.depthBuffer[i]);
+        UBYTE d = *depthPtr;
         WORD depth = (WORD)d;
         WORD offset = (WORD)engine.renderer.zStart + (WORD)((WORD)(engine.renderer.depthBufferHeight/4) - i);
         WORD value = (depth - offset);
@@ -105,6 +108,7 @@ void RenderShipAndCrossHair()
             bestValue = value;
             bestFit = i;
         }
+        depthPtr += engine.renderer.depthBufferWidth;
     }
 
     if(bestFit < (engine.renderer.depthBufferHeight)/2)
@@ -187,9 +191,9 @@ void RunGameState()
         
         
 
-        engine.gameState.shipParams.dPDenom = engine.gameState.shipParams.dPDenom + 6;
+        engine.gameState.shipParams.dPDenom = engine.gameState.shipParams.dPDenom + 8;
     }
-    else if(engine.gameState.shipParams.dPDenom >= 3*255)
+    else if(engine.gameState.shipParams.relHeight < 2 && engine.gameState.shipParams.dPDenom > 256)
     {
         engine.gameState.runOver = 1;
     }

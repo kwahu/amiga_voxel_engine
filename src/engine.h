@@ -136,7 +136,8 @@ typedef struct Renderer
     UBYTE highMemory;
     UBYTE zStart;
     UBYTE depthBufferHeight;
-
+    UBYTE depthBufferWidth;
+    UWORD deltaZ;
         
     UWORD bitmapPalette[16];
 

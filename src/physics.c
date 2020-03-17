@@ -57,6 +57,7 @@ void updateShipParams(LONG deltaTime, UWORD terrainHeight)
 	if (shipParams.precY < 100)
 		shipParams.precY = 100; //block going below ground
 
+	engine.renderer.deltaZ = (shipParams.precZ / 32) - shipParams.pZ;
 	shipParams.pZ = shipParams.precZ / 32;
 	shipParams.pX = shipParams.precX / 32;
 	shipParams.pY = shipParams.precY / 32;
