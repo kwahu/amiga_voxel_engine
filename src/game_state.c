@@ -46,7 +46,7 @@ void UpdatePlayerPosition()
     ULONG lowerDelta = (engine.deltaTime/10000);
     updateShipParams(lowerDelta, terrainHeight);
 
-    LONG addedpoints = (lowerDelta)*(112 - engine.gameState.shipParams.relHeight);
+    LONG addedpoints = (lowerDelta)*(120 - engine.gameState.shipParams.relHeight);
     if(addedpoints > 0 && engine.gameState.shipParams.pZ < 2816)
     {
         engine.gameState.points += addedpoints;
@@ -141,7 +141,7 @@ void DrawGameStats()
 {
     ConvertIntToChar(engine.gameState.points, engine.gameState.sScore, 8);
     ConvertIntToChar(engine.gameState.shipParams.dP, engine.gameState.sVelocity, 5);
-    ConvertIntToChar(engine.accTime/2500, engine.gameState.sTime, 8);
+    ConvertIntToChar(engine.deltaTime/2500, engine.gameState.sTime, 8);
     ConvertIntToChar(engine.gameState.shipParams.relHeight, engine.gameState.sPlayerY, 5);
     
 

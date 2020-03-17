@@ -16,15 +16,11 @@ void DrawPanelsToScreen()
 }
 
 #define VSyncAndDraw() \
-    viewLoad(engine.platformScreen.s_pView);	\
     vPortWaitForEnd(engine.platformScreen.s_pVPort);	\
-    DrawPanelsToScreen();	\
-	//mt_music();
+    DrawPanelsToScreen();
 
 #define VSyncWait() \
-    viewLoad(engine.platformScreen.s_pView);	\
-    vPortWaitForEnd(engine.platformScreen.s_pVPort);	\
-	//mt_music();	
+    vPortWaitForEnd(engine.platformScreen.s_pVPort);
 
 void SetBitmapPalette(UBYTE *Palette)	
 {				
