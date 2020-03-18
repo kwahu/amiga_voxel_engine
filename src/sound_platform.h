@@ -68,7 +68,7 @@ UBYTE *ReadModFile(char *fileName)
 
     tuneptr = &ramdisk[0];
     long handle;
-    handle = Fopen ( "heroques.snd", 0 );
+    handle = Fopen ( "data/sndh.sndh", 0 );
     Fseek ( 0,handle, 0 );
     Fread ( handle, 20000, tuneptr );
     Fclose ( handle );
