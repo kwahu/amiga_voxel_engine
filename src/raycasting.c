@@ -60,7 +60,7 @@ void CalculateRayCasts(WORD (*rayCastX), WORD (*rayCastY),
 
 UBYTE ProcessWord1v4(UBYTE rounds, UBYTE sx, UBYTE sy, UWORD *_tz, UWORD *tzz, UBYTE px, UBYTE py,UBYTE ph,
 UWORD *address1, UWORD *address2, 
-WORD (*rayCastX), WORD (*rayCastY), UWORD (*map)[MAPSIZE], UBYTE threshold)
+WORD (*rayCastX), WORD (*rayCastY), UWORD (*map), UBYTE threshold, UBYTE depthIndex)
 {
 	UWORD mapValue;
 	WORD slope;
@@ -77,11 +77,12 @@ WORD (*rayCastX), WORD (*rayCastY), UWORD (*map)[MAPSIZE], UBYTE threshold)
 
 
 
-
+    UWORD offset = 11*MAPSIZE;
+    UBYTE *depthPtr = engine.renderer.depthBuffer + sy*20 + depthIndex;
 
 	while(tz < threshold)//check depth step by step
 	{
-		mapValue = map[ ((UBYTE)( px + *rayXPtr))  >> 1 ][ ((UBYTE)( py + (tz<<engine.renderer.renderingDepthStep) ))  >> 1 ];//read color + height
+		mapValue = map[ (((UBYTE)( px + *rayXPtr)) >> 1)*offset  + (((UBYTE)((tz<<engine.renderer.renderingDepthStep) )) >> 1) ];
 		th = mapValue;//take just the height
 		slope = th - (ph + *rayYPtr);//check if read height is higher than what we expect from the raycast table
         if(slope > tz>>2)
@@ -96,7 +97,7 @@ WORD (*rayCastX), WORD (*rayCastY), UWORD (*map)[MAPSIZE], UBYTE threshold)
             }
             
             tzz[iHor] = tz;//save the depth we've arrived at
-            //engine.renderer.depthBuffer[sy] = (UBYTE)tz;
+            *depthPtr = (UBYTE)tz;
 			break;
         }
 		if(slope > 0)
@@ -110,7 +111,7 @@ WORD (*rayCastX), WORD (*rayCastY), UWORD (*map)[MAPSIZE], UBYTE threshold)
                 c = (mapValue >> 8) + 2;
             }
 			tzz[iHor] = tz;//save the depth we've arrived at
-            //engine.renderer.depthBuffer[sy] = (UBYTE)tz;
+            *depthPtr = (UBYTE)tz;
 			break;
 		}
 		else
@@ -130,7 +131,7 @@ WORD (*rayCastX), WORD (*rayCastY), UWORD (*map)[MAPSIZE], UBYTE threshold)
 }
 UBYTE ProcessWord2v4(UBYTE rounds, UBYTE sx, UBYTE sy, UWORD *_tz, UWORD *tzz, UBYTE px, UBYTE py,UBYTE ph,
 UWORD *address1, UWORD *address2, 
-WORD (*rayCastX), WORD (*rayCastY), UWORD (*map)[MAPSIZE], UBYTE threshold)
+WORD (*rayCastX), WORD (*rayCastY), UWORD (*map), UBYTE threshold, UBYTE depthIndex)
 {
 	UWORD mapValue;
 	WORD slope;
@@ -141,6 +142,9 @@ WORD (*rayCastX), WORD (*rayCastY), UWORD (*map)[MAPSIZE], UBYTE threshold)
 	sx = sx + 1;
 	c[0] = 99;
 	c[1] = 99;
+
+    UWORD offset = 11*MAPSIZE;
+    UBYTE *depthPtr = engine.renderer.depthBuffer + sy*20 + depthIndex;
 	//process 1,2,3 or 6 rounds to find colors for this WORD = 16 pixels
 	for(UBYTE iHor=0;iHor<2;iHor++)
 	{
@@ -150,7 +154,7 @@ WORD (*rayCastX), WORD (*rayCastY), UWORD (*map)[MAPSIZE], UBYTE threshold)
         UWORD *rayYPtr = rayCastY + sy*TERRAINDEPTH + tz;
 		while(tz < threshold)//check depth step by step
 		{
-			mapValue = map[ ((UBYTE)( px + *rayXPtr))  >> 1 ][ ((UBYTE)( py + (tz<<engine.renderer.renderingDepthStep) )) >> 1 ];//read color + height
+			mapValue = map[ (((UBYTE)( px + *rayXPtr)) >> 1)*offset  + (((UBYTE)((tz<<engine.renderer.renderingDepthStep) )) >> 1) ];
 			th = mapValue;//take just the height
 			slope = th - (ph + *rayYPtr);//check if read height is higher than what we expect from the raycast table
 			if(slope > tz>>2)
@@ -158,14 +162,14 @@ WORD (*rayCastX), WORD (*rayCastY), UWORD (*map)[MAPSIZE], UBYTE threshold)
                 c[iHor] = ((mapValue >> 8) + ((slope/4) & 1));
                 tzz[iHor] = tz;//save the depth we've arrived at
                 
-                engine.renderer.depthBuffer[sy] = (UBYTE)tz;
+                *depthPtr = (UBYTE)tz;
                 break;
             }
             if(slope > 0)
 			{
 				c[iHor] = (mapValue >> 8) + 2;
 				tzz[iHor] = tz;//save the depth we've arrived at
-                engine.renderer.depthBuffer[sy] = (UBYTE)tz;
+                *depthPtr = (UBYTE)tz;
 				break;
 			}
 			else
@@ -188,7 +192,7 @@ WORD (*rayCastX), WORD (*rayCastY), UWORD (*map)[MAPSIZE], UBYTE threshold)
 
 UBYTE ProcessWord1v6(UBYTE rounds, UBYTE sx, UBYTE sy, UWORD *_tz, UWORD *tzz, UBYTE px, UBYTE py,UBYTE ph,
 UWORD *address1, UWORD *address2, 
-WORD (*rayCastX), WORD (*rayCastY), UWORD (*map)[MAPSIZE], UBYTE threshold)
+WORD (*rayCastX), WORD (*rayCastY), UWORD (*map), UBYTE threshold, UBYTE depthIndex)
 {
 	UWORD mapValue;
 	WORD slope;
@@ -201,10 +205,12 @@ WORD (*rayCastX), WORD (*rayCastY), UWORD (*map)[MAPSIZE], UBYTE threshold)
 	tz = tzz[iHor];//set current depth - tz
     UWORD *rayXPtr = rayCastX + sx*TERRAINDEPTH + tz;
     UWORD *rayYPtr = rayCastY + sy*TERRAINDEPTH + tz;
+    UWORD offset = 11*MAPSIZE;
+    UBYTE *depthPtr = engine.renderer.depthBuffer + sy*20 + depthIndex;
 	while(tz < threshold)//check depth step by step
 	{
-		mapValue = map[ ((UBYTE)( px + *rayXPtr))  >> 1 ][ ((UBYTE)( py + (tz<<engine.renderer.renderingDepthStep) ))  >> 1 ];//read color + height
-		th = mapValue;//take just the height
+		mapValue = map[ (((UBYTE)( px + *rayXPtr)) >> 1)*offset  + (((UBYTE)((tz<<engine.renderer.renderingDepthStep) )) >> 1) ];
+        th = mapValue;//take just the height
 		slope = th - (ph + *rayYPtr);//check if read height is higher than what we expect from the raycast table
 		if(slope > 0)
 		{
@@ -217,7 +223,7 @@ WORD (*rayCastX), WORD (*rayCastY), UWORD (*map)[MAPSIZE], UBYTE threshold)
                 c = (mapValue >> 8);
             }
 			tzz[iHor] = tz;//save the depth we've arrived at
-            //engine.renderer.depthBuffer[sy] = (UBYTE)tz;
+            *depthPtr = (UBYTE)tz;
 			break;
 		}
 		else
@@ -237,7 +243,7 @@ WORD (*rayCastX), WORD (*rayCastY), UWORD (*map)[MAPSIZE], UBYTE threshold)
 }
 UBYTE ProcessWord2v6(UBYTE rounds, UBYTE sx, UBYTE sy, UWORD *_tz, UWORD *tzz, UBYTE px, UBYTE py,UBYTE ph,
 UWORD *address1, UWORD *address2, 
-WORD (*rayCastX), WORD (*rayCastY), UWORD (*map)[MAPSIZE], UBYTE threshold)
+WORD (*rayCastX), WORD (*rayCastY), UWORD (*map), UBYTE threshold, UBYTE depthIndex)
 {
 	UWORD mapValue;
 	WORD slope;
@@ -248,6 +254,8 @@ WORD (*rayCastX), WORD (*rayCastY), UWORD (*map)[MAPSIZE], UBYTE threshold)
 	sx = sx + 1;
 	c[0] = 99;
 	c[1] = 99;
+	UWORD offset = 11*MAPSIZE;
+    UBYTE *depthPtr = engine.renderer.depthBuffer + sy*20 + depthIndex;
 	//process 1,2,3 or 6 rounds to find colors for this WORD = 16 pixels
 	for(UBYTE iHor=0;iHor<2;iHor++)
 	{
@@ -257,7 +265,7 @@ WORD (*rayCastX), WORD (*rayCastY), UWORD (*map)[MAPSIZE], UBYTE threshold)
         UWORD *rayYPtr = rayCastY + sy*TERRAINDEPTH + tz;
 		while(tz < threshold)//check depth step by step
 		{
-			mapValue = map[ ((UBYTE)( px + *rayXPtr))  >> 1 ][ ((UBYTE)( py + (tz<<engine.renderer.renderingDepthStep) )) >> 1 ];//read color + height
+			mapValue = map[ (((UBYTE)( px + *rayXPtr)) >> 1)*offset  + (((UBYTE)((tz<<engine.renderer.renderingDepthStep) )) >> 1) ];
 			th = mapValue;//take just the height
 			slope = th - (ph + *rayYPtr);//check if read height is higher than what we expect from the raycast table
 			if(slope > 0)
@@ -265,7 +273,7 @@ WORD (*rayCastX), WORD (*rayCastY), UWORD (*map)[MAPSIZE], UBYTE threshold)
 				c[iHor] = (mapValue >> 8);
 				tzz[iHor] = tz;//save the depth we've arrived at
                 
-                //engine.renderer.depthBuffer[sy] = (UBYTE)tz;
+                *depthPtr = (UBYTE)tz;
 				break;
 			}
 			else
@@ -288,7 +296,7 @@ WORD (*rayCastX), WORD (*rayCastY), UWORD (*map)[MAPSIZE], UBYTE threshold)
 }
 UBYTE ProcessWord3v6(UBYTE rounds, UBYTE sx, UBYTE sy, UWORD *_tz, UWORD *tzz, UBYTE px, UBYTE py,UBYTE ph,
 UWORD *address1, UWORD *address2, 
-WORD (*rayCastX), WORD (*rayCastY), UWORD (*map)[MAPSIZE], UBYTE threshold)
+WORD (*rayCastX), WORD (*rayCastY), UWORD (*map), UBYTE threshold, UBYTE depthIndex)
 {
 	UWORD mapValue;
 	WORD slope;
@@ -299,7 +307,9 @@ WORD (*rayCastX), WORD (*rayCastY), UWORD (*map)[MAPSIZE], UBYTE threshold)
 	c[0] = 99;
 	c[1] = 99;
 	c[2] = 99;
-
+    UWORD offset = 11*MAPSIZE;
+    UBYTE *depthPtr = engine.renderer.depthBuffer + sy*20 + depthIndex;
+	
 	//process 1,2,3 or 6 rounds to find colors for this WORD = 16 pixels
 	for(UBYTE iHor=0;iHor<3;iHor++)
 	{
@@ -309,7 +319,7 @@ WORD (*rayCastX), WORD (*rayCastY), UWORD (*map)[MAPSIZE], UBYTE threshold)
         UWORD *rayYPtr = rayCastY + sy*TERRAINDEPTH + tz;
 		while(tz < threshold)//check depth step by step
 		{
-			mapValue = map[ ((UBYTE)( px + *rayXPtr )) >> 1 ][ ((UBYTE)( py + (tz<<engine.renderer.renderingDepthStep) )) >> 1 ];//read color + height
+			mapValue = map[ (((UBYTE)( px + *rayXPtr)) >> 1)*offset  + (((UBYTE)((tz<<engine.renderer.renderingDepthStep) )) >> 1) ];
 			th = mapValue;//take just the height
 			slope = th - (ph + *rayYPtr);//check if read height is higher than what we expect from the raycast table
 			if(slope > 0)
@@ -317,7 +327,7 @@ WORD (*rayCastX), WORD (*rayCastY), UWORD (*map)[MAPSIZE], UBYTE threshold)
 				c[iHor] = (mapValue >> 8);
 				tzz[iHor] = tz;//save the depth we've arrived at
                 
-                //engine.renderer.depthBuffer[sy] = (UBYTE)tz;
+                *depthPtr = (UBYTE)tz;
 				break;
 			}
 			else
@@ -502,7 +512,7 @@ WORD (*rayCastX), WORD (*rayCastY), UWORD (*map)[MAPSIZE], UBYTE threshold)
 // }
 
 
-void ProcessRayCastsProgressive4x4NonInterleaved(WORD (*rayCastX), WORD (*rayCastY), UWORD (*map)[MAPSIZE],
+void ProcessRayCastsProgressive4x4NonInterleaved(WORD (*rayCastX), WORD (*rayCastY), UWORD (*map),
 	UBYTE px, UBYTE py, UBYTE ph, UBYTE screenStart, UBYTE screenEnd)
 {
 	UBYTE sx,sy,mist;
@@ -571,7 +581,7 @@ void ProcessRayCastsProgressive4x4NonInterleaved(WORD (*rayCastX), WORD (*rayCas
 			 if(tz < threshold1)			
 			 {
 	            UBYTE byte1, byte2, byte3, byte4;
-				tz = ProcessWord1v4(1,sx,sy,&tz,tzz,px,py,ph,&address1,&address2,rayCastX, rayCastY, map, threshold1);
+				tz = ProcessWord1v4(1,sx,sy,&tz,tzz,px,py,ph,&address1,&address2,rayCastX, rayCastY, map, threshold1, iVert);
 				byte1 = engine.renderer.ditherTable1[ address1 ];
 				word1 = (byte1<<8) + byte1;
 				byte2 = engine.renderer.ditherTable2[ address1 ];
@@ -584,7 +594,7 @@ void ProcessRayCastsProgressive4x4NonInterleaved(WORD (*rayCastX), WORD (*rayCas
 			 }
 			if(tz >= threshold1 && tz < engine.renderer.renderingDepth)			
 			 {
-				tz = ProcessWord2v4(2,sx,sy,&tz,tzz,px,py,ph,&address1,&address2,rayCastX, rayCastY, map, engine.renderer.renderingDepth);
+				tz = ProcessWord2v4(2,sx,sy,&tz,tzz,px,py,ph,&address1,&address2,rayCastX, rayCastY, map, engine.renderer.renderingDepth, iVert);
 
 				word1 = (engine.renderer.ditherTable1[ address1 ]<<8) + engine.renderer.ditherTable1[ address2 ];
 				word2 = (engine.renderer.ditherTable2[ address1 ]<<8) + engine.renderer.ditherTable2[ address2 ];
@@ -940,7 +950,7 @@ void ProcessRayCastsProgressiveNonInterleaved(WORD (*rayCastX), WORD (*rayCastY)
 			 if(tz < threshold1)			
 			 {
 	            UBYTE byte1, byte2, byte3, byte4;
-				tz = ProcessWord1v6(1,sx,sy,&tz,tzz,px,py,ph,&address1,&address2,rayCastX, rayCastY, map, threshold1);
+				tz = ProcessWord1v6(1,sx,sy,&tz,tzz,px,py,ph,&address1,&address2,rayCastX, rayCastY, map, threshold1, iVert);
 				byte1 = engine.renderer.ditherTable1[ address1 ];
 				word1 = (byte1<<8) + byte1;
 				byte2 = engine.renderer.ditherTable2[ address1 ];
@@ -953,7 +963,7 @@ void ProcessRayCastsProgressiveNonInterleaved(WORD (*rayCastX), WORD (*rayCastY)
 			 }
 			if(tz >= threshold1 && tz < threshold2)			
 			 {
-				tz = ProcessWord2v6(2,sx,sy,&tz,tzz,px,py,ph,&address1,&address2,rayCastX, rayCastY, map, threshold2);
+				tz = ProcessWord2v6(2,sx,sy,&tz,tzz,px,py,ph,&address1,&address2,rayCastX, rayCastY, map, threshold2, iVert);
 
 				word1 = (engine.renderer.ditherTable1[ address1 ]<<8) + engine.renderer.ditherTable1[ address2 ];
 				word2 = (engine.renderer.ditherTable2[ address1 ]<<8) + engine.renderer.ditherTable2[ address2 ];
@@ -963,7 +973,7 @@ void ProcessRayCastsProgressiveNonInterleaved(WORD (*rayCastX), WORD (*rayCastY)
 			 }
 			if(tz >= threshold2 && tz < engine.renderer.renderingDepth)			
 			 {
-				tz = ProcessWord3v6(3,sx,sy,&tz,tzz,px,py,ph,&address1,&address2,rayCastX, rayCastY, map, engine.renderer.renderingDepth);
+				tz = ProcessWord3v6(3,sx,sy,&tz,tzz,px,py,ph,&address1,&address2,rayCastX, rayCastY, map, engine.renderer.renderingDepth, iVert);
 
 				word1 = (engine.renderer.ditherTable1[ address1 ]<<8) + engine.renderer.ditherTable1[ address2 ];
 
