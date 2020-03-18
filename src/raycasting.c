@@ -96,7 +96,7 @@ WORD (*rayCastX), WORD (*rayCastY), UWORD (*map)[MAPSIZE], UBYTE threshold)
             }
             
             tzz[iHor] = tz;//save the depth we've arrived at
-            engine.renderer.depthBuffer[sy] = (UBYTE)tz;
+            //engine.renderer.depthBuffer[sy] = (UBYTE)tz;
 			break;
         }
 		if(slope > 0)
@@ -110,7 +110,7 @@ WORD (*rayCastX), WORD (*rayCastY), UWORD (*map)[MAPSIZE], UBYTE threshold)
                 c = (mapValue >> 8) + 2;
             }
 			tzz[iHor] = tz;//save the depth we've arrived at
-            engine.renderer.depthBuffer[sy] = (UBYTE)tz;
+            //engine.renderer.depthBuffer[sy] = (UBYTE)tz;
 			break;
 		}
 		else
@@ -217,7 +217,7 @@ WORD (*rayCastX), WORD (*rayCastY), UWORD (*map)[MAPSIZE], UBYTE threshold)
                 c = (mapValue >> 8);
             }
 			tzz[iHor] = tz;//save the depth we've arrived at
-            engine.renderer.depthBuffer[sy] = (UBYTE)tz;
+            //engine.renderer.depthBuffer[sy] = (UBYTE)tz;
 			break;
 		}
 		else
@@ -265,7 +265,7 @@ WORD (*rayCastX), WORD (*rayCastY), UWORD (*map)[MAPSIZE], UBYTE threshold)
 				c[iHor] = (mapValue >> 8);
 				tzz[iHor] = tz;//save the depth we've arrived at
                 
-                engine.renderer.depthBuffer[sy] = (UBYTE)tz;
+                //engine.renderer.depthBuffer[sy] = (UBYTE)tz;
 				break;
 			}
 			else
@@ -317,7 +317,7 @@ WORD (*rayCastX), WORD (*rayCastY), UWORD (*map)[MAPSIZE], UBYTE threshold)
 				c[iHor] = (mapValue >> 8);
 				tzz[iHor] = tz;//save the depth we've arrived at
                 
-                engine.renderer.depthBuffer[sy] = (UBYTE)tz;
+                //engine.renderer.depthBuffer[sy] = (UBYTE)tz;
 				break;
 			}
 			else

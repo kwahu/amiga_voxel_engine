@@ -87,13 +87,13 @@ void ShowDeathCutscene()
         
     }
 
-    VSyncAndDraw();
     UBYTE y = BASELINE+42;
     for(int i = 0; i < lines; ++i)
     {	
         DrawTextBitmap(engine.pBitmapInfo[i], 100, y, 4);
         y += 6;
     }
+    VSyncAndDraw();
     
     ProcessJoystick();
     UBYTE cont = 0;
@@ -117,7 +117,6 @@ void ShowDeathCutscene()
 
     ClearBuffor();
     SetGamePaletter();
-    VSyncAndDraw();
 
     InitGameState();
     
@@ -173,13 +172,13 @@ void ShowTooLateCutscene()
         
     }
 
-    VSyncAndDraw();
     UBYTE y = BASELINE+42;
     for(int i = 0; i < lines; ++i)
     {	
         DrawTextBitmap(engine.pBitmapInfo[i], 100, y, 4);
         y += 6;
     }
+    VSyncAndDraw();
 
 
 
@@ -206,7 +205,6 @@ void ShowTooLateCutscene()
 
     ClearBuffor();
     SetGamePaletter();
-    VSyncAndDraw();
     InitGameState();
     StopSample();
     PlaySample(6);
@@ -323,13 +321,14 @@ void ShowWinCutscene()
     }
 
 
-    VSyncAndDraw();
     UBYTE y = BASELINE+2;
     for(int i = 0; i < lines; ++i)
     {	
         DrawTextBitmap(engine.pBitmapInfo[i], 170, y, 1);
         y += 6;
     }
+
+    VSyncAndDraw();
 
     ProcessJoystick();
     UBYTE cont = 0;
@@ -355,7 +354,6 @@ void ShowWinCutscene()
 
     ClearBuffor();
     SetGamePaletter();
-    VSyncAndDraw();
     
     StopSample();
     UseSystem();

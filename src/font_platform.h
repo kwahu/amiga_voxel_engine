@@ -4,51 +4,52 @@
 
 #define BASELINE 28
 
-Font * InitFont(char *fileName)
-{
-    return fontCreate(fileName);
-}
+// Font * InitFont(char *fileName)
+// {
+//     return fontCreate(fileName);
+// }
 
-TextBitMap *CreateFontBitmap(Font *font)
-{
-    return fontCreateTextBitMapFromStr(font, "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
-}
+// TextBitMap *CreateFontBitmap(Font *font)
+// {
+//     return fontCreateTextBitMapFromStr(font, "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
+// }
 
-TextBitMap *CreateBitmapFromText(Font *font, char * text)
-{
-    return fontCreateTextBitMapFromStr(font, text);
-}
+// TextBitMap *CreateBitmapFromText(Font *font, char * text)
+// {
+//     return fontCreateTextBitMapFromStr(font, text);
+// }
 
-void FillTextBitmap(Font *font, TextBitMap *Bitmap, char *Text)
-{
+// void FillTextBitmap(Font *font, TextBitMap *Bitmap, char *Text)
+// {
     
-	fontFillTextBitMap(font, Bitmap, Text);
-}
+// 	fontFillTextBitMap(font, Bitmap, Text);
+// }
 
-void DrawTextBitmap(TextBitMap *Bitmap, UWORD x, UWORD y, UBYTE colorBit)
-{
-    fontDrawTextBitMap(engine.platformScreen.s_pBuffer->pBack, Bitmap, x, y, colorBit, FONT_LEFT|FONT_COOKIE);
-}
+// void DrawTextBitmap(TextBitMap *Bitmap, UWORD x, UWORD y, UBYTE colorBit)
+// {
+//     fontDrawTextBitMap(engine.platformScreen.s_pBuffer->pBack, Bitmap, x, y, colorBit, FONT_LEFT|FONT_COOKIE);
+// }
 
-void DrawTextBitmapOverwrite(TextBitMap *Bitmap, UWORD x, UWORD y, UBYTE colorBit)
-{
-    fontDrawTextBitMap(engine.platformScreen.s_pBuffer->pBack, Bitmap, x, y, colorBit, FONT_LEFT|FONT_COOKIE);
-}
+// void DrawTextBitmapOverwrite(TextBitMap *Bitmap, UWORD x, UWORD y, UBYTE colorBit)
+// {
+//     fontDrawTextBitMap(engine.platformScreen.s_pBuffer->pBack, Bitmap, x, y, colorBit, FONT_LEFT|FONT_COOKIE);
+// }
 
-void FreeTextBitmap(TextBitMap *Bitmap)
-{
-    fontDestroyTextBitMap(Bitmap);
-}
+// void FreeTextBitmap(TextBitMap *Bitmap)
+// {
+//     fontDestroyTextBitMap(Bitmap);
+// }
 
-void FreeFont()
-{
-	fontDestroy(engine.font);
+// void FreeFont()
+// {
+// 	fontDestroy(engine.font);
 
-}
+// }
 
 #else
 
 #define BASELINE 0
+#endif
 
 TextBitMap *CreateBitmapFromText(Font *font, char * text)
 {
@@ -139,7 +140,7 @@ void DrawTextBitmap(TextBitMap *Bitmap, UWORD x, UWORD y, UBYTE colorBit)
     UWORD leftGap = x - posX*16;
     UWORD rightGap = 16 - leftGap;
 
-    UWORD firstPos = y*PLANEWIDTHWORD+posX*4;
+    
     UWORD *bitmapPtr = Bitmap->BitMap;
     UWORD bitmapValue = 0;
     UWORD bitmapValue2 = 0;
@@ -147,19 +148,45 @@ void DrawTextBitmap(TextBitMap *Bitmap, UWORD x, UWORD y, UBYTE colorBit)
     for(int j = 0; j < Bitmap->ActualHeight; ++j)
     {
 
+#if AMIGA
+        UWORD firstPos = (y+j)*PLANEWIDTHWORD+posX;
+        UWORD *firstPtr = engine.renderer.plane1W + firstPos;
+        UWORD *secondPtr = engine.renderer.plane2W + firstPos;
+        UWORD *thirdPtr = engine.renderer.plane3W + firstPos;
+        UWORD *fourthPtr = engine.renderer.plane4W + firstPos;
+#else
         UWORD firstPos = (y+j)*PLANEWIDTHWORD+posX*4;
+        UWORD *firstPtr = engine.renderer.planes + firstPos;
+        UWORD *secondPtr = engine.renderer.planes + firstPos+1;
+        UWORD *thirdPtr = engine.renderer.planes + firstPos+2;
+        UWORD *fourthPtr = engine.renderer.planes + firstPos+3;
+#endif
+
         UWORD *bitmapPtr = Bitmap->BitMap + j*Bitmap->Width;
 
         bitmapValue = *bitmapPtr;
         UWORD leftPixelPattern = bitmapValue >> leftGap;
         UWORD leftScreenPattern = ~leftPixelPattern;
         
-        engine.renderer.planes[firstPos] = ((colorBit) & 1)*(leftPixelPattern) + (engine.renderer.planes[firstPos] & (leftScreenPattern));
-        engine.renderer.planes[firstPos+1] = ((colorBit >> 1) & 1)*(leftPixelPattern) + (engine.renderer.planes[firstPos+1] & (leftScreenPattern));
-        engine.renderer.planes[firstPos+2] = ((colorBit >> 2) & 1)*(leftPixelPattern) + (engine.renderer.planes[firstPos+2] & (leftScreenPattern));
-        engine.renderer.planes[firstPos+3] = ((colorBit >> 3) & 1)*(leftPixelPattern) + (engine.renderer.planes[firstPos+3] & (leftScreenPattern));
+    
+        *firstPtr = ((colorBit) & 1)*(leftPixelPattern) + (*firstPtr & (leftScreenPattern));
+        *secondPtr = ((colorBit >> 1) & 1)*(leftPixelPattern) + (*secondPtr & (leftScreenPattern));
+        *thirdPtr = ((colorBit >> 2) & 1)*(leftPixelPattern) + (*thirdPtr & (leftScreenPattern));
+        *fourthPtr = ((colorBit >> 3) & 1)*(leftPixelPattern) + (*fourthPtr & (leftScreenPattern));
 
-        firstPos += 4;
+#if AMIGA
+
+        firstPtr++;
+        secondPtr++;
+        thirdPtr++;
+        fourthPtr++;
+#else
+        firstPtr += 4;
+        secondPtr += 4;
+        thirdPtr += 4;
+        fourthPtr += 4;
+#endif
+
 
         for(int i = 1; i < Bitmap->ActualWidth; ++i)
         {
@@ -172,23 +199,48 @@ void DrawTextBitmap(TextBitMap *Bitmap, UWORD x, UWORD y, UBYTE colorBit)
             UWORD middlePixelPattern = (bitmapValue << rightGap) + (bitmapValue2 >> leftGap);
             UWORD middleScreenPattern = ~middlePixelPattern;            
 
-            engine.renderer.planes[firstPos] = ((colorBit) & 1)*(middlePixelPattern) + (engine.renderer.planes[firstPos] & (middleScreenPattern));
-            engine.renderer.planes[firstPos+1] = ((colorBit >> 1) & 1)*(middlePixelPattern) + (engine.renderer.planes[firstPos+1] & (middleScreenPattern));
-            engine.renderer.planes[firstPos+2] = ((colorBit >> 2) & 1)*(middlePixelPattern) + (engine.renderer.planes[firstPos+2] & (middleScreenPattern));
-            engine.renderer.planes[firstPos+3] = ((colorBit >> 3) & 1)*(middlePixelPattern) + (engine.renderer.planes[firstPos+3] & (middleScreenPattern));
+  
+            *firstPtr = ((colorBit) & 1)*(middlePixelPattern) + (*firstPtr & (middleScreenPattern));
+            *secondPtr = ((colorBit >> 1) & 1)*(middlePixelPattern) + (*secondPtr & (middleScreenPattern));
+            *thirdPtr = ((colorBit >> 2) & 1)*(middlePixelPattern) + (*thirdPtr & (middleScreenPattern));
+            *fourthPtr = ((colorBit >> 3) & 1)*(middlePixelPattern) + (*fourthPtr & (middleScreenPattern));
 
-            firstPos += 4;
+#if AMIGA
+
+            firstPtr++;
+            secondPtr++;
+            thirdPtr++;
+            fourthPtr++;
+#else
+            firstPtr += 4;
+            secondPtr += 4;
+            thirdPtr += 4;
+            fourthPtr += 4;
+#endif
         }
 
         bitmapValue = *bitmapPtr;
         UWORD rightPixelPattern = (bitmapValue << rightGap);
         UWORD rightScreenPattern = ~rightPixelPattern;
         
-        engine.renderer.planes[firstPos] = ((colorBit) & 1)*(rightPixelPattern) + (engine.renderer.planes[firstPos] & (rightScreenPattern));
-        engine.renderer.planes[firstPos+1] = ((colorBit >> 1) & 1)*(rightPixelPattern) + (engine.renderer.planes[firstPos+1] & (rightScreenPattern));
-        engine.renderer.planes[firstPos+2] = ((colorBit >> 2) & 1)*(rightPixelPattern) + (engine.renderer.planes[firstPos+2] & (rightScreenPattern));
-        engine.renderer.planes[firstPos+3] = ((colorBit >> 3) & 1)*(rightPixelPattern) + (engine.renderer.planes[firstPos+3] & (rightScreenPattern));
 
+        *firstPtr = ((colorBit) & 1)*(rightPixelPattern) + (*firstPtr & (rightScreenPattern));
+        *secondPtr = ((colorBit >> 1) & 1)*(rightPixelPattern) + (*secondPtr & (rightScreenPattern));
+        *thirdPtr = ((colorBit >> 2) & 1)*(rightPixelPattern) + (*thirdPtr & (rightScreenPattern));
+        *fourthPtr = ((colorBit >> 3) & 1)*(rightPixelPattern) + (*fourthPtr & (rightScreenPattern));
+
+#if AMIGA
+
+        firstPtr++;
+        secondPtr++;
+        thirdPtr++;
+        fourthPtr++;
+#else
+        firstPtr += 4;
+        secondPtr += 4;
+        thirdPtr += 4;
+        fourthPtr += 4;
+#endif
 
     }
 
@@ -202,7 +254,6 @@ void DrawTextBitmapOverwrite(TextBitMap *Bitmap, UWORD x, UWORD y, UBYTE colorBi
     UWORD leftGap = x - posX*16;
     UWORD rightGap = 16 - leftGap;
 
-    UWORD firstPos = y*PLANEWIDTHWORD+posX*4;
     UWORD *bitmapPtr = Bitmap->BitMap;
     UWORD bitmapValue = 0;
     UWORD bitmapValue2 = 0;
@@ -210,19 +261,45 @@ void DrawTextBitmapOverwrite(TextBitMap *Bitmap, UWORD x, UWORD y, UBYTE colorBi
     for(int j = 0; j < Bitmap->ActualHeight; ++j)
     {
 
+      
+#if AMIGA
+        UWORD firstPos = (y+j)*PLANEWIDTHWORD+posX;
+        UWORD *firstPtr = engine.renderer.plane1W + firstPos;
+        UWORD *secondPtr = engine.renderer.plane2W + firstPos;
+        UWORD *thirdPtr = engine.renderer.plane3W + firstPos;
+        UWORD *fourthPtr = engine.renderer.plane4W + firstPos;
+#else
         UWORD firstPos = (y+j)*PLANEWIDTHWORD+posX*4;
+        UWORD *firstPtr = engine.renderer.planes + firstPos;
+        UWORD *secondPtr = engine.renderer.planes + firstPos+1;
+        UWORD *thirdPtr = engine.renderer.planes + firstPos+2;
+        UWORD *fourthPtr = engine.renderer.planes + firstPos+3;
+#endif
         UWORD *bitmapPtr = Bitmap->BitMap + j*Bitmap->Width;
 
         bitmapValue = *bitmapPtr;
         UWORD leftPixelPattern = bitmapValue >> leftGap;
         UWORD leftScreenPattern = ~leftPixelPattern;
         
-        engine.renderer.planes[firstPos] = ((colorBit) & 1)*(leftPixelPattern);
-        engine.renderer.planes[firstPos+1] = ((colorBit >> 1) & 1)*(leftPixelPattern);
-        engine.renderer.planes[firstPos+2] = ((colorBit >> 2) & 1)*(leftPixelPattern);
-        engine.renderer.planes[firstPos+3] = ((colorBit >> 3) & 1)*(leftPixelPattern);
+          
+        *firstPtr = ((colorBit) & 1)*(leftPixelPattern);
+        *secondPtr = ((colorBit >> 1) & 1)*(leftPixelPattern);
+        *thirdPtr = ((colorBit >> 2) & 1)*(leftPixelPattern);
+        *fourthPtr = ((colorBit >> 3) & 1)*(leftPixelPattern);
 
-        firstPos += 4;
+#if AMIGA
+
+        firstPtr++;
+        secondPtr++;
+        thirdPtr++;
+        fourthPtr++;
+#else
+
+        firstPtr += 4;
+        secondPtr += 4;
+        thirdPtr += 4;
+        fourthPtr += 4;
+#endif
 
         for(int i = 1; i < Bitmap->ActualWidth; ++i)
         {
@@ -234,24 +311,51 @@ void DrawTextBitmapOverwrite(TextBitMap *Bitmap, UWORD x, UWORD y, UBYTE colorBi
                         
             UWORD middlePixelPattern = (bitmapValue << rightGap) + (bitmapValue2 >> leftGap);
             UWORD middleScreenPattern = ~middlePixelPattern;            
+        
+            *firstPtr = ((colorBit) & 1)*(middlePixelPattern);
+            *secondPtr = ((colorBit >> 1) & 1)*(middlePixelPattern);
+            *thirdPtr = ((colorBit >> 2) & 1)*(middlePixelPattern);
+            *fourthPtr = ((colorBit >> 3) & 1)*(middlePixelPattern);
 
-            engine.renderer.planes[firstPos] = ((colorBit) & 1)*(middlePixelPattern);
-            engine.renderer.planes[firstPos+1] = ((colorBit >> 1) & 1)*(middlePixelPattern);
-            engine.renderer.planes[firstPos+2] = ((colorBit >> 2) & 1)*(middlePixelPattern);
-            engine.renderer.planes[firstPos+3] = ((colorBit >> 3) & 1)*(middlePixelPattern);
+#if AMIGA
 
-            firstPos += 4;
+            firstPtr++;
+            secondPtr++;
+            thirdPtr++;
+            fourthPtr++;
+#else
+
+            firstPtr += 4;
+            secondPtr += 4;
+            thirdPtr += 4;
+            fourthPtr += 4;
+#endif
+
         }
 
         bitmapValue = *bitmapPtr;
         UWORD rightPixelPattern = (bitmapValue << rightGap);
         UWORD rightScreenPattern = ~rightPixelPattern;
         
-        engine.renderer.planes[firstPos] = ((colorBit) & 1)*(rightPixelPattern);
-        engine.renderer.planes[firstPos+1] = ((colorBit >> 1) & 1)*(rightPixelPattern);
-        engine.renderer.planes[firstPos+2] = ((colorBit >> 2) & 1)*(rightPixelPattern);
-        engine.renderer.planes[firstPos+3] = ((colorBit >> 3) & 1)*(rightPixelPattern);
+        
+        *firstPtr = ((colorBit) & 1)*(rightPixelPattern);
+        *secondPtr = ((colorBit >> 1) & 1)*(rightPixelPattern);
+        *thirdPtr = ((colorBit >> 2) & 1)*(rightPixelPattern);
+        *fourthPtr = ((colorBit >> 3) & 1)*(rightPixelPattern);
 
+#if AMIGA
+
+        firstPtr++;
+        secondPtr++;
+        thirdPtr++;
+        fourthPtr++;
+#else
+
+        firstPtr += 4;
+        secondPtr += 4;
+        thirdPtr += 4;
+        fourthPtr += 4;
+#endif
 
     }
 
@@ -294,4 +398,3 @@ Font * InitFont(char *FontName)
 	fclose(FontFile);
 	return font;
 }
-#endif

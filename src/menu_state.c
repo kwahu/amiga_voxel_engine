@@ -40,7 +40,7 @@ void RunMenuState()
                     DrawBitmap4bCenter(engine.menuState.menu[1], &engine.menuState.headers[1]);
                     
                     SetBitmapPalette(engine.activePalette);
-                    VSyncAndDraw();
+                    
                     FillTextBitmap(engine.font, engine.pBitmapInfo[0], "After setting off the Earth in enormous");
                     FillTextBitmap(engine.font, engine.pBitmapInfo[1], "Generation ships, humanity reached the nearest");
                     FillTextBitmap(engine.font, engine.pBitmapInfo[2], "star system and colonized it's only suitable");
@@ -60,6 +60,7 @@ void RunMenuState()
                     DrawTextBitmap(engine.pBitmapInfo[6], 2, BASELINE+38, 14);
                     DrawTextBitmap(engine.pBitmapInfo[7], 2, BASELINE+44, 14);
                     DrawTextBitmap(engine.pBitmapInfo[8], 2, BASELINE+50, 14);
+                    VSyncAndDraw();
                     FireDown = 1;
                 } break;
                 case 2:
@@ -68,7 +69,6 @@ void RunMenuState()
                     DrawBitmap4bCenter(engine.menuState.menu[1], &engine.menuState.headers[1]);
                     
                     SetBitmapPalette(engine.activePalette);
-                    VSyncAndDraw();
 
                     FillTextBitmap(engine.font, engine.pBitmapInfo[0], "You are Nix, the pilot of Icarus, who feels");
                     FillTextBitmap(engine.font, engine.pBitmapInfo[1], "the urge to help The Revolt in overthrowing");
@@ -91,6 +91,7 @@ void RunMenuState()
                     DrawTextBitmap(engine.pBitmapInfo[7], 2, BASELINE+44, 14);
                     DrawTextBitmap(engine.pBitmapInfo[8], 2, BASELINE+50, 14);
                     DrawTextBitmap(engine.pBitmapInfo[9], 2, BASELINE+56, 14);
+                    VSyncAndDraw();
                     
                         
 
@@ -103,7 +104,7 @@ void RunMenuState()
                     DrawBitmap4bCenter(engine.activeBitmap, &engine.activeBitmapHeader);
                     
                     SetBitmapPalette(engine.activePalette);
-                    VSyncAndDraw();
+                    
 
                     FillTextBitmap(engine.font, engine.pBitmapInfo[0], "The ship's Anti-G engine uses the");
                     FillTextBitmap(engine.font, engine.pBitmapInfo[1], "planet's magnetic field to move");
@@ -126,6 +127,7 @@ void RunMenuState()
                     DrawTextBitmap(engine.pBitmapInfo[7], 100, BASELINE+84, 4);
                     DrawTextBitmap(engine.pBitmapInfo[8], 100, BASELINE+90, 4);
                     DrawTextBitmap(engine.pBitmapInfo[9], 100, BASELINE+96, 4);
+                    VSyncAndDraw();
                         
 
                     FireDown = 1;
@@ -136,7 +138,6 @@ void RunMenuState()
 
                     ClearBuffor();
                     SetGamePaletter();
-                    VSyncAndDraw();
                     engine.menuState.infoScreen = 1;
                     
                     free(engine.menuState.menu[0]);

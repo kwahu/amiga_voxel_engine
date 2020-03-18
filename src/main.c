@@ -73,9 +73,9 @@ void InitEngine(void)
 	engine.informationText = CreateBitmapFromText(engine.font, 
 	"KEY 1 = 1 MB RAM   KEY 2 = MORE THAN 1 MB RAM"
 	);
-	VSyncAndDraw();
 	DrawTextBitmap(engine.informationText, 50, PLANEHEIGHT/2, 3);
 	
+	VSyncAndDraw();
 
 	engine.renderer.ditherTable1 = 0;
 
@@ -94,8 +94,8 @@ void InitEngine(void)
 	"KEY 3 = ATARI ST   KEY 4 = ATARI FALCON OR TT"
 	#endif
 	);
-	VSyncAndDraw();
 	DrawTextBitmap(engine.informationText, 50, PLANEHEIGHT/2, 3);
+	VSyncAndDraw();
 
 	while(engine.renderer.renderingType == 0)
 	{
@@ -108,9 +108,10 @@ void InitEngine(void)
 	FillTextBitmap(engine.font, engine.informationText, 
 	"INVERT Y AXIS?   KEY 9 = YES   KEY 0 = NO"
 	);
-	VSyncAndDraw();
 	DrawTextBitmap(engine.informationText, 50, PLANEHEIGHT/2, 3);
 
+	VSyncAndDraw();
+	
 	engine.yAxis = 0;
 
 	while(engine.yAxis == 0)

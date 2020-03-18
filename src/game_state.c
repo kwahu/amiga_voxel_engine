@@ -226,8 +226,8 @@ void RunGameState()
     
                         
 
-    VSyncAndDraw();
     DrawGameStats();
+    VSyncAndDraw();
 
 
     // 	if(keyCheck(KEY_Q)){calculationDepthDivider=1;Recalculate();}

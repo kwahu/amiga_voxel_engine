@@ -68,12 +68,6 @@ typedef struct PlatformScreen
 
 } PlatformScreen;
 
-#ifdef AMIGA
-#include <ace/utils/font.h>
-typedef tFont Font;
-typedef tTextBitMap TextBitMap; 
-
-#else
 
 typedef struct Font {
 	UWORD Width;       ///< Packed font bitmap width.
@@ -92,5 +86,3 @@ typedef struct TextBitMap {
 	UWORD Height; ///< Actual text height for precise blitting.
 } TextBitMap;
  
-
-#endif
