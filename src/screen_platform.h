@@ -86,12 +86,12 @@ void FreeView()
 void DrawPanelsToScreen()
 {
 	
-    uint16_t *tmp;
-    tmp=engine.platformScreen.physBase;
-    engine.platformScreen.physBase=engine.platformScreen.logBase;
-    engine.platformScreen.logBase=tmp;
-	engine.renderer.planes = engine.platformScreen.physBase;
-    Setscreen(engine.platformScreen.logBase,engine.platformScreen.physBase,-1);
+    // uint16_t *tmp;
+    // tmp=engine.platformScreen.physBase;
+    // engine.platformScreen.physBase=engine.platformScreen.logBase;
+    // engine.platformScreen.logBase=tmp;
+	// engine.renderer.planes = engine.platformScreen.physBase;
+    //Setscreen(engine.platformScreen.logBase,engine.platformScreen.physBase,-1);
 	//memcpy(engine.platformScreen.planesAtari, engine.renderer.planes, PLANEWIDTH*PLANEHEIGHT);
 }
 
@@ -137,9 +137,9 @@ void InitScreen()
     engine.platformScreen.logBase=Logbase();
     memset(engine.platformScreen.logBase,0,32000);
     memset(engine.platformScreen.physBase,0,32000);
-    VsetMode(0x80|2|0x20);
-	EsetSmear( 1 );
-
+    VsetMode(0x80|2|0x30);
+	VsetSync(1);
+	
 	for(int i=0;i<16;i++)
 	{
 		engine.platformScreen.systemPalette[i] = *(uint16_t *)(0xffff8240+(i*2));

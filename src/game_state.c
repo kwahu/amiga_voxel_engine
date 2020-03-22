@@ -32,6 +32,8 @@ void InitGameState()
  
 
     engine.renderer.mapHigh = engine.renderer.mapSource;
+    ClearBuffor();
+    SetGamePaletter();
 	//CopyMapWord(engine.renderer.mapSource, engine.renderer.mapHigh);
     
 }
@@ -141,7 +143,7 @@ void DrawGameStats()
 {
     ConvertIntToChar(engine.gameState.points, engine.gameState.sScore, 8);
     ConvertIntToChar(engine.gameState.shipParams.dP, engine.gameState.sVelocity, 5);
-    ConvertIntToChar(engine.deltaTime/2500, engine.gameState.sTime, 8);
+    ConvertIntToChar(engine.accTime/2500, engine.gameState.sTime, 8);
     ConvertIntToChar(engine.gameState.shipParams.relHeight, engine.gameState.sPlayerY, 5);
     
 
@@ -169,11 +171,11 @@ void RunGameState()
     
 
     
-    if(engine.gameState.shipParams.pZ > 11*256 && engine.gameState.shipParams.dPDenom < 3*255)
+    if(engine.gameState.shipParams.pZ > 11*256)
     {
         engine.gameState.crossHairX = 0;
 
-        if((UWORD)engine.gameState.shipParams.relHeight > 0)
+        if(((UWORD)engine.gameState.shipParams.relHeight < 255))
         {
             UWORD offset = (((UWORD)engine.gameState.shipParams.relHeight)*200);
             if(offset > 0x7FFF)
@@ -182,6 +184,11 @@ void RunGameState()
             }
             engine.gameState.crossHairY = offset;
         }
+        else
+        {
+            engine.gameState.crossHairY = 0;
+        }
+        
 
         UWORD terrainHeight = getTerrainHeight(engine.gameState.shipParams, engine.renderer.mapHigh);
 
@@ -192,10 +199,12 @@ void RunGameState()
         
 
         engine.gameState.shipParams.dPDenom = engine.gameState.shipParams.dPDenom + 8;
-    }
-    else if(engine.gameState.shipParams.relHeight < 2 && engine.gameState.shipParams.dPDenom > 256)
-    {
-        engine.gameState.runOver = 1;
+
+        
+        if(engine.gameState.shipParams.relHeight <= 4 && engine.gameState.shipParams.dPDenom > 256)
+        {
+            engine.gameState.runOver = 1;
+        }
     }
     else
     {
@@ -203,7 +212,7 @@ void RunGameState()
         UpdatePlayerPosition();
         if(CheckPlayerCollision())
         {
-            ShowCutscene(Cutscene_Death);
+            ShowCutscene(Cutscene_Death, PATTERN_DURATION);
         }
         
     }
@@ -214,12 +223,11 @@ void RunGameState()
 
 
     engine.renderer.xTurnOffset = engine.gameState.crossHairX / engine.renderer.turnDenom;
-
-
+    
     RenderQuality();
 
 //draw crosshair
-    
+
     RenderShipAndCrossHair();
     
             //draw only even lines 
@@ -227,8 +235,9 @@ void RunGameState()
                         
 
     DrawGameStats();
-    VSyncAndDraw();
 
+
+    VSyncAndDraw();    
 
     // 	if(keyCheck(KEY_Q)){calculationDepthDivider=1;Recalculate();}
     // if(keyCheck(KEY_W)){calculationDepthDivider=2;Recalculate();}
@@ -267,11 +276,11 @@ void RunGameState()
     {
         if(engine.gameState.points < 1000000)
         {
-            ShowCutscene(Cutscene_TooLate);
+            ShowCutscene(Cutscene_TooLate, PATTERN_DURATION);
         }
         else
         {
-            ShowCutscene(Cutscene_Win);
+            ShowCutscene(Cutscene_Win, 11000);
 
         }
     }

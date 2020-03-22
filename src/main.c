@@ -38,7 +38,7 @@ void InitEngine(void)
 	InitScreen();
 	InitInput();
 
-	engine.shipBitmap = LoadBitmapFile("data/icar48", &engine.shipHeader, engine.palettePalette, 2, 3);
+	engine.shipBitmap = LoadBitmapFile("data/icar48", &engine.shipHeader, engine.palettePalette, 2, 8);
 	engine.logoState.logo[0] = LoadBitmapFile("data/l1", &engine.logoState.headers[0], engine.activePalette, 1, 0);
 	engine.paletteBitmap = LoadBitmapFile("data/plt", &engine.paletteHeader, engine.palettePalette, 1, 0);
 
@@ -64,6 +64,7 @@ void InitEngine(void)
 		engine.pBitmapInfo[i] = CreateFontBitmap(engine.font);
 	}
 
+	engine.cutsceneDuration = 0;
 	ResetTime();
 
 	UnuseSystem();

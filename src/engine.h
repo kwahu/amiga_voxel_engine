@@ -24,6 +24,8 @@
 #define LOGORUNTIME 7500000
 #define SKY_COLOR 33
 
+#define PATTERN_DURATION 9000
+
 
 
 typedef struct tagBITMAPFILEHEADER
@@ -174,10 +176,14 @@ typedef struct Engine
 
     };
 
+
+
     PlatformScreen platformScreen;
 
     Renderer renderer;
     
+    ULONG cutsceneDuration;
+
     ULONG startTime, endTime, deltaTime, accTime, loopEndTime;
     
     UBYTE activePalette[16 * 4], palettePalette[16 * 4];

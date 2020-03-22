@@ -270,7 +270,6 @@ void InitInput()
 void GetPlayerRendererSetting()
 {
 	engine.renderer.zStart = 12;
-		engine.renderer.turnDenom = 3000;
 	if (getKey(3))
 	{
 		engine.renderer.renderingDepth = TERRAINDEPTH;
@@ -282,15 +281,17 @@ void GetPlayerRendererSetting()
 		engine.renderer.stepModifier = 16;
 		if(engine.renderer.highMemory)
 		{
-		engine.renderer.xFOV = 24;
-		engine.renderer.yFOV = 14;
+		engine.renderer.turnDenom = 3000;
+		engine.renderer.xFOV = 26;
+		engine.renderer.yFOV = 22;
 			engine.renderer.renderingType = 3;
 		RecalculateOdd();
 		}
 		else
 		{
-		engine.renderer.xFOV = 24;
-		engine.renderer.yFOV = 14;
+		engine.renderer.turnDenom = 4500;
+		engine.renderer.xFOV = 26;
+		engine.renderer.yFOV = 22;
 			engine.renderer.renderingType = 1;
 			RecalculateEven();
 		}
@@ -306,15 +307,17 @@ void GetPlayerRendererSetting()
 		engine.renderer.stepModifier = 16;
 		if(engine.renderer.highMemory)
 		{
-		engine.renderer.xFOV = 28;
-		engine.renderer.yFOV = 14;
+		engine.renderer.turnDenom = 3000;
+		engine.renderer.xFOV = 24;
+		engine.renderer.yFOV = 22;
 			engine.renderer.renderingType = 4;
 		RecalculateOdd();
 		}
 		else
 		{
-		engine.renderer.xFOV = 28;
-		engine.renderer.yFOV = 14;
+		engine.renderer.turnDenom = 4500;
+		engine.renderer.xFOV = 24;
+		engine.renderer.yFOV = 22;
 			engine.renderer.renderingType = 2;
 			RecalculateEven();
 		}

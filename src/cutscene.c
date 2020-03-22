@@ -95,34 +95,6 @@ void ShowDeathCutscene()
     }
     VSyncAndDraw();
     
-    ProcessJoystick();
-    UBYTE cont = 0;
-    //wait 2 seconds
-    while(!cont)
-    {
-        ProcessJoystick();
-        if (getKey(ESCAPE))
-        {
-            ExitGame();
-            cont = 1;
-        }
-        else if(getJoy(1, FIRE))
-        {
-            cont = 1;
-        }
-        VSyncWait();
-        
-    }
-
-
-    ClearBuffor();
-    SetGamePaletter();
-
-    InitGameState();
-    
-    StopSample();
-    PlaySample(6);
-    ContinueSample();
 
 }
 
@@ -180,35 +152,6 @@ void ShowTooLateCutscene()
     }
     VSyncAndDraw();
 
-
-
-    ProcessJoystick();
-    UBYTE cont = 0;
-    //wait 2 seconds
-    while(!cont)
-    {
-
-        ProcessJoystick();
-        if (getKey(ESCAPE))
-        {
-            ExitGame();
-            cont = 1;
-        }
-        else if(getJoy(1, FIRE))
-        {
-            cont = 1;
-        }
-        VSyncWait();
-        
-    }
-
-
-    ClearBuffor();
-    SetGamePaletter();
-    InitGameState();
-    StopSample();
-    PlaySample(6);
-    ContinueSample();
 }
 
 void ShowWinCutscene()
@@ -329,7 +272,31 @@ void ShowWinCutscene()
     }
 
     VSyncAndDraw();
+}
 
+void ShowCutscene(Cutscene cutsceneType, ULONG duration)
+{
+    ResetTime();
+
+    engine.cutsceneDuration = duration;
+    switch(cutsceneType)
+    {
+        case Cutscene_Death:
+        {
+            ShowDeathCutscene();
+        } break;
+        case Cutscene_TooLate:
+        {
+            ShowTooLateCutscene();
+        } break;
+        case Cutscene_Win:
+        {
+            ShowWinCutscene();
+        } break;
+        
+    }
+
+    
     ProcessJoystick();
     UBYTE cont = 0;
     //wait 2 seconds
@@ -348,38 +315,43 @@ void ShowWinCutscene()
         }
         VSyncWait();
         
+        
+        TimeStep();
+        
+        if(engine.accTime/2500 >= engine.cutsceneDuration)
+        {
+            cont = 1;
+        }
     }
 
 
-
-    ClearBuffor();
-    SetGamePaletter();
+    UBYTE nextPattern = 0;
+    
     
     StopSample();
     UseSystem();
-    InitMenuState();
-    
-    UnuseSystem();
-    PlaySample(0);
-    ContinueSample();
-}
-
-void ShowCutscene(Cutscene cutsceneType)
-{
     switch(cutsceneType)
     {
         case Cutscene_Death:
         {
-            ShowDeathCutscene();
+            InitGameState();
+            nextPattern = 6;
         } break;
         case Cutscene_TooLate:
         {
-            ShowTooLateCutscene();
+            InitGameState();
+            nextPattern = 6;
         } break;
         case Cutscene_Win:
         {
-            ShowWinCutscene();
+            InitMenuState();
+            nextPattern = 0;
         } break;
         
     }
+    
+    UnuseSystem();
+    PlaySample(nextPattern);
+    ContinueSample();
+
 }
