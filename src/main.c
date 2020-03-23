@@ -38,7 +38,8 @@ void InitEngine(void)
 	InitScreen();
 	InitInput();
 
-	engine.shipBitmap = LoadBitmapFile("data/icar48", &engine.shipHeader, engine.palettePalette, 2, 8);
+	engine.explosionBitmap = LoadBitmapFile("data/iexpl", &engine.explosionHeader, engine.palettePalette, 2, 14);
+	engine.shipBitmap = LoadBitmapFile("data/icar48", &engine.shipHeader, engine.activePalette, 2, 14);
 	engine.logoState.logo[0] = LoadBitmapFile("data/l1", &engine.logoState.headers[0], engine.activePalette, 1, 0);
 	engine.paletteBitmap = LoadBitmapFile("data/plt", &engine.paletteHeader, engine.palettePalette, 1, 0);
 

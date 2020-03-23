@@ -82,7 +82,7 @@ UBYTE *LoadBitmapFile(BYTE *filename, BITMAPINFOHEADER *bitmapInfoHeader, UBYTE 
 		} break;
 		case Bitmap_Sprite:
 		{
-		    bitmapImage = (unsigned char *)malloc(bitmapInfoHeader->biSizeImage + bitmapInfoHeader->biSizeImage/8);
+		    bitmapImage = (unsigned char *)malloc(bitmapInfoHeader->biSizeImage + bitmapInfoHeader->biSizeImage/4);
 		} break;
  	}
     //allocate enough memory for the bitmap image data

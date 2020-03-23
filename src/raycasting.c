@@ -89,7 +89,7 @@ WORD (*rayCastX), WORD (*rayCastY), UWORD (*map), UBYTE threshold, UBYTE depthIn
         {
             if(tz == engine.renderer.zStart)
             {
-                c = 0;
+                c = (mapValue >> 8);
             }
             else
             {
@@ -104,7 +104,7 @@ WORD (*rayCastX), WORD (*rayCastY), UWORD (*map), UBYTE threshold, UBYTE depthIn
 		{
             if(tz == engine.renderer.zStart)
             {
-                c = 0;
+                c = (mapValue >> 8);
             }
             else
             {
@@ -216,7 +216,7 @@ WORD (*rayCastX), WORD (*rayCastY), UWORD (*map), UBYTE threshold, UBYTE depthIn
 		{
             if(tz == engine.renderer.zStart)
             {
-                c = 0;
+                c = (mapValue >> 8);
             }
             else
             {
@@ -518,7 +518,7 @@ void ProcessRayCastsProgressive4x4NonInterleaved(WORD (*rayCastX), WORD (*rayCas
 	UBYTE sx,sy,mist;
 	UWORD tz,tzz[6];
 	UWORD address1,address2;
-	UBYTE threshold1 = TERRAINDEPTH/2;
+	UBYTE threshold1 = engine.renderer.zStart + (engine.renderer.renderingDepth - engine.renderer.zStart)/2;
 
 	//UWORD positionStart =  (ySize-1)*20 + tableXStart/6;
 
@@ -885,8 +885,8 @@ void ProcessRayCastsProgressiveNonInterleaved(WORD (*rayCastX), WORD (*rayCastY)
 	UBYTE sx,sy,mist;
 	UWORD tz,tzz[6];
 	UWORD address1,address2;
-	UBYTE threshold1 = TERRAINDEPTH/2;
-	UBYTE threshold2 = TERRAINDEPTH - TERRAINDEPTH/4;
+	UBYTE threshold1 = engine.renderer.zStart + (engine.renderer.renderingDepth-engine.renderer.zStart)/2;
+	UBYTE threshold2 = engine.renderer.zStart + 3*(engine.renderer.renderingDepth-engine.renderer.zStart)/4;
 
 	//UWORD positionStart =  (ySize-1)*20 + tableXStart/6;
 
@@ -1108,7 +1108,7 @@ UBYTE px, UBYTE py, UBYTE ph, UBYTE screenStart, UBYTE screenEnd)
                 {
                     if(tz == engine.renderer.zStart)
                     {
-                        *screenPtr = 0;
+                        *screenPtr = (mapValue >> 8);
                     }
                     else
                     {
@@ -1134,7 +1134,7 @@ UBYTE px, UBYTE py, UBYTE ph, UBYTE screenStart, UBYTE screenEnd)
                 {
                     if(tz == engine.renderer.zStart)
                     {
-                        *screenPtr = 0;
+                        *screenPtr = (mapValue >> 8);
                     }
                     else
                     {
@@ -1289,7 +1289,7 @@ UBYTE px, UBYTE py, UBYTE ph, UBYTE screenStart, UBYTE screenEnd)
 
                     if(tz == engine.renderer.zStart)
                     {
-                        *screenPtr = 0;
+                        *screenPtr = (mapValue >> 8);
                     }
                     else
                     {
@@ -1311,7 +1311,7 @@ UBYTE px, UBYTE py, UBYTE ph, UBYTE screenStart, UBYTE screenEnd)
                 {
                     if(tz == engine.renderer.zStart)
                     {
-                        *screenPtr = 0;
+                        *screenPtr = (mapValue >> 8);
                     }
                     else
                     {

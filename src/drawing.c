@@ -17,7 +17,7 @@ void ClearBuffor()
 
 void DrawSprite4b(unsigned char *bLogo, BITMAPINFOHEADER *bhLogo, 
 					UWORD posX, UWORD posY, WORD spriteIndexX, WORD spriteIndexY,
-					UWORD spriteSizeX, UWORD spriteSizeY, unsigned char backgroundValue)
+					UWORD spriteSizeX, UWORD spriteSizeY)
 {
 	UWORD position;
 	UWORD word1, word2, word3, word4, mask;

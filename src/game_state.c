@@ -20,7 +20,9 @@ void InitGameState()
     engine.gameState.crossHairX = 0;
     engine.gameState.crossHairY = 0;
 	engine.gameState.points = 0;
+    engine.gameState.deathDuration = 0;
     engine.gameState.runOver = 0;
+    engine.gameState.playerDeath = 0;
     engine.renderer.lastOverwrittenLine = 0;
 
     UWORD depthBufferSize = (UWORD)engine.renderer.depthBufferHeight*(UWORD)engine.renderer.depthBufferWidth;
@@ -62,7 +64,7 @@ BYTE CheckPlayerCollision()
     UBYTE shipCollisionY = (engine.gameState.shipParams.pY - 2);
     UWORD shipCollisionX = engine.gameState.shipParams.pX;
 
-    return shipCollisionY < (UBYTE)(engine.renderer.mapHigh[(((UBYTE)(shipCollisionX)) >> 1)*11*MAPSIZE + (((UBYTE)(engine.renderer.zStart + 8)) >> 1)]);
+    return shipCollisionY < (UBYTE)(engine.renderer.mapHigh[(((UBYTE)(shipCollisionX)) >> 1)*11*MAPSIZE + (((UBYTE)(2*engine.renderer.zStart)) >> 1)]);
     
     //return shipCollisionY < (UBYTE)(engine.renderer.mapHigh[((UBYTE)(shipCollisionX)) >>1][((UBYTE)(engine.gameState.shipParams.pZ + engine.renderer.zStart + 8)) >>1]);
 }
@@ -134,7 +136,7 @@ void RenderShipAndCrossHair()
     DrawCrosshair( crossPX, crossPY + 4);
     DrawCrosshair( crossPX, crossPY - 4);
      DrawSprite4b(engine.shipBitmap, &engine.shipHeader, shipDirX, shipDirY,
-                     spriteIndexX, spriteIndexY, 48, 48, 3);
+                     spriteIndexX, spriteIndexY, 48, 48);
     
      
 }
@@ -169,7 +171,7 @@ void RunGameState()
 
     //ProcessQualityInput();
     
-
+    
     
     if(engine.gameState.shipParams.pZ > 11*256)
     {
@@ -209,33 +211,65 @@ void RunGameState()
     else
     {
         
-        UpdatePlayerPosition();
-        if(CheckPlayerCollision())
+        if(!engine.gameState.playerDeath)
         {
-            ShowCutscene(Cutscene_Death, PATTERN_DURATION);
+            UpdatePlayerPosition(); 
+            if(CheckPlayerCollision())
+            {
+                engine.gameState.playerDeath = 1;
+            }
         }
+        
+        
         
     }
     
+
+//draw crosshair
+
     
+            //draw only even lines 
+    
+                        
     OverwriteMap(); //this is how we go through many different maps, we just overwrite the main array with new content
 
 
 
     engine.renderer.xTurnOffset = engine.gameState.crossHairX / engine.renderer.turnDenom;
     
-    RenderQuality();
-
-//draw crosshair
-
-    RenderShipAndCrossHair();
-    
-            //draw only even lines 
-    
-                        
+    RenderQuality();  
+    if(!engine.gameState.playerDeath)
+    {
+        RenderShipAndCrossHair();
+    }
 
     DrawGameStats();
 
+    if(engine.gameState.playerDeath == 1)
+    {
+        ULONG addedTime = engine.deltaTime/2500;
+            
+        if((engine.gameState.deathDuration + addedTime) < 675)
+        {
+            engine.gameState.deathDuration += addedTime;
+            ULONG currentIndex = (ULONG)(engine.gameState.deathDuration/75);
+            WORD currentX = (WORD)(currentIndex%3);
+            WORD currentY = (WORD)(2 - (currentIndex/3));
+            
+            UWORD explosionX = 160 + engine.renderer.xTurnOffset;
+            UWORD explosionY = GAME_SHIP_POS + (engine.gameState.crossHairY/1600);
+
+
+            DrawSprite4b(engine.explosionBitmap, &engine.explosionHeader, explosionX, explosionY,
+                     currentX, currentY, 48, 48);
+        }
+        else
+        {
+            ShowCutscene(Cutscene_Death, PATTERN_DURATION);
+            
+        }
+        
+    }
 
     VSyncAndDraw();    
 
@@ -284,6 +318,7 @@ void RunGameState()
 
         }
     }
+    
     
 
 

@@ -89,6 +89,8 @@ typedef struct GameState
     WORD crossHairX, crossHairY;
     ShipParams shipParams;
     ULONG points;
+    ULONG deathDuration;
+    BYTE playerDeath;
     BYTE runOver;
     char sPlayerY[5];
     char sTime[8], sVelocity[5], sScore[8];
@@ -187,8 +189,8 @@ typedef struct Engine
     ULONG startTime, endTime, deltaTime, accTime, loopEndTime;
     
     UBYTE activePalette[16 * 4], palettePalette[16 * 4];
-    BITMAPINFOHEADER activeBitmapHeader, paletteHeader, shipHeader;
-    UBYTE *activeBitmap, *paletteBitmap, *shipBitmap;
+    BITMAPINFOHEADER activeBitmapHeader, paletteHeader, shipHeader, explosionHeader;
+    UBYTE *activeBitmap, *paletteBitmap, *shipBitmap, *explosionBitmap;
 
     Font *font;
     TextBitMap *pBitmapHeightLabel, *pBitmapHeight, *pBitmapTime, *pBitmapTimeLabel, *informationText;
