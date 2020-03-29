@@ -6,7 +6,7 @@
 
 #include <ace/utils/custom.h>
 
-CHIP const unsigned char music[168660];
+CHIP const unsigned char music[169660];
 
 
 void ReadModFile(char *fileName)
@@ -24,7 +24,7 @@ void InitAudio()
 {
  
 	mt_install_cia(g_pCustom, 0, 1);
-
+    //P61_Init(g_pCustom, music, 0, 1, ((UBYTE *)(&g_pCustom->dmacon)) + 1);
 }
 
 void DestroyAudio()
@@ -33,6 +33,9 @@ void DestroyAudio()
 
 void PlaySample(UBYTE pos)
 {
+    
+    //P61_Init(custom, music, 0, 1);
+    //P61_SetPosition(g_pCustom, pos);
     mt_init(g_pCustom, music, 0, pos);
   	mt_Enable = 1;
       mt_MusicChannels = 4;
@@ -40,6 +43,7 @@ void PlaySample(UBYTE pos)
 }
 void ContinueSample()
 {
+    //P61_Init(g_pCustom, music, 0, 1, ((UBYTE *)(&g_pCustom->dmacon)) + 1);
 	mt_install_cia(g_pCustom, 0, 1);
   	mt_Enable = 1;
       mt_MusicChannels = 4;
@@ -48,6 +52,7 @@ void ContinueSample()
 
 void StopSample()
 {
+    //P61_End();
     mt_remove_cia(g_pCustom);
 }
 

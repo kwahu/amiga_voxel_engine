@@ -74,6 +74,20 @@ UBYTE *LoadBitmapFile(BYTE *filename, BITMAPINFOHEADER *bitmapInfoHeader, UBYTE 
 		free(bitmapImage);
 	}
 
+#if AMIGA
+	
+	switch(type)
+	{
+		default:
+		{
+		    bitmapImage = (unsigned char *)memAllocChip(bitmapInfoHeader->biSizeImage);
+		} break;
+		case Bitmap_Sprite:
+		{
+		    bitmapImage = (unsigned char *)memAllocChip(bitmapInfoHeader->biSizeImage + bitmapInfoHeader->biSizeImage/4);
+		} break;
+ 	}
+	#else
 	switch(type)
 	{
 		default:
@@ -85,6 +99,7 @@ UBYTE *LoadBitmapFile(BYTE *filename, BITMAPINFOHEADER *bitmapInfoHeader, UBYTE 
 		    bitmapImage = (unsigned char *)malloc(bitmapInfoHeader->biSizeImage + bitmapInfoHeader->biSizeImage/4);
 		} break;
  	}
+	 #endif
     //allocate enough memory for the bitmap image data
 
     //verify memory allocation
@@ -101,172 +116,200 @@ UBYTE *LoadBitmapFile(BYTE *filename, BITMAPINFOHEADER *bitmapInfoHeader, UBYTE 
 
 	if(type == Bitmap_Sprite)
 	{
-		
-		for(UWORD wordIndex = 0; wordIndex < bitmapInfoHeader->biSizeImage/8; wordIndex++)
+		for(WORD y = bitmapInfoHeader->biHeight - 1; y >= 0; --y)
 		{
-			UWORD *maskPtr = ((UWORD *)bitmapImage);
-			maskPtr += bitmapInfoHeader->biSizeImage/2 + wordIndex;		
+			UWORD *rowPtr = ((UWORD *)(bitmapImage + y*bitmapInfoHeader->biWidth/2));
+			UWORD *maskRowPtr = ((UWORD *)(bitmapImage + bitmapInfoHeader->biSizeImage +
+			 (bitmapInfoHeader->biHeight - 1 -y)*bitmapInfoHeader->biWidth/8));
+
+			for(UWORD wordIndex = 0; wordIndex < bitmapInfoHeader->biWidth/16; wordIndex++)
+			{
+				UWORD *maskPtr = ((UWORD *)maskRowPtr);
+				maskPtr += wordIndex;		
+				
+				UWORD *bitmapPtr = ((UWORD *)rowPtr);
+				bitmapPtr += wordIndex*4;		
+
+				UWORD word1 = *bitmapPtr;
+				++bitmapPtr;
+				UWORD word2 = *bitmapPtr;
+				++bitmapPtr;
+				UWORD word3 = *bitmapPtr;
+				++bitmapPtr;
+				UWORD word4 = *bitmapPtr;
 			
-			UWORD *bitmapPtr = ((UWORD *)bitmapImage);
-			bitmapPtr += wordIndex*4;		
-
-			UWORD word1 = *bitmapPtr;
-			++bitmapPtr;
-			UWORD word2 = *bitmapPtr;
-			++bitmapPtr;
-			UWORD word3 = *bitmapPtr;
-			++bitmapPtr;
-			UWORD word4 = *bitmapPtr;
-		
-			UWORD packedMask = 0;
-			
-			UWORD shift = 0;
-			for(WORD bitIndex = 12; bitIndex < 16; ++bitIndex)
-			{
-				UBYTE checkedPixel = ((word1 >> shift) & 0xF) ^ maskBit;
-				if(checkedPixel != 0)
+				UWORD packedMask = 0;
+				
+				UWORD shift = 0;
+				for(WORD bitIndex = 12; bitIndex < 16; ++bitIndex)
 				{
-					packedMask |= 1 << bitIndex;
+					UBYTE checkedPixel = ((word1 >> shift) & 0xF) ^ maskBit;
+					if(checkedPixel != 0)
+					{
+						packedMask |= 1 << bitIndex;
+					}
+
+					shift += 4;
+				}
+				shift = 0;
+				for(WORD bitIndex = 8; bitIndex < 12; ++bitIndex)
+				{
+					UBYTE checkedPixel = ((word2 >> shift) & 0xF) ^ maskBit;
+					if(checkedPixel != 0)
+					{
+						packedMask |= 1 << bitIndex;
+					}
+
+					shift += 4;
+				}
+				shift = 0;
+				for(WORD bitIndex = 4; bitIndex < 8; ++bitIndex)
+				{
+					UBYTE checkedPixel = ((word3 >> shift) & 0xF) ^ maskBit;
+					if(checkedPixel != 0)
+					{
+						packedMask |= 1 << bitIndex;
+					}
+
+					shift += 4;
+				}
+				shift = 0;
+				for(WORD bitIndex = 0; bitIndex < 4; ++bitIndex)
+				{
+					UBYTE checkedPixel = ((word4 >> shift) & 0xF) ^ maskBit;
+					if(checkedPixel != 0)
+					{
+						packedMask |= 1 << bitIndex;
+					}
+
+					shift += 4;
 				}
 
-				shift += 4;
+				*maskPtr = packedMask;
 			}
-			shift = 0;
-			for(WORD bitIndex = 8; bitIndex < 12; ++bitIndex)
-			{
-				UBYTE checkedPixel = ((word2 >> shift) & 0xF) ^ maskBit;
-				if(checkedPixel != 0)
-				{
-					packedMask |= 1 << bitIndex;
-				}
-
-				shift += 4;
-			}
-			shift = 0;
-			for(WORD bitIndex = 4; bitIndex < 8; ++bitIndex)
-			{
-				UBYTE checkedPixel = ((word3 >> shift) & 0xF) ^ maskBit;
-				if(checkedPixel != 0)
-				{
-					packedMask |= 1 << bitIndex;
-				}
-
-				shift += 4;
-			}
-			shift = 0;
-			for(WORD bitIndex = 0; bitIndex < 4; ++bitIndex)
-			{
-				UBYTE checkedPixel = ((word4 >> shift) & 0xF) ^ maskBit;
-				if(checkedPixel != 0)
-				{
-					packedMask |= 1 << bitIndex;
-				}
-
-				shift += 4;
-			}
-
-			*maskPtr = packedMask;
 		}
 	}
 
 	if(type != Bitmap_Map)
 	{
-		for(UWORD wordIndex = 0; wordIndex < bitmapInfoHeader->biSizeImage/8; wordIndex++)
+
+		unsigned char *temp = (unsigned char *)malloc(bitmapInfoHeader->biSizeImage);
+		
+		for(WORD y = bitmapInfoHeader->biHeight - 1; y >= 0; --y)
 		{
-			UWORD *bitmapPtr = ((UWORD *)bitmapImage);
-			bitmapPtr += wordIndex*4;		
+			UWORD *rowPtr = ((UWORD *)(bitmapImage + y*bitmapInfoHeader->biWidth/2));
+		
+			UWORD *tempRowPtr = (UWORD *)(temp + (bitmapInfoHeader->biHeight - 1 - y)*bitmapInfoHeader->biWidth/8);
 
-			UWORD word1 = *bitmapPtr;
-			++bitmapPtr;
-			UWORD word2 = *bitmapPtr;
-			++bitmapPtr;
-			UWORD word3 = *bitmapPtr;
-			++bitmapPtr;
-			UWORD word4 = *bitmapPtr;
-			bitmapPtr -= 3;
-
-			UWORD packedWord1 = 0;
-			UWORD packedWord2 = 0;
-			UWORD packedWord3 = 0;
-			UWORD packedWord4 = 0;
-
-			UWORD shift1 = 0;
-			UWORD shift2 = 1;
-			UWORD shift3 = 2;
-			UWORD shift4 = 3;
-			for(WORD bitIndex = 12; bitIndex < 16; ++bitIndex)
+			for(UWORD wordIndex = 0; wordIndex < bitmapInfoHeader->biWidth/16; wordIndex++)
 			{
-				packedWord1 |= ((word1 >> shift1) & 1) << bitIndex;
-				packedWord2 |= ((word1 >> shift2) & 1) << bitIndex;
-				packedWord3 |= ((word1 >> shift3) & 1) << bitIndex;
-				packedWord4 |= ((word1 >> shift4) & 1) << bitIndex;
+				UWORD *tempPtr = (UWORD *)tempRowPtr;
+				tempPtr += wordIndex;	
 
-				shift1 += 4;
-				shift2 += 4;
-				shift3 += 4;
-				shift4 += 4;
+				UWORD word1 = *rowPtr;
+				++rowPtr;
+				UWORD word2 = *rowPtr;
+				++rowPtr;
+				UWORD word3 = *rowPtr;
+				++rowPtr;
+				UWORD word4 = *rowPtr;
+				++rowPtr;
+
+				UWORD packedWord1 = 0;
+				UWORD packedWord2 = 0;
+				UWORD packedWord3 = 0;
+				UWORD packedWord4 = 0;
+
+				UWORD shift1 = 0;
+				UWORD shift2 = 1;
+				UWORD shift3 = 2;
+				UWORD shift4 = 3;
+				for(WORD bitIndex = 12; bitIndex < 16; ++bitIndex)
+				{
+					packedWord1 |= ((word1 >> shift1) & 1) << bitIndex;
+					packedWord2 |= ((word1 >> shift2) & 1) << bitIndex;
+					packedWord3 |= ((word1 >> shift3) & 1) << bitIndex;
+					packedWord4 |= ((word1 >> shift4) & 1) << bitIndex;
+
+					shift1 += 4;
+					shift2 += 4;
+					shift3 += 4;
+					shift4 += 4;
+				}
+				
+				shift1 = 0;
+				shift2 = 1;
+				shift3 = 2;
+				shift4 = 3;
+				for(WORD bitIndex = 8; bitIndex < 12; ++bitIndex)
+				{
+					packedWord1 |= ((word2 >> shift1) & 1) << bitIndex;
+					packedWord2 |= ((word2 >> shift2) & 1) << bitIndex;
+					packedWord3 |= ((word2 >> shift3) & 1) << bitIndex;
+					packedWord4 |= ((word2 >> shift4) & 1) << bitIndex;
+
+					shift1 += 4;
+					shift2 += 4;
+					shift3 += 4;
+					shift4 += 4;
+				}
+				
+				shift1 = 0;
+				shift2 = 1;
+				shift3 = 2;
+				shift4 = 3;
+				for(WORD bitIndex = 4; bitIndex < 8; ++bitIndex)
+				{
+					packedWord1 |= ((word3 >> shift1) & 1) << bitIndex;
+					packedWord2 |= ((word3 >> shift2) & 1) << bitIndex;
+					packedWord3 |= ((word3 >> shift3) & 1) << bitIndex;
+					packedWord4 |= ((word3 >> shift4) & 1) << bitIndex;
+
+					shift1 += 4;
+					shift2 += 4;
+					shift3 += 4;
+					shift4 += 4;
+				}
+				
+				shift1 = 0;
+				shift2 = 1;
+				shift3 = 2;
+				shift4 = 3;
+				for(WORD bitIndex = 0; bitIndex < 4; ++bitIndex)
+				{
+					packedWord1 |= ((word4 >> shift1) & 1) << bitIndex;
+					packedWord2 |= ((word4 >> shift2) & 1) << bitIndex;
+					packedWord3 |= ((word4 >> shift3) & 1) << bitIndex;
+					packedWord4 |= ((word4 >> shift4) & 1) << bitIndex;
+
+					shift1 += 4;
+					shift2 += 4;
+					shift3 += 4;
+					shift4 += 4;
+				}
+
+				*tempPtr = packedWord1;
+				tempPtr += bitmapInfoHeader->biSizeImage/8;
+				*tempPtr = packedWord2;
+				tempPtr += bitmapInfoHeader->biSizeImage/8;
+				*tempPtr = packedWord3;
+				tempPtr += bitmapInfoHeader->biSizeImage/8;
+				*tempPtr = packedWord4;
+
+
+
 			}
-			
-			shift1 = 0;
-			shift2 = 1;
-			shift3 = 2;
-			shift4 = 3;
-			for(WORD bitIndex = 8; bitIndex < 12; ++bitIndex)
-			{
-				packedWord1 |= ((word2 >> shift1) & 1) << bitIndex;
-				packedWord2 |= ((word2 >> shift2) & 1) << bitIndex;
-				packedWord3 |= ((word2 >> shift3) & 1) << bitIndex;
-				packedWord4 |= ((word2 >> shift4) & 1) << bitIndex;
-
-				shift1 += 4;
-				shift2 += 4;
-				shift3 += 4;
-				shift4 += 4;
-			}
-			
-			shift1 = 0;
-			shift2 = 1;
-			shift3 = 2;
-			shift4 = 3;
-			for(WORD bitIndex = 4; bitIndex < 8; ++bitIndex)
-			{
-				packedWord1 |= ((word3 >> shift1) & 1) << bitIndex;
-				packedWord2 |= ((word3 >> shift2) & 1) << bitIndex;
-				packedWord3 |= ((word3 >> shift3) & 1) << bitIndex;
-				packedWord4 |= ((word3 >> shift4) & 1) << bitIndex;
-
-				shift1 += 4;
-				shift2 += 4;
-				shift3 += 4;
-				shift4 += 4;
-			}
-			
-			shift1 = 0;
-			shift2 = 1;
-			shift3 = 2;
-			shift4 = 3;
-			for(WORD bitIndex = 0; bitIndex < 4; ++bitIndex)
-			{
-				packedWord1 |= ((word4 >> shift1) & 1) << bitIndex;
-				packedWord2 |= ((word4 >> shift2) & 1) << bitIndex;
-				packedWord3 |= ((word4 >> shift3) & 1) << bitIndex;
-				packedWord4 |= ((word4 >> shift4) & 1) << bitIndex;
-
-				shift1 += 4;
-				shift2 += 4;
-				shift3 += 4;
-				shift4 += 4;
-			}
-
-			*bitmapPtr = packedWord1;
-			++bitmapPtr;
-			*bitmapPtr = packedWord2;
-			++bitmapPtr;
-			*bitmapPtr = packedWord3;
-			++bitmapPtr;
-			*bitmapPtr = packedWord4;
-
 		}
+
+		UWORD *tempPtr = ((UWORD *)temp);
+		UWORD *bitmapPtr = ((UWORD *)bitmapImage);
+		for(UWORD wordIndex = 0; wordIndex < bitmapInfoHeader->biSizeImage/2; wordIndex++)
+		{
+			*bitmapPtr++ = *tempPtr++;
+
+			
+		}
+		free(temp);
 	}
 
 

@@ -87,6 +87,7 @@ void switchIntroScreen()
 		UnuseSystem();
 		InitAudio();
 		PlaySample(0);
+		//StopSample();
 	} break;
 	}
 }

@@ -39,6 +39,7 @@ void InitEngine(void)
 	InitInput();
 
 	engine.explosionBitmap = LoadBitmapFile("data/iexpl", &engine.explosionHeader, engine.palettePalette, 2, 14);
+	engine.landingBitmap = LoadBitmapFile("data/land", &engine.landingHeader, engine.palettePalette, 2, 14);
 	engine.shipBitmap = LoadBitmapFile("data/icar48", &engine.shipHeader, engine.activePalette, 2, 14);
 	engine.logoState.logo[0] = LoadBitmapFile("data/l1", &engine.logoState.headers[0], engine.activePalette, 1, 0);
 	engine.paletteBitmap = LoadBitmapFile("data/plt", &engine.paletteHeader, engine.palettePalette, 1, 0);
@@ -56,10 +57,10 @@ void InitEngine(void)
 	engine.pBitmapScore = CreateBitmapFromText(engine.font, "1234567");
 	engine.pBitmapTime = CreateBitmapFromText(engine.font, "1234567");
 	engine.pBitmapHeight = CreateBitmapFromText(engine.font, "1234");
-	engine.pBitmapVelocityLabel = CreateBitmapFromText(engine.font, "SPEED");
+	engine.pBitmapVelocityLabel = CreateBitmapFromText(engine.font, "AIR SPEED");
 	engine.pBitmapScoreLabel = CreateBitmapFromText(engine.font, "SCORE");
 	engine.pBitmapTimeLabel = CreateBitmapFromText(engine.font, "TIME");
-	engine.pBitmapHeightLabel = CreateBitmapFromText(engine.font, "RELATIVE HEIGHT");
+	engine.pBitmapHeightLabel = CreateBitmapFromText(engine.font, "RELATIVE ALTITUDE");
 	for(int i = 0; i < 10; ++i)
 	{
 		engine.pBitmapInfo[i] = CreateFontBitmap(engine.font);
@@ -70,8 +71,7 @@ void InitEngine(void)
 
 	UnuseSystem();
 
-
-	//*********************************** SELECT HARDWARE ***********************************************
+	// //*********************************** SELECT HARDWARE ***********************************************
 	engine.informationText = CreateBitmapFromText(engine.font, 
 	"KEY 1 = 1 MB RAM   KEY 2 = MORE THAN 1 MB RAM"
 	);
@@ -195,6 +195,8 @@ void EngineDestroy(void)
 	free(engine.activeBitmap);
 	free(engine.shipBitmap);
 	free(engine.paletteBitmap);
+	free(engine.landingBitmap);
+	free(engine.explosionBitmap);
 	free(engine.renderer.ditherTable1);
 	free(engine.renderer.depthBuffer);
 	free(engine.renderer.screenPatch);

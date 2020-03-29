@@ -21,23 +21,22 @@ void DrawSprite4b(unsigned char *bLogo, BITMAPINFOHEADER *bhLogo,
 {
 	UWORD position;
 	UWORD word1, word2, word3, word4, mask;
-	
-	ULONG xx, yy;
 
-	WORD planePosX = posX/16;
-	BYTE leftGap = posX - planePosX*16;
+	WORD planePosX = posX>>4;
+	BYTE leftGap = posX - (planePosX<<4);
 	BYTE rightGap = 16 - leftGap;
 
-	UBYTE xSteps = (spriteSizeX/16);
+	UBYTE xSteps = (spriteSizeX>>4);
 
 
 	//position = startOffset;
 
-	UWORD baseX = spriteIndexX*(spriteSizeX/16);
+	UWORD baseX = spriteIndexX*(spriteSizeX>>4);
 	UWORD baseY = spriteIndexY*spriteSizeY;
 
+
 #ifdef AMIGA
-	position = (posY - (spriteSizeY/2)) * PLANEWIDTHWORD + planePosX - spriteSizeX/32;
+	position = (posY - (spriteSizeY>>1)) * PLANEWIDTHWORD + planePosX - (spriteSizeX>>5);
     UWORD *firstCol = engine.renderer.plane1W + position;
     UWORD *secondCol = engine.renderer.plane2W + position;
     UWORD *thirdCol = engine.renderer.plane3W + position;
@@ -50,97 +49,109 @@ void DrawSprite4b(unsigned char *bLogo, BITMAPINFOHEADER *bhLogo,
     UWORD *fourthCol = engine.renderer.planes + position + 3;
 	#endif
 
+	UWORD wordWidth = bhLogo->biWidth>>4;
 
-	for (ULONG y =baseY+spriteSizeY; y > baseY; y--)
+	UWORD size = bhLogo->biHeight*wordWidth;
+	UWORD offset = baseY*wordWidth + baseX;
+
+	UWORD *bmpRowPtr1 = (UWORD *)bLogo + offset;
+	UWORD *bmpRowPtr2 = bmpRowPtr1 + size;
+	UWORD *bmpRowPtr3 = bmpRowPtr2 + size;
+	UWORD *bmpRowPtr4 = bmpRowPtr3 + size;
+
+	UWORD *maskPtr = (UWORD *)bLogo  + offset + (bhLogo->biSizeImage>>1);
+	
+
+	for (UWORD y =0; y < spriteSizeY; y++)
 	{
-		yy = (y - 1) * bhLogo->biWidth/4;
 		
         UWORD *firstPos = firstCol;
         UWORD *secondPos = secondCol;
         UWORD *thirdPos = thirdCol;
         UWORD *fourthPos = fourthCol;
 
+		UWORD prevValue1 = 0;
+		UWORD prevValue2 = 0;
+		UWORD prevValue3 = 0;
+		UWORD prevValue4 = 0;
+		UWORD prevMask = 0;
 
-		UWORD *bmpPtr = (UWORD *)bLogo;
-		UWORD *maskPtr = (UWORD *)bLogo;
-		maskPtr += bhLogo->biSizeImage/2;
-		for (ULONG x = 0; x <= xSteps; x++)
+		UWORD currValue1;
+		UWORD currValue2;
+		UWORD currValue3;
+		UWORD currValue4;
+		UWORD currMask;
+
+		for (UWORD x = 0; x < xSteps; x++)
 		{
-			if(x == 0)
-			{
+			currValue1 = *(bmpRowPtr1+x);
+			currValue2 = *(bmpRowPtr2+x);
+			currValue3 = *(bmpRowPtr3+x);
+			currValue4 = *(bmpRowPtr4+x);
+			currMask = *(maskPtr+x);
 
-				xx = ((baseX + x) * 4);
-             
-				word1 = bmpPtr[xx+yy] >> leftGap;
-				word2 = bmpPtr[xx+yy+1] >> leftGap;
-				word3 = bmpPtr[xx+yy+2] >> leftGap;
-				word4 = bmpPtr[xx+yy+3] >> leftGap;
-				mask = maskPtr[xx/4+yy/4] >> leftGap;
+			word1 = (prevValue1 << rightGap) + (currValue1 >> leftGap);
+			word2 = (prevValue2 << rightGap) + (currValue2 >> leftGap);
+			word3 = (prevValue3 << rightGap) + (currValue3 >> leftGap);
+			word4 = (prevValue4 << rightGap) + (currValue4 >> leftGap);
+			mask = (prevMask << rightGap) + (currMask >> leftGap);
 
-				*firstPos = (word1 & mask) | (*firstPos & ~mask );
-				*secondPos = (word2 & mask) | (*secondPos & ~mask );
-				*thirdPos = (word3 & mask) | (*thirdPos & ~mask );
-				*fourthPos = (word4 & mask) | (*fourthPos & ~mask );
+			*firstPos = (word1 & mask) | (*firstPos & ~mask );
+			*secondPos = (word2 & mask) | (*secondPos & ~mask );
+			*thirdPos = (word3 & mask) | (*thirdPos & ~mask );
+			*fourthPos = (word4 & mask) | (*fourthPos & ~mask );
+			
+			prevValue1 = currValue1;
+			prevValue2 = currValue2;
+			prevValue3 = currValue3;
+			prevValue4 = currValue4;
+			prevMask = currMask;
 
-			}
-			else if(x < xSteps)
-			{
 
-				xx = ((baseX + x) * 4);
-             
-				word1 = (bmpPtr[xx+yy-4] << rightGap) + (bmpPtr[xx+yy] >> leftGap);
-				word2 = (bmpPtr[xx+yy+1-4] << rightGap) + (bmpPtr[xx+yy+1] >> leftGap);
-				word3 = (bmpPtr[xx+yy+2-4] << rightGap) + (bmpPtr[xx+yy+2] >> leftGap);
-				word4 = (bmpPtr[xx+yy+3-4] << rightGap) + (bmpPtr[xx+yy+3] >> leftGap);
-				mask = (maskPtr[(xx-4)/4+yy/4] << rightGap) + (maskPtr[(xx)/4+yy/4] >> leftGap);
-
-				*firstPos = (word1 & mask) | (*firstPos & ~mask );
-				*secondPos = (word2 & mask) | (*secondPos & ~mask );
-				*thirdPos = (word3 & mask) | (*thirdPos & ~mask );
-				*fourthPos = (word4 & mask) | (*fourthPos & ~mask );
-
-                
-			}
-			else
-			{
-
-				xx = ((baseX + x) * 4);
-             
-				word1 = bmpPtr[xx+yy-4] << rightGap;
-				word2 = bmpPtr[xx+yy+1-4] << rightGap;
-				word3 = bmpPtr[xx+yy+2-4] << rightGap;
-				word4 = bmpPtr[xx+yy+3-4] << rightGap;
-				mask = maskPtr[(xx-4)/4+yy/4] << rightGap;
-
-				*firstPos = (word1 & mask) | (*firstPos & ~mask );
-				*secondPos = (word2 & mask) | (*secondPos & ~mask );
-				*thirdPos = (word3 & mask) | (*thirdPos & ~mask );
-				*fourthPos = (word4 & mask) | (*fourthPos & ~mask );
-
-			}
 			
 			#ifdef AMIGA
-		firstPos++;
-		secondPos++;
-		thirdPos++;
-		fourthPos++;
-		#else
+			firstPos++;
+			secondPos++;
+			thirdPos++;
+			fourthPos++;
+			#else
             firstPos+=4;
             secondPos+=4;
             thirdPos+=4;
             fourthPos+=4;
 			#endif
+		
 		}
+
+		word1 = prevValue1 << rightGap;
+		word2 = prevValue2 << rightGap;
+		word3 = prevValue3 << rightGap;
+		word4 = prevValue4 << rightGap;
+		mask = prevMask << rightGap;
+
+		*firstPos = (word1 & mask) | (*firstPos & ~mask );
+		*secondPos = (word2 & mask) | (*secondPos & ~mask );
+		*thirdPos = (word3 & mask) | (*thirdPos & ~mask );
+		*fourthPos = (word4 & mask) | (*fourthPos & ~mask );
+
 
         firstCol += PLANEWIDTHWORD;
         secondCol += PLANEWIDTHWORD;
         thirdCol += PLANEWIDTHWORD;
         fourthCol += PLANEWIDTHWORD;
+
+		bmpRowPtr1 += wordWidth;
+		bmpRowPtr2 += wordWidth;
+		bmpRowPtr3 += wordWidth;
+		bmpRowPtr4 += wordWidth;
+
+		maskPtr += wordWidth;
 	}
 }
 
 void DrawBitmap4bCenter(unsigned char *bLogo, BITMAPINFOHEADER *bhLogo)
 {
+
 	UWORD position;
 	UWORD word1, word2, word3, word4;
 	ULONG xx, yy;
@@ -161,25 +172,28 @@ void DrawBitmap4bCenter(unsigned char *bLogo, BITMAPINFOHEADER *bhLogo)
 
 	//position = startOffset;
 
-	for (ULONG y = bhLogo->biHeight; y > 0; y--)
+	UWORD wordWidth = bhLogo->biWidth >> 4;
+
+	UWORD *bmpPtr1 = (UWORD *)bLogo;
+	UWORD *bmpPtr2 = (UWORD *)bLogo+bhLogo->biHeight*wordWidth;
+	UWORD *bmpPtr3 = (UWORD *)bLogo+2*bhLogo->biHeight*wordWidth;
+	UWORD *bmpPtr4 = (UWORD *)bLogo+3*bhLogo->biHeight*wordWidth;
+
+	for (ULONG y = 0; y < bhLogo->biHeight; y++)
 	{
-		yy = (y - 1) * bhLogo->biWidth/4;
 
         UWORD *firstPos = firstCol;
         UWORD *secondPos = secondCol;
         UWORD *thirdPos = thirdCol;
         UWORD *fourthPos = fourthCol;
 
-		UWORD *bmpPtr = (UWORD *)bLogo;
-		for (ULONG x = 0; x < bhLogo->biWidth / 16; x++)
+		for (ULONG x = 0; x < wordWidth; x++)
 		{
 
-			xx = x * 4;
-
-			word1 = bmpPtr[xx+yy];
-			word2 = bmpPtr[xx+yy+1];
-			word3 = bmpPtr[xx+yy+2];
-			word4 = bmpPtr[xx+yy+3];
+			word1 = *bmpPtr1++;
+			word2 = *bmpPtr2++;
+			word3 = *bmpPtr3++;
+			word4 = *bmpPtr4++;
 
 			*firstPos = word1;
 			*secondPos = word2;
@@ -202,6 +216,7 @@ void DrawBitmap4bCenter(unsigned char *bLogo, BITMAPINFOHEADER *bhLogo)
         secondCol += PLANEWIDTHWORD;
         thirdCol += PLANEWIDTHWORD;
         fourthCol += PLANEWIDTHWORD;
+		
 	}
 }
 

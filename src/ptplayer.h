@@ -18,6 +18,7 @@
 #include "SDI_compiler.h"
 #endif
 
+#ifdef AMIGA
 /*
   mt_install_cia(a6=CUSTOM, a0=VectorBase, d0=PALflag.b)
     Install a CIA-B interrupt for calling _mt_music or mt_sfxonly.
@@ -164,5 +165,22 @@ extern UBYTE mt_E8Trigger;
 */
 
 extern UBYTE mt_MusicChannels;
+#else
+void ASM P61_Init(REG(a6, void *custom),
+	REG(a0, void *TrackerModule), REG(a1, void *Samples),
+	REG(d0, UBYTE PALflag), REG(a4, UBYTE *dma));
 
+/*
+  mt_remove_cia(a6=CUSTOM)
+    Remove the CIA-B music interrupt and restore the old vector.
+*/
+
+
+void ASM P61_SetPosition(REG(a6, void *custom),
+	REG(d0, UBYTE InitialSongPos));
+
+
+void ASM P61_End();
+
+#endif
 #endif

@@ -23,44 +23,43 @@ ULONG getDeltaTime(ULONG *refTime)
     return result;
 }
 
-void updateShipParams(LONG deltaTime, UWORD terrainHeight)
+void updateShipParams(LONG deltaTime, ULONG terrainHeight)
 {
     ShipParams shipParams = engine.gameState.shipParams;
 	shipParams.relHeight = ((shipParams.pY - 2) - terrainHeight);
-	shipParams.ddP = 5*((256 - shipParams.relHeight) - (shipParams.dP/4));
+	shipParams.ddP = (((200 - shipParams.relHeight) - (shipParams.dP>>3)) << 1);
 	
-	LONG addedVelocity = 5*(shipParams.ddP/48);
-	if(addedVelocity > 1000)
+	LONG addedVelocity = (shipParams.ddP>>3);
+	if(addedVelocity > 1500)
 	{
-			addedVelocity = 1000 - shipParams.dP;	
+			addedVelocity = 1500 - shipParams.dP;	
 		
 	}
 	shipParams.dP = shipParams.dP + addedVelocity;
 
-	if(shipParams.dP > 1000)
+	if(shipParams.dP > 1500)
 	{
-		shipParams.dP = 1000;
+		shipParams.dP = 1500;
 	}
 	if(shipParams.dP < 0)
 	{
 		shipParams.dP = 0;
 	}
 
-	shipParams.precZ += deltaTime*shipParams.dP/shipParams.dPDenom;
+	shipParams.precZ += deltaTime*shipParams.dP>>8;///shipParams.dPDenom;
 
 
-	shipParams.precX += (LONG)deltaTime * engine.gameState.crossHairX / 4000;
-	shipParams.precY -= (LONG)deltaTime * engine.gameState.crossHairY / 1500;
+	shipParams.precX += ((LONG)deltaTime * engine.gameState.crossHairX) >> 12;
+	shipParams.precY -= ((LONG)deltaTime * engine.gameState.crossHairY) >> 10;
 
 	if (shipParams.precY > 7000)
 		shipParams.precY = 7000; //block going above hills
 	if (shipParams.precY < 100)
 		shipParams.precY = 100; //block going below ground
 
-	engine.renderer.deltaZ = (shipParams.precZ / 32) - shipParams.pZ;
-	shipParams.pZ = shipParams.precZ / 32;
-	shipParams.pX = shipParams.precX / 32;
-	shipParams.pY = shipParams.precY / 32;
+	shipParams.pZ = (shipParams.precZ  >> 5);
+	shipParams.pX = (shipParams.precX  >> 5);
+	shipParams.pY = (shipParams.precY  >> 5);
     engine.gameState.shipParams = shipParams;
 
 }
@@ -68,7 +67,7 @@ void updateShipParams(LONG deltaTime, UWORD terrainHeight)
 void ProcessInput()
 {
 	
-	LONG lowerDelta = engine.deltaTime/2000;
+	LONG lowerDelta = engine.deltaTime>>11;
 	if(lowerDelta == 0)
 	{
 		lowerDelta = 1;
@@ -86,8 +85,8 @@ void ProcessInput()
 	}	
 
 
-	engine.gameState.crossHairX += turnHorizontal*(LONG)engine.deltaTime / 60;
-	LONG crossHairHorizontalComeback = - 8*(engine.gameState.crossHairX / (lowerDelta));
+	engine.gameState.crossHairX += turnHorizontal*((LONG)engine.deltaTime >> 6);
+	LONG crossHairHorizontalComeback = - ((engine.gameState.crossHairX / (lowerDelta)) << 3);
 	
 	if (crossHairHorizontalComeback * turnHorizontal > 0 || turnHorizontal == 0)
 	{
@@ -116,8 +115,8 @@ void ProcessInput()
 	}	
 
 	
-	engine.gameState.crossHairY += turnVertical*engine.yAxis*(LONG)(engine.deltaTime / 60);
-	LONG crossHairVerticalComeback = - 8*(engine.gameState.crossHairY / (lowerDelta));
+	engine.gameState.crossHairY += turnVertical*engine.yAxis*(LONG)(engine.deltaTime >> 6);
+	LONG crossHairVerticalComeback = - ((engine.gameState.crossHairY / (lowerDelta)) << 3);
 	
 	if (crossHairVerticalComeback * turnVertical*engine.yAxis > 0 || turnVertical == 0)
 	{

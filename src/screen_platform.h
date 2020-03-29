@@ -2,12 +2,18 @@
 
 #ifdef AMIGA
 
+#include <ace/managers/blit.h>
+
 void CopyFastToChipW(tBitMap *bm)
 {
-	CopyMemQuick(engine.renderer.plane1W, bm->Planes[0], PLANEWIDTH*PLANEHEIGHT);
-	CopyMemQuick(engine.renderer.plane2W, bm->Planes[1], PLANEWIDTH*PLANEHEIGHT);
-	CopyMemQuick(engine.renderer.plane3W, bm->Planes[2], PLANEWIDTH*PLANEHEIGHT);
-	CopyMemQuick(engine.renderer.plane4W, bm->Planes[3], PLANEWIDTH*PLANEHEIGHT);
+	
+	blitUnsafeCopyAligned(&engine.renderer.buffer, 0, 0,
+	bm, 0, 0, 320, PLANEHEIGHT);
+	
+	// CopyMemQuick(engine.renderer.plane1W, bm->Planes[0], PLANEWIDTH*PLANEHEIGHT);
+	// CopyMemQuick(engine.renderer.plane2W, bm->Planes[1], PLANEWIDTH*PLANEHEIGHT);
+	// CopyMemQuick(engine.renderer.plane3W, bm->Planes[2], PLANEWIDTH*PLANEHEIGHT);
+	// CopyMemQuick(engine.renderer.plane4W, bm->Planes[3], PLANEWIDTH*PLANEHEIGHT);
 }
 
 void DrawPanelsToScreen()
@@ -65,11 +71,28 @@ void InitScreen()
 								   TAG_SIMPLEBUFFER_VPORT, engine.platformScreen.s_pVPort,
 								   TAG_SIMPLEBUFFER_BITMAP_FLAGS, BMF_CLEAR,
 								   TAG_DONE);
+
+	engine.renderer.plane1W = planesWc;
+	engine.renderer.plane2W = planesWc + PLANEWIDTHWORD*PLANEHEIGHT;
+	engine.renderer.plane3W = planesWc + 2*PLANEWIDTHWORD*PLANEHEIGHT;
+	engine.renderer.plane4W = planesWc + 3*PLANEWIDTHWORD*PLANEHEIGHT;   
+	
+	engine.renderer.buffer.pad = engine.platformScreen.s_pBuffer->pBack->pad;
+	engine.renderer.buffer.Flags = engine.platformScreen.s_pBuffer->pBack->Flags;
+	engine.renderer.buffer.Depth = 4;
+	engine.renderer.buffer.BytesPerRow = engine.platformScreen.s_pBuffer->pBack->BytesPerRow;
+	engine.renderer.buffer.Planes[0] = engine.renderer.plane1W; 
+	engine.renderer.buffer.Planes[1] = engine.renderer.plane2W;
+	engine.renderer.buffer.Planes[2] = engine.renderer.plane3W;
+	engine.renderer.buffer.Planes[3] = engine.renderer.plane4W;
+	engine.renderer.buffer.Rows = PLANEHEIGHT;
+	blitManagerCreate();
 }
 
 void ViewOff()
 {
 	
+	blitManagerDestroy();
 	viewLoad(0);
 }
 

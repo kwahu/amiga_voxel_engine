@@ -20,7 +20,7 @@ void InitGameState()
     engine.gameState.crossHairX = 0;
     engine.gameState.crossHairY = 0;
 	engine.gameState.points = 0;
-    engine.gameState.deathDuration = 0;
+    engine.gameState.animDuration = 0;
     engine.gameState.runOver = 0;
     engine.gameState.playerDeath = 0;
     engine.renderer.lastOverwrittenLine = 0;
@@ -50,7 +50,7 @@ void UpdatePlayerPosition()
     ULONG lowerDelta = (engine.deltaTime/10000);
     updateShipParams(lowerDelta, terrainHeight);
 
-    LONG addedpoints = (lowerDelta)*(120 - engine.gameState.shipParams.relHeight);
+    LONG addedpoints = (lowerDelta)*(110 - engine.gameState.shipParams.relHeight);
     if(addedpoints > 0 && engine.gameState.shipParams.pZ < 2816)
     {
         engine.gameState.points += addedpoints;
@@ -89,11 +89,11 @@ void RenderShipAndCrossHair()
     }
     if(engine.gameState.crossHairY > 4000)
     {
-        spriteIndexY = 0;
+        spriteIndexY = 2;
     }
     else if(engine.gameState.crossHairY < -4000)
     {
-        spriteIndexY = 2;
+        spriteIndexY = 0;
     }
 
                 
@@ -135,9 +135,11 @@ void RenderShipAndCrossHair()
 
     DrawCrosshair( crossPX, crossPY + 4);
     DrawCrosshair( crossPX, crossPY - 4);
+    if(!engine.gameState.runOver)
+    {
      DrawSprite4b(engine.shipBitmap, &engine.shipHeader, shipDirX, shipDirY,
                      spriteIndexX, spriteIndexY, 48, 48);
-    
+    }
      
 }
 
@@ -145,7 +147,7 @@ void DrawGameStats()
 {
     ConvertIntToChar(engine.gameState.points, engine.gameState.sScore, 8);
     ConvertIntToChar(engine.gameState.shipParams.dP, engine.gameState.sVelocity, 5);
-    ConvertIntToChar(engine.accTime/2500, engine.gameState.sTime, 8);
+    ConvertIntToChar(engine.deltaTime/2500, engine.gameState.sTime, 8);
     ConvertIntToChar(engine.gameState.shipParams.relHeight, engine.gameState.sPlayerY, 5);
     
 
@@ -154,14 +156,14 @@ void DrawGameStats()
     FillTextBitmap(engine.font, engine.pBitmapTime, engine.gameState.sTime);
     FillTextBitmap(engine.font, engine.pBitmapHeight, engine.gameState.sPlayerY);
 
-    DrawTextBitmapOverwrite(engine.pBitmapVelocity, 100, PLANEHEIGHT-6, 12);
-    DrawTextBitmapOverwrite(engine.pBitmapScore, 35, PLANEHEIGHT-6, 12);
-    DrawTextBitmapOverwrite(engine.pBitmapHeight, 195, PLANEHEIGHT-6, 12);
-    DrawTextBitmapOverwrite(engine.pBitmapTime, 250, PLANEHEIGHT-6, 12);
-    DrawTextBitmap(engine.pBitmapVelocityLabel, 75, PLANEHEIGHT-6, 12);
+    DrawTextBitmapOverwrite(engine.pBitmapVelocity, 115, PLANEHEIGHT-6, 12);
+    DrawTextBitmapOverwrite(engine.pBitmapScore, 30, PLANEHEIGHT-6, 12);
+    DrawTextBitmapOverwrite(engine.pBitmapHeight, 215, PLANEHEIGHT-6, 12);
+    DrawTextBitmapOverwrite(engine.pBitmapTime, 255, PLANEHEIGHT-6, 12);
+    DrawTextBitmap(engine.pBitmapVelocityLabel, 70, PLANEHEIGHT-6, 12);
     DrawTextBitmap(engine.pBitmapScoreLabel, 0, PLANEHEIGHT-6, 12);
-    DrawTextBitmap(engine.pBitmapHeightLabel, 135, PLANEHEIGHT-6, 12);
-    DrawTextBitmap(engine.pBitmapTimeLabel, 230, PLANEHEIGHT-6, 12);
+    DrawTextBitmap(engine.pBitmapHeightLabel, 140, PLANEHEIGHT-6, 12);
+    DrawTextBitmap(engine.pBitmapTimeLabel, 240, PLANEHEIGHT-6, 12);
 
 }
 
@@ -173,7 +175,7 @@ void RunGameState()
     
     
     
-    if(engine.gameState.shipParams.pZ > 11*256)
+    if(engine.gameState.shipParams.pZ > 2816)
     {
         engine.gameState.crossHairX = 0;
 
@@ -195,12 +197,13 @@ void RunGameState()
         UWORD terrainHeight = getTerrainHeight(engine.gameState.shipParams, engine.renderer.mapHigh);
 
         ULONG lowerDelta = (engine.deltaTime/10000);
-        updateShipParams(lowerDelta, terrainHeight);
+        updateShipParams(lowerDelta, engine.gameState.shipParams.pY - 200);
 
         
         
 
         engine.gameState.shipParams.dPDenom = engine.gameState.shipParams.dPDenom + 8;
+	    engine.gameState.shipParams.relHeight = ((engine.gameState.shipParams.pY - 2) - terrainHeight);
 
         
         if(engine.gameState.shipParams.relHeight <= 4 && engine.gameState.shipParams.dPDenom > 256)
@@ -249,12 +252,12 @@ void RunGameState()
     {
         ULONG addedTime = engine.deltaTime/2500;
             
-        if((engine.gameState.deathDuration + addedTime) < 675)
+        if((engine.gameState.animDuration + addedTime) < 675)
         {
-            engine.gameState.deathDuration += addedTime;
-            ULONG currentIndex = (ULONG)(engine.gameState.deathDuration/75);
+            engine.gameState.animDuration += addedTime;
+            ULONG currentIndex = (ULONG)(engine.gameState.animDuration/75);
             WORD currentX = (WORD)(currentIndex%3);
-            WORD currentY = (WORD)(2 - (currentIndex/3));
+            WORD currentY = (WORD)((currentIndex/3));
             
             UWORD explosionX = 160 + engine.renderer.xTurnOffset;
             UWORD explosionY = GAME_SHIP_POS + (engine.gameState.crossHairY/1600);
@@ -271,7 +274,6 @@ void RunGameState()
         
     }
 
-    VSyncAndDraw();    
 
     // 	if(keyCheck(KEY_Q)){calculationDepthDivider=1;Recalculate();}
     // if(keyCheck(KEY_W)){calculationDepthDivider=2;Recalculate();}
@@ -308,16 +310,40 @@ void RunGameState()
 
     if(engine.gameState.runOver)
     {
-        if(engine.gameState.points < 1000000)
+         ULONG addedTime = engine.deltaTime/2500;
+            
+        if((engine.gameState.animDuration + addedTime) < 1300)
         {
-            ShowCutscene(Cutscene_TooLate, PATTERN_DURATION);
+            engine.gameState.animDuration += addedTime;
+            ULONG currentIndex = (ULONG)(engine.gameState.animDuration/100);
+            WORD currentX = (WORD)(currentIndex%4);
+            WORD currentY = (WORD)((currentIndex/4));
+            
+            UWORD landingX = 160 + engine.renderer.xTurnOffset;
+            UWORD landingY = GAME_SHIP_POS + (engine.gameState.crossHairY/1600);
+
+
+            DrawSprite4b(engine.landingBitmap, &engine.landingHeader, landingX, landingY,
+                     currentX, currentY, 48, 48);
         }
         else
         {
-            ShowCutscene(Cutscene_Win, 11000);
+       
+            if(engine.gameState.points < 1000000)
+            {
+                ShowCutscene(Cutscene_TooLate, PATTERN_DURATION);
+            }
+            else
+            {
+                ShowCutscene(Cutscene_Win, 11000);
 
+            }     
         }
+       
     }
+
+    
+    VSyncAndDraw();    
     
     
 

@@ -3,9 +3,11 @@
 void ShowDeathCutscene()
 {
     
-    StopSample();
+    //StopSample();
+    
+    
+    //InitAudio();
     PlaySample(16);
-    ContinueSample();
 
     ClearBuffor();
     SetBitmapPalette(engine.activePalette);
@@ -100,9 +102,9 @@ void ShowDeathCutscene()
 
 void ShowTooLateCutscene()
 {
-    StopSample();
+    //StopSample();
+    //ContinueSample();
     PlaySample(16);
-    ContinueSample();
     ClearBuffor();
  
    SetBitmapPalette(engine.activePalette);
@@ -159,8 +161,8 @@ void ShowWinCutscene()
 
     StopSample();
     LoadBitmapToMemory("data/fin");
+    InitAudio();
     PlaySample(18);
-    ContinueSample();
     ClearBuffor();
     SetBitmapPalette(engine.activePalette);
     DrawBitmap4bCenter(engine.activeBitmap, &engine.activeBitmapHeader);
@@ -325,10 +327,9 @@ void ShowCutscene(Cutscene cutsceneType, ULONG duration)
     }
 
 
-    UBYTE nextPattern = 0;
+    volatile UBYTE nextPattern = 0;
     
     
-    StopSample();
     UseSystem();
     switch(cutsceneType)
     {
@@ -351,6 +352,7 @@ void ShowCutscene(Cutscene cutsceneType, ULONG duration)
     }
     
     UnuseSystem();
+    InitAudio();
     PlaySample(nextPattern);
     ContinueSample();
 

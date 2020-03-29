@@ -1061,128 +1061,112 @@ void ProcessRayCastsFull3x2(WORD (*rayCastX), WORD (*rayCastY), UWORD (*map),
 UBYTE px, UBYTE py, UBYTE ph, UBYTE screenStart, UBYTE screenEnd)
 {
 
+
+
     
-	UWORD yOffset = (256 - YSIZEODD*2)/2 * PLANEWIDTHWORD;
+	UWORD yOffset = (128 - (YSIZEODD)) * PLANEWIDTHWORD;
     WORD baseX = XTURNBUFFOR + engine.renderer.xTurnOffset + screenStart*6;
 
 	//for each vertical line
 
+	//for each vertical line
     
+
+    UWORD offset = 11*MAPSIZE;
+    UWORD depth = engine.renderer.renderingDepth - engine.renderer.zStart;
+    UWORD *baseRayX = rayCastX + baseX*TERRAINDEPTH + engine.renderer.zStart;
+        
+
+    UWORD *baseRayY = rayCastY + engine.renderer.zStart;
+    UBYTE *baseDepth = engine.renderer.depthBuffer + screenStart;
+    UWORD *screenBase = (UWORD *)(engine.renderer.screenPatch + (((YSIZEODD)-1)*6));
 
     for(UBYTE x = screenStart; x < screenEnd; ++x)
     {
-        
-        UBYTE somethingHit[YSIZEODD];
-        for(UWORD i = 0; i < YSIZEODD; ++i)
+
+        UWORD *rayXPtr = baseRayX;
+        UWORD *rayXPtr2 = rayXPtr + (TERRAINDEPTH << 1);
+        UWORD *rayXPtr3 = rayXPtr2 + (TERRAINDEPTH << 1);
+        UWORD mapSamples[depth*3];
+        UWORD *mapPtr = map + engine.renderer.zStart;
+
+        for(UWORD j = 0; j < depth; ++j)
         {
-            somethingHit[i] = 0;
+            UBYTE mx = px + *(rayXPtr++);
+            UBYTE mx2 = px + *(rayXPtr2++);
+            UBYTE mx3 = px + *(rayXPtr3++);
+            mapSamples[j] = mapPtr[(mx >> 1)*offset];
+            mapSamples[depth+j] = mapPtr[(mx2 >> 1)*offset];
+            mapSamples[depth+depth+j] = mapPtr[(mx3 >> 1)*offset];
+            ++mapPtr;
         }
-        for(UBYTE i = 0; i < 6; ++i)
+        baseRayX += (TERRAINDEPTH*6);
+
+        for(UBYTE i = 0; i < 3; ++i)
         {
             UBYTE sy = 0;
-            UBYTE *depthBufferPtr = engine.renderer.depthBuffer + x; 
-            UWORD tz = *depthBufferPtr - engine.renderer.deltaZ;
-            if(tz < engine.renderer.zStart || tz > engine.renderer.renderingDepth)
-            {
-                tz = engine.renderer.zStart;
-            }
-            WORD *rayXPtr = rayCastX + baseX*TERRAINDEPTH + tz;
-            WORD *rayYPtr = rayCastY + tz;
-            UBYTE *screenPtr = engine.renderer.screenPatch + ((YSIZEODD)-1)*6 + i;
             
-            UBYTE mx,my;
-	        UWORD mapValue;
+            UBYTE *depthBufferPtr = baseDepth; 
+            UWORD tz = 0;
+            
+            UWORD *rayYPtr = baseRayY;
+            UWORD *screenPtr = screenBase + i;
+            
 
-            UWORD offset = 11*MAPSIZE;
+            UWORD *mapSmpPtr = mapSamples + i*depth;
+            UWORD offsetz = engine.renderer.zStart;
 
-            while(tz < engine.renderer.renderingDepth)
+            
+            while(tz < depth)
             {
-                mx = px + *rayXPtr;
-                my = ((tz<<engine.renderer.renderingDepthStep));
-                mapValue = map[ (mx >> 1)*offset  + (my >> 1) ];
+                UWORD mapValue = *mapSmpPtr;
                 UBYTE th = mapValue;
 
                 WORD slope = th - (ph + *rayYPtr);
 
-                if(slope > tz>>2)
+                if(slope > 0)
                 {
-                    if(tz == engine.renderer.zStart)
+                    UWORD val;
+                    if(slope > offsetz>>2)
                     {
-                        *screenPtr = (mapValue >> 8);
+
+                        val = ((mapValue >> 8) + ((((slope)) >> 2) & 1));
                     }
                     else
                     {
-                        *screenPtr = ((mapValue >> 8) + ((slope/4) & 1));
+                        val = ((mapValue >> 8) + 2);
+                        
                     }
-
-                    if(!somethingHit[sy])
-                    {
-                        *depthBufferPtr = (UBYTE)tz;
-                        somethingHit[sy] = 1;
-                    }
+                    
+                    *screenPtr = (val << 5) + val;
+                    *depthBufferPtr = (UBYTE)(offsetz);
 
                     sy+=1;//go step higher in the raycast table
                     rayYPtr += TERRAINDEPTH;
-                    screenPtr-=6;//go step higher on screen
+                    screenPtr-=3;//go step higher on screen
                     depthBufferPtr += 20;
                     if(sy == YSIZEODD) tz=engine.renderer.renderingDepth; //break if end of screen
-                    
-                    
-                    
-                }
-                else if(slope > 0)
-                {
-                    if(tz == engine.renderer.zStart)
-                    {
-                        *screenPtr = (mapValue >> 8);
-                    }
-                    else
-                    {
-                        *screenPtr = (mapValue >> 8) + 2;
-                    }
-
-                    if(!somethingHit[sy])
-                    {
-                        *depthBufferPtr = (UBYTE)tz;
-                        somethingHit[sy] = 1;
-                    }
-
-                    sy+=1;//go step higher in the raycast table
-                    rayYPtr += TERRAINDEPTH;
-                    screenPtr-=6;//go step higher on screen
-                    depthBufferPtr += 20;
-                    if(sy == YSIZEODD) tz=engine.renderer.renderingDepth; //break if end of screen
-                    
-                    
                 }
                 else
                 {	
-                    //screen[position] = 0;
-                    tz++;//go step in depth if no height hit
-                    rayXPtr++;
-                    rayYPtr++;
+                    ++tz;//go step in depth if no height hit
+                    ++mapSmpPtr;
+                    ++rayYPtr;
+                    ++offsetz;
                 }
             }
             
             while(sy < YSIZEODD)
             {
-                //if(screen[position] == 31)
-                //	sy = YSIZE;
-                //else
-                {
-                    if(somethingHit[sy] == 0)
-                    {
-                        *depthBufferPtr = (UBYTE)tz;
-                    }
-                    *screenPtr =  32 - ph/32 -sy/8;
-                    sy+=1;
-                    screenPtr-=6;
-                    depthBufferPtr += 20;
-                }
+                *depthBufferPtr = (UBYTE)tz;
+                UWORD val = 32 - (ph>>5) -(sy>>3);
+                *screenPtr = (val << 5) + val;
+                sy+=1;
+                screenPtr-=3;
+                depthBufferPtr += 20;
 
             }
 
-            baseX++;
         }
 
 #if AMIGA
@@ -1197,44 +1181,57 @@ UBYTE px, UBYTE py, UBYTE ph, UBYTE screenStart, UBYTE screenEnd)
         UWORD *planePos2 = engine.renderer.planes + yOffset + x*4 + 1;
         UWORD *planePos3 = engine.renderer.planes + yOffset + x*4 + 2;
         UWORD *planePos4 = engine.renderer.planes + yOffset + x*4 + 3;
-		#endif
-        UWORD sp = 0;
-
         
-
+		#endif
+        UWORD *screenPtr = (UWORD *)engine.renderer.screenPatch;
         for(UBYTE y=0;y<YSIZEODD;y++)
 	    {
 
-			UWORD address1 = (engine.renderer.screenPatch[sp]<<10) + (engine.renderer.screenPatch[sp+1]<<5) + (engine.renderer.screenPatch[sp+2]);
-			UWORD address2 = (engine.renderer.screenPatch[sp+3]<<10) + (engine.renderer.screenPatch[sp+4]<<5) + (engine.renderer.screenPatch[sp+5]);
-
+			UWORD address1 = (*screenPtr++) << 5;
+            address1 += (*screenPtr)&0x1F;
+            UWORD address2 = ((*screenPtr++)&0x1F) << 10;
+            address2 += (*screenPtr++);
+            UBYTE *ditherPtr1 = engine.renderer.ditherTable1 + address1;
+            UBYTE *ditherPtr2 = engine.renderer.ditherTable1 + address2;
             
-			UWORD word = (engine.renderer.ditherTable1[ address1 ]<<8) + engine.renderer.ditherTable1[ address2 ];
+			UWORD word = (*ditherPtr1<<8) + *ditherPtr2;
+            UWORD otherWord = (word << 1)|((word>>1) & 1);
+            UWORD ditherOffset = COLORS*COLORS*COLORS;
 			*planePos1 = word;
             planePos1 += PLANEWIDTHWORD;
-			*planePos1 = (word << 1)|((word>>1) & 1);
+			*planePos1 = otherWord;
             planePos1 += PLANEWIDTHWORD;
-			word = (engine.renderer.ditherTable2[ address1 ]<<8) + engine.renderer.ditherTable2[ address2 ];
+            ditherPtr1 += ditherOffset;
+            ditherPtr2 += ditherOffset;
+			word = (*ditherPtr1<<8) + *ditherPtr2;
+            otherWord = (word << 1)|((word>>1) & 1);
 			*planePos2 = word;
             planePos2 += PLANEWIDTHWORD;
-			*planePos2 = (word << 1)|((word>>1) & 1);
+			*planePos2 = otherWord;
             planePos2 += PLANEWIDTHWORD;
-			word = (engine.renderer.ditherTable3[ address1 ]<<8) + engine.renderer.ditherTable3[ address2 ];
+            ditherPtr1 += ditherOffset;
+            ditherPtr2 += ditherOffset;
+			word = (*ditherPtr1<<8) + *ditherPtr2;
+            otherWord = (word << 1)|((word>>1) & 1);
 			*planePos3 = word;
             planePos3 += PLANEWIDTHWORD;
-			*planePos3 = word = (word << 1)|((word>>1) & 1);
+			*planePos3 = otherWord;
             planePos3 += PLANEWIDTHWORD;
-			word = (engine.renderer.ditherTable4[ address1 ]<<8) + engine.renderer.ditherTable4[ address2 ];
+            ditherPtr1 += ditherOffset;
+            ditherPtr2 += ditherOffset;
+			word = (*ditherPtr1<<8) + *ditherPtr2;
+            otherWord = (word << 1)|((word>>1) & 1);
 			*planePos4 = word;
             planePos4 += PLANEWIDTHWORD;
-			*planePos4 = word = (word << 1)|((word>>1) & 1);
+			*planePos4 = otherWord;
             planePos4 += PLANEWIDTHWORD;
 
-            sp += 6;
         }
 
-    }
+        baseDepth++;
 
+    }
+     
 }
 
 
@@ -1243,114 +1240,104 @@ UBYTE px, UBYTE py, UBYTE ph, UBYTE screenStart, UBYTE screenEnd)
 {
 
     
-	UWORD yOffset = (256 - YSIZEEVEN*4)/2 * PLANEWIDTHWORD;
-    UBYTE baseX = XTURNBUFFOR + engine.renderer.xTurnOffset + screenStart*4;
+	UWORD yOffset = (128 - (YSIZEEVEN<<1)) * PLANEWIDTHWORD;
+    UBYTE baseX = XTURNBUFFOR + engine.renderer.xTurnOffset + (screenStart<<2);
 
 	//for each vertical line
     
 
+    UWORD offset = 11*MAPSIZE;
+    UWORD depth = engine.renderer.renderingDepth - engine.renderer.zStart;
+    UWORD *baseRayX = rayCastX + baseX*TERRAINDEPTH + engine.renderer.zStart;
+        
+
+    UWORD *baseRayY = rayCastY + engine.renderer.zStart;
+    UBYTE *baseDepth = engine.renderer.depthBuffer + screenStart;
+    UWORD *screenBase = (UWORD *)(engine.renderer.screenPatch + (((YSIZEEVEN)-1)<<2));
+
     for(UBYTE x = screenStart; x < screenEnd; ++x)
     {
 
-        UBYTE somethingHit[YSIZEEVEN];
-        for(UWORD i = 0; i < YSIZEEVEN; ++i)
+        UWORD *rayXPtr = baseRayX;
+        UWORD *rayXPtr2 = baseRayX + (TERRAINDEPTH << 1);
+        UWORD mapSamples[depth<<1];
+        UWORD *mapPtr = map + engine.renderer.zStart;
+
+        for(UWORD j = 0; j < depth; ++j)
         {
-            somethingHit[i] = 0;
+            UBYTE mx = px + *(rayXPtr++);
+            UBYTE mx2 = px + *(rayXPtr2++);
+            mapSamples[j] = mapPtr[(mx >> 1)*offset];
+            mapSamples[depth+j] = mapPtr[(mx2 >> 1)*offset];
+            ++mapPtr;
         }
-        for(UBYTE i = 0; i < 4; ++i)
+        baseRayX += (TERRAINDEPTH << 2);
+
+        for(UBYTE i = 0; i < 2; ++i)
         {
             UBYTE sy = 0;
             
-            UBYTE *depthBufferPtr = engine.renderer.depthBuffer + x; 
-            UWORD tz = *depthBufferPtr - engine.renderer.deltaZ;
-            if(tz < engine.renderer.zStart || tz > engine.renderer.renderingDepth)
-            {
-                tz = engine.renderer.zStart;
-            }
-            UWORD *rayXPtr = rayCastX + baseX*TERRAINDEPTH + tz;
-            UWORD *rayYPtr = rayCastY + tz;
-            UBYTE *screenPtr = engine.renderer.screenPatch + ((YSIZEEVEN)-1)*4 + i;
-	        UBYTE mx,my;
-	        UWORD mapValue;
+            UBYTE *depthBufferPtr = baseDepth; 
+            UWORD tz = 0;
             
-            UWORD offset = 11*MAPSIZE;
+            UWORD *rayYPtr = baseRayY;
+            UWORD *screenPtr = screenBase + i;
+            
 
-            while(tz < engine.renderer.renderingDepth)
+            UWORD *mapSmpPtr = mapSamples + i*depth;
+            UWORD offsetz = engine.renderer.zStart;
+
+            
+            while(tz < depth)
             {
-                mx = px + *rayXPtr;
-                my = ((tz<<engine.renderer.renderingDepthStep));
-                mapValue = map[ (mx >> 1)*offset + (my >> 1) ];
+                UWORD mapValue = *mapSmpPtr;
                 UBYTE th = mapValue;
 
                 WORD slope = th - (ph + *rayYPtr);
 
-                if(slope > tz>>2)
-                {
-
-                    if(tz == engine.renderer.zStart)
+                if(slope > 0)
+                {   
+                    UWORD val;
+                    if(slope > offsetz>>2)
                     {
-                        *screenPtr = (mapValue >> 8);
+
+                        val = ((mapValue >> 8) + ((((slope)) >> 2) & 1));
                     }
                     else
                     {
-                        *screenPtr = ((mapValue >> 8) + ((slope/4) & 1));
+                        val = ((mapValue >> 8) + 2);
+                        
                     }
-                    if(!somethingHit[sy])
-                    {
-                        *depthBufferPtr = (UBYTE)tz;
-                        somethingHit[sy] = 1;
-                    }
+                    
+                    *screenPtr = (val << 5) + val;
+                    *depthBufferPtr = (UBYTE)(offsetz);
 
                     sy+=1;//go step higher in the raycast table
                     rayYPtr += TERRAINDEPTH;
-                    screenPtr-=4;//go step higher on screen
-                    depthBufferPtr += 20;
-                    if(sy == YSIZEEVEN) tz=engine.renderer.renderingDepth; //break if end of screen
-                }
-                else if(slope > 0)
-                {
-                    if(tz == engine.renderer.zStart)
-                    {
-                        *screenPtr = (mapValue >> 8);
-                    }
-                    else
-                    {
-                        *screenPtr = (mapValue >> 8) + 2;
-                    }
-                    if(!somethingHit[sy])
-                    {
-                        *depthBufferPtr = (UBYTE)tz;
-                        somethingHit[sy] = 1;
-                    }
-                    sy+=1;//go step higher in the raycast table
-                    rayYPtr += TERRAINDEPTH;
-                    screenPtr-=4;//go step higher on screen
+                    screenPtr-=2;//go step higher on screen
                     depthBufferPtr += 20;
                     if(sy == YSIZEEVEN) tz=engine.renderer.renderingDepth; //break if end of screen
                 }
                 else
                 {	
-                    tz++;//go step in depth if no height hit
-                    rayXPtr++;
-                    rayYPtr++;
+                    ++tz;//go step in depth if no height hit
+                    ++mapSmpPtr;
+                    ++rayYPtr;
+                    ++offsetz;
                 }
             }
             
             while(sy < YSIZEEVEN)
             {
-                if(somethingHit[sy] == 0)
-                {
-
-                    engine.renderer.depthBuffer[sy] = 0xFF;
-                }
-                *screenPtr =  32 - ph/32 -sy/8;
+                *depthBufferPtr = (UBYTE)tz;
+                UWORD val = 32 - (ph>>5) -(sy>>3);
+                *screenPtr = (val << 5) + val;
                 sy+=1;
-                screenPtr-=4;
+                screenPtr-=2;
                 depthBufferPtr += 20;
 
             }
 
-            baseX++;
         }
 
 #if AMIGA
@@ -1367,16 +1354,18 @@ UBYTE px, UBYTE py, UBYTE ph, UBYTE screenStart, UBYTE screenEnd)
         UWORD *planePos4 = engine.renderer.planes + yOffset + x*4 + 3;
         
 		#endif
-		UWORD sp = 0;
+        UWORD *screenPtr = (UWORD *)engine.renderer.screenPatch;
         for(UBYTE y=0;y<YSIZEEVEN;y++)
 	    {
 
-			UWORD address1 = ((engine.renderer.screenPatch[sp])<<5) + (engine.renderer.screenPatch[sp+1]);
-			UWORD address2 = ((engine.renderer.screenPatch[sp+2])<<5) + (engine.renderer.screenPatch[sp+3]);
-
+			UWORD address1 = (*screenPtr++);
+            UWORD address2 = (*screenPtr++);
+            UBYTE *ditherPtr1 = engine.renderer.ditherTable1 + address1;
+            UBYTE *ditherPtr2 = engine.renderer.ditherTable1 + address2;
             
-			UWORD word = (engine.renderer.ditherTable1[ address1 ]<<8) + engine.renderer.ditherTable1[ address2 ];
+			UWORD word = (*ditherPtr1<<8) + *ditherPtr2;
             UWORD otherWord = (word << 1)|((word>>1) & 1);
+            UWORD ditherOffset = COLORS*COLORS;
 			*planePos1 = word;
             planePos1 += PLANEWIDTHWORD;
 			*planePos1 = otherWord;
@@ -1385,7 +1374,9 @@ UBYTE px, UBYTE py, UBYTE ph, UBYTE screenStart, UBYTE screenEnd)
             planePos1 += PLANEWIDTHWORD;
             *planePos1 = otherWord;
             planePos1 += PLANEWIDTHWORD;
-			word = (engine.renderer.ditherTable2[ address1 ]<<8) + engine.renderer.ditherTable2[ address2 ];
+            ditherPtr1 += ditherOffset;
+            ditherPtr2 += ditherOffset;
+			word = (*ditherPtr1<<8) + *ditherPtr2;
             otherWord = (word << 1)|((word>>1) & 1);
 			*planePos2 = word;
             planePos2 += PLANEWIDTHWORD;
@@ -1395,7 +1386,9 @@ UBYTE px, UBYTE py, UBYTE ph, UBYTE screenStart, UBYTE screenEnd)
             planePos2 += PLANEWIDTHWORD;
 			*planePos2 = otherWord;
             planePos2 += PLANEWIDTHWORD;
-			word = (engine.renderer.ditherTable3[ address1 ]<<8) + engine.renderer.ditherTable3[ address2 ];
+            ditherPtr1 += ditherOffset;
+            ditherPtr2 += ditherOffset;
+			word = (*ditherPtr1<<8) + *ditherPtr2;
             otherWord = (word << 1)|((word>>1) & 1);
 			*planePos3 = word;
             planePos3 += PLANEWIDTHWORD;
@@ -1405,7 +1398,9 @@ UBYTE px, UBYTE py, UBYTE ph, UBYTE screenStart, UBYTE screenEnd)
             planePos3 += PLANEWIDTHWORD;
 			*planePos3 = otherWord;
             planePos3 += PLANEWIDTHWORD;
-			word = (engine.renderer.ditherTable4[ address1 ]<<8) + engine.renderer.ditherTable4[ address2 ];
+            ditherPtr1 += ditherOffset;
+            ditherPtr2 += ditherOffset;
+			word = (*ditherPtr1<<8) + *ditherPtr2;
             otherWord = (word << 1)|((word>>1) & 1);
 			*planePos4 = word;
             planePos4 += PLANEWIDTHWORD;
@@ -1416,8 +1411,9 @@ UBYTE px, UBYTE py, UBYTE ph, UBYTE screenStart, UBYTE screenEnd)
 			*planePos4 = otherWord;
             planePos4 += PLANEWIDTHWORD;
 
-            sp += 4;
         }
+
+        baseDepth++;
 
     }
 

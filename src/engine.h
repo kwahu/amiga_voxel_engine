@@ -89,7 +89,7 @@ typedef struct GameState
     WORD crossHairX, crossHairY;
     ShipParams shipParams;
     ULONG points;
-    ULONG deathDuration;
+    ULONG animDuration;
     BYTE playerDeath;
     BYTE runOver;
     char sPlayerY[5];
@@ -112,13 +112,19 @@ typedef enum Cutscene
     Cutscene_Win,
 } Cutscene;
 
+#ifdef AMIGA
+
+    CHIP UWORD planesWc[4*PLANEWIDTHWORD*PLANEHEIGHT];
+#endif
+
 typedef struct Renderer
 {
     #ifdef AMIGA
-    UWORD plane1W[PLANEWIDTHWORD*PLANEHEIGHT];
-    UWORD plane2W[PLANEWIDTHWORD*PLANEHEIGHT];
-    UWORD plane3W[PLANEWIDTHWORD*PLANEHEIGHT];
-    UWORD plane4W[PLANEWIDTHWORD*PLANEHEIGHT];
+    UWORD *plane1W;
+    UWORD *plane2W;
+    UWORD *plane3W;
+    UWORD *plane4W;
+    tBitMap buffer;
     #else
     uint16_t *planes;
     #endif
@@ -189,8 +195,8 @@ typedef struct Engine
     ULONG startTime, endTime, deltaTime, accTime, loopEndTime;
     
     UBYTE activePalette[16 * 4], palettePalette[16 * 4];
-    BITMAPINFOHEADER activeBitmapHeader, paletteHeader, shipHeader, explosionHeader;
-    UBYTE *activeBitmap, *paletteBitmap, *shipBitmap, *explosionBitmap;
+    BITMAPINFOHEADER activeBitmapHeader, paletteHeader, shipHeader, explosionHeader, landingHeader;
+    UBYTE *activeBitmap, *paletteBitmap, *shipBitmap, *explosionBitmap, *landingBitmap;
 
     Font *font;
     TextBitMap *pBitmapHeightLabel, *pBitmapHeight, *pBitmapTime, *pBitmapTimeLabel, *informationText;
