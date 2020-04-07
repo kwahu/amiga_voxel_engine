@@ -12,6 +12,8 @@ void InitLogoState()
 	engine.logoState.screenIndex = 1;
 	engine.logoState.screenDuration = LOGORUNTIME;
 	UseSystem();
+	
+	engine.logoState.logo[0] = LoadBitmapFile("data/l1", &engine.logoState.headers[0], engine.activePalette, 1, 0);
 	engine.logoState.logo[1] = LoadBitmapFile("data/l2", &engine.logoState.headers[1], engine.activePalette, 1, 0);
 	engine.logoState.logo[2] = LoadBitmapFile("data/l3", &engine.logoState.headers[2], engine.activePalette, 1, 0);
 	UnuseSystem();
@@ -83,11 +85,30 @@ void switchIntroScreen()
 		free(engine.logoState.logo[1]);
 		free(engine.logoState.logo[2]);
 
+		engine.explosionBitmap = LoadBitmapFile("data/iexpl", &engine.explosionHeader, engine.palettePalette, 2, 14);
+		engine.landingBitmap = LoadBitmapFile("data/land", &engine.landingHeader, engine.palettePalette, 2, 14);
+		engine.takeoffBitmap = LoadBitmapFile("data/take", &engine.takeoffHeader, engine.palettePalette, 2, 14);
+		engine.shipBitmap = LoadBitmapFile("data/icar48", &engine.shipHeader, engine.activePalette, 2, 14);
+
+		
+		engine.pBitmapVelocity = CreateBitmapFromText(engine.font, "1234");
+		engine.pBitmapScore = CreateBitmapFromText(engine.font, "1234567");
+		engine.pBitmapTime = CreateBitmapFromText(engine.font, "1234567");
+		engine.pBitmapHeight = CreateBitmapFromText(engine.font, "1234");
+		engine.pBitmapVelocityLabel = CreateBitmapFromText(engine.font, "AIR SPEED");
+		engine.pBitmapScoreLabel = CreateBitmapFromText(engine.font, "SCORE");
+		engine.pBitmapTimeLabel = CreateBitmapFromText(engine.font, "TIME");
+		engine.pBitmapHeightLabel = CreateBitmapFromText(engine.font, "RELATIVE ALTITUDE");
+		for(int i = 0; i < 10; ++i)
+		{
+			engine.pBitmapInfo[i] = CreateFontBitmap(engine.font);
+		}
+
+
 		InitMenuState();
 		UnuseSystem();
 		InitAudio();
 		PlaySample(0);
-		//StopSample();
 	} break;
 	}
 }

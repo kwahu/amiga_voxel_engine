@@ -425,6 +425,51 @@ void GetYAxisSetting()
 	
 }
 
+#if AMIGA
+void GetPlayerMemorySetting()
+{
+	if(getKey(1))
+	{
+		engine.renderer.depthBufferHeight = YSIZEEVEN;
+		engine.renderer.depthBufferWidth = 20;
+		#ifdef AMIGA
+		engine.renderer.shadowStep = 4;
+		#else
+		engine.renderer.shadowStep = 8;
+		#endif
+		engine.renderer.depthBuffer = (UBYTE *)memAllocFast(engine.renderer.depthBufferWidth*YSIZEEVEN*sizeof(UBYTE));
+		engine.renderer.ditherTable1 = (UBYTE *)memAllocFast(4*COLORS*COLORS*sizeof(UBYTE));
+		engine.renderer.ditherTable2 = engine.renderer.ditherTable1 + COLORS*COLORS;
+		engine.renderer.ditherTable3 = engine.renderer.ditherTable1 + 2*COLORS*COLORS;
+		engine.renderer.ditherTable4 = engine.renderer.ditherTable1 + 3*COLORS*COLORS;
+		engine.renderer.screenPatch = (UBYTE *)memAllocFast(4*45*sizeof(UBYTE));
+		engine.renderer.rayCastX = (WORD *)memAllocFast(XSIZEEVEN*TERRAINDEPTH*sizeof(WORD));
+		engine.renderer.rayCastY = (WORD *)memAllocFast(YSIZEEVEN*TERRAINDEPTH*sizeof(WORD));
+		engine.renderer.highMemory = 0;
+		GenerateColorBytesNoDither4x4();
+	}
+	if(getKey(2))
+	{	
+		engine.renderer.depthBufferHeight = YSIZEODD;
+		engine.renderer.depthBufferWidth = 20;
+		#ifdef AMIGA
+		engine.renderer.shadowStep = 2;
+		#else
+		engine.renderer.shadowStep = 4;
+		#endif
+		engine.renderer.depthBuffer = (UBYTE *)memAllocFast(engine.renderer.depthBufferWidth*YSIZEODD*sizeof(UBYTE));
+		engine.renderer.ditherTable1 = (UBYTE *)memAllocFast(4*COLORS*COLORS*COLORS*sizeof(UBYTE));
+		engine.renderer.ditherTable2 = engine.renderer.ditherTable1 + COLORS*COLORS*COLORS;
+		engine.renderer.ditherTable3 = engine.renderer.ditherTable1 + 2*COLORS*COLORS*COLORS;
+		engine.renderer.ditherTable4 = engine.renderer.ditherTable1 + 3*COLORS*COLORS*COLORS;
+		engine.renderer.screenPatch = (UBYTE *)memAllocFast(6*90*sizeof(UBYTE));
+		engine.renderer.rayCastX = (WORD *)memAllocFast(XSIZEODD*TERRAINDEPTH*sizeof(WORD));
+		engine.renderer.rayCastY = (WORD *)memAllocFast(YSIZEODD*TERRAINDEPTH*sizeof(WORD));
+		engine.renderer.highMemory = 1;
+		GenerateColorBytesDither3x2();
+	}
+}
+#else
 void GetPlayerMemorySetting()
 {
 	if(getKey(1))
@@ -468,5 +513,6 @@ void GetPlayerMemorySetting()
 		GenerateColorBytesDither3x2();
 	}
 }
+#endif
 
 #define getCurrentTime() timerGetPrec()

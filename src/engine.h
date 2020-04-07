@@ -6,7 +6,6 @@
 #include <stdio.h>
 #include <stddef.h>
 #include "settings_platform.h"
-#include "sound_platform.h"
 
 #define ULONG 	uint32_t
 #define LONG	int32_t
@@ -68,9 +67,6 @@ typedef struct ShipParams
 typedef struct MenuState
 {
     UBYTE infoScreen;
-    UBYTE *menu[3];
-    BITMAPINFOHEADER headers[3];
-    UBYTE Palette[16 * 4];
 } MenuState;
 
 typedef struct LogoState
@@ -92,6 +88,8 @@ typedef struct GameState
     ULONG animDuration;
     BYTE playerDeath;
     BYTE runOver;
+    BYTE takeoff;
+    UWORD startHeight;
     char sPlayerY[5];
     char sTime[8], sVelocity[5], sScore[8];
 } GameState;
@@ -162,6 +160,7 @@ typedef struct Renderer
     WORD *rayCastY;
 
 
+
     //WORD rayCastX[XSIZEODD][TERRAINDEPTH]; //29k AMIGA / 14k ATARI
     //WORD rayCastY[YSIZEODD][TERRAINDEPTH]; //12k AMIGA / 3k ATARI
     
@@ -194,9 +193,17 @@ typedef struct Engine
 
     ULONG startTime, endTime, deltaTime, accTime, loopEndTime;
     
+
+    UBYTE *menu[3];
+    BITMAPINFOHEADER headers[3];
+    UBYTE Palette[16 * 4];
+    UBYTE Palette2[16 * 4];
+    
+
     UBYTE activePalette[16 * 4], palettePalette[16 * 4];
-    BITMAPINFOHEADER activeBitmapHeader, paletteHeader, shipHeader, explosionHeader, landingHeader;
-    UBYTE *activeBitmap, *paletteBitmap, *shipBitmap, *explosionBitmap, *landingBitmap;
+    BITMAPINFOHEADER activeBitmapHeader, paletteHeader, shipHeader, explosionHeader, landingHeader, takeoffHeader;
+    UBYTE *activeBitmap, *paletteBitmap, *shipBitmap, *explosionBitmap, *landingBitmap, *takeoffBitmap;
+    UBYTE *music;
 
     Font *font;
     TextBitMap *pBitmapHeightLabel, *pBitmapHeight, *pBitmapTime, *pBitmapTimeLabel, *informationText;
@@ -213,6 +220,7 @@ Engine engine;
 
 
 
+#include "sound_platform.h"
 #include "font_platform.h"
 #include "input_platform.h"
 #include "screen_platform.h"

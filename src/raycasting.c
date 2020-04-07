@@ -1116,7 +1116,7 @@ UBYTE px, UBYTE py, UBYTE ph, UBYTE screenStart, UBYTE screenEnd)
             UWORD *mapSmpPtr = mapSamples + i*depth;
             UWORD offsetz = engine.renderer.zStart;
 
-            
+            UWORD firstDepth = 0;
             while(tz < depth)
             {
                 UWORD mapValue = *mapSmpPtr;
@@ -1130,11 +1130,11 @@ UBYTE px, UBYTE py, UBYTE ph, UBYTE screenStart, UBYTE screenEnd)
                     if(slope > offsetz>>2)
                     {
 
-                        val = ((mapValue >> 8) + ((((slope)) >> 2) & 1));
+                        val = ((mapValue >> 8) + firstDepth*((((slope)) >> 2) & 1));
                     }
                     else
                     {
-                        val = ((mapValue >> 8) + 2);
+                        val = ((mapValue >> 8) + firstDepth*2);
                         
                     }
                     
@@ -1154,6 +1154,7 @@ UBYTE px, UBYTE py, UBYTE ph, UBYTE screenStart, UBYTE screenEnd)
                     ++rayYPtr;
                     ++offsetz;
                 }
+                firstDepth = 1;
             }
             
             while(sy < YSIZEODD)
@@ -1287,7 +1288,7 @@ UBYTE px, UBYTE py, UBYTE ph, UBYTE screenStart, UBYTE screenEnd)
             UWORD *mapSmpPtr = mapSamples + i*depth;
             UWORD offsetz = engine.renderer.zStart;
 
-            
+            UWORD firstDepth = 0;
             while(tz < depth)
             {
                 UWORD mapValue = *mapSmpPtr;
@@ -1301,11 +1302,11 @@ UBYTE px, UBYTE py, UBYTE ph, UBYTE screenStart, UBYTE screenEnd)
                     if(slope > offsetz>>2)
                     {
 
-                        val = ((mapValue >> 8) + ((((slope)) >> 2) & 1));
+                        val = ((mapValue >> 8) + firstDepth*((((slope)) >> 2) & 1));
                     }
                     else
                     {
-                        val = ((mapValue >> 8) + 2);
+                        val = ((mapValue >> 8) + firstDepth*2);
                         
                     }
                     
@@ -1325,6 +1326,8 @@ UBYTE px, UBYTE py, UBYTE ph, UBYTE screenStart, UBYTE screenEnd)
                     ++rayYPtr;
                     ++offsetz;
                 }
+
+                firstDepth = 1;
             }
             
             while(sy < YSIZEEVEN)

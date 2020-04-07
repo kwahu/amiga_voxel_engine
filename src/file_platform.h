@@ -1,13 +1,14 @@
 #pragma once
 
 void LoadBitmapToMemory(BYTE *fileName)    
-{                                       
-    free(engine.activeBitmap);         
+{                                      
     #ifdef AMIGA                   
-    systemUse();                    
+    systemUse();                        
+    free(engine.activeBitmap);      
     engine.activeBitmap = LoadBitmapFile(fileName, &engine.activeBitmapHeader, engine.activePalette, 1, 0);      
     systemUnuse();        
-    #else                   
+    #else                       
+    free(engine.activeBitmap);      
     engine.activeBitmap = LoadBitmapFile(fileName, &engine.activeBitmapHeader, engine.activePalette, 1, 0);     
     #endif                  
 }   

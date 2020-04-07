@@ -8,10 +8,16 @@ void InitGameState()
 
     engine.gameState.shipParams.precX = 50 * 100;
     engine.gameState.shipParams.precZ = 0;
-    engine.gameState.shipParams.precY = 60 * 100;
-    engine.gameState.shipParams.pX = 0;
+    engine.gameState.shipParams.pX = engine.gameState.shipParams.precX >> 5;
     engine.gameState.shipParams.pZ = 0;
-    engine.gameState.shipParams.pY = 0;
+
+    OverwriteMap();
+
+    UWORD terrainHeight = getTerrainHeight(engine.gameState.shipParams, engine.renderer.mapHigh);
+    engine.gameState.startHeight = terrainHeight + 2;
+    engine.gameState.shipParams.pY = engine.gameState.startHeight;
+    
+    engine.gameState.shipParams.precY = engine.gameState.shipParams.pY << 5;
     engine.gameState.shipParams.dPDenom = 160;
     engine.gameState.shipParams.dP = 0;
     engine.gameState.shipParams.ddP = 0;
@@ -23,6 +29,7 @@ void InitGameState()
     engine.gameState.animDuration = 0;
     engine.gameState.runOver = 0;
     engine.gameState.playerDeath = 0;
+    engine.gameState.takeoff = 1;
     engine.renderer.lastOverwrittenLine = 0;
 
     UWORD depthBufferSize = (UWORD)engine.renderer.depthBufferHeight*(UWORD)engine.renderer.depthBufferWidth;
@@ -34,6 +41,7 @@ void InitGameState()
  
 
     engine.renderer.mapHigh = engine.renderer.mapSource;
+    
     ClearBuffor();
     SetGamePaletter();
 	//CopyMapWord(engine.renderer.mapSource, engine.renderer.mapHigh);
@@ -135,11 +143,9 @@ void RenderShipAndCrossHair()
 
     DrawCrosshair( crossPX, crossPY + 4);
     DrawCrosshair( crossPX, crossPY - 4);
-    if(!engine.gameState.runOver)
-    {
+    
      DrawSprite4b(engine.shipBitmap, &engine.shipHeader, shipDirX, shipDirY,
                      spriteIndexX, spriteIndexY, 48, 48);
-    }
      
 }
 
@@ -147,7 +153,7 @@ void DrawGameStats()
 {
     ConvertIntToChar(engine.gameState.points, engine.gameState.sScore, 8);
     ConvertIntToChar(engine.gameState.shipParams.dP, engine.gameState.sVelocity, 5);
-    ConvertIntToChar(engine.deltaTime/2500, engine.gameState.sTime, 8);
+    ConvertIntToChar(engine.accTime/2500, engine.gameState.sTime, 8);
     ConvertIntToChar(engine.gameState.shipParams.relHeight, engine.gameState.sPlayerY, 5);
     
 
@@ -214,7 +220,7 @@ void RunGameState()
     else
     {
         
-        if(!engine.gameState.playerDeath)
+        if(!engine.gameState.playerDeath && !engine.gameState.takeoff)
         {
             UpdatePlayerPosition(); 
             if(CheckPlayerCollision())
@@ -241,7 +247,40 @@ void RunGameState()
     engine.renderer.xTurnOffset = engine.gameState.crossHairX / engine.renderer.turnDenom;
     
     RenderQuality();  
-    if(!engine.gameState.playerDeath)
+
+
+    if(engine.gameState.takeoff)
+    {
+         ULONG addedTime = engine.deltaTime/2500;
+            
+        if((engine.gameState.animDuration + addedTime) < 1200)
+        {
+            engine.gameState.animDuration += addedTime;
+            ULONG currentIndex = (ULONG)(engine.gameState.animDuration/100);
+            WORD currentX = (WORD)(currentIndex%4);
+            WORD currentY = (WORD)((currentIndex/4));
+            
+            UWORD takeoffX = 160 + engine.renderer.xTurnOffset;
+            UWORD takeoffY = GAME_SHIP_POS + (engine.gameState.crossHairY/1600);
+
+
+            DrawSprite4b(engine.takeoffBitmap, &engine.takeoffHeader, takeoffX, takeoffY,
+                     currentX, currentY, 48, 48);
+
+            engine.gameState.shipParams.pY = engine.gameState.startHeight + currentIndex;
+            engine.gameState.shipParams.precY = engine.gameState.shipParams.pY << 5;
+         }
+        else
+        {
+            engine.gameState.animDuration = 0;
+            engine.gameState.takeoff = 0;
+            
+        }
+    }
+       
+
+
+    if(!engine.gameState.playerDeath && !engine.gameState.runOver && !engine.gameState.takeoff)
     {
         RenderShipAndCrossHair();
     }

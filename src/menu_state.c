@@ -6,18 +6,20 @@ void InitMenuState()
     
  
     engine.menuState.infoScreen = 0;
-
-    engine.menuState.menu[0] = LoadBitmapFile("data/m0", &engine.menuState.headers[0], engine.menuState.Palette, 1, 0);
-    engine.menuState.menu[1] = LoadBitmapFile("data/m1", &engine.menuState.headers[1], engine.activePalette, 1, 0);
-    LoadBitmapToMemory("data/msg");
+    if(engine.menu[0] == 0)
+    {
+    engine.menu[0] = LoadBitmapFile("data/m0", &engine.headers[0], engine.Palette, 1, 0);
+    engine.menu[1] = LoadBitmapFile("data/m1", &engine.headers[1], engine.Palette2, 1, 0);
+    engine.menu[2] = LoadBitmapFile("data/msg", &engine.headers[2], engine.Palette2, 1, 0);
+    }
 }
 
 void RunMenuState()
 {
     ClearBuffor();
-    DrawBitmap4bCenter(engine.menuState.menu[0], &engine.menuState.headers[0]);
+    DrawBitmap4bCenter(engine.menu[0], &engine.headers[0]);
     
-    SetBitmapPalette(engine.menuState.Palette);
+    SetBitmapPalette(engine.Palette);
     VSyncAndDraw();
 
     UBYTE infoIndex = 0;
@@ -38,7 +40,7 @@ void RunMenuState()
                 {
                     ClearBuffor();   
                     
-                    DrawBitmap4bCenter(engine.menuState.menu[1], &engine.menuState.headers[1]);
+                    DrawBitmap4bCenter(engine.menu[1], &engine.headers[1]);
                  
                     FillTextBitmap(engine.font, engine.pBitmapInfo[0], "After setting off the Earth in enormous");
                     FillTextBitmap(engine.font, engine.pBitmapInfo[1], "Generation ships, humanity reached the nearest");
@@ -60,7 +62,7 @@ void RunMenuState()
                     DrawTextBitmap(engine.pBitmapInfo[7], 2, BASELINE+44, 14);
                     DrawTextBitmap(engine.pBitmapInfo[8], 2, BASELINE+50, 14);
                     
-                    SetBitmapPalette(engine.activePalette);
+                    SetBitmapPalette(engine.Palette2);
                     
                     VSyncAndDraw();
                     FireDown = 1;
@@ -68,7 +70,7 @@ void RunMenuState()
                 case 2:
                 {
                     ClearBuffor();
-                    DrawBitmap4bCenter(engine.menuState.menu[1], &engine.menuState.headers[1]);
+                    DrawBitmap4bCenter(engine.menu[1], &engine.headers[1]);
                     
 
                     FillTextBitmap(engine.font, engine.pBitmapInfo[0], "You are Nix, the pilot of Icarus, who feels");
@@ -92,7 +94,7 @@ void RunMenuState()
                     DrawTextBitmap(engine.pBitmapInfo[7], 2, BASELINE+44, 14);
                     DrawTextBitmap(engine.pBitmapInfo[8], 2, BASELINE+50, 14);
                     DrawTextBitmap(engine.pBitmapInfo[9], 2, BASELINE+56, 14);
-                    SetBitmapPalette(engine.activePalette);
+                    SetBitmapPalette(engine.Palette2);
                     VSyncAndDraw();
                     
                         
@@ -103,7 +105,7 @@ void RunMenuState()
                 {
 
                     ClearBuffor();
-                    DrawBitmap4bCenter(engine.activeBitmap, &engine.activeBitmapHeader);
+                    DrawBitmap4bCenter(engine.menu[2], &engine.headers[2]);
                     
 
                     FillTextBitmap(engine.font, engine.pBitmapInfo[0], "The ship's Anti-G engine uses the");
@@ -127,7 +129,7 @@ void RunMenuState()
                     DrawTextBitmap(engine.pBitmapInfo[7], 100, BASELINE+84, 4);
                     DrawTextBitmap(engine.pBitmapInfo[8], 100, BASELINE+90, 4);
                     DrawTextBitmap(engine.pBitmapInfo[9], 100, BASELINE+96, 4);
-                    SetBitmapPalette(engine.activePalette);
+                    SetBitmapPalette(engine.Palette2);
                     VSyncAndDraw();
                         
 
@@ -138,9 +140,6 @@ void RunMenuState()
                     
                     engine.menuState.infoScreen = 1;
                     
-                    free(engine.menuState.menu[0]);
-                    free(engine.menuState.menu[1]);
-                    free(engine.menuState.menu[2]);
                     
                 } break;
             }

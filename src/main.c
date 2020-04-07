@@ -38,14 +38,10 @@ void InitEngine(void)
 	InitScreen();
 	InitInput();
 
-	engine.explosionBitmap = LoadBitmapFile("data/iexpl", &engine.explosionHeader, engine.palettePalette, 2, 14);
-	engine.landingBitmap = LoadBitmapFile("data/land", &engine.landingHeader, engine.palettePalette, 2, 14);
-	engine.shipBitmap = LoadBitmapFile("data/icar48", &engine.shipHeader, engine.activePalette, 2, 14);
-	engine.logoState.logo[0] = LoadBitmapFile("data/l1", &engine.logoState.headers[0], engine.activePalette, 1, 0);
 	engine.paletteBitmap = LoadBitmapFile("data/plt", &engine.paletteHeader, engine.palettePalette, 1, 0);
 
 	//process paletter from an image
-	SetBitmapPalette(engine.activePalette);
+	SetBitmapPalette(engine.palettePalette);
 	// Load font
 	engine.font = InitFont("data/ss.fnt");
 
@@ -53,21 +49,9 @@ void InitEngine(void)
 	SetupMaps();
 
 
-	engine.pBitmapVelocity = CreateBitmapFromText(engine.font, "1234");
-	engine.pBitmapScore = CreateBitmapFromText(engine.font, "1234567");
-	engine.pBitmapTime = CreateBitmapFromText(engine.font, "1234567");
-	engine.pBitmapHeight = CreateBitmapFromText(engine.font, "1234");
-	engine.pBitmapVelocityLabel = CreateBitmapFromText(engine.font, "AIR SPEED");
-	engine.pBitmapScoreLabel = CreateBitmapFromText(engine.font, "SCORE");
-	engine.pBitmapTimeLabel = CreateBitmapFromText(engine.font, "TIME");
-	engine.pBitmapHeightLabel = CreateBitmapFromText(engine.font, "RELATIVE ALTITUDE");
-	for(int i = 0; i < 10; ++i)
-	{
-		engine.pBitmapInfo[i] = CreateFontBitmap(engine.font);
-	}
-
 	engine.cutsceneDuration = 0;
 	ResetTime();
+
 
 	UnuseSystem();
 
@@ -192,10 +176,12 @@ void EngineDestroy(void)
 	FreeTextBitmap(engine.pBitmapHeightLabel);
 	
 
+	free(engine.font);
 	free(engine.activeBitmap);
 	free(engine.shipBitmap);
 	free(engine.paletteBitmap);
 	free(engine.landingBitmap);
+	free(engine.takeoffBitmap);
 	free(engine.explosionBitmap);
 	free(engine.renderer.ditherTable1);
 	free(engine.renderer.depthBuffer);

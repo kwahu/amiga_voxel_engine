@@ -182,5 +182,7 @@ void ASM P61_SetPosition(REG(a6, void *custom),
 
 void ASM P61_End();
 
+extern UWORD P61_Play;
+
 #endif
 #endif

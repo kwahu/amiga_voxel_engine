@@ -6,7 +6,6 @@
 
 #include <ace/utils/custom.h>
 
-CHIP const unsigned char music[169660];
 
 
 void ReadModFile(char *fileName)
@@ -14,8 +13,8 @@ void ReadModFile(char *fileName)
     tFile *file = fileOpen(fileName, "rb");
 
     ULONG fileSize = fileGetSize(fileName);
-
-    fileRead(file, music, fileSize);
+    engine.music = memAllocChip(fileSize);
+    fileRead(file, engine.music, fileSize);
     fileClose(file);
 
 }
@@ -24,7 +23,7 @@ void InitAudio()
 {
  
 	mt_install_cia(g_pCustom, 0, 1);
-    //P61_Init(g_pCustom, music, 0, 1, ((UBYTE *)(&g_pCustom->dmacon)) + 1);
+    //P61_Init(g_pCustom, engine.music, 0, 1, ((UBYTE *)(&g_pCustom->dmacon)) + 1);
 }
 
 void DestroyAudio()
@@ -36,14 +35,14 @@ void PlaySample(UBYTE pos)
     
     //P61_Init(custom, music, 0, 1);
     //P61_SetPosition(g_pCustom, pos);
-    mt_init(g_pCustom, music, 0, pos);
+    mt_init(g_pCustom, engine.music, 0, pos);
   	mt_Enable = 1;
       mt_MusicChannels = 4;
     
 }
 void ContinueSample()
 {
-    //P61_Init(g_pCustom, music, 0, 1, ((UBYTE *)(&g_pCustom->dmacon)) + 1);
+    //P61_Init(g_pCustom, engine.music, 0, 1, ((UBYTE *)(&g_pCustom->dmacon)) + 1);
 	mt_install_cia(g_pCustom, 0, 1);
   	mt_Enable = 1;
       mt_MusicChannels = 4;

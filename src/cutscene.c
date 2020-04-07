@@ -10,8 +10,8 @@ void ShowDeathCutscene()
     PlaySample(16);
 
     ClearBuffor();
-    SetBitmapPalette(engine.activePalette);
-    DrawBitmap4bCenter(engine.activeBitmap, &engine.activeBitmapHeader);
+    SetBitmapPalette(engine.Palette2);
+    DrawBitmap4bCenter(engine.menu[2], &engine.headers[2]);
     VSyncAndDraw();
 
     UBYTE lines = 0;
@@ -107,8 +107,8 @@ void ShowTooLateCutscene()
     PlaySample(16);
     ClearBuffor();
  
-   SetBitmapPalette(engine.activePalette);
-    DrawBitmap4bCenter(engine.activeBitmap, &engine.activeBitmapHeader);
+   SetBitmapPalette(engine.Palette2);
+    DrawBitmap4bCenter(engine.menu[2], &engine.headers[2]);
     VSyncAndDraw();
 
     UBYTE lines = 0;
@@ -326,11 +326,11 @@ void ShowCutscene(Cutscene cutsceneType, ULONG duration)
         }
     }
 
-
+    StopSample();
+    UseSystem();
     volatile UBYTE nextPattern = 0;
     
     
-    UseSystem();
     switch(cutsceneType)
     {
         case Cutscene_Death:
@@ -350,10 +350,10 @@ void ShowCutscene(Cutscene cutsceneType, ULONG duration)
         } break;
         
     }
-    
     UnuseSystem();
     InitAudio();
     PlaySample(nextPattern);
-    ContinueSample();
+    //ContinueSample();
+    ResetTime();
 
 }
