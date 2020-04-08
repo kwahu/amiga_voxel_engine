@@ -10,7 +10,6 @@ void ShowDeathCutscene()
     PlaySample(16);
 
     ClearBuffor();
-    SetBitmapPalette(engine.Palette2);
     DrawBitmap4bCenter(engine.menu[2], &engine.headers[2]);
     VSyncAndDraw();
 
@@ -107,7 +106,6 @@ void ShowTooLateCutscene()
     PlaySample(16);
     ClearBuffor();
  
-   SetBitmapPalette(engine.Palette2);
     DrawBitmap4bCenter(engine.menu[2], &engine.headers[2]);
     VSyncAndDraw();
 
@@ -169,7 +167,6 @@ void ShowWinCutscene()
     InitAudio();
     PlaySample(18);
     ClearBuffor();
-    SetBitmapPalette(engine.activePalette);
     DrawBitmap4bCenter(engine.activeBitmap, &engine.activeBitmapHeader);
     VSyncAndDraw();
 
@@ -271,7 +268,7 @@ void ShowWinCutscene()
     }
 
 
-    UBYTE y = BASELINE+2;
+    UBYTE y = BASELINE+26;
     for(int i = 0; i < lines; ++i)
     {	
         DrawTextBitmap(engine.pBitmapInfo[i], 170, y, 1);

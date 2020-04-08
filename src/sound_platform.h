@@ -42,7 +42,9 @@ void ContinueSample()
 void StopSample()
 {
     //P61_End();
+    mt_Enable = 0;
     mt_remove_cia(g_pCustom);
+
 }
 
 void DestroySample()

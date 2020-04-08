@@ -43,7 +43,6 @@ void InitGameState()
     engine.renderer.mapHigh = engine.renderer.mapSource;
     
     ClearBuffor();
-    SetGamePaletter();
 	//CopyMapWord(engine.renderer.mapSource, engine.renderer.mapHigh);
     
 }

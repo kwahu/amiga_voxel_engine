@@ -100,39 +100,59 @@ void switchIntroScreen()
 
 void animateIntro()
 {
+
+	WORD ZeroColor[3] = 
+	{
+		engine.activePalette[0],
+		engine.activePalette[1],
+		engine.activePalette[2]
+	};
+
 	if(engine.logoState.screenDuration < 7400000 && !engine.logoState.fadeInStatus[3])
 	{
-		for (int i = 0; i < 16; i++)
+		for (int i = 1; i < 16; i++)
 		{
-			engine.renderer.bitmapPalette[i] = ((((engine.activePalette[i * 4 + 2]/4) >> PALETTE_SHIFT) << 8) +
-								(((engine.activePalette[i * 4 + 1]/4) >> PALETTE_SHIFT) << 4) + ((engine.activePalette[i * 4 + 0]/4) >> PALETTE_SHIFT));
+			WORD newR = (WORD)(ZeroColor[2]) + ((engine.activePalette[i * 4 + 2] - ZeroColor[2])/4);
+			WORD newG = (WORD)(ZeroColor[1]) + ((engine.activePalette[i * 4 + 1] - ZeroColor[1])/4);
+			WORD newB = (WORD)(ZeroColor[0]) + ((engine.activePalette[i * 4 + 0] - ZeroColor[0])/4);
+
+			engine.renderer.bitmapPalette[i] = ((((newR) >> PALETTE_SHIFT) << 8) +
+								(((newG) >> PALETTE_SHIFT) << 4) + ((newB) >> PALETTE_SHIFT));
 		}
 		SetPalette();
 		engine.logoState.fadeInStatus[3] = 1;
 	}
 	if(engine.logoState.screenDuration < 7300000 && !engine.logoState.fadeInStatus[2])
 	{
-		for (int i = 0; i < 16; i++)
+		for (int i = 1; i < 16; i++)
 		{
-			engine.renderer.bitmapPalette[i] = ((((engine.activePalette[i * 4 + 2]/2) >> PALETTE_SHIFT) << 8) +
-								(((engine.activePalette[i * 4 + 1]/2) >> PALETTE_SHIFT) << 4) + ((engine.activePalette[i * 4 + 0]/2) >> PALETTE_SHIFT));
+			WORD newR = (WORD)(ZeroColor[2]) + ((engine.activePalette[i * 4 + 2] - ZeroColor[2])/2);
+			WORD newG = (WORD)(ZeroColor[1]) + ((engine.activePalette[i * 4 + 1] - ZeroColor[1])/2);
+			WORD newB = (WORD)(ZeroColor[0]) + ((engine.activePalette[i * 4 + 0] - ZeroColor[0])/2);
+
+			engine.renderer.bitmapPalette[i] = ((((newR) >> PALETTE_SHIFT) << 8) +
+								(((newG) >> PALETTE_SHIFT) << 4) + ((newB) >> PALETTE_SHIFT));
 		}
 		SetPalette();
 		engine.logoState.fadeInStatus[2] = 1;
 	}
 	if(engine.logoState.screenDuration < 7200000 && !engine.logoState.fadeInStatus[1])
 	{
-		for (int i = 0; i < 16; i++)
+		for (int i = 1; i < 16; i++)
 		{
-			engine.renderer.bitmapPalette[i] = ((((engine.activePalette[i * 4 + 2]*3/4) >> PALETTE_SHIFT) << 8) +
-								(((engine.activePalette[i * 4 + 1]*3/4) >> PALETTE_SHIFT) << 4) + ((engine.activePalette[i * 4 + 0]*3/4) >> PALETTE_SHIFT));
+			WORD newR = (WORD)(ZeroColor[2]) + ((engine.activePalette[i * 4 + 2] - ZeroColor[2])*3/4);
+			WORD newG = (WORD)(ZeroColor[1]) + ((engine.activePalette[i * 4 + 1] - ZeroColor[1])*3/4);
+			WORD newB = (WORD)(ZeroColor[0]) + ((engine.activePalette[i * 4 + 0] - ZeroColor[0])*3/4);
+
+			engine.renderer.bitmapPalette[i] = ((((newR) >> PALETTE_SHIFT) << 8) +
+								(((newG) >> PALETTE_SHIFT) << 4) + ((newB) >> PALETTE_SHIFT));
 		}
 		SetPalette();
 		engine.logoState.fadeInStatus[1] = 1;
 	}
 	if(engine.logoState.screenDuration < 7100000 && !engine.logoState.fadeInStatus[0])
 	{
-		for (int i = 0; i < 16; i++)
+		for (int i = 1; i < 16; i++)
 		{
 			engine.renderer.bitmapPalette[i] = (((engine.activePalette[i * 4 + 2] >> PALETTE_SHIFT) << 8) +
 								((engine.activePalette[i * 4 + 1] >> PALETTE_SHIFT) << 4) + (engine.activePalette[i * 4 + 0] >> PALETTE_SHIFT));
@@ -143,39 +163,52 @@ void animateIntro()
 
 	if(engine.logoState.screenDuration < 400000 && !engine.logoState.fadeOutStatus[0])
 	{
-		for (int i = 0; i < 16; i++)
+		for (int i = 1; i < 16; i++)
 		{
-			engine.renderer.bitmapPalette[i] = ((((engine.activePalette[i * 4 + 2]*3/4) >> PALETTE_SHIFT) << 8) +
-								(((engine.activePalette[i * 4 + 1]*3/4) >> PALETTE_SHIFT) << 4) + ((engine.activePalette[i * 4 + 0]*3/4) >> PALETTE_SHIFT));
+			WORD newR = (WORD)(ZeroColor[2]) + ((engine.activePalette[i * 4 + 2] - ZeroColor[2])*3/4);
+			WORD newG = (WORD)(ZeroColor[1]) + ((engine.activePalette[i * 4 + 1] - ZeroColor[1])*3/4);
+			WORD newB = (WORD)(ZeroColor[0]) + ((engine.activePalette[i * 4 + 0] - ZeroColor[0])*3/4);
+
+			engine.renderer.bitmapPalette[i] = ((((newR) >> PALETTE_SHIFT) << 8) +
+								(((newG) >> PALETTE_SHIFT) << 4) + ((newB) >> PALETTE_SHIFT));
 		}
 		SetPalette();
 		engine.logoState.fadeOutStatus[0] = 1;
 	}
 	if(engine.logoState.screenDuration < 300000 && !engine.logoState.fadeOutStatus[1])
 	{
-		for (int i = 0; i < 16; i++)
+		for (int i = 1; i < 16; i++)
 		{
-			engine.renderer.bitmapPalette[i] = ((((engine.activePalette[i * 4 + 2]/2) >> PALETTE_SHIFT) << 8) +
-								(((engine.activePalette[i * 4 + 1]/2) >> PALETTE_SHIFT) << 4) + ((engine.activePalette[i * 4 + 0]/2) >> PALETTE_SHIFT));
+			WORD newR = (WORD)(ZeroColor[2]) + ((engine.activePalette[i * 4 + 2] - ZeroColor[2])/2);
+			WORD newG = (WORD)(ZeroColor[1]) + ((engine.activePalette[i * 4 + 1] - ZeroColor[1])/2);
+			WORD newB = (WORD)(ZeroColor[0]) + ((engine.activePalette[i * 4 + 0] - ZeroColor[0])/2);
+
+			engine.renderer.bitmapPalette[i] = ((((newR) >> PALETTE_SHIFT) << 8) +
+								(((newG) >> PALETTE_SHIFT) << 4) + ((newB) >> PALETTE_SHIFT));
 		}
 		SetPalette();
 		engine.logoState.fadeOutStatus[1] = 1;
 	}
 	if(engine.logoState.screenDuration < 200000 && !engine.logoState.fadeOutStatus[2])
 	{
-		for (int i = 0; i < 16; i++)
+		for (int i = 1; i < 16; i++)
 		{
-			engine.renderer.bitmapPalette[i] = ((((engine.activePalette[i * 4 + 2]/4) >> PALETTE_SHIFT) << 8) +
-								(((engine.activePalette[i * 4 + 1]/4) >> PALETTE_SHIFT) << 4) + ((engine.activePalette[i * 4 + 0]/4) >> PALETTE_SHIFT));
+			WORD newR = (WORD)(ZeroColor[2]) + ((engine.activePalette[i * 4 + 2] - ZeroColor[2])/4);
+			WORD newG = (WORD)(ZeroColor[1]) + ((engine.activePalette[i * 4 + 1] - ZeroColor[1])/4);
+			WORD newB = (WORD)(ZeroColor[0]) + ((engine.activePalette[i * 4 + 0] - ZeroColor[0])/4);
+
+			engine.renderer.bitmapPalette[i] = ((((newR) >> PALETTE_SHIFT) << 8) +
+								(((newG) >> PALETTE_SHIFT) << 4) + ((newB) >> PALETTE_SHIFT));
 		}
 		SetPalette();
 		engine.logoState.fadeOutStatus[2] = 1;
 	}
 	if(engine.logoState.screenDuration < 100000 && !engine.logoState.fadeOutStatus[3])
 	{
-		for (int i = 0; i < 16; i++)
+		for (int i = 1; i < 16; i++)
 		{
-			engine.renderer.bitmapPalette[i] = 0;
+			engine.renderer.bitmapPalette[i] = (((ZeroColor[2] >> PALETTE_SHIFT) << 8) +
+								((ZeroColor[1] >> PALETTE_SHIFT) << 4) + (ZeroColor[0] >> PALETTE_SHIFT));
 		}
 		SetPalette();
 		engine.logoState.fadeOutStatus[3] = 1;

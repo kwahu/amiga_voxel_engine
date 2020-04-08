@@ -193,18 +193,18 @@ typedef struct Engine
 
     ULONG startTime, endTime, deltaTime, accTime, loopEndTime;
     
+    MemoryArena chipArena;
+    MemoryArena memArena;
+
     MemoryArena rendererArena;
     MemoryArena temporaryArena;
     MemoryArena persistentArena;
-    MemoryArena chipArena;
-
+    
     UBYTE *menu[3];
     BITMAPINFOHEADER headers[3];
-    UBYTE Palette[16 * 4];
-    UBYTE Palette2[16 * 4];
     
 
-    UBYTE activePalette[16 * 4], palettePalette[16 * 4];
+    UBYTE activePalette[16 * 4];
     BITMAPINFOHEADER activeBitmapHeader, paletteHeader, shipHeader, explosionHeader, landingHeader, takeoffHeader;
     UBYTE *activeBitmap, *paletteBitmap, *shipBitmap, *explosionBitmap, *landingBitmap, *takeoffBitmap;
     UBYTE *music;

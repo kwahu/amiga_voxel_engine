@@ -38,8 +38,8 @@ void SetGamePaletter()
 	//process paletter from an image	
 	for (int i = 0; i < 16; i++)	
 	{	
-		engine.renderer.bitmapPalette[i] = ((engine.palettePalette[i * 4 + 2] >> 4) << 8) +	
-						   ((engine.palettePalette[i * 4 + 1] >> 4) << 4) + (engine.palettePalette[i * 4 + 0] >> 4);	
+		engine.renderer.bitmapPalette[i] = ((engine.activePalette[i * 4 + 2] >> 4) << 8) +	
+						   ((engine.activePalette[i * 4 + 1] >> 4) << 4) + (engine.activePalette[i * 4 + 0] >> 4);	
 	}	
 	SetPalette();
 }

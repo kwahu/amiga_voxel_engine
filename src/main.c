@@ -64,18 +64,19 @@ void InitEngine(void)
 	
     ULONG fontSize = fileGetSize("data/ss.fnt") + sizeof(Font);
 	
-	NewArena(&engine.persistentArena, fontSize + 11*MAPSIZE*MAPSIZE*sizeof(UWORD));
+	NewArena(&engine.memArena, fontSize + 11*MAPSIZE*MAPSIZE*sizeof(UWORD) + 100*1024);
+	NewSubArena(&engine.memArena, &engine.persistentArena, fontSize + 11*MAPSIZE*MAPSIZE*sizeof(UWORD));
 
-	NewArena(&engine.temporaryArena, 70*1024);
+	NewSubArena(&engine.memArena, &engine.temporaryArena, 100*1024);
 
 	engine.font = InitFont("data/ss.fnt");
 	SetupMaps();
 
 
-	engine.paletteBitmap = LoadBitmapFile("data/plt", &engine.paletteHeader, engine.palettePalette, 1, 0);
+	engine.paletteBitmap = LoadBitmapFile("data/plt", &engine.paletteHeader, engine.activePalette, 1, 0);
 
 	//process paletter from an image
-	SetBitmapPalette(engine.palettePalette);
+	SetBitmapPalette(engine.activePalette);
 	// Load font
 
 
@@ -197,9 +198,8 @@ void EngineDestroy(void)
 	DestroyAudio();
 
 	DestroyArena(&engine.chipArena);
+	DestroyArena(&engine.memArena);
 	DestroyArena(&engine.rendererArena);
-	DestroyArena(&engine.temporaryArena);
-	DestroyArena(&engine.persistentArena);
 
 }
 
