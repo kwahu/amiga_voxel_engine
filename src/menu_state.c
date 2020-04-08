@@ -1,17 +1,20 @@
 
 void InitMenuState()
 {
+    ClearArena(&engine.temporaryArena);
     ResetTime();
 	engine.currentState = State_Menu;
     
  
     engine.menuState.infoScreen = 0;
-    if(engine.menu[0] == 0)
+    for(int i = 0; i < 10; ++i)
     {
+        engine.pBitmapInfo[i] = CreateFontBitmap(engine.font);
+    }
     engine.menu[0] = LoadBitmapFile("data/m0", &engine.headers[0], engine.Palette, 1, 0);
     engine.menu[1] = LoadBitmapFile("data/m1", &engine.headers[1], engine.Palette2, 1, 0);
     engine.menu[2] = LoadBitmapFile("data/msg", &engine.headers[2], engine.Palette2, 1, 0);
-    }
+    
 }
 
 void RunMenuState()
@@ -103,11 +106,9 @@ void RunMenuState()
                 } break;
                 case 3:
                 {
-
                     ClearBuffor();
                     DrawBitmap4bCenter(engine.menu[2], &engine.headers[2]);
                     
-
                     FillTextBitmap(engine.font, engine.pBitmapInfo[0], "The ship's Anti-G engine uses the");
                     FillTextBitmap(engine.font, engine.pBitmapInfo[1], "planet's magnetic field to move");
                     FillTextBitmap(engine.font, engine.pBitmapInfo[2], "vertically.");
@@ -137,9 +138,37 @@ void RunMenuState()
                 } break;
                 case 4:
                 {
+                    StopSample();
+                    UseSystem();
+
                     
+                    ClearArena(&engine.temporaryArena);
+                    for(int i = 0; i < 3; ++i)
+                    {
+                        engine.pBitmapInfo[i] = CreateFontBitmap(engine.font);
+                    }
+                    engine.menu[2] = LoadBitmapFile("data/msg", &engine.headers[2], engine.Palette2, 1, 0);
                     engine.menuState.infoScreen = 1;
                     
+                    
+                    engine.explosionBitmap = LoadBitmapFile("data/iexpl", &engine.explosionHeader, engine.palettePalette, 2, 14);
+                    engine.landingBitmap = LoadBitmapFile("data/land", &engine.landingHeader, engine.palettePalette, 2, 14);
+                    engine.takeoffBitmap = LoadBitmapFile("data/take", &engine.takeoffHeader, engine.palettePalette, 2, 14);
+                    engine.shipBitmap = LoadBitmapFile("data/icar48", &engine.shipHeader, engine.activePalette, 2, 14);
+
+                    
+                    engine.pBitmapVelocity = CreateBitmapFromText(engine.font, "1234");
+                    engine.pBitmapScore = CreateBitmapFromText(engine.font, "1234567");
+                    engine.pBitmapTime = CreateBitmapFromText(engine.font, "1234567");
+                    engine.pBitmapHeight = CreateBitmapFromText(engine.font, "1234");
+                    engine.pBitmapVelocityLabel = CreateBitmapFromText(engine.font, "AIR SPEED");
+                    engine.pBitmapScoreLabel = CreateBitmapFromText(engine.font, "SCORE");
+                    engine.pBitmapTimeLabel = CreateBitmapFromText(engine.font, "TIME");
+                    engine.pBitmapHeightLabel = CreateBitmapFromText(engine.font, "RELATIVE ALTITUDE");
+                    
+                    UnuseSystem();
+                    InitAudio();
+                    PlaySample(6);
                     
                 } break;
             }

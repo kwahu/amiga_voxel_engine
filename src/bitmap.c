@@ -80,11 +80,11 @@ UBYTE *LoadBitmapFile(BYTE *filename, BITMAPINFOHEADER *bitmapInfoHeader, UBYTE 
 	{
 		default:
 		{
-		    bitmapImage = (unsigned char *)memAllocFast(bitmapInfoHeader->biSizeImage);
+		    bitmapImage = (unsigned char *)AllocateFromArena(&engine.temporaryArena, bitmapInfoHeader->biSizeImage);
 		} break;
 		case Bitmap_Sprite:
 		{
-		    bitmapImage = (unsigned char *)memAllocFast(bitmapInfoHeader->biSizeImage + bitmapInfoHeader->biSizeImage/4);
+		    bitmapImage = (unsigned char *)AllocateFromArena(&engine.temporaryArena, bitmapInfoHeader->biSizeImage + bitmapInfoHeader->biSizeImage/4);
 		} break;
  	}
 	#else

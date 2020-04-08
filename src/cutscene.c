@@ -160,6 +160,11 @@ void ShowWinCutscene()
 {
 
     StopSample();
+    ClearArena(&engine.temporaryArena);
+    for(int i = 0; i < 6; ++i)
+    {
+        engine.pBitmapInfo[i] = CreateFontBitmap(engine.font);
+    }
     LoadBitmapToMemory("data/fin");
     InitAudio();
     PlaySample(18);

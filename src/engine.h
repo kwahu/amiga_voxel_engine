@@ -6,6 +6,7 @@
 #include <stdio.h>
 #include <stddef.h>
 #include "settings_platform.h"
+#include "memory_platform.h"
 
 #define ULONG 	uint32_t
 #define LONG	int32_t
@@ -112,7 +113,6 @@ typedef enum Cutscene
 
 #ifdef AMIGA
 
-    CHIP UWORD planesWc[4*PLANEWIDTHWORD*PLANEHEIGHT];
 #endif
 
 typedef struct Renderer
@@ -127,7 +127,7 @@ typedef struct Renderer
     uint16_t *planes;
     #endif
 
-    //UWORD mapHigh[MAPSIZE][MAPSIZE]; //32k
+
     UWORD *mapHigh;
     UWORD lastOverwrittenLine;
 
@@ -193,6 +193,10 @@ typedef struct Engine
 
     ULONG startTime, endTime, deltaTime, accTime, loopEndTime;
     
+    MemoryArena rendererArena;
+    MemoryArena temporaryArena;
+    MemoryArena persistentArena;
+    MemoryArena chipArena;
 
     UBYTE *menu[3];
     BITMAPINFOHEADER headers[3];

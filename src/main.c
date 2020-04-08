@@ -27,6 +27,30 @@ docker run --rm \
 -it amigadev/crosstools:m68k-amigaos bash
 */
 
+void InitializeGameChipMemory()
+{
+	
+    tFile *file = fileOpen("data/verge.mod", "rb");
+
+    ULONG fileSize = fileGetSize("data/verge.mod");
+	
+    ULONG screenPlaneSize = PLANEWIDTHWORD*PLANEHEIGHT*sizeof(UWORD);
+
+	NewChipArena(&engine.chipArena, fileSize + 4*screenPlaneSize);
+
+
+	engine.music = (UBYTE *)AllocateFromArena(&engine.chipArena, fileSize);
+	
+    fileRead(file, engine.music, fileSize);
+    fileClose(file);
+
+	engine.renderer.plane1W = (UWORD *)AllocateFromArena(&engine.chipArena, screenPlaneSize);
+	engine.renderer.plane2W = (UWORD *)AllocateFromArena(&engine.chipArena, screenPlaneSize);
+	engine.renderer.plane3W = (UWORD *)AllocateFromArena(&engine.chipArena, screenPlaneSize);
+	engine.renderer.plane4W = (UWORD *)AllocateFromArena(&engine.chipArena, screenPlaneSize);
+	
+}
+
 
 //****************************** CREATE
 void InitEngine(void)
@@ -34,19 +58,27 @@ void InitEngine(void)
 	engine.exitFlag = 0;
 
 	engine.musicOn = 0;
-	ReadModFile("data/verge.mod");
+	InitializeGameChipMemory();
 	InitScreen();
 	InitInput();
+	
+    ULONG fontSize = fileGetSize("data/ss.fnt") + sizeof(Font);
+	
+	NewArena(&engine.persistentArena, fontSize + 11*MAPSIZE*MAPSIZE*sizeof(UWORD));
+
+	NewArena(&engine.temporaryArena, 70*1024);
+
+	engine.font = InitFont("data/ss.fnt");
+	SetupMaps();
+
 
 	engine.paletteBitmap = LoadBitmapFile("data/plt", &engine.paletteHeader, engine.palettePalette, 1, 0);
 
 	//process paletter from an image
 	SetBitmapPalette(engine.palettePalette);
 	// Load font
-	engine.font = InitFont("data/ss.fnt");
 
 
-	SetupMaps();
 
 
 	engine.cutsceneDuration = 0;
@@ -106,8 +138,7 @@ void InitEngine(void)
 		
 	}
 
-
-	FreeTextBitmap(engine.informationText);
+	ClearArena(&engine.temporaryArena);
 	InitLogoState();
 
 	
@@ -165,33 +196,10 @@ void EngineDestroy(void)
 	StopSample(0);
 	DestroyAudio();
 
-	FreeTextBitmap(engine.pBitmapVelocity);
-	FreeTextBitmap(engine.pBitmapScore);
-	FreeTextBitmap(engine.pBitmapTime);
-	FreeTextBitmap(engine.pBitmapHeight);
-
-	FreeTextBitmap(engine.pBitmapVelocityLabel);
-	FreeTextBitmap(engine.pBitmapScoreLabel);
-	FreeTextBitmap(engine.pBitmapTimeLabel);
-	FreeTextBitmap(engine.pBitmapHeightLabel);
-	
-
-	free(engine.font);
-	free(engine.activeBitmap);
-	free(engine.shipBitmap);
-	free(engine.paletteBitmap);
-	free(engine.landingBitmap);
-	free(engine.takeoffBitmap);
-	free(engine.explosionBitmap);
-	free(engine.renderer.ditherTable1);
-	free(engine.renderer.depthBuffer);
-	free(engine.renderer.screenPatch);
-	free(engine.renderer.rayCastX);
-	free(engine.renderer.rayCastY);
-	for(int i = 0; i < 10; ++i)
-	{
-		FreeTextBitmap(engine.pBitmapInfo[i]);
-	}
+	DestroyArena(&engine.chipArena);
+	DestroyArena(&engine.rendererArena);
+	DestroyArena(&engine.temporaryArena);
+	DestroyArena(&engine.persistentArena);
 
 }
 

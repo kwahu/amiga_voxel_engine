@@ -51,6 +51,8 @@
 #define BASELINE 0
 #endif
 
+
+
 TextBitMap *CreateBitmapFromText(Font *font, char * text)
 {
 
@@ -65,9 +67,9 @@ TextBitMap *CreateBitmapFromText(Font *font, char * text)
         Width += (font->CharOffsets[Idx + 1] - font->CharOffsets[Idx]) + 1;
 	}
     
-    TextBitMap *textBitMap = malloc(sizeof(TextBitMap));
-    UBYTE WordWidth = ((Width+15)/16);
-	textBitMap->BitMap = (UWORD *)malloc(sizeof(UWORD)*WordWidth*Height);
+    TextBitMap *textBitMap = (TextBitMap *)AllocateFromArena(&engine.temporaryArena, sizeof(TextBitMap));
+    UBYTE WordWidth = ((Width+15)>>4);
+	textBitMap->BitMap = (UWORD *)AllocateFromArena(&engine.temporaryArena, sizeof(UWORD)*WordWidth*Height);
 	textBitMap->Width = WordWidth;
 	textBitMap->Height = Height;
 	textBitMap->ActualWidth = 0;
@@ -94,13 +96,13 @@ void FillTextBitmap(Font *font, TextBitMap *Bitmap, char *Text)
         
         UBYTE Idx = (UBYTE)*p;
         UBYTE GlyphWidth = (font->CharOffsets[Idx + 1] - font->CharOffsets[Idx]);
-        UBYTE blitX = X/16;
-        UBYTE leftShift = X%16;
+        UBYTE blitX = X>>4;
+        UBYTE leftShift = X&0xF;
         UBYTE rightShift = 16 - leftShift;
 
         UWORD charOffset = font->CharOffsets[Idx];
-        UWORD charOffsetBase = charOffset/16;
-        UWORD charLeftShift = charOffset%16;
+        UWORD charOffsetBase = charOffset>>4;
+        UWORD charLeftShift = charOffset&0xF;
         UWORD charRightShift = 16 - charLeftShift;
         UWORD *charPtr = font->RawData + charOffsetBase;
         UWORD charBlit = 0;
@@ -122,12 +124,12 @@ void FillTextBitmap(Font *font, TextBitMap *Bitmap, char *Text)
             
             Bitmap->BitMap[j*Bitmap->Width + blitX + 1] |= (charBlit << rightShift);
             
-            charPtr += (font->Width/16);
+            charPtr += (font->Width>>4);
             charBlit = 0;
         }
         
         X += GlyphWidth + 1;
-        Bitmap->ActualWidth = (X+15)/16;
+        Bitmap->ActualWidth = (X+15)>>4;
 	}
 	Bitmap->ActualHeight = font->Height;
 
@@ -136,8 +138,8 @@ void FillTextBitmap(Font *font, TextBitMap *Bitmap, char *Text)
 void DrawTextBitmap(TextBitMap *Bitmap, UWORD x, UWORD y, UBYTE colorBit)
 {
 
-    UWORD posX = x/16;
-    UWORD leftGap = x - posX*16;
+    UWORD posX = x>>4;
+    UWORD leftGap = x - (posX<<4);
     UWORD rightGap = 16 - leftGap;
 
     
@@ -155,7 +157,7 @@ void DrawTextBitmap(TextBitMap *Bitmap, UWORD x, UWORD y, UBYTE colorBit)
         UWORD *thirdPtr = engine.renderer.plane3W + firstPos;
         UWORD *fourthPtr = engine.renderer.plane4W + firstPos;
 #else
-        UWORD firstPos = (y+j)*PLANEWIDTHWORD+posX*4;
+        UWORD firstPos = (y+j)*PLANEWIDTHWORD+(posX<<2);
         UWORD *firstPtr = engine.renderer.planes + firstPos;
         UWORD *secondPtr = engine.renderer.planes + firstPos+1;
         UWORD *thirdPtr = engine.renderer.planes + firstPos+2;
@@ -250,8 +252,8 @@ void DrawTextBitmap(TextBitMap *Bitmap, UWORD x, UWORD y, UBYTE colorBit)
 void DrawTextBitmapOverwrite(TextBitMap *Bitmap, UWORD x, UWORD y, UBYTE colorBit)
 {
 
-    UWORD posX = x/16;
-    UWORD leftGap = x - posX*16;
+    UWORD posX = x>>4;
+    UWORD leftGap = x - (posX<<4);
     UWORD rightGap = 16 - leftGap;
 
     UWORD *bitmapPtr = Bitmap->BitMap;
@@ -269,7 +271,7 @@ void DrawTextBitmapOverwrite(TextBitMap *Bitmap, UWORD x, UWORD y, UBYTE colorBi
         UWORD *thirdPtr = engine.renderer.plane3W + firstPos;
         UWORD *fourthPtr = engine.renderer.plane4W + firstPos;
 #else
-        UWORD firstPos = (y+j)*PLANEWIDTHWORD+posX*4;
+        UWORD firstPos = (y+j)*PLANEWIDTHWORD+(posX<<2);
         UWORD *firstPtr = engine.renderer.planes + firstPos;
         UWORD *secondPtr = engine.renderer.planes + firstPos+1;
         UWORD *thirdPtr = engine.renderer.planes + firstPos+2;
@@ -363,38 +365,38 @@ void DrawTextBitmapOverwrite(TextBitMap *Bitmap, UWORD x, UWORD y, UBYTE colorBi
 
 void FreeTextBitmap(TextBitMap *Bitmap)
 {
-    free(Bitmap->BitMap);
-    free(Bitmap);
 }
 
 void FreeFont()
 {
-    free(engine.font->CharOffsets);
-    free(engine.font->RawData);
-    free(engine.font);
+}
+
+ULONG GetFontSize(char *FontName)
+{
+
 }
 
 Font * InitFont(char *FontName)
 {
-    FILE *FontFile;
-	Font *font;
+        FILE *FontFile;
+        Font *font;
 
-	FontFile = fopen(FontName, "r");
+        FontFile = fopen(FontName, "r");
 
-	font = (Font *) malloc(sizeof(Font));
+        font = (Font *) AllocateFromArena(&engine.persistentArena, sizeof(Font));
 
-	fread(&font->Width, sizeof(UWORD), 1, FontFile);
-	fread(&font->Height, sizeof(UWORD), 1, FontFile);
-	fread(&font->Chars, sizeof(UBYTE), 1, FontFile);
+        fread(&font->Width, sizeof(UWORD), 1, FontFile);
+        fread(&font->Height, sizeof(UWORD), 1, FontFile);
+        fread(&font->Chars, sizeof(UBYTE), 1, FontFile);
 
-	font->CharOffsets = malloc(sizeof(UWORD) * font->Chars);
-	fread(font->CharOffsets, sizeof(UWORD) * font->Chars, 1, FontFile);
+        font->CharOffsets = (UWORD *)AllocateFromArena(&engine.persistentArena, sizeof(UWORD) * font->Chars);
+        fread(font->CharOffsets, sizeof(UWORD) * font->Chars, 1, FontFile);
 
-	font->RawData = (UWORD *)malloc(sizeof(UWORD)*((font->Width+15)/16)*font->Height);
+        font->RawData = (UWORD *)AllocateFromArena(&engine.persistentArena, sizeof(UWORD)*((font->Width+15)>>4)*font->Height);
 
-	UWORD PlaneByteSize = ((font->Width+15)/16) * 2 * font->Height;
-	fread(font->RawData, PlaneByteSize, 1, FontFile);
+        UWORD PlaneByteSize = ((font->Width+15)>>4) * 2 * font->Height;
+        fread(font->RawData, PlaneByteSize, 1, FontFile);
 
-	fclose(FontFile);
-	return font;
+        fclose(FontFile);
+        return font;
 }

@@ -8,16 +8,6 @@
 
 
 
-void ReadModFile(char *fileName)
-{
-    tFile *file = fileOpen(fileName, "rb");
-
-    ULONG fileSize = fileGetSize(fileName);
-    engine.music = memAllocChip(fileSize);
-    fileRead(file, engine.music, fileSize);
-    fileClose(file);
-
-}
 
 void InitAudio()
 {
@@ -57,6 +47,7 @@ void StopSample()
 
 void DestroySample()
 {
+    mt_remove_cia(g_pCustom);
 }
 
 #else

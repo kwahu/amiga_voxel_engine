@@ -437,14 +437,24 @@ void GetPlayerMemorySetting()
 		#else
 		engine.renderer.shadowStep = 8;
 		#endif
-		engine.renderer.depthBuffer = (UBYTE *)memAllocFast(engine.renderer.depthBufferWidth*YSIZEEVEN*sizeof(UBYTE));
-		engine.renderer.ditherTable1 = (UBYTE *)memAllocFast(4*COLORS*COLORS*sizeof(UBYTE));
-		engine.renderer.ditherTable2 = engine.renderer.ditherTable1 + COLORS*COLORS;
-		engine.renderer.ditherTable3 = engine.renderer.ditherTable1 + 2*COLORS*COLORS;
-		engine.renderer.ditherTable4 = engine.renderer.ditherTable1 + 3*COLORS*COLORS;
-		engine.renderer.screenPatch = (UBYTE *)memAllocFast(4*45*sizeof(UBYTE));
-		engine.renderer.rayCastX = (WORD *)memAllocFast(XSIZEEVEN*TERRAINDEPTH*sizeof(WORD));
-		engine.renderer.rayCastY = (WORD *)memAllocFast(YSIZEEVEN*TERRAINDEPTH*sizeof(WORD));
+
+		ULONG depthBufferSize = engine.renderer.depthBufferWidth*YSIZEEVEN*sizeof(UBYTE);
+		ULONG ditherTableSize = COLORS*COLORS*sizeof(UBYTE);
+		ULONG screenPatchSize = 4*45*sizeof(UBYTE);
+		ULONG rayCastXSize = XSIZEEVEN*TERRAINDEPTH*sizeof(WORD);
+		ULONG rayCastYSize = YSIZEEVEN*TERRAINDEPTH*sizeof(WORD);
+
+		NewChipArena(&engine.rendererArena, depthBufferSize + 4*ditherTableSize + screenPatchSize + rayCastXSize + rayCastYSize);
+
+
+		engine.renderer.depthBuffer = (UBYTE *)AllocateFromArena(&engine.rendererArena, depthBufferSize);
+		engine.renderer.ditherTable1 = (UBYTE *)AllocateFromArena(&engine.rendererArena, ditherTableSize);
+		engine.renderer.ditherTable2 = (UBYTE *)AllocateFromArena(&engine.rendererArena, ditherTableSize);
+		engine.renderer.ditherTable3 = (UBYTE *)AllocateFromArena(&engine.rendererArena, ditherTableSize);
+		engine.renderer.ditherTable4 = (UBYTE *)AllocateFromArena(&engine.rendererArena, ditherTableSize);
+		engine.renderer.screenPatch = (UBYTE *)AllocateFromArena(&engine.rendererArena, screenPatchSize);
+		engine.renderer.rayCastX = (WORD *)AllocateFromArena(&engine.rendererArena, rayCastXSize);
+		engine.renderer.rayCastY = (WORD *)AllocateFromArena(&engine.rendererArena, rayCastYSize);
 		engine.renderer.highMemory = 0;
 		GenerateColorBytesNoDither4x4();
 	}
@@ -457,14 +467,23 @@ void GetPlayerMemorySetting()
 		#else
 		engine.renderer.shadowStep = 4;
 		#endif
-		engine.renderer.depthBuffer = (UBYTE *)memAllocFast(engine.renderer.depthBufferWidth*YSIZEODD*sizeof(UBYTE));
-		engine.renderer.ditherTable1 = (UBYTE *)memAllocFast(4*COLORS*COLORS*COLORS*sizeof(UBYTE));
-		engine.renderer.ditherTable2 = engine.renderer.ditherTable1 + COLORS*COLORS*COLORS;
-		engine.renderer.ditherTable3 = engine.renderer.ditherTable1 + 2*COLORS*COLORS*COLORS;
-		engine.renderer.ditherTable4 = engine.renderer.ditherTable1 + 3*COLORS*COLORS*COLORS;
-		engine.renderer.screenPatch = (UBYTE *)memAllocFast(6*90*sizeof(UBYTE));
-		engine.renderer.rayCastX = (WORD *)memAllocFast(XSIZEODD*TERRAINDEPTH*sizeof(WORD));
-		engine.renderer.rayCastY = (WORD *)memAllocFast(YSIZEODD*TERRAINDEPTH*sizeof(WORD));
+
+		ULONG depthBufferSize = engine.renderer.depthBufferWidth*YSIZEODD*sizeof(UBYTE);
+		ULONG ditherTableSize = COLORS*COLORS*COLORS*sizeof(UBYTE);
+		ULONG screenPatchSize = 6*90*sizeof(UBYTE);
+		ULONG rayCastXSize = XSIZEODD*TERRAINDEPTH*sizeof(WORD);
+		ULONG rayCastYSize = YSIZEODD*TERRAINDEPTH*sizeof(WORD);
+
+		NewArena(&engine.rendererArena, depthBufferSize + 4*ditherTableSize + screenPatchSize + rayCastXSize + rayCastYSize);
+
+		engine.renderer.depthBuffer = (UBYTE *)AllocateFromArena(&engine.rendererArena, depthBufferSize);
+		engine.renderer.ditherTable1 = (UBYTE *)AllocateFromArena(&engine.rendererArena, ditherTableSize);
+		engine.renderer.ditherTable2 = (UBYTE *)AllocateFromArena(&engine.rendererArena, ditherTableSize);
+		engine.renderer.ditherTable3 = (UBYTE *)AllocateFromArena(&engine.rendererArena, ditherTableSize);
+		engine.renderer.ditherTable4 = (UBYTE *)AllocateFromArena(&engine.rendererArena, ditherTableSize);
+		engine.renderer.screenPatch = (UBYTE *)AllocateFromArena(&engine.rendererArena, screenPatchSize);
+		engine.renderer.rayCastX = (WORD *)AllocateFromArena(&engine.rendererArena, rayCastXSize);
+		engine.renderer.rayCastY = (WORD *)AllocateFromArena(&engine.rendererArena, rayCastYSize);
 		engine.renderer.highMemory = 1;
 		GenerateColorBytesDither3x2();
 	}
