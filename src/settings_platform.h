@@ -20,6 +20,17 @@
 #define YSIZEEVEN (YSIZEODD / 2)
 
 
+struct VPort;
+struct ScreenView;
+struct SimpleBufferManager;
+
+typedef struct PlatformScreen
+{
+	struct ScreenView *view;
+	struct VPort *vPort;
+	struct SimpleBufferManager *buffer;
+} PlatformScreen;
+
 
 
 #else
@@ -50,23 +61,16 @@
 #define YSIZEEVEN (YSIZEODD / 2)
 
 
-#endif
-
-
 typedef struct PlatformScreen
 {
-	#ifdef AMIGA
-	tView *s_pView;
-	tVPort *s_pVPort;
-	tSimpleBufferManager *s_pBuffer;
-	#else
     uint16_t *physBase;
     uint16_t *logBase;
 	uint16_t *planesAtari;
 	uint16_t systemPalette[16];
-	#endif
 
 } PlatformScreen;
+
+#endif
 
 
 typedef struct Font {

@@ -1274,6 +1274,7 @@ UBYTE px, UBYTE py, UBYTE ph, UBYTE screenStart, UBYTE screenEnd)
         }
         baseRayX += (TERRAINDEPTH << 2);
 
+        UWORD volatile firstDepth = 0;
         for(UBYTE i = 0; i < 2; ++i)
         {
             UBYTE sy = 0;
@@ -1287,8 +1288,7 @@ UBYTE px, UBYTE py, UBYTE ph, UBYTE screenStart, UBYTE screenEnd)
 
             UWORD *mapSmpPtr = mapSamples + i*depth;
             UWORD offsetz = engine.renderer.zStart;
-
-            UWORD firstDepth = 0;
+            firstDepth = 0;
             while(tz < depth)
             {
                 UWORD mapValue = *mapSmpPtr;

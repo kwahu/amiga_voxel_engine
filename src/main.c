@@ -1,6 +1,6 @@
 
-#include "engine.h"
 #include "platform.h"
+#include "engine.h"
 #include "bitmap.c"
 #include "file_platform.h"
 
@@ -30,9 +30,9 @@ docker run --rm \
 void InitializeGameChipMemory()
 {
 	
-    tFile *file = fileOpen("data/verge.mod", "rb");
+    FILE *file = OpenFile("data/verge.mod", "rb");
 
-    ULONG fileSize = fileGetSize("data/verge.mod");
+    ULONG fileSize = GetFileSize("data/verge.mod");
 	
     ULONG screenPlaneSize = PLANEWIDTHWORD*PLANEHEIGHT*sizeof(UWORD);
 
@@ -41,8 +41,8 @@ void InitializeGameChipMemory()
 
 	engine.music = (UBYTE *)AllocateFromArena(&engine.chipArena, fileSize);
 	
-    fileRead(file, engine.music, fileSize);
-    fileClose(file);
+    ReadFile(file, engine.music, fileSize);
+    CloseFile(file);
 
 	engine.renderer.plane1W = (UWORD *)AllocateFromArena(&engine.chipArena, screenPlaneSize);
 	engine.renderer.plane2W = (UWORD *)AllocateFromArena(&engine.chipArena, screenPlaneSize);
@@ -64,10 +64,9 @@ void InitEngine(void)
 	
     ULONG fontSize = fileGetSize("data/ss.fnt") + sizeof(Font);
 	
-	NewArena(&engine.memArena, fontSize + 11*MAPSIZE*MAPSIZE*sizeof(UWORD) + 100*1024);
-	NewSubArena(&engine.memArena, &engine.persistentArena, fontSize + 11*MAPSIZE*MAPSIZE*sizeof(UWORD));
+	NewArena(&engine.persistentArena, fontSize + 11*MAPSIZE*MAPSIZE*sizeof(UWORD));
 
-	NewSubArena(&engine.memArena, &engine.temporaryArena, 100*1024);
+	NewArena(&engine.temporaryArena, 100*1024);
 
 	engine.font = InitFont("data/ss.fnt");
 	SetupMaps();
@@ -198,7 +197,8 @@ void EngineDestroy(void)
 	DestroyAudio();
 
 	DestroyArena(&engine.chipArena);
-	DestroyArena(&engine.memArena);
+	DestroyArena(&engine.persistentArena);
+	DestroyArena(&engine.temporaryArena);
 	DestroyArena(&engine.rendererArena);
 
 }

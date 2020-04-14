@@ -25,6 +25,9 @@ void PlaySample(UBYTE pos)
     
     //P61_Init(custom, music, 0, 1);
     //P61_SetPosition(g_pCustom, pos);
+    // mt_init(g_pCustom, engine.music, 0, pos);
+  	// mt_Enable = 1;
+    //   mt_MusicChannels = 4;
     mt_init(g_pCustom, engine.music, 0, pos);
   	mt_Enable = 1;
       mt_MusicChannels = 4;

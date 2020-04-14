@@ -1,10 +1,6 @@
 #ifndef _ENGINE_H_
 #define _ENGINE_H_
 
-#include <stdlib.h>
-#include <stdint.h>
-#include <stdio.h>
-#include <stddef.h>
 #include "settings_platform.h"
 #include "memory_platform.h"
 
