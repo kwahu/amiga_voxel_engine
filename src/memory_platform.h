@@ -1,4 +1,40 @@
 
+#include <exec/types.h>
+#include <exec/memory.h>      // MEMF_CLEAR etc
+#include <proto/exec.h>
+
+
+
+# define MemAlloc(ulSize, ulFlags) MemAllocRls(ulSize, ulFlags)
+# define MemFree(pMem, ulSize) MemFreeRls(pMem, ulSize)
+
+// Shorthands
+#define MemAllocFast(ulSize) MemAlloc(ulSize, MEMF_ANY) 
+#define MemAllocChip(ulSize) MemAlloc(ulSize, MEMF_CHIP)
+#define MemAllocFastClear(ulSize) MemAlloc(ulSize, MEMF_ANY | MEMF_CLEAR)
+#define MemAllocChipClear(ulSize) MemAlloc(ulSize, MEMF_CHIP | MEMF_CLEAR)
+#define MemAllocChipFlags(ulSize, ulFlags) MemAlloc(ulSize, MEMF_CHIP | ulFlags)
+#define MemAllocFastFlags(ulSize, ulFlags) MemAlloc(ulSize, MEMF_ANY |ulFlags)
+
+
+void *MemAllocRls(ULONG size, ULONG flags) {
+	SystemUse();
+	void *result;
+	result = AllocMem(size, flags);
+	if(!(flags & MEMF_CHIP) && !result) {
+		result = AllocMem(size, (flags & ~MEMF_FAST) | MEMF_ANY);
+	}
+	SystemUnuse();
+	return result;
+}
+
+void MemFreeRls(void *mem, ULONG size) {
+	SystemUse();
+	FreeMem(mem, size);
+	SystemUnuse();
+}
+
+
 typedef struct MemoryArena
 {
     UBYTE tag[5];
@@ -15,7 +51,7 @@ void NewArena(MemoryArena *Arena, ULONG ArenaSize)
     Arena->tag[2] = 'e';
     Arena->tag[3] = 'n';
     Arena->tag[4] = 'a';
-    Arena->Memory = (UBYTE *)memAllocFast(ArenaSize);
+    Arena->Memory = (UBYTE *)MemAllocFast(ArenaSize);
     if(Arena->Memory != 0)
     {
         Arena->CurrentPointer = Arena->Memory;
@@ -24,7 +60,7 @@ void NewArena(MemoryArena *Arena, ULONG ArenaSize)
     }
     else
     {
-        Arena->Memory = (UBYTE *)memAllocChip(ArenaSize);
+        Arena->Memory = (UBYTE *)MemAllocChip(ArenaSize);
         if(Arena->Memory != 0)
         {
             Arena->CurrentPointer = Arena->Memory;
@@ -45,7 +81,7 @@ void NewChipArena(MemoryArena *Arena, ULONG ArenaSize)
     Arena->tag[2] = 'r';
     Arena->tag[3] = 'e';
     Arena->tag[4] = 'n';
-    Arena->Memory = (UBYTE *)memAllocChip(ArenaSize);
+    Arena->Memory = (UBYTE *)MemAllocChip(ArenaSize);
     if(Arena->Memory != 0)
     {
         Arena->CurrentPointer = Arena->Memory;
@@ -57,7 +93,7 @@ void NewChipArena(MemoryArena *Arena, ULONG ArenaSize)
 
 void DestroyArena(MemoryArena *Arena)
 {
-    memFree(Arena->Memory, Arena->Size);
+    MemFree(Arena->Memory, Arena->Size);
 }
 
 

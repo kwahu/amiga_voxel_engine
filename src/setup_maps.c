@@ -116,15 +116,15 @@ void LoadMap(const char *heightName, const char *colorName,
 
 void MakeMap3(UBYTE *bezierPoints , UWORD (*high), UWORD xSamples, UWORD ySamples)
 {
-	UBYTE randX = timerGetPrec();
-	UBYTE randY = timerGetPrec();
+	UBYTE randX = TimerGetPrec();
+	UBYTE randY = TimerGetPrec();
 
 	randX = (randX * 532) &0x7F;
 	randY = (randY * 487) &0x7F;
 
 
-	UBYTE randX2 = timerGetPrec();
-	UBYTE randY2 = timerGetPrec();
+	UBYTE randX2 = TimerGetPrec();
+	UBYTE randY2 = TimerGetPrec();
 
 	randX2 = (randX2 * 371) &0x7F;
 	randY2 = (randY2 * 719) &0x7F;

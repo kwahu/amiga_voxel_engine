@@ -2,7 +2,6 @@
 
 #ifdef AMIGA
 
-#include <ace/managers/viewport/simplebuffer.h>
 
 #define PLANEWIDTH 40
 #define PLANEWIDTHWORD 20
@@ -28,7 +27,7 @@ typedef struct PlatformScreen
 {
 	struct ScreenView *view;
 	struct VPort *vPort;
-	struct SimpleBufferManager *buffer;
+	struct BufferManager *buffer;
 } PlatformScreen;
 
 

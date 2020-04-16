@@ -2,14 +2,7 @@
 #define _ENGINE_H_
 
 #include "settings_platform.h"
-#include "memory_platform.h"
 
-#define ULONG 	uint32_t
-#define LONG	int32_t
-#define UWORD 	uint16_t
-#define WORD 	int16_t
-#define UBYTE  unsigned char
-#define BYTE	signed char
 
 #define DEPTH 4
 #define COLORS 32
@@ -118,7 +111,7 @@ typedef struct Renderer
     UWORD *plane2W;
     UWORD *plane3W;
     UWORD *plane4W;
-    tBitMap buffer;
+    BitMap buffer;
     #else
     uint16_t *planes;
     #endif

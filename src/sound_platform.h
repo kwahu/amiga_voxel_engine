@@ -4,15 +4,13 @@
 #include <exec/types.h>
 #include "ptplayer.h"
 
-#include <ace/utils/custom.h>
-
 
 
 
 void InitAudio()
 {
  
-	mt_install_cia(g_pCustom, 0, 1);
+	mt_install_cia(customRegister, 0, 1);
     //P61_Init(g_pCustom, engine.music, 0, 1, ((UBYTE *)(&g_pCustom->dmacon)) + 1);
 }
 
@@ -28,7 +26,7 @@ void PlaySample(UBYTE pos)
     // mt_init(g_pCustom, engine.music, 0, pos);
   	// mt_Enable = 1;
     //   mt_MusicChannels = 4;
-    mt_init(g_pCustom, engine.music, 0, pos);
+    mt_init(customRegister, engine.music, 0, pos);
   	mt_Enable = 1;
       mt_MusicChannels = 4;
     
@@ -36,7 +34,7 @@ void PlaySample(UBYTE pos)
 void ContinueSample()
 {
     //P61_Init(g_pCustom, engine.music, 0, 1, ((UBYTE *)(&g_pCustom->dmacon)) + 1);
-	mt_install_cia(g_pCustom, 0, 1);
+	mt_install_cia(customRegister, 0, 1);
   	mt_Enable = 1;
       mt_MusicChannels = 4;
     
@@ -46,13 +44,13 @@ void StopSample()
 {
     //P61_End();
     mt_Enable = 0;
-    mt_remove_cia(g_pCustom);
+    mt_remove_cia(customRegister);
 
 }
 
 void DestroySample()
 {
-    mt_remove_cia(g_pCustom);
+    mt_remove_cia(customRegister);
 }
 
 #else

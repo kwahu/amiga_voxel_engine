@@ -3,10 +3,9 @@
 void LoadBitmapToMemory(BYTE *fileName)    
 {                                      
     #ifdef AMIGA                   
-    systemUse();                        
-    free(engine.activeBitmap);      
+    SystemUse();                        
     engine.activeBitmap = LoadBitmapFile(fileName, &engine.activeBitmapHeader, engine.activePalette, 1, 0);      
-    systemUnuse();        
+    SystemUnuse();        
     #else                       
     free(engine.activeBitmap);      
     engine.activeBitmap = LoadBitmapFile(fileName, &engine.activeBitmapHeader, engine.activePalette, 1, 0);     
@@ -49,8 +48,8 @@ ULONG ReadFile(FILE *file, void *dest, ULONG size) {
 
 void CloseFile(FILE *file)
 {
-    systemUse();
+    SystemUse();
 	fclose(file);
-	systemUnuse();
+	SystemUnuse();
 }
 #endif

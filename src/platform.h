@@ -12,20 +12,85 @@ void EngineDestroy(void);
 #include <stdint.h>
 #include <stdio.h>
 #include <stddef.h>
-#include <clib/graphics_protos.h>
+// #include <clib/graphics_protos.h>
 #include <clib/dos_protos.h>
 #include <hardware/intbits.h>
 #include <hardware/dmabits.h>
 #include <exec/execbase.h>
-#include <proto/exec.h>
 #include <graphics/gfxbase.h> // Required for GfxBase
 #include <hardware/custom.h>
-#include <exec/types.h>
+#include <clib/graphics_protos.h> // BitMap etc
+
+typedef struct BitMap BitMap;
+
+typedef ULONG Tag;
+#ifndef TAG_DONE
+#define TAG_DONE   0UL
+#define TAG_END    0UL
+#define TAG_IGNORE 1UL
+#define TAG_MORE   2UL
+#define TAG_SKIP   3UL
+#define TAG_USER   BV(31)
+#endif // TAG_DONE
+
+ULONG GetTag(void *tagListPtr, va_list srcList, Tag tagToFind, ULONG onNotFound) {
+	if(tagListPtr) {
+		return onNotFound;
+	}
+
+	va_list workList;
+	va_copy(workList, srcList);
+	Tag tagName;
+	do {
+		tagName = va_arg(workList, Tag);
+		if(tagName == tagToFind) {
+			ULONG out = va_arg(workList, ULONG);
+			va_end(workList);
+			return out;
+		}
+		else if(tagName == TAG_SKIP) {
+			// Ignore this & next
+			va_arg(workList, ULONG);
+			va_arg(workList, ULONG);
+			va_arg(workList, ULONG);
+		}
+		else if(tagName == TAG_MORE) {
+			// This list is finished - parse next one
+			void *next = va_arg(workList, void*);
+			va_end(workList);
+			return GetTag(next, 0, tagToFind, onNotFound);
+		}
+		else {
+			va_arg(workList, ULONG);
+		}
+	} while(tagName != TAG_DONE);
+	va_end(workList);
+	return onNotFound;
+}
+
+
+typedef union UwCoordYX {
+	ULONG yx;
+	struct {
+		UWORD y;
+		UWORD x;
+	};
+} UwCoordYX;
+
+typedef union UbCoordYX {
+	UWORD yx;
+	struct {
+		UBYTE y;
+		UBYTE x;
+	};
+} UbCoordYX;
+
 
 #define FAR __far
 #define REGPTR volatile * const
 #define HWINTERRUPT __attribute__((interrupt))
 #define FN_HOTSPOT __attribute__((hot))
+#define REGARG(arg, reg) arg __asm__(reg)
 
 typedef struct Custom Custom;
 
@@ -70,6 +135,7 @@ typedef struct Cia {
 } Cia;
 
 #define BV(value) (1 << (value))
+#define BTST(value, bit) (value) & (1 << (bit))
 
 #define CIAAPRA_OVL  BV(0)
 #define CIAAPRA_LED  BV(1)
@@ -115,6 +181,16 @@ typedef struct Cia {
 Cia FAR REGPTR CiaA = (Cia*)0xBFE001;
 Cia FAR REGPTR CiaB = (Cia*)0xBFD000;
 
+typedef struct {
+	volatile unsigned laced:1;   ///< 1 for interlaced screens
+	volatile unsigned unused:14;
+	volatile unsigned posY:9;    ///< PAL: 0..312, NTSC: 0..?
+	volatile unsigned posX:8;    ///< 0..159?
+} RayPos;
+RayPos FAR REGPTR rayPos = (RayPos REGPTR)(
+	CUSTOM_BASE + offsetof(Custom, vposr)
+);
+
 
 
 typedef void (*HwIntVector)(void);
@@ -124,8 +200,8 @@ typedef void (*GameIntHandler)(
 );
 
 typedef struct GameInterrupt {
-	volatile GameIntHandler Handler;
-	volatile void *Data;
+	volatile GameIntHandler handler;
+	volatile void *data;
 } GameInterrupt;
 
 
@@ -162,9 +238,9 @@ void HWINTERRUPT Int2Handler(void) {
 		UBYTE icrA = CiaA->icr; // Read clears interrupt flags
 		if(icrA & CIAICR_SERIAL) {
 			// Keyboard
-			if(gameInterrupts[INTB_PORTS].Handler) {
-				gameInterrupts[INTB_PORTS].Handler(
-					customRegister, gameInterrupts[INTB_PORTS].Data
+			if(gameInterrupts[INTB_PORTS].handler) {
+				gameInterrupts[INTB_PORTS].handler(
+					customRegister, gameInterrupts[INTB_PORTS].data
 				);
 			}
 		}
@@ -198,12 +274,12 @@ void HWINTERRUPT Int3Handler(void) {
 	if(uwIntReq & INTF_VERTB) {
 		// Do ACE-specific stuff
 		// TODO when ACE gets ported to C++ this could be constexpr if'ed
-		timerOnInterrupt();
+		TimerOnInterrupt();
 
 		// Process handlers
-		if(gameInterrupts[INTB_VERTB].Handler) {
-			gameInterrupts[INTB_VERTB].Handler(
-				customRegister, gameInterrupts[INTB_VERTB].Data
+		if(gameInterrupts[INTB_VERTB].handler) {
+			gameInterrupts[INTB_VERTB].handler(
+				customRegister, gameInterrupts[INTB_VERTB].data
 			);
 		}
 		uwReqClr = INTF_VERTB;
@@ -211,9 +287,9 @@ void HWINTERRUPT Int3Handler(void) {
 
 	// Copper
 	if(uwIntReq & INTF_COPER) {
-		if(gameInterrupts[INTB_COPER].Handler) {
-			gameInterrupts[INTB_COPER].Handler(
-				customRegister, gameInterrupts[INTB_VERTB].Data
+		if(gameInterrupts[INTB_COPER].handler) {
+			gameInterrupts[INTB_COPER].handler(
+				customRegister, gameInterrupts[INTB_VERTB].data
 			);
 		}
 		uwReqClr |= INTF_COPER;
@@ -221,9 +297,9 @@ void HWINTERRUPT Int3Handler(void) {
 
 	// Blitter
 	if(uwIntReq & INTF_BLIT) {
-		if(gameInterrupts[INTB_BLIT].Handler) {
-			gameInterrupts[INTB_BLIT].Handler(
-				customRegister, gameInterrupts[INTB_VERTB].Data
+		if(gameInterrupts[INTB_BLIT].handler) {
+			gameInterrupts[INTB_BLIT].handler(
+				customRegister, gameInterrupts[INTB_VERTB].data
 			);
 		}
 		uwReqClr |= INTF_BLIT;
@@ -239,9 +315,9 @@ void HWINTERRUPT Int4Handler(void) {
 
 	// Audio channel 0
 	if(uwIntReq & INTF_AUD0) {
-		if(gameInterrupts[INTB_AUD0].Handler) {
-			gameInterrupts[INTB_AUD0].Handler(
-				customRegister, gameInterrupts[INTB_AUD0].Data
+		if(gameInterrupts[INTB_AUD0].handler) {
+			gameInterrupts[INTB_AUD0].handler(
+				customRegister, gameInterrupts[INTB_AUD0].data
 			);
 		}
 		uwReqClr |= INTF_AUD0;
@@ -249,9 +325,9 @@ void HWINTERRUPT Int4Handler(void) {
 
 	// Audio channel 1
 	if(uwIntReq & INTF_AUD1) {
-		if(gameInterrupts[INTB_AUD1].Handler) {
-			gameInterrupts[INTB_AUD1].Handler(
-				customRegister, gameInterrupts[INTB_AUD1].Data
+		if(gameInterrupts[INTB_AUD1].handler) {
+			gameInterrupts[INTB_AUD1].handler(
+				customRegister, gameInterrupts[INTB_AUD1].data
 			);
 		}
 		uwReqClr |= INTF_AUD1;
@@ -259,9 +335,9 @@ void HWINTERRUPT Int4Handler(void) {
 
 	// Audio channel 2
 	if(uwIntReq & INTF_AUD2) {
-		if(gameInterrupts[INTB_AUD2].Handler) {
-			gameInterrupts[INTB_AUD2].Handler(
-				customRegister, gameInterrupts[INTB_AUD2].Data
+		if(gameInterrupts[INTB_AUD2].handler) {
+			gameInterrupts[INTB_AUD2].handler(
+				customRegister, gameInterrupts[INTB_AUD2].data
 			);
 		}
 		uwReqClr |= INTF_AUD2;
@@ -269,9 +345,9 @@ void HWINTERRUPT Int4Handler(void) {
 
 	// Audio channel 3
 	if(uwIntReq & INTF_AUD3) {
-		if(gameInterrupts[INTB_AUD3].Handler) {
-			gameInterrupts[INTB_AUD3].Handler(
-				customRegister, gameInterrupts[INTB_AUD3].Data
+		if(gameInterrupts[INTB_AUD3].handler) {
+			gameInterrupts[INTB_AUD3].handler(
+				customRegister, gameInterrupts[INTB_AUD3].data
 			);
 		}
 		uwReqClr |= INTF_AUD3;
@@ -294,6 +370,49 @@ FN_HOTSPOT
 void HWINTERRUPT Int7Handler(void) {
 	// EXTERNAL
 }
+
+
+void SystemSetInt(
+	UBYTE intNumber, GameIntHandler handler, volatile void *intData
+) {
+	// Disable ACE handler during data swap to ensure atomic op
+	gameInterrupts[intNumber].handler = 0;
+	gameInterrupts[intNumber].data = intData;
+
+	// Re-enable handler or disable it if 0 was passed
+	gameInterrupts[intNumber].handler = handler;
+}
+
+void SystemSetDma(UBYTE dmaBit, UBYTE enabled) {
+	UWORD dmaMask = BV(dmaBit);
+	if(enabled) {
+		gameDMACon |= dmaMask;
+		osDMACon |= dmaMask;
+		if(!systemUsed) {
+			customRegister->dmacon = DMAF_SETCLR | dmaMask;
+		}
+		else {
+			if(!(dmaMask & minimalDma)) {
+				customRegister->dmacon = DMAF_SETCLR | dmaMask;
+			}
+		}
+	}
+	else {
+		gameDMACon &= ~dmaMask;
+		if(!(dmaMask & minimalDma)) {
+			osDMACon &= ~dmaMask;
+		}
+		if(!systemUsed) {
+			customRegister->dmacon = dmaMask;
+		}
+		else {
+			if(!(dmaMask & minimalDma)) {
+				customRegister->dmacon = dmaMask;
+			}
+		}
+	}
+}
+
 
 static const HwIntVector gameHwInterrupts[SYSTEM_INT_VECTOR_COUNT] = {
 	Int1Handler, Int2Handler, Int3Handler, Int4Handler,
@@ -400,7 +519,30 @@ void SystemUse(void) {
 	} 
 }
 
+typedef void (*GameCb)(void);
+
+typedef struct EngineState {
+	GameCb create;
+	GameCb loop;
+	GameCb destroy;
+	struct EngineState *prev;
+} EngineState;
+
+typedef struct {
+	UBYTE stateCount;
+	UBYTE running;
+	EngineState *stateFirst;
+} GameManager;
+
+GameManager gameManager;
+
+void CloseGame(void) {
+	gameManager.running = 0;
+}
+
 struct GfxBase *gfxBase;
+
+
 
 int main(int argc, char **argv)
 {
@@ -444,17 +586,15 @@ int main(int argc, char **argv)
 	EngineDestroy();
 }
 
-void genericCreate(void)
+void GenericCreate(void)
 {
-	gamePushState(InitEngine, EngineLoop, EngineDestroy);
 }
 
-void genericProcess(void)
+void GenericProcess(void)
 {
-	gameProcess();
 }
 
-void genericDestroy(void)
+void GenericDestroy(void)
 {
 }
 #else

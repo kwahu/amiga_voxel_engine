@@ -1,4 +1,5 @@
 
+#include "memory_platform.h"
 #include "platform.h"
 #include "engine.h"
 #include "bitmap.c"
@@ -62,7 +63,7 @@ void InitEngine(void)
 	InitScreen();
 	InitInput();
 	
-    ULONG fontSize = fileGetSize("data/ss.fnt") + sizeof(Font);
+    ULONG fontSize = GetFileSize("data/ss.fnt") + sizeof(Font);
 	
 	NewArena(&engine.persistentArena, fontSize + 11*MAPSIZE*MAPSIZE*sizeof(UWORD));
 
