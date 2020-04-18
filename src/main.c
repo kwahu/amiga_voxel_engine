@@ -72,7 +72,7 @@ void InitEngine(void)
 	engine.font = InitFont("data/ss.fnt");
 	SetupMaps();
 
-
+	
 	engine.paletteBitmap = LoadBitmapFile("data/plt", &engine.paletteHeader, engine.activePalette, 1, 0);
 
 	//process paletter from an image
@@ -115,7 +115,7 @@ void InitEngine(void)
 	);
 	DrawTextBitmap(engine.informationText, 50, PLANEHEIGHT/2, 3);
 	VSyncAndDraw();
-
+	
 	while(engine.renderer.renderingType == 0)
 	{
 		GetPlayerRendererSetting();

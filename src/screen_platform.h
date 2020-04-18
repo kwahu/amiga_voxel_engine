@@ -214,41 +214,78 @@ void BlitManagerDestroy(void) {
 	SystemSetDma(DMAB_BLITTER, 0);
 }
 
-
-void CopyFastToChipW(BitMap *bm)
-{
+UBYTE BlitUnsafeCopyAligned(
+	BitMap *src, WORD srcX, WORD srcY,
+	BitMap *dst, WORD dstX, WORD dstY, WORD width, WORD height
+) {
+	#ifdef AMIGA
 	UWORD blitWords, bltCon0;
 	WORD dstModulo, srcModulo;
 	ULONG srcOffs, dstOffs;
 
-	blitWords = 320 >> 4;
+	blitWords = width >> 4;
 	bltCon0 = USEA|USED | MINTERM_A;
 
-	srcModulo = bm->BytesPerRow - (blitWords<<1);
-	dstModulo = engine.renderer.buffer.BytesPerRow - (blitWords<<1);
-	srcOffs = 0;
-	dstOffs = 0;
+	srcModulo = BitmapGetByteWidth(src) - (blitWords<<1);
+	dstModulo = BitmapGetByteWidth(dst) - (blitWords<<1);
+	srcOffs = src->BytesPerRow * srcY + (srcX>>3);
+	dstOffs = dst->BytesPerRow * dstY + (dstX>>3);
 
-	UBYTE plane;
-
-
-	BlitWait();
-	customRegister->bltcon0 = bltCon0;
-	customRegister->bltcon1 = 0;
-	customRegister->bltafwm = 0xFFFF;
-	customRegister->bltalwm = 0xFFFF;
-
-	customRegister->bltamod = srcModulo;
-	customRegister->bltdmod = dstModulo;
-	for(plane = bm->Depth; plane--;) {
+	if(BitmapIsInterleaved(src) && BitmapIsInterleaved(dst)) {
+		height *= src->Depth;
 		BlitWait();
+		customRegister->bltcon0 = bltCon0;
+		customRegister->bltcon1 = 0;
+		customRegister->bltafwm = 0xFFFF;
+		customRegister->bltalwm = 0xFFFF;
+
+		customRegister->bltamod = srcModulo;
+		customRegister->bltdmod = dstModulo;
+
 		// This hell of a casting must stay here or else large offsets get bugged!
-		customRegister->bltapt = (UBYTE*)(((ULONG)(bm->Planes[plane])) + srcOffs);
-		customRegister->bltdpt = (UBYTE*)(((ULONG)((&engine.renderer.buffer)->Planes[plane])) + dstOffs);
-		customRegister->bltsize = (PLANEHEIGHT << 6) | blitWords;
+		customRegister->bltapt = (UBYTE*)((ULONG)src->Planes[0] + srcOffs);
+		customRegister->bltdpt = (UBYTE*)((ULONG)dst->Planes[0] + dstOffs);
+
+		customRegister->bltsize = (height << 6) | blitWords;
 	}
-	// blitUnsafeCopyAligned(&engine.renderer.buffer, 0, 0,
-	// bm, 0, 0, 320, PLANEHEIGHT);
+	else {
+		UBYTE plane;
+
+		if(BitmapIsInterleaved(src) || BitmapIsInterleaved(dst)) {
+			}
+		if(BitmapIsInterleaved(src)) {
+			srcModulo += src->BytesPerRow * (src->Depth-1);
+		}
+		else if(BitmapIsInterleaved(dst)) {
+			dstModulo += dst->BytesPerRow * (dst->Depth-1);
+		}
+
+		BlitWait();
+		customRegister->bltcon0 = bltCon0;
+		customRegister->bltcon1 = 0;
+		customRegister->bltafwm = 0xFFFF;
+		customRegister->bltalwm = 0xFFFF;
+
+		customRegister->bltamod = srcModulo;
+		customRegister->bltdmod = dstModulo;
+		for(plane = src->Depth; plane--;) {
+			BlitWait();
+			// This hell of a casting must stay here or else large offsets get bugged!
+			customRegister->bltapt = (UBYTE*)(((ULONG)(src->Planes[plane])) + srcOffs);
+			customRegister->bltdpt = (UBYTE*)(((ULONG)(dst->Planes[plane])) + dstOffs);
+			customRegister->bltsize = (height << 6) | blitWords;
+		}
+	}
+#endif // AMIGA
+	return 1;
+}
+
+
+void CopyFastToChipW(BitMap *bm)
+{
+	
+	BlitUnsafeCopyAligned(&engine.renderer.buffer, 0, 0,
+	bm, 0, 0, 320, PLANEHEIGHT);
 }
 
 #define VSyncAndDraw() \
@@ -347,14 +384,33 @@ typedef struct {
 
 CopManager copManager;
 
+EngineCopList *CopListCreate(void *tagList, ...);
+void CopCreate(void) {
+	
+	// TODO: save previous copperlist
 
-typedef struct ViewPortManager {
-	struct ViewPortManager *next;                      ///< Pointer to next manager.
-	void  (*process)(struct ViewPortManager *manager); ///< Process fn handle.
-	void  (*destroy)(struct ViewPortManager *manager); ///< Destroy fn handle.
+	// Create blank copperlist
+	copManager.blankList = CopListCreate(0, TAG_DONE);
+
+	// Set both buffers to blank copperlist
+	copManager.copList = copManager.blankList;
+	CopProcessBlocks();
+	CopProcessBlocks();
+	// Update copper-related regs
+	customRegister->copjmp1 = 1;
+	SystemSetDma(DMAB_COPPER, 1);
+
+}
+
+
+typedef struct VpManager {
+	struct VpManager *next;                      ///< Pointer to next manager.
+	void  (*process)(struct VpManager *manager); ///< Process fn handle.
+	void  (*destroy)(struct VpManager *manager); ///< Destroy fn handle.
 	struct VPort *vPort;                         ///< Quick ref to VPort.
 	UBYTE id;                                     ///< Manager ID.
-} ViewPortManager;
+} VpManager;
+
 
 typedef struct ScreenView {
 	UBYTE vpCount;             ///< Viewport count.
@@ -367,7 +423,7 @@ typedef struct VPort {
 	// Main
 	ScreenView *view;              ///< Pointer to parent tView.
 	struct VPort *next;     ///< Pointer to next tVPort.
-	ViewPortManager *firstManager; ///< Pointer to first viewport manager on list.
+	VpManager *firstManager; ///< Pointer to first viewport manager on list.
 	UWORD flags;             ///< Creation flags.
 
 	// VPort dimensions
@@ -381,13 +437,6 @@ typedef struct VPort {
 	UWORD palette[32]; ///< Destination palette
 } VPort;
 
-typedef struct VpManager {
-	struct VpManager *next;                      ///< Pointer to next manager.
-	void  (*process)(struct VpManager *manager); ///< Process fn handle.
-	void  (*destroy)(struct VpManager *manager); ///< Destroy fn handle.
-	struct VPort *vPort;                         ///< Quick ref to VPort.
-	UBYTE id;                                     ///< Manager ID.
-} VpManager;
 
 typedef void (*VpManagerFn)(VpManager *manager);
 
@@ -406,7 +455,7 @@ typedef struct {
 #define SIMPLEBUFFER_FLAG_COPLIST_RAW  2
 
 typedef struct BufferManager{
-	ViewPortManager common;
+	VpManager common;
 	CameraManager *camera;
 	BitMap *front;       ///< Currently displayed buffer.
 	BitMap *back;        ///< Buffer for drawing.
@@ -867,6 +916,41 @@ void CopBlockDestroy(EngineCopList *copList, CopBlock *block) {
 }
 
 
+EngineCopList *CopListCreate(void *tagList, ...) {
+	va_list vaTags;
+	va_start(vaTags, tagList);
+	EngineCopList *copList;
+	// Create copperlist stub
+	copList = MemAllocFastClear(sizeof(EngineCopList));
+	copList->frontBfr = MemAllocFastClear(sizeof(CopBfr));
+	copList->backBfr = MemAllocFastClear(sizeof(CopBfr));
+
+	// Handle raw copperlist creation
+	 copList->mode = GetTag(tagList, vaTags, TAG_COPPER_LIST_MODE, COPPER_MODE_BLOCK);
+	if(copList->mode	== COPPER_MODE_RAW) {
+		const ULONG invalidSize = 0xFFFFFFFFUL;
+		ULONG listSize = GetTag(
+			tagList, vaTags, TAG_COPPER_RAW_COUNT, invalidSize
+		);
+		// Front bfr
+		copList->frontBfr->cmdCount = listSize+1;
+		copList->frontBfr->allocSize = (listSize+1)*sizeof(CopCmd);
+		copList->frontBfr->list = MemAllocChipClear(copList->frontBfr->allocSize);
+		CopSetWait(&copList->frontBfr->list[listSize].wait, 0xFF, 0xFF);
+		// Back bfr
+		copList->backBfr->cmdCount = listSize+1;
+		copList->backBfr->allocSize = (listSize+1)*sizeof(CopCmd);
+		copList->backBfr->list = MemAllocChipClear(copList->backBfr->allocSize);
+		CopSetWait(&copList->backBfr->list[listSize].wait, 0xFF, 0xFF);
+	}
+
+	va_end(vaTags);
+	return copList;
+
+}
+
+
+
 void CopListDestroy(EngineCopList *copList) {
 
 	// Free copperlist buffers
@@ -955,7 +1039,7 @@ EngineCopList *CreateCopList(void *tagList, ...) {
 	// Handle raw copperlist creation
 	copList->mode = GetTag(tagList, vaTags, TAG_COPPER_LIST_MODE, COPPER_MODE_BLOCK);
 	if(copList->mode	== COPPER_MODE_RAW) {
-		const ULONG invalidSize = 0xFFFFFFFF;
+		const ULONG invalidSize = 0xFFFFFFFFUL;
 		ULONG listSize = GetTag(
 			tagList, vaTags, TAG_COPPER_RAW_COUNT, invalidSize
 		);
@@ -1285,6 +1369,8 @@ BufferManager *BufferCreate(void *tags, ...) {
 	return manager;
 
 }
+
+
 
 void InitScreen()
 {

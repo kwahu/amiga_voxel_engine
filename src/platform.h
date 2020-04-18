@@ -12,14 +12,19 @@ void EngineDestroy(void);
 #include <stdint.h>
 #include <stdio.h>
 #include <stddef.h>
-// #include <clib/graphics_protos.h>
+#include <stdarg.h> // va_list etc
+#include <clib/graphics_protos.h>
+#include <clib/exec_protos.h> // Amiga typedefs
 #include <clib/dos_protos.h>
 #include <hardware/intbits.h>
 #include <hardware/dmabits.h>
 #include <exec/execbase.h>
+#include <exec/interrupts.h>
 #include <graphics/gfxbase.h> // Required for GfxBase
 #include <hardware/custom.h>
-#include <clib/graphics_protos.h> // BitMap etc
+#define INTERRUPT
+#define INTERRUPT_END do {} while(0)
+
 
 typedef struct BitMap BitMap;
 
@@ -134,8 +139,8 @@ typedef struct Cia {
 	volatile UBYTE _f[0xff];
 } Cia;
 
-#define BV(value) (1 << (value))
-#define BTST(value, bit) (value) & (1 << (bit))
+#define BV(x) (1 << (x))
+#define BTST(x, b) (((x) & BV(b)) != 0)
 
 #define CIAAPRA_OVL  BV(0)
 #define CIAAPRA_LED  BV(1)
@@ -515,46 +520,64 @@ void SystemUse(void) {
 		// All interrupts but only needed DMA
 		customRegister->dmacon = DMAF_SETCLR | DMAF_MASTER | (osDMACon & minimalDma);
 		customRegister->intena = INTF_SETCLR | INTF_INTEN  | osInterruptEnables;
-		systemUsed = 1;
+		
 	} 
+	systemUsed = 1;
 }
 
-typedef void (*GameCb)(void);
-
-typedef struct EngineState {
-	GameCb create;
-	GameCb loop;
-	GameCb destroy;
-	struct EngineState *prev;
-} EngineState;
-
-typedef struct {
-	UBYTE stateCount;
-	UBYTE running;
-	EngineState *stateFirst;
-} GameManager;
-
-GameManager gameManager;
-
-void CloseGame(void) {
-	gameManager.running = 0;
-}
 
 struct GfxBase *gfxBase;
+struct View *osView;
 
 
+typedef struct {
+	ULONG gameTicks;             /// Actual ticks passed in game
+	ULONG lastTime;              /// Internal - used to update ulGameTicks
+	volatile UWORD frameCounter; /// Incremented by VBlank interrupt
+	UBYTE paused;                /// 1: pause on
+} TimerManager;
 
-int main(int argc, char **argv)
+
+TimerManager timerManager = {0};
+
+
+ULONG TimerGet(void) {
+	return timerManager.frameCounter;
+}
+void TimerProcess(void) {
+	ULONG currentTime;
+
+	currentTime = TimerGet();
+	if(!timerManager.paused) {
+		if(currentTime > timerManager.lastTime) {
+			timerManager.gameTicks += currentTime - timerManager.lastTime;
+		}
+		else {
+			timerManager.gameTicks += (0xFFFF - timerManager.lastTime) + currentTime + 1;
+		}
+	}
+	timerManager.lastTime = currentTime;
+}
+
+
+int main()
 {
+
 	gfxBase = (struct GfxBase *)OpenLibrary((CONST_STRPTR)"graphics.library", 0L);
 	OwnBlitter();
 	WaitBlit();
 
+	osView = gfxBase->ActiView;
 	WaitTOF();
 	LoadView(0);
 	WaitTOF();
 	WaitTOF();
 	
+	if (SysBase->AttnFlags & AFF_68010) {
+		UWORD pGetVbrCode[] = {0x4e7a, 0x0801, 0x4e73};
+		hwVectors = (HwIntVector *)Supervisor((void *)pGetVbrCode);
+	}
+
 	SystemFlushIo();
 
 	// save the state of the hardware registers (INTENA, DMA, ADKCON etc.)
@@ -577,10 +600,16 @@ int main(int argc, char **argv)
 	SystemUnuse();
 	SystemUse();
 
+	timerManager.frameCounter = 0;
+	BlitManagerCreate();
+	CopCreate();
+
+
 	int running = 1;
 	InitEngine();
 	while(running)
 	{
+		TimerProcess();
 		EngineLoop();
 	}
 	EngineDestroy();

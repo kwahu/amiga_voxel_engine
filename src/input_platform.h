@@ -2,10 +2,6 @@
  #ifdef AMIGA
 
 
-#include <exec/interrupts.h>  // struct Interrupt
-#define INTERRUPT
-#define INTERRUPT_END do {} while(0)
-
 #define JPORT1 1
 #define JPORT2 2
 
@@ -356,19 +352,7 @@ void INTERRUPT KeyIntServer(
 	INTERRUPT_END;
 }
 
-typedef struct {
-	ULONG gameTicks;             /// Actual ticks passed in game
-	ULONG lastTime;              /// Internal - used to update ulGameTicks
-	volatile UWORD frameCounter; /// Incremented by VBlank interrupt
-	UBYTE paused;                /// 1: pause on
-} TimerManager;
 
-
-TimerManager timerManager = {0};
-
-ULONG TimerGet(void) {
-	return timerManager.frameCounter;
-}
 
 void TimerOnInterrupt(void) {
 	++timerManager.frameCounter;
@@ -418,7 +402,7 @@ void UnuseSystem()
 
 void ExitGame()
 {
-	CloseGame();
+	//CloseGame();
 }
 
 void GetPlayerRendererSetting()
