@@ -121,7 +121,11 @@ typedef struct Renderer
     UWORD lastOverwrittenLine;
 
     //UWORD mapSource[11][MAPSIZE][MAPSIZE];  //360k
-    UWORD *mapSource;
+    UWORD *currentMap;
+    ULONG currentMapLength;
+    ULONG mapLengthRemainder;
+    UWORD *firstMap;
+    UWORD *secondMap;
     UBYTE *noiseMap;
 
     UBYTE mapLoaded0, mapLoaded1, mapLoaded2, mapLoaded3, mapLoaded4, mapLoaded5, mapLoaded6,
@@ -186,9 +190,14 @@ typedef struct Engine
     MemoryArena memArena;
 
     MemoryArena rendererArena;
+    MemoryArena fontArena;
     MemoryArena temporaryArena;
-    MemoryArena persistentArena;
+    MemoryArena firstMapArena;
+    MemoryArena secondMapArena;
     
+    ULONG firstMapLength;
+    ULONG secondMapLength;
+
     UBYTE *menu[3];
     BITMAPINFOHEADER headers[3];
     

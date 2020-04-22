@@ -3,9 +3,9 @@
 void LoadBitmapToMemory(BYTE *fileName)    
 {                                      
     #ifdef AMIGA                   
-    SystemUse();                        
+    UseSystem();                        
     engine.activeBitmap = LoadBitmapFile(fileName, &engine.activeBitmapHeader, engine.activePalette, 1, 0);      
-    SystemUnuse();        
+    UnuseSystem();        
     #else                       
     free(engine.activeBitmap);      
     engine.activeBitmap = LoadBitmapFile(fileName, &engine.activeBitmapHeader, engine.activePalette, 1, 0);     

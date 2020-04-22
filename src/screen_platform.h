@@ -319,7 +319,7 @@ void SetGamePaletter()
 
 struct VPort;
 struct ScreenView;
-struct BufferManager;
+struct SimpleBufferManager;
 struct EngineCopList;
 struct CopBlock;
 
@@ -390,12 +390,12 @@ void CopCreate(void) {
 	// TODO: save previous copperlist
 
 	// Create blank copperlist
-	copManager.blankList = CopListCreate(0, TAG_DONE);
+	//copManager.blankList = CopListCreate(0, TAG_DONE);
 
 	// Set both buffers to blank copperlist
-	copManager.copList = copManager.blankList;
-	CopProcessBlocks();
-	CopProcessBlocks();
+	//copManager.copList = copManager.blankList;
+	//CopProcessBlocks();
+	//CopProcessBlocks();
 	// Update copper-related regs
 	customRegister->copjmp1 = 1;
 	SystemSetDma(DMAB_COPPER, 1);
@@ -454,7 +454,7 @@ typedef struct {
 #define SIMPLEBUFFER_FLAG_X_SCROLLABLE 1
 #define SIMPLEBUFFER_FLAG_COPLIST_RAW  2
 
-typedef struct BufferManager{
+typedef struct SimpleBufferManager{
 	VpManager common;
 	CameraManager *camera;
 	BitMap *front;       ///< Currently displayed buffer.
@@ -463,7 +463,7 @@ typedef struct BufferManager{
 	UwCoordYX bfrBounds; ///< Buffer bounds in pixels
 	UBYTE flags;         ///< Read only. See SIMPLEBUFFER_FLAG_*.
 	UWORD copperOffset;  ///< Offset on copperlist in COP_RAW mode.
-} BufferManager;
+} SimpleBufferManager;
 
 
 
@@ -488,7 +488,7 @@ void SetPalette()
 
 
 
-VPort *CreateVPort(void *tagList, ...) {
+VPort *VPortCreate(void *tagList, ...) {
 	va_list vaTags;
 	va_start(vaTags, tagList);
 #ifdef AMIGA
@@ -1059,7 +1059,7 @@ EngineCopList *CreateCopList(void *tagList, ...) {
 	return copList;
 }
 
-ScreenView * CreateView(void *tags, ...)
+ScreenView * ViewCreate(void *tags, ...)
 {
 	ScreenView *view = MemAllocFastClear(sizeof(ScreenView));
 
@@ -1144,16 +1144,16 @@ CameraManager *CameraCreate(
 }
 
 
-void BufferDestroy(BufferManager *manager) {
+void BufferDestroy(SimpleBufferManager *manager) {
 	CopBlockDestroy(manager->common.vPort->view->copList, manager->copBlock);
 	if(manager->back != manager->front) {
 		BitmapDestroy(manager->back);
 	}
 	BitmapDestroy(manager->front);
-	MemFree(manager, sizeof(BufferManager));
+	MemFree(manager, sizeof(SimpleBufferManager));
 }
 
-void BufferProcess(BufferManager *manager) {
+void BufferProcess(SimpleBufferManager *manager) {
 	UWORD shift;
 	ULONG bplOffs;
 	ULONG planeAddr;
@@ -1205,13 +1205,13 @@ void BufferProcess(BufferManager *manager) {
 }
 
 
-static void BufferSetBack(BufferManager *manager, BitMap *back) {
+static void BufferSetBack(SimpleBufferManager *manager, BitMap *back) {
 
 	manager->back = back;
 }
 
 
-void BufferSetFront(BufferManager *manager, BitMap *front) {
+void BufferSetFront(SimpleBufferManager *manager, BitMap *front) {
 
 
 	manager->bfrBounds.x = BitmapGetByteWidth(front) << 3;
@@ -1290,10 +1290,10 @@ VpManager *VPortGetManager(VPort *vPort, UBYTE id) {
 
 
 
-BufferManager *BufferCreate(void *tags, ...) {
+SimpleBufferManager *SimpleBufferCreate(void *tags, ...) {
 	va_list vaTags;
 	EngineCopList *copList;
-	BufferManager *manager;
+	SimpleBufferManager *manager;
 	UWORD boundWidth, boundHeight;
 	UBYTE bitmapFlags;
 	BitMap *front = 0, *back = 0;
@@ -1302,7 +1302,7 @@ BufferManager *BufferCreate(void *tags, ...) {
 	va_start(vaTags, tags);
 
 	// Init manager
-	manager = MemAllocFastClear(sizeof(BufferManager));
+	manager = MemAllocFastClear(sizeof(SimpleBufferManager));
 	manager->common.process = (VpManagerFn)BufferProcess;
 	manager->common.destroy = (VpManagerFn)BufferDestroy;
 	manager->common.id = VPM_SCROLL;
@@ -1374,16 +1374,16 @@ BufferManager *BufferCreate(void *tags, ...) {
 
 void InitScreen()
 {
-	engine.platformScreen.view = CreateView(0,
+	engine.platformScreen.view = ViewCreate(0,
 						 TAG_VIEW_GLOBAL_CLUT, 1,
 						 TAG_DONE);
 
-	engine.platformScreen.vPort = CreateVPort(0,
+	engine.platformScreen.vPort = VPortCreate(0,
 						   TAG_VPORT_VIEW, engine.platformScreen.view,
 						   TAG_VPORT_BPP, DEPTH,
 						   TAG_END);
 
-	engine.platformScreen.buffer = BufferCreate(0,
+	engine.platformScreen.buffer = SimpleBufferCreate(0,
 								   TAG_SIMPLEBUFFER_VPORT, engine.platformScreen.vPort,
 								   TAG_SIMPLEBUFFER_BITMAP_FLAGS, BMF_CLEAR,
 								   TAG_DONE);

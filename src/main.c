@@ -50,6 +50,7 @@ void InitializeGameChipMemory()
 	engine.renderer.plane3W = (UWORD *)AllocateFromArena(&engine.chipArena, screenPlaneSize);
 	engine.renderer.plane4W = (UWORD *)AllocateFromArena(&engine.chipArena, screenPlaneSize);
 	
+
 }
 
 
@@ -62,23 +63,26 @@ void InitEngine(void)
 	InitializeGameChipMemory();
 	InitScreen();
 	InitInput();
-	
-    ULONG fontSize = GetFileSize("data/ss.fnt") + sizeof(Font);
-	
-	NewArena(&engine.persistentArena, fontSize + 11*MAPSIZE*MAPSIZE*sizeof(UWORD));
 
-	NewArena(&engine.temporaryArena, 100*1024);
+	MakeArenasForMaps(MAPSIZE*MAPSIZE, 11);	
 
-	engine.font = InitFont("data/ss.fnt");
 	SetupMaps();
 
+	
+    ULONG fontSize = GetFileSize("data/ss.fnt") + sizeof(Font);
+
+	NewArena(&engine.fontArena, fontSize);
+
+	
+	engine.font = InitFont("data/ss.fnt");
+
+	NewArena(&engine.temporaryArena, 100*1024);
 	
 	engine.paletteBitmap = LoadBitmapFile("data/plt", &engine.paletteHeader, engine.activePalette, 1, 0);
 
 	//process paletter from an image
 	SetBitmapPalette(engine.activePalette);
 	// Load font
-
 
 
 
@@ -103,6 +107,9 @@ void InitEngine(void)
 		GetPlayerMemorySetting();
 		
 	}
+
+
+
 
 	ClearBuffor();
 	
@@ -198,7 +205,12 @@ void EngineDestroy(void)
 	DestroyAudio();
 
 	DestroyArena(&engine.chipArena);
-	DestroyArena(&engine.persistentArena);
+	DestroyArena(&engine.fontArena);
+	DestroyArena(&engine.firstMapArena);
+	if(engine.secondMapArena.Memory != 0)
+	{
+		DestroyArena(&engine.secondMapArena);
+	}
 	DestroyArena(&engine.temporaryArena);
 	DestroyArena(&engine.rendererArena);
 

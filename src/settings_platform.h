@@ -27,7 +27,7 @@ typedef struct PlatformScreen
 {
 	struct ScreenView *view;
 	struct VPort *vPort;
-	struct BufferManager *buffer;
+	struct SimpleBufferManager *buffer;
 } PlatformScreen;
 
 

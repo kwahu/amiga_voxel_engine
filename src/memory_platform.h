@@ -2,7 +2,7 @@
 #include <exec/types.h>
 #include <exec/memory.h>      // MEMF_CLEAR etc
 #include <proto/exec.h>
-
+#include <ace/managers/memory.h>
 
 
 # define MemAlloc(ulSize, ulFlags) MemAllocRls(ulSize, ulFlags)

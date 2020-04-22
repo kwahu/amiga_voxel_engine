@@ -5,12 +5,15 @@ void OverwriteMap()
 	UBYTE yy;
 
 	UWORD currentZ = engine.gameState.shipParams.pZ;
-	if(currentZ > 2816)
+	if(currentZ > engine.renderer.currentMapLength)
 	{
-		currentZ -= 2816;
+		engine.renderer.mapLengthRemainder += engine.renderer.currentMapLength;
+		engine.renderer.currentMap = engine.renderer.secondMap;
+		engine.renderer.currentMapLength = engine.secondMapLength;
+		engine.gameState.shipParams.pZ -= engine.renderer.currentMapLength;
 	}
 
-	engine.renderer.mapHigh = engine.renderer.mapSource + ((engine.gameState.shipParams.pZ) >> 1);
+	engine.renderer.mapHigh = engine.renderer.currentMap + ((engine.gameState.shipParams.pZ) >> 1);
 
 	// for (UWORD x = 0; x < MAPSIZE; x++)
 	// {

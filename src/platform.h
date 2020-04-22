@@ -8,35 +8,28 @@ void EngineDestroy(void);
 
 #ifdef AMIGA
 //#include <ace/generic/main.h>
-#include <stdlib.h>
-#include <stdint.h>
-#include <stdio.h>
-#include <stddef.h>
-#include <stdarg.h> // va_list etc
-#include <clib/graphics_protos.h>
-#include <clib/exec_protos.h> // Amiga typedefs
-#include <clib/dos_protos.h>
-#include <hardware/intbits.h>
-#include <hardware/dmabits.h>
-#include <exec/execbase.h>
-#include <exec/interrupts.h>
-#include <graphics/gfxbase.h> // Required for GfxBase
-#include <hardware/custom.h>
-#define INTERRUPT
-#define INTERRUPT_END do {} while(0)
+//#include <ace/utils/custom.h>
+#include <../src/ace/managers/system.c>
+// #include <stdlib.h>
+// #include <stdint.h>
+// #include <stdio.h>
+// #include <stddef.h>
+// #include <stdarg.h> // va_list etc
+// #include <clib/graphics_protos.h>
+// #include <clib/exec_protos.h> // Amiga typedefs
+// #include <clib/dos_protos.h>
+// #include <hardware/intbits.h>
+// #include <hardware/dmabits.h>
+// #include <exec/execbase.h>
+// #include <exec/interrupts.h>
+// #include <graphics/gfxbase.h> // Required for GfxBase
+// #include <hardware/custom.h>
 
 
+typedef struct BitMap tBitMap;
 typedef struct BitMap BitMap;
+typedef tBitMap BitMap;
 
-typedef ULONG Tag;
-#ifndef TAG_DONE
-#define TAG_DONE   0UL
-#define TAG_END    0UL
-#define TAG_IGNORE 1UL
-#define TAG_MORE   2UL
-#define TAG_SKIP   3UL
-#define TAG_USER   BV(31)
-#endif // TAG_DONE
 
 ULONG GetTag(void *tagListPtr, va_list srcList, Tag tagToFind, ULONG onNotFound) {
 	if(tagListPtr) {
@@ -91,12 +84,17 @@ typedef union UbCoordYX {
 } UbCoordYX;
 
 
-#define FAR __far
-#define REGPTR volatile * const
-#define HWINTERRUPT __attribute__((interrupt))
-#define FN_HOTSPOT __attribute__((hot))
-#define REGARG(arg, reg) arg __asm__(reg)
 
+#define HWINTERRUPT __attribute__((interrupt))
+#define UNUSED_ARG __attribute__((unused))
+#define REGARG(arg, reg) arg __asm__(reg)
+#define REGPTR volatile * const
+#define CHIP __attribute__((chip))
+#define FAR __far
+#define FN_HOTSPOT __attribute__((hot))
+#define FN_COLDSPOT __attribute__((cold))
+
+#define CONFIG_SYSTEM_OS_TAKEOVER
 typedef struct Custom Custom;
 
 #define CUSTOM_BASE 0xDFF000
@@ -201,7 +199,7 @@ RayPos FAR REGPTR rayPos = (RayPos REGPTR)(
 typedef void (*HwIntVector)(void);
 
 typedef void (*GameIntHandler)(
-	volatile Custom *custom __asm__("a0"), volatile void *Data __asm__("a1")
+	volatile Custom *custom __asm__("a0"), volatile void *data __asm__("a1")
 );
 
 typedef struct GameInterrupt {
@@ -215,17 +213,25 @@ UBYTE systemUsed = 0;
 
 UWORD osInterruptEnables;
 UWORD osDMACon;
-UWORD gameDMACon;
+UWORD gameDMACon = 0;
 UWORD initialDMA;
 
-#define SYSTEM_INT_VECTOR_FIRST (0x64/4)
-#define SYSTEM_INT_VECTOR_COUNT 7
-#define SYSTEM_INT_HANDLER_COUNT 15
 
-
+void HWINTERRUPT Int1Handler(void);
+void HWINTERRUPT Int2Handler(void);
+void HWINTERRUPT Int3Handler(void);
+void HWINTERRUPT Int4Handler(void);
+void HWINTERRUPT Int5Handler(void);
+void HWINTERRUPT Int6Handler(void);
+void HWINTERRUPT Int7Handler(void);
+static const HwIntVector gameHwInterrupts[SYSTEM_INT_VECTOR_COUNT] = {
+	Int1Handler, int2Handler, Int3Handler, Int4Handler,
+	Int5Handler, Int6Handler, Int7Handler
+};
 static volatile HwIntVector osHwInterrupts[SYSTEM_INT_VECTOR_COUNT] = {0};
 static volatile HwIntVector * hwVectors = 0;
 static volatile GameInterrupt gameInterrupts[SYSTEM_INT_HANDLER_COUNT] = {{0}};
+
 
 
 
@@ -393,13 +399,8 @@ void SystemSetDma(UBYTE dmaBit, UBYTE enabled) {
 	if(enabled) {
 		gameDMACon |= dmaMask;
 		osDMACon |= dmaMask;
-		if(!systemUsed) {
+		if(!systemUsed || !(dmaMask & minimalDma)) {
 			customRegister->dmacon = DMAF_SETCLR | dmaMask;
-		}
-		else {
-			if(!(dmaMask & minimalDma)) {
-				customRegister->dmacon = DMAF_SETCLR | dmaMask;
-			}
 		}
 	}
 	else {
@@ -407,22 +408,12 @@ void SystemSetDma(UBYTE dmaBit, UBYTE enabled) {
 		if(!(dmaMask & minimalDma)) {
 			osDMACon &= ~dmaMask;
 		}
-		if(!systemUsed) {
+		if(!systemUsed || !(dmaMask & minimalDma)) {
 			customRegister->dmacon = dmaMask;
-		}
-		else {
-			if(!(dmaMask & minimalDma)) {
-				customRegister->dmacon = dmaMask;
-			}
 		}
 	}
 }
 
-
-static const HwIntVector gameHwInterrupts[SYSTEM_INT_VECTOR_COUNT] = {
-	Int1Handler, Int2Handler, Int3Handler, Int4Handler,
-	Int5Handler, Int6Handler, Int7Handler
-};
 
 static void SystemFlushIo() {
 	struct StandardPacket *packet = (struct StandardPacket*)AllocMem(
@@ -465,9 +456,8 @@ static void SystemFlushIo() {
 
 
 void SystemUnuse(void) {
-	
-	if(systemUsed) {
-		systemUsed = 0;
+	--systemUsed;
+	if(!systemUsed) {
 		if(customRegister->dmaconr & DMAF_DISK) {
 			// Flush disk activity if it was used
 			// This 'if' is here because otherwise systemUnuse() called
@@ -522,11 +512,11 @@ void SystemUse(void) {
 		customRegister->intena = INTF_SETCLR | INTF_INTEN  | osInterruptEnables;
 		
 	} 
-	systemUsed = 1;
+	++systemUsed;
 }
 
 
-struct GfxBase *gfxBase;
+struct GfxBase *gfxBase = 0;
 struct View *osView;
 
 
@@ -542,34 +532,39 @@ TimerManager timerManager = {0};
 
 
 ULONG TimerGet(void) {
-	return timerManager.frameCounter;
+	return g_sTimerManager.uwFrameCounter;
 }
 void TimerProcess(void) {
 	ULONG currentTime;
 
 	currentTime = TimerGet();
-	if(!timerManager.paused) {
-		if(currentTime > timerManager.lastTime) {
-			timerManager.gameTicks += currentTime - timerManager.lastTime;
+	if(!g_sTimerManager.ubPaused) {
+		if(currentTime > g_sTimerManager.ulLastTime) {
+			g_sTimerManager.ulGameTicks += currentTime - g_sTimerManager.ulLastTime;
 		}
 		else {
-			timerManager.gameTicks += (0xFFFF - timerManager.lastTime) + currentTime + 1;
+			g_sTimerManager.ulGameTicks += (0xFFFF - g_sTimerManager.ulLastTime) + currentTime + 1;
 		}
 	}
-	timerManager.lastTime = currentTime;
+	g_sTimerManager.ulLastTime = currentTime;
 }
 
 
-int main()
+void TimerCreate(void) {
+	g_sTimerManager.uwFrameCounter = 0;
+}
+
+void SystemCreate()
 {
 
-	gfxBase = (struct GfxBase *)OpenLibrary((CONST_STRPTR)"graphics.library", 0L);
+	GfxBase = (struct GfxBase *)OpenLibrary((CONST_STRPTR)"graphics.library", 0L);
 	OwnBlitter();
 	WaitBlit();
 
-	osView = gfxBase->ActiView;
 	WaitTOF();
 	LoadView(0);
+
+	osView = GfxBase->ActiView;
 	WaitTOF();
 	WaitTOF();
 	
@@ -600,32 +595,30 @@ int main()
 	SystemUnuse();
 	SystemUse();
 
-	timerManager.frameCounter = 0;
+}
+
+int main(void) {
+	SystemCreate();
+	TimerCreate();
+
 	BlitManagerCreate();
 	CopCreate();
-
-
-	int running = 1;
 	InitEngine();
-	while(running)
-	{
+	while (1) {
 		TimerProcess();
 		EngineLoop();
 	}
 	EngineDestroy();
+
+	CopDestroy();
+	BlitManagerDestroy();
+
+	//systemDestroy();
+
+	return EXIT_SUCCESS;
 }
 
-void GenericCreate(void)
-{
-}
 
-void GenericProcess(void)
-{
-}
-
-void GenericDestroy(void)
-{
-}
 #else
 
 void main_supervisor() 

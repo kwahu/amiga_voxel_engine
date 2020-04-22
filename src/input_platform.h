@@ -45,7 +45,7 @@
 #define JOY_USED 1
 #define JOY_ACTIVE 2
 
-
+#include <ace/managers/key.h>
 
 typedef struct {
 	UBYTE states[20];
@@ -59,169 +59,131 @@ void SetJoystickState(UBYTE joyCode, UBYTE joyState) {
 	joyManager.states[joyCode] = joyState;
 }
 
-UBYTE CheckJoystick(UBYTE joyCode) {
+UBYTE JoystickCheck(UBYTE joyCode) {
 	return joyManager.states[joyCode] != JOY_NACTIVE;
 }
 
-void OpenJoystick(UBYTE joy) {
+void JoystickOpen(UBYTE joy) {
 	is4joy = joy;
-// #if defined(CONFIG_SYSTEM_OS_FRIENDLY)
-// 	if(is4joy) {
-// 		// Open misc.resource for 3rd and 4th joy connected to parallel port
-// 		static const char *szOwner = "ACE joy manager";
-// 		MiscBase = (struct Library*)OpenResource(MISCNAME);
-// 		if(!MiscBase) {
-// 			logWrite("ERR: Couldn't open '%s'\n", MISCNAME);
-// 			return;
-// 		}
-
-// 		// Are data/status line currently used?
-// 		char *currentOwner;
-// 		currentOwner = AllocMiscResource(MR_PARALLELPORT, owner);
-// 		if(currentOwner) {
-// 			return;
-// 		}
-// 		currentOwner = AllocMiscResource(MR_PARALLELBITS, owner);
-// 		if(currentOwner) {
-// 			// Free what was already allocated
-// 			FreeMiscResource(MR_PARALLELPORT);
-// 		}
-
-// 		// Save old DDR & value regs
-// 		oldDataDdr = CiaA->ddrb;
-// 		oldStatusDdr = CiaB->ddra;
-// 		oldDataVal = CiaA->prb;
-// 		oldStatusVal = CiaB->pra;
-
-// 		// Set data direction register to input. Status lines are as follows:
-// 		// bit 0: BUSY
-// 		// bit 2: SEL
-// 		CiaB->ddra |= BV(0) | BV(2); // Status lines DDR
-// 		CiaA->ddrb = 0xFF; // Data lines DDR
-
-// 		CiaB->pra &= 0xFF^(BV(0) | BV(2)); // Status lines values
-// 		CiaA->prb = 0; // Data lines values
-// 	}
-// #endif
 }
-// F-keys
-#define KEY_F1 0x50
-#define KEY_F2 0x51
-#define KEY_F3 0x52
-#define KEY_F4 0x53
-#define KEY_F5 0x54
-#define KEY_F6 0x55
-#define KEY_F7 0x56
-#define KEY_F8 0x57
-#define KEY_F9 0x58
-#define KEY_F10 0x59
+// // F-keys
+// #define KEY_F1 0x50
+// #define KEY_F2 0x51
+// #define KEY_F3 0x52
+// #define KEY_F4 0x53
+// #define KEY_F5 0x54
+// #define KEY_F6 0x55
+// #define KEY_F7 0x56
+// #define KEY_F8 0x57
+// #define KEY_F9 0x58
+// #define KEY_F10 0x59
 
-// Digits
-#define KEY_1 0x01
-#define KEY_2 0x02
-#define KEY_3 0x03
-#define KEY_4 0x04
-#define KEY_5 0x05
-#define KEY_6 0x06
-#define KEY_7 0x07
-#define KEY_8 0x08
-#define KEY_9 0x09
-#define KEY_0 0x0A
+// // Digits
+// #define KEY_1 0x01
+// #define KEY_2 0x02
+// #define KEY_3 0x03
+// #define KEY_4 0x04
+// #define KEY_5 0x05
+// #define KEY_6 0x06
+// #define KEY_7 0x07
+// #define KEY_8 0x08
+// #define KEY_9 0x09
+// #define KEY_0 0x0A
 
-// Chars - row 1
-#define KEY_Q 0x10
-#define KEY_W 0x11
-#define KEY_E 0x12
-#define KEY_R 0x13
-#define KEY_T 0x14
-#define KEY_Y 0x15
-#define KEY_U 0x16
-#define KEY_I 0x17
-#define KEY_O 0x18
-#define KEY_P 0x19
+// // Chars - row 1
+// #define KEY_Q 0x10
+// #define KEY_W 0x11
+// #define KEY_E 0x12
+// #define KEY_R 0x13
+// #define KEY_T 0x14
+// #define KEY_Y 0x15
+// #define KEY_U 0x16
+// #define KEY_I 0x17
+// #define KEY_O 0x18
+// #define KEY_P 0x19
 
-// Chars - row 2
-#define KEY_A 0x20
-#define KEY_S 0x21
-#define KEY_D 0x22
-#define KEY_F 0x23
-#define KEY_G 0x24
-#define KEY_H 0x25
-#define KEY_J 0x26
-#define KEY_K 0x27
-#define KEY_L 0x28
+// // Chars - row 2
+// #define KEY_A 0x20
+// #define KEY_S 0x21
+// #define KEY_D 0x22
+// #define KEY_F 0x23
+// #define KEY_G 0x24
+// #define KEY_H 0x25
+// #define KEY_J 0x26
+// #define KEY_K 0x27
+// #define KEY_L 0x28
 
-// Chars - row 3
-#define KEY_Z 0x31
-#define KEY_X 0x32
-#define KEY_C 0x33
-#define KEY_V 0x34
-#define KEY_B 0x35
-#define KEY_N 0x36
-#define KEY_M 0x37
+// // Chars - row 3
+// #define KEY_Z 0x31
+// #define KEY_X 0x32
+// #define KEY_C 0x33
+// #define KEY_V 0x34
+// #define KEY_B 0x35
+// #define KEY_N 0x36
+// #define KEY_M 0x37
 
-// Numpad: digits
-#define KEY_NUM0 0x0F
-#define KEY_NUM1 0x1D
-#define KEY_NUM2 0x1E
-#define KEY_NUM3 0x1F
-#define KEY_NUM4 0x2D
-#define KEY_NUM5 0x2E
-#define KEY_NUM6 0x2F
-#define KEY_NUM7 0x3D
-#define KEY_NUM8 0x3E
-#define KEY_NUM9 0x3F
+// // Numpad: digits
+// #define KEY_NUM0 0x0F
+// #define KEY_NUM1 0x1D
+// #define KEY_NUM2 0x1E
+// #define KEY_NUM3 0x1F
+// #define KEY_NUM4 0x2D
+// #define KEY_NUM5 0x2E
+// #define KEY_NUM6 0x2F
+// #define KEY_NUM7 0x3D
+// #define KEY_NUM8 0x3E
+// #define KEY_NUM9 0x3F
 
-// Arrows
-#define KEY_UP 0x4C
-#define KEY_DOWN 0x4D
-#define KEY_RIGHT 0x4E
-#define KEY_LEFT 0x4F
+// // Arrows
+// #define KEY_UP 0x4C
+// #define KEY_DOWN 0x4D
+// #define KEY_RIGHT 0x4E
+// #define KEY_LEFT 0x4F
 
-// Numpad: ()/*+-. and Enter
-#define KEY_NUMLPARENTHESES 0x5A
-#define KEY_NUMRPARENTHESES 0x5B
-#define KEY_NUMSLASH 0x5C
-#define KEY_NUMMULTIPLY 0x5D
-#define KEY_NUMPLUS 0x5E
-#define KEY_NUMMINUS 0x4A
-#define KEY_NUMPERIOD 0x3C
-#define KEY_NUMENTER 0x43
+// // Numpad: ()/*+-. and Enter
+// #define KEY_NUMLPARENTHESES 0x5A
+// #define KEY_NUMRPARENTHESES 0x5B
+// #define KEY_NUMSLASH 0x5C
+// #define KEY_NUMMULTIPLY 0x5D
+// #define KEY_NUMPLUS 0x5E
+// #define KEY_NUMMINUS 0x4A
+// #define KEY_NUMPERIOD 0x3C
+// #define KEY_NUMENTER 0x43
 
-// Misc
-#define KEY_ESCAPE 0x45
-#define KEY_ACCENT 0x00
-#define KEY_MINUS 0x0B
-#define KEY_EQUALS 0x0C
-#define KEY_BACKSLASH 0x0D
-#define KEY_TAB 0x42
-#define KEY_LBRACKET 0x1A
-#define KEY_RBRACKET 0x1B
-#define KEY_RETURN 0x44
-#define KEY_CONTROL 0x63
-#define KEY_CAPSLOCK 0x62
-#define KEY_SEMICOLON 0x29
-#define KEY_APOSTROPHE 0x2A
-#define KEY_REGIONAL1 0x2B
-#define KEY_LSHIFT 0x60
-#define KEY_REGIONAL2 0x30
-#define KEY_COMMA 0x38
-#define KEY_PERIOD 0x39
-#define KEY_BACKSPACE 0x41
-#define KEY_SLASH 0x3A
-#define KEY_RSHIFT 0x61
-#define KEY_LALT 0x64
-#define KEY_LAMIGA 0x66
-#define KEY_SPACE 0x40
-#define KEY_RAMIGA 0x67
-#define KEY_RALT 0x64
-#define KEY_DEL 0x46
-#define KEY_HELP 0x5F
+// // Misc
+// #define KEY_ESCAPE 0x45
+// #define KEY_ACCENT 0x00
+// #define KEY_MINUS 0x0B
+// #define KEY_EQUALS 0x0C
+// #define KEY_BACKSLASH 0x0D
+// #define KEY_TAB 0x42
+// #define KEY_LBRACKET 0x1A
+// #define KEY_RBRACKET 0x1B
+// #define KEY_RETURN 0x44
+// #define KEY_CONTROL 0x63
+// #define KEY_CAPSLOCK 0x62
+// #define KEY_SEMICOLON 0x29
+// #define KEY_APOSTROPHE 0x2A
+// #define KEY_REGIONAL1 0x2B
+// #define KEY_LSHIFT 0x60
+// #define KEY_REGIONAL2 0x30
+// #define KEY_COMMA 0x38
+// #define KEY_PERIOD 0x39
+// #define KEY_BACKSPACE 0x41
+// #define KEY_SLASH 0x3A
+// #define KEY_RSHIFT 0x61
+// #define KEY_LALT 0x64
+// #define KEY_LAMIGA 0x66
+// #define KEY_SPACE 0x40
+// #define KEY_RAMIGA 0x67
+// #define KEY_RALT 0x64
+// #define KEY_DEL 0x46
+// #define KEY_HELP 0x5F
 
-// Key state flags
-#define KEY_NACTIVE 0
-#define KEY_USED 1
-#define KEY_ACTIVE 2
+// // Key state flags
+// #define KEY_NACTIVE 0
+// #define KEY_USED 1
+// #define KEY_ACTIVE 2
 #define KEY_RELEASED_BIT 1
 
 
@@ -233,22 +195,21 @@ typedef struct {
 KeyManager keyManager;
 
 
-static inline UBYTE IntCheckKey(const KeyManager *manager, UBYTE keyCode) {
-	return manager->states[keyCode] != KEY_NACTIVE;
+static inline UBYTE KeyIntCheck(const tKeyManager *manager, UBYTE keyCode) {
+	return manager->pStates[keyCode] != KEY_NACTIVE;
 }
 
-UBYTE CheckKey(UBYTE keyCode) {
-	return IntCheckKey(&keyManager, keyCode);
+UBYTE KeyCheck(UBYTE keyCode) {
+	return g_sKeyManager.pStates[keyCode] != KEY_NACTIVE;
 }
 
-#define getJoy(index, button) CheckJoystick(JOY ##index## _ ##button)
-#define getKey(name) CheckKey(KEY_ ##name)
+#define getJoy(index, button) JoystickCheck(JOY ##index## _ ##button)
+#define getKey(name) keyCheck(KEY_ ##name)
 
 
-
-void ProcessJoystick()
+void JoystickProcess()
 {
-
+	
 	UBYTE ciaAPra = CiaA->pra;
 	UWORD joyDataPort1 = customRegister->joy0dat;
 	UWORD joyDataPort2 = customRegister->joy1dat;
@@ -301,10 +262,21 @@ void ProcessJoystick()
 
 }
 
+void ProcessJoystick()
+{
+	JoystickProcess();
+
+}
+
+
+void JoystickClose(void)
+{
+}
+
 
 void CloseJoystick()
 {
-	CloseJoystick();
+	JoystickClose();
 }
 
 
@@ -319,8 +291,7 @@ static inline void KeyIntSetState(
 
 FN_HOTSPOT
 void INTERRUPT KeyIntServer(
-	REGARG(volatile Custom *custom, "a0"),
-	REGARG(volatile void *data, "a1")
+	volatile Custom *custom __asm__("a0"), volatile void *data __asm__("a1")
 ) {
 	KeyManager *kManager = (KeyManager*)data;
 	volatile RayPos *rayPos = (RayPos*)&custom->vposr;
@@ -355,7 +326,7 @@ void INTERRUPT KeyIntServer(
 
 
 void TimerOnInterrupt(void) {
-	++timerManager.frameCounter;
+	++g_sTimerManager.uwFrameCounter;
 }
 
 ULONG TimerGetPrec(void) {
@@ -370,9 +341,9 @@ ULONG TimerGetPrec(void) {
 	// d) uwFr2, pRay, uwFr2 on frame B
 	// So if pRay took place at low Y pos, it must be on frame B so use uwFr2,
 	// Otherwise, pRay took place on A, so use uwFr1
-	fr1 = timerManager.frameCounter;
+	fr1 = g_sTimerManager.uwFrameCounter;
 	*ray = *reg;
-	fr2 = timerManager.frameCounter;
+	fr2 = g_sTimerManager.uwFrameCounter;
 	if(rayP.posY < 100) {
 		return (fr2*160*313 + rayP.posY*160 + rayP.posX);
 	}
@@ -381,14 +352,18 @@ ULONG TimerGetPrec(void) {
 	}
 }
 
+void KeyCreate()
+{
+	SystemSetInt(INTB_PORTS, KeyIntServer, &g_sKeyManager);
 
+}
 
 void InitInput()
 {
 	
-	SystemSetInt(INTB_PORTS, KeyIntServer, &keyManager);
-
-	OpenJoystick(0);
+	keyCreate();
+	
+	JoystickOpen(0);
 }
 
 void UseSystem()
@@ -790,7 +765,7 @@ void GetYAxisSetting()
 	
 }
 
-#if AMIGA
+#ifdef AMIGA
 void GetPlayerMemorySetting()
 {
 	if(getKey(1))
