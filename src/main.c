@@ -64,9 +64,6 @@ void InitEngine(void)
 	InitScreen();
 	InitInput();
 
-	MakeArenasForMaps(MAPSIZE*MAPSIZE, 11);	
-
-	SetupMaps();
 
 	
     ULONG fontSize = GetFileSize("data/ss.fnt") + sizeof(Font);
@@ -77,6 +74,10 @@ void InitEngine(void)
 	engine.font = InitFont("data/ss.fnt");
 
 	NewArena(&engine.temporaryArena, 100*1024);
+
+	MakeArenasForMaps(MAPSIZE*MAPSIZE, 11);	
+
+	SetupMaps();
 	
 	engine.paletteBitmap = LoadBitmapFile("data/plt", &engine.paletteHeader, engine.activePalette, 1, 0);
 

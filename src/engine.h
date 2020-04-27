@@ -187,7 +187,6 @@ typedef struct Engine
     ULONG startTime, endTime, deltaTime, accTime, loopEndTime;
     
     MemoryArena chipArena;
-    MemoryArena memArena;
 
     MemoryArena rendererArena;
     MemoryArena fontArena;

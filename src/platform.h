@@ -8,7 +8,8 @@ void EngineDestroy(void);
 
 #ifdef AMIGA
 //#include <ace/generic/main.h>
-//#include <ace/utils/custom.h>
+#include <ace/utils/custom.h>
+//#include <../src/ace/utils/custom.c>
 #include <../src/ace/managers/system.c>
 // #include <stdlib.h>
 // #include <stdint.h>
@@ -181,6 +182,22 @@ typedef struct Cia {
 #define CIACRB_INMODE  (BV(5) | BV(6))
 #define CIACRB_ALARM   BV(7)
 
+
+#define CIAICRB_TIMER_A 0
+#define CIAICRB_TIMER_B 1
+#define CIAICRB_TOD     2
+#define CIAICRB_SERIAL  3
+#define CIAICRB_FLAG    4
+#define CIAICRB_SETCLR  7
+
+#define CIAICRF_TIMER_A BV(CIAICRB_TIMER_A)
+#define CIAICRF_TIMER_B BV(CIAICRB_TIMER_B)
+#define CIAICRF_TOD     BV(CIAICRB_TOD)
+#define CIAICRF_SERIAL  BV(CIAICRB_SERIAL)
+#define CIAICRF_FLAG    BV(CIAICRB_FLAG)
+#define CIAICRF_SETCLR  BV(CIAICRB_SETCLR)
+
+
 Cia FAR REGPTR CiaA = (Cia*)0xBFE001;
 Cia FAR REGPTR CiaB = (Cia*)0xBFD000;
 
@@ -208,13 +225,13 @@ typedef struct GameInterrupt {
 } GameInterrupt;
 
 
-const UWORD minimalDma = DMAF_DISK | DMAF_BLITTER;
+//const UWORD minimalDma = DMAF_DISK | DMAF_BLITTER;
 UBYTE systemUsed = 0;
 
-UWORD osInterruptEnables;
-UWORD osDMACon;
-UWORD gameDMACon = 0;
-UWORD initialDMA;
+//UWORD osInterruptEnables;
+//UWORD osDMACon;
+//UWORD gameDMACon = 0;
+//UWORD initialDMA;
 
 
 void HWINTERRUPT Int1Handler(void);
@@ -225,8 +242,8 @@ void HWINTERRUPT Int5Handler(void);
 void HWINTERRUPT Int6Handler(void);
 void HWINTERRUPT Int7Handler(void);
 static const HwIntVector gameHwInterrupts[SYSTEM_INT_VECTOR_COUNT] = {
-	Int1Handler, int2Handler, Int3Handler, Int4Handler,
-	Int5Handler, Int6Handler, Int7Handler
+	int1Handler, int2Handler, int3Handler, int4Handler,
+	int5Handler, int6Handler, int7Handler
 };
 static volatile HwIntVector osHwInterrupts[SYSTEM_INT_VECTOR_COUNT] = {0};
 static volatile HwIntVector * hwVectors = 0;
@@ -234,7 +251,14 @@ static volatile GameInterrupt gameInterrupts[SYSTEM_INT_HANDLER_COUNT] = {{0}};
 
 
 
-
+UWORD osCiaATimerA;
+UWORD osCiaATimerB;
+UWORD osCiaBTimerA;
+UWORD osCiaBTimerB;
+UWORD gameCiaATimerA = 0xFFFF;
+UWORD gameCiaATimerB = 0xFFFF;
+UWORD gameCiaBTimerA = 0xFFFF;
+UWORD gameCiaBTimerB = 0xFFFF;
 
 FN_HOTSPOT
 void HWINTERRUPT Int1Handler(void) {
@@ -387,28 +411,28 @@ void SystemSetInt(
 	UBYTE intNumber, GameIntHandler handler, volatile void *intData
 ) {
 	// Disable ACE handler during data swap to ensure atomic op
-	gameInterrupts[intNumber].handler = 0;
-	gameInterrupts[intNumber].data = intData;
+	s_pAceInterrupts[intNumber].pHandler = 0;
+	s_pAceInterrupts[intNumber].pData = intData;
 
 	// Re-enable handler or disable it if 0 was passed
-	gameInterrupts[intNumber].handler = handler;
+	s_pAceInterrupts[intNumber].pHandler = handler;
 }
 
 void SystemSetDma(UBYTE dmaBit, UBYTE enabled) {
 	UWORD dmaMask = BV(dmaBit);
 	if(enabled) {
-		gameDMACon |= dmaMask;
-		osDMACon |= dmaMask;
-		if(!systemUsed || !(dmaMask & minimalDma)) {
+		s_uwAceDmaCon |= dmaMask;
+		s_uwOsDmaCon |= dmaMask;
+		if(!systemUsed || !(dmaMask & s_uwOsMinDma)) {
 			customRegister->dmacon = DMAF_SETCLR | dmaMask;
 		}
 	}
 	else {
-		gameDMACon &= ~dmaMask;
-		if(!(dmaMask & minimalDma)) {
-			osDMACon &= ~dmaMask;
+		s_uwAceDmaCon &= ~dmaMask;
+		if(!(dmaMask & s_uwOsMinDma)) {
+			s_uwOsDmaCon &= ~dmaMask;
 		}
-		if(!systemUsed || !(dmaMask & minimalDma)) {
+		if(!systemUsed || !(dmaMask & s_uwOsMinDma)) {
 			customRegister->dmacon = dmaMask;
 		}
 	}
@@ -454,9 +478,46 @@ static void SystemFlushIo() {
 	FreeMem(packet, sizeof(struct StandardPacket));
 }
 
+UWORD CiaGetTimerA(Cia REGPTR cia) {
+	UBYTE hi, lo;
+	do {
+		hi = cia->tahi;
+		lo = cia->talo;
+	} while(hi != cia->tahi);
+	return (hi << 8) | lo;
+}
+
+void CiaSetTimerA(Cia REGPTR cia, UWORD ticks) {
+	// The latches should be loaded, low byte first, as a write access
+	// to the high register causes the timer to be stopped and reloaded with the
+	// latch value unless the LOAD bit in the control register is set, in which case
+	// the latch value is transferred to the timers regardless of the timer state
+	cia->talo = ticks & 0xFF;
+	cia->tahi = ticks >> 8;
+}
+
+UWORD CiaGetTimerB(Cia REGPTR cia) {
+	UBYTE hi, lo;
+	do {
+		hi = cia->tbhi;
+		lo = cia->tblo;
+	} while(hi != cia->tbhi);
+	return (hi << 8) | lo;
+}
+
+void CiaSetTimerB(Cia REGPTR cia, UWORD ticks) {
+	// The latches should be loaded, low byte first, as a write access
+	// to the high register causes the timer to be stopped and reloaded with the
+	// latch value unless the LOAD bit in the control register is set, in which case
+	// the latch value is transferred to the timers regardless of the timer state
+	cia->tblo = ticks & 0xFF;
+	cia->tbhi = ticks >> 8;
+}
+
 
 void SystemUnuse(void) {
 	--systemUsed;
+	--s_wSystemUses;
 	if(!systemUsed) {
 		if(customRegister->dmaconr & DMAF_DISK) {
 			// Flush disk activity if it was used
@@ -471,10 +532,56 @@ void SystemUnuse(void) {
 		customRegister->intena = 0x7FFF;
 		customRegister->intreq = 0x7FFF;
 
+
+		// Disable CIA interrupts
+		g_pCia[CIA_A]->icr = 0x7F;
+		g_pCia[CIA_B]->icr = 0x7F;
+
+		// save OS CIA timer values
+		s_pOsCiaTimerA[CIA_A] = ciaGetTimerA(g_pCia[CIA_A]);
+		// s_pOsCiaTimerB[CIA_A] = ciaGetTimerB(g_pCia[CIA_A]);
+		s_pOsCiaTimerA[CIA_B] = ciaGetTimerA(g_pCia[CIA_B]);
+		s_pOsCiaTimerB[CIA_B] = ciaGetTimerB(g_pCia[CIA_B]);
+
+		// set ACE CIA timers
+		ciaSetTimerA(g_pCia[CIA_A], s_pAceCiaTimerA[CIA_A]);
+		// ciaSetTimerB(g_pCia[CIA_A], s_pAceCiaTimerB[CIA_A]);
+		ciaSetTimerA(g_pCia[CIA_B], s_pAceCiaTimerA[CIA_B]);
+		ciaSetTimerB(g_pCia[CIA_B], s_pAceCiaTimerB[CIA_B]);
+
+		// Enable ACE CIA interrupts
+		g_pCia[CIA_A]->icr = (
+			CIAICRF_SETCLR | CIAICRF_SERIAL | CIAICRF_TIMER_A | CIAICRF_TIMER_B
+		);
+		g_pCia[CIA_B]->icr = (
+			CIAICRF_SETCLR | CIAICRF_SERIAL | CIAICRF_TIMER_A | CIAICRF_TIMER_B
+		);
+
+
+
+		// CiaA->icr = 0x7F;
+		// CiaB->icr = 0x7F;
+
+		// osCiaATimerA = CiaGetTimerA(CiaA);
+		// osCiaBTimerA = CiaGetTimerA(CiaB);
+		// osCiaBTimerB = CiaGetTimerB(CiaB);
+
+
+		// CiaSetTimerA(CiaA, gameCiaATimerA);
+		// CiaSetTimerA(CiaB, gameCiaBTimerA);
+		// CiaSetTimerB(CiaB, gameCiaBTimerB);
+
+		// CiaA->icr = (
+		// 	CIAICRF_SETCLR | CIAICRF_SERIAL | CIAICRF_TIMER_A | CIAICRF_TIMER_B
+		// );
+		// CiaB->icr = (
+		// 	CIAICRF_SETCLR | CIAICRF_SERIAL | CIAICRF_TIMER_A | CIAICRF_TIMER_B
+		// );
+
 		// Game's bitplanes & copperlists are still used so don't disable them
 		// Wait for vbl before disabling sprite DMA
 		while (!(customRegister->intreqr & INTF_VERTB)) {}
-		customRegister->dmacon = minimalDma;
+		customRegister->dmacon = s_uwOsMinDma;
 
 		// Save OS interrupt vectors and enable ACE's
 		customRegister->intreq = 0x7FFF;
@@ -484,10 +591,10 @@ void SystemUnuse(void) {
 		}
 
 		// Enable needed DMA (and interrupt) channels
-		customRegister->dmacon = DMAF_SETCLR | DMAF_MASTER | gameDMACon;
+		customRegister->dmacon = DMAF_SETCLR | DMAF_MASTER | s_uwAceDmaCon;
 		// Everything that's supported by ACE to simplify things for now
 		customRegister->intena = INTF_SETCLR | INTF_INTEN | (
-			INTF_BLIT | INTF_COPER | INTF_VERTB |
+			INTF_BLIT | INTF_COPER | INTF_VERTB | INTF_EXTER |
 			INTF_PORTS | INTF_AUD0 | INTF_AUD1 | INTF_AUD2 | INTF_AUD3
 		);
 	}
@@ -499,20 +606,48 @@ void SystemUse(void) {
 		// Disable app interrupts/dma, keep display-related DMA
 		customRegister->intena = 0x7FFF;
 		customRegister->intreq = 0x7FFF;
-		customRegister->dmacon = minimalDma;
+		customRegister->dmacon = s_uwOsMinDma;
 		while (!(customRegister->intreqr & INTF_VERTB)) {}
+
+		// Disable CIA interrupts
+		g_pCia[CIA_A]->icr = 0x7F;
+		g_pCia[CIA_B]->icr = 0x7F;
+		
+		// CiaA->icr = 0x7F;
+		// CiaB->icr = 0x7F;
 
 		// Restore interrupt vectors
 		for(UWORD i = 0; i < SYSTEM_INT_VECTOR_COUNT; ++i) {
 			hwVectors[SYSTEM_INT_VECTOR_FIRST + i] = osHwInterrupts[i];
 		}
+
+
+		// Restore old CIA timer values
+		ciaSetTimerA(g_pCia[CIA_A], s_pOsCiaTimerA[CIA_A]);
+		// ciaSetTimerB(g_pCia[CIA_A], s_pOsCiaTimerB[CIA_A]);
+		ciaSetTimerA(g_pCia[CIA_B], s_pOsCiaTimerA[CIA_B]);
+		ciaSetTimerB(g_pCia[CIA_B], s_pOsCiaTimerB[CIA_B]);
+
+		// re-enable CIA-B ALRM interrupt which was set by AmigaOS
+		// According to UAE debugger there's nothing in CIA_A
+		g_pCia[CIA_B]->icr = CIAICRF_SETCLR | CIAICRF_TOD;
+
+		// CiaSetTimerA(CiaA, osCiaATimerA);
+		// CiaSetTimerA(CiaB, osCiaBTimerA);
+		// CiaSetTimerB(CiaB, osCiaBTimerB);
+
+		// // re-enable CIA-B ALRM interrupt which was set by AmigaOS
+		// // According to UAE debugger there's nothing in CIA_A
+		// CiaB->icr = CIAICRF_SETCLR | CIAICRF_TOD;
+
 		// restore old DMA/INTENA/ADKCON etc. settings
 		// All interrupts but only needed DMA
-		customRegister->dmacon = DMAF_SETCLR | DMAF_MASTER | (osDMACon & minimalDma);
-		customRegister->intena = INTF_SETCLR | INTF_INTEN  | osInterruptEnables;
+		customRegister->dmacon = DMAF_SETCLR | DMAF_MASTER | (s_uwOsDmaCon & s_uwOsMinDma);
+		customRegister->intena = INTF_SETCLR | INTF_INTEN  | s_uwOsIntEna;
 		
 	} 
 	++systemUsed;
+	++s_wSystemUses;
 }
 
 
@@ -576,9 +711,9 @@ void SystemCreate()
 	SystemFlushIo();
 
 	// save the state of the hardware registers (INTENA, DMA, ADKCON etc.)
-	osInterruptEnables = customRegister->intenar;
-	osDMACon = customRegister->dmaconr;
-	initialDMA = osDMACon;
+	s_uwOsIntEna = customRegister->intenar;
+	s_uwOsDmaCon = customRegister->dmaconr;
+	s_uwOsInitialDma = s_uwOsDmaCon;
 
 	// Disable interrupts (this is the actual "kill system/OS" part)
 	customRegister->intena = 0x7FFF;
@@ -592,6 +727,7 @@ void SystemCreate()
 	// Unuse system so that it gets backed up once and then re-enable
 	// as little as needed
 	systemUsed = 1;
+	s_wSystemUses = 1;
 	SystemUnuse();
 	SystemUse();
 

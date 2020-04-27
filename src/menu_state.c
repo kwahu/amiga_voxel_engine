@@ -188,8 +188,8 @@ void RunMenuState()
                     engine.pBitmapHeightLabel = CreateBitmapFromText(engine.font, "RELATIVE ALTITUDE");
                     
                     UnuseSystem();
-                    InitAudio();
-                    PlaySample(6);
+                    //InitAudio();
+                    //PlaySample(6);
                     
                 } break;
             }

@@ -43,7 +43,7 @@ void InitGameState()
     }
  
 
-    engine.renderer.mapHigh = engine.renderer.currentMap;
+    engine.renderer.mapHigh = engine.renderer.firstMap;
     
     ClearBuffor();
 	//CopyMapWord(engine.renderer.mapSource, engine.renderer.mapHigh);
