@@ -50,16 +50,17 @@ void DrawSprite4b(unsigned char *bLogo, BITMAPINFOHEADER *bhLogo,
 	#endif
 
 	UWORD wordWidth = bhLogo->biWidth>>4;
+	UWORD upStride = (wordWidth << 2) + (xSteps << 2);
 
-	UWORD size = bhLogo->biHeight*wordWidth;
-	UWORD offset = baseY*wordWidth + baseX;
+	UWORD offset = (baseY + spriteSizeY - 1)*wordWidth*4 + baseX*4;
+	UWORD maskOffset = (baseY + spriteSizeY - 1)*wordWidth + baseX;
 
 	UWORD *bmpRowPtr1 = (UWORD *)bLogo + offset;
-	UWORD *bmpRowPtr2 = bmpRowPtr1 + size;
-	UWORD *bmpRowPtr3 = bmpRowPtr2 + size;
-	UWORD *bmpRowPtr4 = bmpRowPtr3 + size;
+	UWORD *bmpRowPtr2 = bmpRowPtr1 + 1;
+	UWORD *bmpRowPtr3 = bmpRowPtr2 + 1;
+	UWORD *bmpRowPtr4 = bmpRowPtr3 + 1;
 
-	UWORD *maskPtr = (UWORD *)bLogo  + offset + (bhLogo->biSizeImage>>1);
+	UWORD *maskPtr = (UWORD *)bLogo  + maskOffset + (bhLogo->biSizeImage>>1);
 	
 
 	for (UWORD y =0; y < spriteSizeY; y++)
@@ -84,10 +85,10 @@ void DrawSprite4b(unsigned char *bLogo, BITMAPINFOHEADER *bhLogo,
 
 		for (UWORD x = 0; x < xSteps; x++)
 		{
-			currValue1 = *(bmpRowPtr1+x);
-			currValue2 = *(bmpRowPtr2+x);
-			currValue3 = *(bmpRowPtr3+x);
-			currValue4 = *(bmpRowPtr4+x);
+			currValue1 = *(bmpRowPtr1);
+			currValue2 = *(bmpRowPtr2);
+			currValue3 = *(bmpRowPtr3);
+			currValue4 = *(bmpRowPtr4);
 			currMask = *(maskPtr+x);
 
 			word1 = (prevValue1 << rightGap) + (currValue1 >> leftGap);
@@ -120,6 +121,11 @@ void DrawSprite4b(unsigned char *bLogo, BITMAPINFOHEADER *bhLogo,
             thirdPos+=4;
             fourthPos+=4;
 			#endif
+
+			bmpRowPtr1 += 4;
+			bmpRowPtr2 += 4;
+			bmpRowPtr3 += 4;
+			bmpRowPtr4 += 4;
 		
 		}
 
@@ -140,12 +146,12 @@ void DrawSprite4b(unsigned char *bLogo, BITMAPINFOHEADER *bhLogo,
         thirdCol += PLANEWIDTHWORD;
         fourthCol += PLANEWIDTHWORD;
 
-		bmpRowPtr1 += wordWidth;
-		bmpRowPtr2 += wordWidth;
-		bmpRowPtr3 += wordWidth;
-		bmpRowPtr4 += wordWidth;
+		bmpRowPtr1 -= upStride;
+		bmpRowPtr2 -= upStride;
+		bmpRowPtr3 -= upStride;
+		bmpRowPtr4 -= upStride;
 
-		maskPtr += wordWidth;
+		maskPtr -= wordWidth;
 	}
 }
 
@@ -173,11 +179,12 @@ void DrawBitmap4bCenter(unsigned char *bLogo, BITMAPINFOHEADER *bhLogo)
 	//position = startOffset;
 
 	UWORD wordWidth = bhLogo->biWidth >> 4;
+	UWORD twoWordWidth = wordWidth << 3;
 
-	UWORD *bmpPtr1 = (UWORD *)bLogo;
-	UWORD *bmpPtr2 = (UWORD *)bLogo+bhLogo->biHeight*wordWidth;
-	UWORD *bmpPtr3 = (UWORD *)bLogo+2*bhLogo->biHeight*wordWidth;
-	UWORD *bmpPtr4 = (UWORD *)bLogo+3*bhLogo->biHeight*wordWidth;
+	UWORD *bmpPtr1 = (UWORD *)bLogo + (bhLogo->biHeight - 1)*wordWidth*4;
+	UWORD *bmpPtr2 = (UWORD *)bmpPtr1+1;
+	UWORD *bmpPtr3 = (UWORD *)bmpPtr1+2;
+	UWORD *bmpPtr4 = (UWORD *)bmpPtr1+3;
 
 	for (ULONG y = 0; y < bhLogo->biHeight; y++)
 	{
@@ -190,10 +197,10 @@ void DrawBitmap4bCenter(unsigned char *bLogo, BITMAPINFOHEADER *bhLogo)
 		for (ULONG x = 0; x < wordWidth; x++)
 		{
 
-			word1 = *bmpPtr1++;
-			word2 = *bmpPtr2++;
-			word3 = *bmpPtr3++;
-			word4 = *bmpPtr4++;
+			word1 = *bmpPtr1;
+			word2 = *bmpPtr2;
+			word3 = *bmpPtr3;
+			word4 = *bmpPtr4;
 
 			*firstPos = word1;
 			*secondPos = word2;
@@ -211,11 +218,21 @@ void DrawBitmap4bCenter(unsigned char *bLogo, BITMAPINFOHEADER *bhLogo)
             thirdPos+=4;
             fourthPos+=4;
 			#endif
+
+			bmpPtr1 += 4;
+			bmpPtr2 += 4;
+			bmpPtr3 += 4;
+			bmpPtr4 += 4;
 		}
         firstCol += PLANEWIDTHWORD;
         secondCol += PLANEWIDTHWORD;
         thirdCol += PLANEWIDTHWORD;
         fourthCol += PLANEWIDTHWORD;
+		
+		bmpPtr1 -= twoWordWidth;
+		bmpPtr2 -= twoWordWidth;
+		bmpPtr3 -= twoWordWidth;
+		bmpPtr4 -= twoWordWidth;
 		
 	}
 }

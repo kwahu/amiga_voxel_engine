@@ -283,9 +283,15 @@ UBYTE BlitUnsafeCopyAligned(
 
 void CopyFastToChipW(BitMap *bm)
 {
+
+    ULONG screenPlaneSize = PLANEWIDTHWORD*PLANEHEIGHT*sizeof(UWORD);
 	
-	BlitUnsafeCopyAligned(&engine.renderer.buffer, 0, 0,
-	bm, 0, 0, 320, PLANEHEIGHT);
+	CopyMemQuick(engine.renderer.plane1W, bm->Planes[0], screenPlaneSize);
+	CopyMemQuick(engine.renderer.plane2W, bm->Planes[1], screenPlaneSize);
+	CopyMemQuick(engine.renderer.plane3W, bm->Planes[2], screenPlaneSize);
+	CopyMemQuick(engine.renderer.plane4W, bm->Planes[3], screenPlaneSize);
+	//BlitUnsafeCopyAligned(&engine.renderer.buffer, 0, 0,
+	//bm, 0, 0, 320, PLANEHEIGHT);
 }
 
 #define VSyncAndDraw() \
@@ -1389,15 +1395,15 @@ void InitScreen()
 								   TAG_DONE);
 
 	
-	engine.renderer.buffer.pad = engine.platformScreen.buffer->back->pad;
-	engine.renderer.buffer.Flags = engine.platformScreen.buffer->back->Flags;
-	engine.renderer.buffer.Depth = 4;
-	engine.renderer.buffer.BytesPerRow = engine.platformScreen.buffer->back->BytesPerRow;
-	engine.renderer.buffer.Planes[0] = engine.renderer.plane1W; 
-	engine.renderer.buffer.Planes[1] = engine.renderer.plane2W;
-	engine.renderer.buffer.Planes[2] = engine.renderer.plane3W;
-	engine.renderer.buffer.Planes[3] = engine.renderer.plane4W;
-	engine.renderer.buffer.Rows = PLANEHEIGHT;
+	// engine.renderer.buffer.pad = engine.platformScreen.buffer->back->pad;
+	// engine.renderer.buffer.Flags = engine.platformScreen.buffer->back->Flags;
+	// engine.renderer.buffer.Depth = 4;
+	// engine.renderer.buffer.BytesPerRow = engine.platformScreen.buffer->back->BytesPerRow;
+	// engine.renderer.buffer.Planes[0] = engine.renderer.plane1W; 
+	// engine.renderer.buffer.Planes[1] = engine.renderer.plane2W;
+	// engine.renderer.buffer.Planes[2] = engine.renderer.plane3W;
+	// engine.renderer.buffer.Planes[3] = engine.renderer.plane4W;
+	// engine.renderer.buffer.Rows = PLANEHEIGHT;
 }
 
 void ViewOff()

@@ -7,7 +7,7 @@ void ShowDeathCutscene()
     
     
     //InitAudio();
-    PlaySample(16);
+    PlaySample(12);
 
     ClearBuffor();
     DrawBitmap4bCenter(engine.menu[2], &engine.headers[2]);
@@ -103,7 +103,7 @@ void ShowTooLateCutscene()
 {
     //StopSample();
     //ContinueSample();
-    PlaySample(16);
+    PlaySample(12);
     ClearBuffor();
  
     DrawBitmap4bCenter(engine.menu[2], &engine.headers[2]);
@@ -165,7 +165,7 @@ void ShowWinCutscene()
     }
     LoadBitmapToMemory("data/fin");
     InitAudio();
-    PlaySample(18);
+    PlaySample(13);
     ClearBuffor();
     DrawBitmap4bCenter(engine.activeBitmap, &engine.activeBitmapHeader);
     VSyncAndDraw();
@@ -338,12 +338,12 @@ void ShowCutscene(Cutscene cutsceneType, ULONG duration)
         case Cutscene_Death:
         {
             InitGameState();
-            nextPattern = 6;
+            nextPattern = 5;
         } break;
         case Cutscene_TooLate:
         {
             InitGameState();
-            nextPattern = 6;
+            nextPattern = 5;
         } break;
         case Cutscene_Win:
         {

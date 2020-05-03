@@ -438,7 +438,7 @@ void GetPlayerRendererSetting()
 	}
 	if (getKey(5)) //A3000
 	{
-		engine.renderer.renderingDepth = 64;
+		engine.renderer.renderingDepth = 48;
 		engine.renderer.calculationDepthDivider = 2;
 		engine.renderer.calculationDepthStep = 2;
 		engine.renderer.renderingDepthStep = 1;

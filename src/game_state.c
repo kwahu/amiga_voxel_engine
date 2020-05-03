@@ -99,11 +99,11 @@ void RenderShipAndCrossHair()
     }
     if(engine.gameState.crossHairY > 4000)
     {
-        spriteIndexY = 2;
+        spriteIndexY = 0;
     }
     else if(engine.gameState.crossHairY < -4000)
     {
-        spriteIndexY = 0;
+        spriteIndexY = 2;
     }
 
                 
@@ -260,7 +260,7 @@ void RunGameState()
             engine.gameState.animDuration += addedTime;
             ULONG currentIndex = (ULONG)(engine.gameState.animDuration/100);
             WORD currentX = (WORD)(currentIndex%4);
-            WORD currentY = (WORD)((currentIndex/4));
+            WORD currentY = (WORD)(2 - (currentIndex/4));
             
             UWORD takeoffX = 160 + engine.renderer.xTurnOffset;
             UWORD takeoffY = GAME_SHIP_POS + (engine.gameState.crossHairY/1600);
@@ -298,7 +298,7 @@ void RunGameState()
             engine.gameState.animDuration += addedTime;
             ULONG currentIndex = (ULONG)(engine.gameState.animDuration/75);
             WORD currentX = (WORD)(currentIndex%3);
-            WORD currentY = (WORD)((currentIndex/3));
+            WORD currentY = (WORD)(2 - (currentIndex/3));
             
             UWORD explosionX = 160 + engine.renderer.xTurnOffset;
             UWORD explosionY = GAME_SHIP_POS + (engine.gameState.crossHairY/1600);
@@ -358,7 +358,7 @@ void RunGameState()
             engine.gameState.animDuration += addedTime;
             ULONG currentIndex = (ULONG)(engine.gameState.animDuration/100);
             WORD currentX = (WORD)(currentIndex%4);
-            WORD currentY = (WORD)((currentIndex/4));
+            WORD currentY = (WORD)(3 - (currentIndex/4));
             
             UWORD landingX = 160 + engine.renderer.xTurnOffset;
             UWORD landingY = GAME_SHIP_POS + (engine.gameState.crossHairY/1600);

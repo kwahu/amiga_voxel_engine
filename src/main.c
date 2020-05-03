@@ -34,10 +34,8 @@ void InitializeGameChipMemory()
     FILE *file = OpenFile("data/verge.mod", "rb");
 
     ULONG fileSize = GetFileSize("data/verge.mod");
-	
-    ULONG screenPlaneSize = PLANEWIDTHWORD*PLANEHEIGHT*sizeof(UWORD);
 
-	NewChipArena(&engine.chipArena, fileSize + 4*screenPlaneSize);
+	NewChipArena(&engine.chipArena, fileSize);
 
 
 	engine.music = (UBYTE *)AllocateFromArena(&engine.chipArena, fileSize);
@@ -45,10 +43,6 @@ void InitializeGameChipMemory()
     ReadFile(file, engine.music, fileSize);
     CloseFile(file);
 
-	engine.renderer.plane1W = (UWORD *)AllocateFromArena(&engine.chipArena, screenPlaneSize);
-	engine.renderer.plane2W = (UWORD *)AllocateFromArena(&engine.chipArena, screenPlaneSize);
-	engine.renderer.plane3W = (UWORD *)AllocateFromArena(&engine.chipArena, screenPlaneSize);
-	engine.renderer.plane4W = (UWORD *)AllocateFromArena(&engine.chipArena, screenPlaneSize);
 	
 
 }
@@ -67,11 +61,21 @@ void InitEngine(void)
 
 	
     ULONG fontSize = GetFileSize("data/ss.fnt") + sizeof(Font);
-
-	NewArena(&engine.fontArena, fontSize);
+	
+    ULONG screenPlaneSize = PLANEWIDTHWORD*PLANEHEIGHT*sizeof(UWORD);
 
 	
+	NewArena(&engine.fontArena, fontSize + 4*screenPlaneSize);
+	
+	
 	engine.font = InitFont("data/ss.fnt");
+
+	engine.renderer.plane1W = (UWORD *)AllocateFromArena(&engine.fontArena, screenPlaneSize);
+	engine.renderer.plane2W = (UWORD *)AllocateFromArena(&engine.fontArena, screenPlaneSize);
+	engine.renderer.plane3W = (UWORD *)AllocateFromArena(&engine.fontArena, screenPlaneSize);
+	engine.renderer.plane4W = (UWORD *)AllocateFromArena(&engine.fontArena, screenPlaneSize);
+
+
 
 	NewArena(&engine.temporaryArena, 100*1024);
 
@@ -103,11 +107,11 @@ void InitEngine(void)
 
 	engine.renderer.ditherTable1 = 0;
 
-	while(engine.renderer.ditherTable1 == 0)
-	{
-		GetPlayerMemorySetting();
+	// while(engine.renderer.ditherTable1 == 0)
+	// {
+	// 	GetPlayerMemorySetting();
 		
-	}
+	// }
 
 
 
@@ -124,11 +128,11 @@ void InitEngine(void)
 	DrawTextBitmap(engine.informationText, 50, PLANEHEIGHT/2, 3);
 	VSyncAndDraw();
 	
-	while(engine.renderer.renderingType == 0)
-	{
-		GetPlayerRendererSetting();
+	// while(engine.renderer.renderingType == 0)
+	// {
+	// 	GetPlayerRendererSetting();
 		
-	}
+	// }
 
 	ClearBuffor();
 	

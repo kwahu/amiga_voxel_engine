@@ -71,11 +71,9 @@ UBYTE *LoadBitmapFile(BYTE *filename, BITMAPINFOHEADER *bitmapInfoHeader, UBYTE 
 
 	if(bitmapImage != NULL)
 	{
-		free(bitmapImage);
+		//free(bitmapImage);
 	}
 
-#if AMIGA
-	
 	switch(type)
 	{
 		default:
@@ -87,40 +85,40 @@ UBYTE *LoadBitmapFile(BYTE *filename, BITMAPINFOHEADER *bitmapInfoHeader, UBYTE 
 		    bitmapImage = (unsigned char *)AllocateFromArena(&engine.temporaryArena, bitmapInfoHeader->biSizeImage + bitmapInfoHeader->biSizeImage/4);
 		} break;
  	}
-	#else
-	switch(type)
-	{
-		default:
-		{
-		    bitmapImage = (unsigned char *)malloc(bitmapInfoHeader->biSizeImage);
-		} break;
-		case Bitmap_Sprite:
-		{
-		    bitmapImage = (unsigned char *)malloc(bitmapInfoHeader->biSizeImage + bitmapInfoHeader->biSizeImage/4);
-		} break;
- 	}
-	 #endif
-    //allocate enough memory for the bitmap image data
+	//allocate enough memory for the bitmap image data
 
     //verify memory allocation
     if (!bitmapImage)
     {
         printf("verify memory allocation");
-        free(bitmapImage);
+        //free(bitmapImage);
         fclose(filePtr);
         return NULL;
     }
 
     //read in the bitmap image data
-    fread(bitmapImage, bitmapInfoHeader->biSizeImage, 1, filePtr);
+    
+	UWORD remainder = bitmapInfoHeader->biSizeImage&0x3FF;
+	UWORD count = bitmapInfoHeader->biSizeImage >> 10;
+	UBYTE *tmp = bitmapImage;
+
+	for(UWORD i = 0; i < count; ++i)
+	{
+    	fseek(filePtr, bitmapFileHeader.bfOffBits + (i<<10), SEEK_SET);
+		fread(tmp, 1024, 1, filePtr);
+		
+		tmp += 1024;
+
+	}
+	fread(tmp, remainder, 1, filePtr);
 
 	if(type == Bitmap_Sprite)
 	{
-		for(WORD y = bitmapInfoHeader->biHeight - 1; y >= 0; --y)
+		for(WORD y = 0; y < bitmapInfoHeader->biHeight; y++)
 		{
 			UWORD *rowPtr = ((UWORD *)(bitmapImage + y*bitmapInfoHeader->biWidth/2));
 			UWORD *maskRowPtr = ((UWORD *)(bitmapImage + bitmapInfoHeader->biSizeImage +
-			 (bitmapInfoHeader->biHeight - 1 -y)*bitmapInfoHeader->biWidth/8));
+			 (y)*bitmapInfoHeader->biWidth/8));
 
 			for(UWORD wordIndex = 0; wordIndex < bitmapInfoHeader->biWidth/16; wordIndex++)
 			{
@@ -193,18 +191,19 @@ UBYTE *LoadBitmapFile(BYTE *filename, BITMAPINFOHEADER *bitmapInfoHeader, UBYTE 
 	if(type != Bitmap_Map)
 	{
 
-		unsigned char *temp = (unsigned char *)malloc(bitmapInfoHeader->biSizeImage);
-		
+		//unsigned char *temp = (unsigned char *)AllocateFromArena(&engine.tempArena, bitmapInfoHeader->biSizeImage);
+		//UWORD temp[20];
+
 		for(WORD y = bitmapInfoHeader->biHeight - 1; y >= 0; --y)
 		{
 			UWORD *rowPtr = ((UWORD *)(bitmapImage + y*bitmapInfoHeader->biWidth/2));
 		
-			UWORD *tempRowPtr = (UWORD *)(temp + (bitmapInfoHeader->biHeight - 1 - y)*bitmapInfoHeader->biWidth/8);
+			//UWORD *tempRowPtr = (UWORD *)(temp + (bitmapInfoHeader->biHeight - 1 - y)*bitmapInfoHeader->biWidth/8);
 
 			for(UWORD wordIndex = 0; wordIndex < bitmapInfoHeader->biWidth/16; wordIndex++)
 			{
-				UWORD *tempPtr = (UWORD *)tempRowPtr;
-				tempPtr += wordIndex;	
+				// UWORD *tempPtr = (UWORD *)temp;
+				// tempPtr += wordIndex;	
 
 				UWORD word1 = *rowPtr;
 				++rowPtr;
@@ -213,7 +212,7 @@ UBYTE *LoadBitmapFile(BYTE *filename, BITMAPINFOHEADER *bitmapInfoHeader, UBYTE 
 				UWORD word3 = *rowPtr;
 				++rowPtr;
 				UWORD word4 = *rowPtr;
-				++rowPtr;
+				rowPtr -= 3;
 
 				UWORD packedWord1 = 0;
 				UWORD packedWord2 = 0;
@@ -288,28 +287,29 @@ UBYTE *LoadBitmapFile(BYTE *filename, BITMAPINFOHEADER *bitmapInfoHeader, UBYTE 
 					shift4 += 4;
 				}
 
-				*tempPtr = packedWord1;
-				tempPtr += bitmapInfoHeader->biSizeImage/8;
-				*tempPtr = packedWord2;
-				tempPtr += bitmapInfoHeader->biSizeImage/8;
-				*tempPtr = packedWord3;
-				tempPtr += bitmapInfoHeader->biSizeImage/8;
-				*tempPtr = packedWord4;
+				*rowPtr++ = packedWord1;
+				//tempPtr += bitmapInfoHeader->biSizeImage/8;
+				*rowPtr++ = packedWord2;
+				//tempPtr += bitmapInfoHeader->biSizeImage/8;
+				*rowPtr++ = packedWord3;
+				//tempPtr += bitmapInfoHeader->biSizeImage/8;
+				*rowPtr++ = packedWord4;
 
 
 
 			}
 		}
 
-		UWORD *tempPtr = ((UWORD *)temp);
-		UWORD *bitmapPtr = ((UWORD *)bitmapImage);
-		for(UWORD wordIndex = 0; wordIndex < bitmapInfoHeader->biSizeImage/2; wordIndex++)
-		{
-			*bitmapPtr++ = *tempPtr++;
+		// UWORD *tempPtr = ((UWORD *)temp);
+		// UWORD *bitmapPtr = ((UWORD *)bitmapImage);
+		// for(UWORD wordIndex = 0; wordIndex < bitmapInfoHeader->biSizeImage/2; wordIndex++)
+		// {
+		// 	*bitmapPtr++ = *tempPtr++;
 
 			
-		}
-		free(temp);
+		// }
+		// ClearArena(&engine.tempArena);
+
 	}
 
 
