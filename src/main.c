@@ -2,8 +2,8 @@
 #include "memory_platform.h"
 #include "platform.h"
 #include "engine.h"
-#include "bitmap.c"
 #include "file_platform.h"
+#include "bitmap.c"
 
 #include "raycasting.c"
 //#include "mipmaps.c"
@@ -107,11 +107,11 @@ void InitEngine(void)
 
 	engine.renderer.ditherTable1 = 0;
 
-	// while(engine.renderer.ditherTable1 == 0)
-	// {
-	// 	GetPlayerMemorySetting();
+	while(engine.renderer.ditherTable1 == 0)
+	{
+		GetPlayerMemorySetting();
 		
-	// }
+	}
 
 
 
@@ -128,11 +128,11 @@ void InitEngine(void)
 	DrawTextBitmap(engine.informationText, 50, PLANEHEIGHT/2, 3);
 	VSyncAndDraw();
 	
-	// while(engine.renderer.renderingType == 0)
-	// {
-	// 	GetPlayerRendererSetting();
+	while(engine.renderer.renderingType == 0)
+	{
+		GetPlayerRendererSetting();
 		
-	// }
+	}
 
 	ClearBuffor();
 	
@@ -174,7 +174,7 @@ void EngineLoop(void)
 		
 		if (getKey(ESCAPE))
 		{
-			engine.exitFlag = 1;
+			exitFlag = 1;
 			ExitGame();
 		}
 			
@@ -189,10 +189,10 @@ void EngineLoop(void)
 		RunGameState();
 	}
 
-	if (getKey(ESCAPE) || engine.exitFlag)
+	if (getKey(ESCAPE) || exitFlag)
 	{
 		ExitGame();
-		engine.exitFlag = 1;
+		exitFlag = 1;
 	}
 
 

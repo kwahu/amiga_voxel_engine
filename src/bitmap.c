@@ -31,12 +31,20 @@ UBYTE *LoadBitmapFile(BYTE *filename, BITMAPINFOHEADER *bitmapInfoHeader, UBYTE 
     UBYTE tempRGB;             //our swap variable
 
     //open filename in read binary mode
-    filePtr = fopen(filename, "rb");
-    if (filePtr == NULL)
+    #ifdef AMIGA
+	filePtr = OpenFile(filename, "rb");
+	#else
+	filePtr = fopen(filename, "rb");
+    #endif
+	if (filePtr == NULL)
         return NULL;
 
     //read the bitmap file header
-    fread(&bitmapFileHeader, sizeof(BITMAPFILEHEADER), 1, filePtr);
+    #ifdef AMIGA
+	ReadFile(filePtr, &bitmapFileHeader, sizeof(BITMAPFILEHEADER));
+	#else
+	fread(&bitmapFileHeader, sizeof(BITMAPFILEHEADER), 1, filePtr);
+	#endif
 
     bitmapFileHeader.bfType = ConvertEndianWORD(bitmapFileHeader.bfType);
     bitmapFileHeader.bfSize = ConvertEndianLONG(bitmapFileHeader.bfSize);
@@ -45,13 +53,21 @@ UBYTE *LoadBitmapFile(BYTE *filename, BITMAPINFOHEADER *bitmapInfoHeader, UBYTE 
     //verify that this is a bmp file by check bitmap id
     if (bitmapFileHeader.bfType != 0x4D42)
     {
+		#ifdef AMIGA
+		CloseFile(filePtr);
+		#else
         fclose(filePtr);
-        printf("verify that this is a bmp file by check bitmap id=%lu", bitmapFileHeader.bfType);
+        #endif
+		printf("verify that this is a bmp file by check bitmap id=%lu", bitmapFileHeader.bfType);
         return NULL;
     }
 
     //read the bitmap info header
+	#ifdef AMIGA
+	ReadFile(filePtr, bitmapInfoHeader, sizeof(BITMAPINFOHEADER));
+	#else
     fread(bitmapInfoHeader, sizeof(BITMAPINFOHEADER), 1, filePtr); // small edit. forgot to add the closing bracket at sizeof
+	#endif
 
     bitmapInfoHeader->biSize = ConvertEndianLONG(bitmapInfoHeader->biSize);
     bitmapInfoHeader->biWidth = ConvertEndianLONG(bitmapInfoHeader->biWidth);
@@ -64,10 +80,18 @@ UBYTE *LoadBitmapFile(BYTE *filename, BITMAPINFOHEADER *bitmapInfoHeader, UBYTE 
     bitmapInfoHeader->biClrImportant = ConvertEndianLONG(bitmapInfoHeader->biClrImportant);
 
     //read the bitmap color table
+	#ifdef AMIGA
+	ReadFile(filePtr, bitmapColorTable, 4*16);
+	#else
     fread(bitmapColorTable, 4 * 16, 1, filePtr); // small edit. forgot to add the closing bracket at sizeof
+	#endif
 
     //move file point to the begging of bitmap data
-    fseek(filePtr, bitmapFileHeader.bfOffBits, SEEK_SET);
+    #ifdef AMIGA
+	SeekFile(filePtr, bitmapFileHeader.bfOffBits, SEEK_SET);
+	#else
+	fseek(filePtr, bitmapFileHeader.bfOffBits, SEEK_SET);
+	#endif
 
 	if(bitmapImage != NULL)
 	{
@@ -92,25 +116,36 @@ UBYTE *LoadBitmapFile(BYTE *filename, BITMAPINFOHEADER *bitmapInfoHeader, UBYTE 
     {
         printf("verify memory allocation");
         //free(bitmapImage);
+		
+		#ifdef AMIGA
+		CloseFile(filePtr);
+		#else
         fclose(filePtr);
-        return NULL;
+        #endif
+		return NULL;
     }
 
     //read in the bitmap image data
     
-	UWORD remainder = bitmapInfoHeader->biSizeImage&0x3FF;
-	UWORD count = bitmapInfoHeader->biSizeImage >> 10;
-	UBYTE *tmp = bitmapImage;
+	#ifdef AMIGA
+	ReadFile(filePtr, bitmapImage, bitmapInfoHeader->biSizeImage);
+	#else
+    fread(bitmapImage, bitmapInfoHeader->biSizeImage, 1, filePtr); // small edit. forgot to add the closing bracket at sizeof
+	#endif
 
-	for(UWORD i = 0; i < count; ++i)
-	{
-    	fseek(filePtr, bitmapFileHeader.bfOffBits + (i<<10), SEEK_SET);
-		fread(tmp, 1024, 1, filePtr);
+	// UWORD remainder = bitmapInfoHeader->biSizeImage&0x3FF;
+	// UWORD count = bitmapInfoHeader->biSizeImage >> 10;
+	// UBYTE *tmp = bitmapImage;
+
+	// for(UWORD i = 0; i < count; ++i)
+	// {
+    // 	fseek(filePtr, bitmapFileHeader.bfOffBits + (i<<10), SEEK_SET);
+	// 	fread(tmp, 1024, 1, filePtr);
 		
-		tmp += 1024;
+	// 	tmp += 1024;
 
-	}
-	fread(tmp, remainder, 1, filePtr);
+	// }
+	// fread(tmp, remainder, 1, filePtr);
 
 	if(type == Bitmap_Sprite)
 	{
@@ -318,15 +353,25 @@ UBYTE *LoadBitmapFile(BYTE *filename, BITMAPINFOHEADER *bitmapInfoHeader, UBYTE 
     if (bitmapImage == NULL)
     {
         printf("make sure bitmap image data was read");
+		
+		#ifdef AMIGA
+		CloseFile(filePtr);
+		#else
         fclose(filePtr);
-        return NULL;
+        #endif
+		return NULL;
     }
 
 	
 
     //close file and return bitmap iamge data
-    fclose(filePtr);
-    return bitmapImage;
+    
+	#ifdef AMIGA
+	CloseFile(filePtr);
+	#else
+	fclose(filePtr);
+    #endif
+	return bitmapImage;
 }
 
 // void SmoothHeightMap(UBYTE (*map)[MAPSIZE])
@@ -441,3 +486,15 @@ void CombineMapsHigh(UBYTE (*height)[MAPSIZE], UBYTE (*color)[MAPSIZE], UWORD (*
 	}
 }
 
+
+void LoadBitmapToMemory(BYTE *fileName)    
+{                                      
+    #ifdef AMIGA                   
+    UseSystem();                        
+    engine.activeBitmap = LoadBitmapFile(fileName, &engine.activeBitmapHeader, engine.activePalette, 1, 0);      
+    UnuseSystem();        
+    #else                       
+    free(engine.activeBitmap);      
+    engine.activeBitmap = LoadBitmapFile(fileName, &engine.activeBitmapHeader, engine.activePalette, 1, 0);     
+    #endif                  
+}   

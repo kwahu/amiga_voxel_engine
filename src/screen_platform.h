@@ -409,6 +409,21 @@ void CopCreate(void) {
 }
 
 
+void CopDestroy() {
+
+	// Load system copperlist
+	SystemSetDma(DMAB_COPPER, 0);
+	customRegister->cop1lc = (ULONG)GfxBase->copinit;
+	customRegister->copjmp1 = 1;
+
+	// Free blank copperlist
+	// All others should be freed by user
+	CopListDestroy(copManager.blankList);
+
+}
+
+
+
 typedef struct VpManager {
 	struct VpManager *next;                      ///< Pointer to next manager.
 	void  (*process)(struct VpManager *manager); ///< Process fn handle.

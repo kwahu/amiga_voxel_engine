@@ -733,6 +733,39 @@ void SystemCreate()
 
 }
 
+UBYTE exitFlag = 0;
+
+
+void SystemDestroy(void) {
+	// disable all interrupts
+	customRegister->intena = 0x7FFF;
+	customRegister->intreq = 0x7FFF;
+
+	// Wait for vbl before disabling sprite DMA
+	while (!(customRegister->intreqr & INTF_VERTB)) {}
+	customRegister->dmacon = 0x07FF;
+	customRegister->intreq = 0x7FFF;
+
+	// Start waking up OS
+	if(s_wSystemUses != 0) {
+		s_wSystemUses = 0;
+	}
+	SystemUse();
+
+	// Restore all OS DMA
+	customRegister->dmacon = DMAF_SETCLR | DMAF_MASTER | s_uwOsInitialDma;
+
+	// restore old view
+	WaitTOF();
+	LoadView(osView);
+	WaitTOF();
+
+	WaitBlit();
+	DisownBlitter();
+
+	CloseLibrary((struct Library *) GfxBase);
+}
+
 int main(void) {
 	SystemCreate();
 	TimerCreate();
@@ -740,16 +773,16 @@ int main(void) {
 	BlitManagerCreate();
 	CopCreate();
 	InitEngine();
-	while (1) {
+	while (!exitFlag) {
 		TimerProcess();
 		EngineLoop();
 	}
 	EngineDestroy();
 
-	CopDestroy();
-	BlitManagerDestroy();
+	copDestroy();
+	blitManagerDestroy();
 
-	//systemDestroy();
+	systemDestroy();
 
 	return EXIT_SUCCESS;
 }

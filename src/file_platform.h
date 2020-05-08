@@ -1,16 +1,5 @@
 #pragma once
 
-void LoadBitmapToMemory(BYTE *fileName)    
-{                                      
-    #ifdef AMIGA                   
-    UseSystem();                        
-    engine.activeBitmap = LoadBitmapFile(fileName, &engine.activeBitmapHeader, engine.activePalette, 1, 0);      
-    UnuseSystem();        
-    #else                       
-    free(engine.activeBitmap);      
-    engine.activeBitmap = LoadBitmapFile(fileName, &engine.activeBitmapHeader, engine.activePalette, 1, 0);     
-    #endif                  
-}   
 
 #ifdef AMIGA
 ULONG GetFileSize(char *fileName)
@@ -52,4 +41,12 @@ void CloseFile(FILE *file)
 	fclose(file);
 	SystemUnuse();
 }
+
+ULONG SeekFile(FILE *file, ULONG pos, WORD mode) {
+	systemUse();
+	ULONG result = fseek(file, pos, mode);
+	systemUnuse();
+	return result;
+}
+
 #endif
