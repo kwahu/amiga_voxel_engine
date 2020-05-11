@@ -23,7 +23,7 @@ void InitInput()
 {
 	keyCreate();
 
-	joyOpen(0);
+	joyOpen();
 }
 
 void UseSystem()
