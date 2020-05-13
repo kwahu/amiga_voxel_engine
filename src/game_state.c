@@ -31,6 +31,9 @@ void InitGameState()
     engine.gameState.playerDeath = 0;
     engine.gameState.takeoff = 1;
     engine.renderer.lastOverwrittenLine = 0;
+    engine.renderer.currentMap = engine.renderer.firstMap;
+    engine.renderer.currentMapLength = engine.firstMapLength;
+    engine.renderer.mapLengthRemainder = 0;
 
     UWORD depthBufferSize = (UWORD)engine.renderer.depthBufferHeight*(UWORD)engine.renderer.depthBufferWidth;
 
@@ -40,11 +43,10 @@ void InitGameState()
     }
  
 
-    engine.renderer.mapHigh = engine.renderer.mapSource;
+    engine.renderer.mapHigh = engine.renderer.firstMap;
     
     ClearBuffor();
-	//CopyMapWord(engine.renderer.mapSource, engine.renderer.mapHigh);
-    
+   
 }
 
 void UpdatePlayerPosition()

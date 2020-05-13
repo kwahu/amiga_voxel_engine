@@ -31,12 +31,20 @@ UBYTE *LoadBitmapFile(BYTE *filename, BITMAPINFOHEADER *bitmapInfoHeader, UBYTE 
     UBYTE tempRGB;             //our swap variable
 
     //open filename in read binary mode
-    filePtr = fopen(filename, "rb");
-    if (filePtr == NULL)
+    #ifdef AMIGA
+	filePtr = fileOpen(filename, "rb");
+	#else
+	filePtr = fopen(filename, "rb");
+    #endif
+	if (filePtr == NULL)
         return NULL;
 
     //read the bitmap file header
-    fread(&bitmapFileHeader, sizeof(BITMAPFILEHEADER), 1, filePtr);
+    #ifdef AMIGA
+	fileRead(filePtr, &bitmapFileHeader, sizeof(BITMAPFILEHEADER));
+	#else
+	fread(&bitmapFileHeader, sizeof(BITMAPFILEHEADER), 1, filePtr);
+	#endif
 
     bitmapFileHeader.bfType = ConvertEndianWORD(bitmapFileHeader.bfType);
     bitmapFileHeader.bfSize = ConvertEndianLONG(bitmapFileHeader.bfSize);
@@ -45,13 +53,21 @@ UBYTE *LoadBitmapFile(BYTE *filename, BITMAPINFOHEADER *bitmapInfoHeader, UBYTE 
     //verify that this is a bmp file by check bitmap id
     if (bitmapFileHeader.bfType != 0x4D42)
     {
+		#ifdef AMIGA
+		fileClose(filePtr);
+		#else
         fclose(filePtr);
-        printf("verify that this is a bmp file by check bitmap id=%lu", bitmapFileHeader.bfType);
+        #endif
+		printf("verify that this is a bmp file by check bitmap id=%lu", bitmapFileHeader.bfType);
         return NULL;
     }
 
     //read the bitmap info header
+	#ifdef AMIGA
+	fileRead(filePtr, bitmapInfoHeader, sizeof(BITMAPINFOHEADER));
+	#else
     fread(bitmapInfoHeader, sizeof(BITMAPINFOHEADER), 1, filePtr); // small edit. forgot to add the closing bracket at sizeof
+	#endif
 
     bitmapInfoHeader->biSize = ConvertEndianLONG(bitmapInfoHeader->biSize);
     bitmapInfoHeader->biWidth = ConvertEndianLONG(bitmapInfoHeader->biWidth);
@@ -64,18 +80,24 @@ UBYTE *LoadBitmapFile(BYTE *filename, BITMAPINFOHEADER *bitmapInfoHeader, UBYTE 
     bitmapInfoHeader->biClrImportant = ConvertEndianLONG(bitmapInfoHeader->biClrImportant);
 
     //read the bitmap color table
+	#ifdef AMIGA
+	fileRead(filePtr, bitmapColorTable, 4*16);
+	#else
     fread(bitmapColorTable, 4 * 16, 1, filePtr); // small edit. forgot to add the closing bracket at sizeof
+	#endif
 
     //move file point to the begging of bitmap data
-    fseek(filePtr, bitmapFileHeader.bfOffBits, SEEK_SET);
+    #ifdef AMIGA
+	fileSeek(filePtr, bitmapFileHeader.bfOffBits, SEEK_SET);
+	#else
+	fseek(filePtr, bitmapFileHeader.bfOffBits, SEEK_SET);
+	#endif
 
 	if(bitmapImage != NULL)
 	{
-		free(bitmapImage);
+		//free(bitmapImage);
 	}
 
-#if AMIGA
-	
 	switch(type)
 	{
 		default:
@@ -87,40 +109,51 @@ UBYTE *LoadBitmapFile(BYTE *filename, BITMAPINFOHEADER *bitmapInfoHeader, UBYTE 
 		    bitmapImage = (unsigned char *)AllocateFromArena(&engine.temporaryArena, bitmapInfoHeader->biSizeImage + bitmapInfoHeader->biSizeImage/4);
 		} break;
  	}
-	#else
-	switch(type)
-	{
-		default:
-		{
-		    bitmapImage = (unsigned char *)malloc(bitmapInfoHeader->biSizeImage);
-		} break;
-		case Bitmap_Sprite:
-		{
-		    bitmapImage = (unsigned char *)malloc(bitmapInfoHeader->biSizeImage + bitmapInfoHeader->biSizeImage/4);
-		} break;
- 	}
-	 #endif
-    //allocate enough memory for the bitmap image data
+	//allocate enough memory for the bitmap image data
 
     //verify memory allocation
     if (!bitmapImage)
     {
         printf("verify memory allocation");
-        free(bitmapImage);
+        //free(bitmapImage);
+		
+		#ifdef AMIGA
+		fileClose(filePtr);
+		#else
         fclose(filePtr);
-        return NULL;
+        #endif
+		return NULL;
     }
 
     //read in the bitmap image data
-    fread(bitmapImage, bitmapInfoHeader->biSizeImage, 1, filePtr);
+    
+	#ifdef AMIGA
+	fileRead(filePtr, bitmapImage, bitmapInfoHeader->biSizeImage);
+	#else
+    fread(bitmapImage, bitmapInfoHeader->biSizeImage, 1, filePtr); // small edit. forgot to add the closing bracket at sizeof
+	#endif
+
+	// UWORD remainder = bitmapInfoHeader->biSizeImage&0x3FF;
+	// UWORD count = bitmapInfoHeader->biSizeImage >> 10;
+	// UBYTE *tmp = bitmapImage;
+
+	// for(UWORD i = 0; i < count; ++i)
+	// {
+    // 	fseek(filePtr, bitmapFileHeader.bfOffBits + (i<<10), SEEK_SET);
+	// 	fread(tmp, 1024, 1, filePtr);
+		
+	// 	tmp += 1024;
+
+	// }
+	// fread(tmp, remainder, 1, filePtr);
 
 	if(type == Bitmap_Sprite)
 	{
-		for(WORD y = bitmapInfoHeader->biHeight - 1; y >= 0; --y)
+		for(WORD y = 0; y < bitmapInfoHeader->biHeight; y++)
 		{
 			UWORD *rowPtr = ((UWORD *)(bitmapImage + y*bitmapInfoHeader->biWidth/2));
 			UWORD *maskRowPtr = ((UWORD *)(bitmapImage + bitmapInfoHeader->biSizeImage +
-			 (bitmapInfoHeader->biHeight - 1 -y)*bitmapInfoHeader->biWidth/8));
+			 (y)*bitmapInfoHeader->biWidth/8));
 
 			for(UWORD wordIndex = 0; wordIndex < bitmapInfoHeader->biWidth/16; wordIndex++)
 			{
@@ -193,18 +226,19 @@ UBYTE *LoadBitmapFile(BYTE *filename, BITMAPINFOHEADER *bitmapInfoHeader, UBYTE 
 	if(type != Bitmap_Map)
 	{
 
-		unsigned char *temp = (unsigned char *)malloc(bitmapInfoHeader->biSizeImage);
-		
+		//unsigned char *temp = (unsigned char *)AllocateFromArena(&engine.tempArena, bitmapInfoHeader->biSizeImage);
+		//UWORD temp[20];
+
 		for(WORD y = bitmapInfoHeader->biHeight - 1; y >= 0; --y)
 		{
 			UWORD *rowPtr = ((UWORD *)(bitmapImage + y*bitmapInfoHeader->biWidth/2));
 		
-			UWORD *tempRowPtr = (UWORD *)(temp + (bitmapInfoHeader->biHeight - 1 - y)*bitmapInfoHeader->biWidth/8);
+			//UWORD *tempRowPtr = (UWORD *)(temp + (bitmapInfoHeader->biHeight - 1 - y)*bitmapInfoHeader->biWidth/8);
 
 			for(UWORD wordIndex = 0; wordIndex < bitmapInfoHeader->biWidth/16; wordIndex++)
 			{
-				UWORD *tempPtr = (UWORD *)tempRowPtr;
-				tempPtr += wordIndex;	
+				// UWORD *tempPtr = (UWORD *)temp;
+				// tempPtr += wordIndex;	
 
 				UWORD word1 = *rowPtr;
 				++rowPtr;
@@ -213,7 +247,7 @@ UBYTE *LoadBitmapFile(BYTE *filename, BITMAPINFOHEADER *bitmapInfoHeader, UBYTE 
 				UWORD word3 = *rowPtr;
 				++rowPtr;
 				UWORD word4 = *rowPtr;
-				++rowPtr;
+				rowPtr -= 3;
 
 				UWORD packedWord1 = 0;
 				UWORD packedWord2 = 0;
@@ -288,28 +322,29 @@ UBYTE *LoadBitmapFile(BYTE *filename, BITMAPINFOHEADER *bitmapInfoHeader, UBYTE 
 					shift4 += 4;
 				}
 
-				*tempPtr = packedWord1;
-				tempPtr += bitmapInfoHeader->biSizeImage/8;
-				*tempPtr = packedWord2;
-				tempPtr += bitmapInfoHeader->biSizeImage/8;
-				*tempPtr = packedWord3;
-				tempPtr += bitmapInfoHeader->biSizeImage/8;
-				*tempPtr = packedWord4;
+				*rowPtr++ = packedWord1;
+				//tempPtr += bitmapInfoHeader->biSizeImage/8;
+				*rowPtr++ = packedWord2;
+				//tempPtr += bitmapInfoHeader->biSizeImage/8;
+				*rowPtr++ = packedWord3;
+				//tempPtr += bitmapInfoHeader->biSizeImage/8;
+				*rowPtr++ = packedWord4;
 
 
 
 			}
 		}
 
-		UWORD *tempPtr = ((UWORD *)temp);
-		UWORD *bitmapPtr = ((UWORD *)bitmapImage);
-		for(UWORD wordIndex = 0; wordIndex < bitmapInfoHeader->biSizeImage/2; wordIndex++)
-		{
-			*bitmapPtr++ = *tempPtr++;
+		// UWORD *tempPtr = ((UWORD *)temp);
+		// UWORD *bitmapPtr = ((UWORD *)bitmapImage);
+		// for(UWORD wordIndex = 0; wordIndex < bitmapInfoHeader->biSizeImage/2; wordIndex++)
+		// {
+		// 	*bitmapPtr++ = *tempPtr++;
 
 			
-		}
-		free(temp);
+		// }
+		// ClearArena(&engine.tempArena);
+
 	}
 
 
@@ -318,15 +353,25 @@ UBYTE *LoadBitmapFile(BYTE *filename, BITMAPINFOHEADER *bitmapInfoHeader, UBYTE 
     if (bitmapImage == NULL)
     {
         printf("make sure bitmap image data was read");
+		
+		#ifdef AMIGA
+		fileClose(filePtr);
+		#else
         fclose(filePtr);
-        return NULL;
+        #endif
+		return NULL;
     }
 
 	
 
     //close file and return bitmap iamge data
-    fclose(filePtr);
-    return bitmapImage;
+    
+	#ifdef AMIGA
+	fileClose(filePtr);
+	#else
+	fclose(filePtr);
+    #endif
+	return bitmapImage;
 }
 
 // void SmoothHeightMap(UBYTE (*map)[MAPSIZE])

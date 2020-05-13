@@ -132,8 +132,12 @@ typedef struct Renderer
     UWORD lastOverwrittenLine;
 
     //UWORD mapSource[11][MAPSIZE][MAPSIZE];  //360k
-    UWORD *mapSource;
-    UBYTE *noiseMap;
+    UWORD *currentMap;
+    ULONG currentMapLength;
+    ULONG mapLengthRemainder;
+    UWORD *firstMap;
+    UWORD *secondMap;
+    UWORD *noiseMap;
 
     UBYTE mapLoaded0, mapLoaded1, mapLoaded2, mapLoaded3, mapLoaded4, mapLoaded5, mapLoaded6,
         mapLoaded7, mapLoaded8, mapLoaded9, mapLoaded10;
@@ -194,11 +198,13 @@ typedef struct Engine
     ULONG startTime, endTime, deltaTime, accTime, loopEndTime;
     
     MemoryArena chipArena;
-    MemoryArena memArena;
-
+    MemoryArena fontArena;
     MemoryArena rendererArena;
     MemoryArena temporaryArena;
-    MemoryArena persistentArena;
+    MemoryArena firstMapArena;
+    MemoryArena secondMapArena;
+    ULONG firstMapLength;
+    ULONG secondMapLength;
     
     UBYTE *menu[3];
     BITMAPINFOHEADER headers[3];

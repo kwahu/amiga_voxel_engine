@@ -425,7 +425,7 @@ void GetYAxisSetting()
 	
 }
 
-#if AMIGA
+#ifdef AMIGA
 void GetPlayerMemorySetting()
 {
 	if(getKey(1))
@@ -444,7 +444,7 @@ void GetPlayerMemorySetting()
 		ULONG rayCastXSize = XSIZEEVEN*TERRAINDEPTH*sizeof(WORD);
 		ULONG rayCastYSize = YSIZEEVEN*TERRAINDEPTH*sizeof(WORD);
 
-		NewChipArena(&engine.rendererArena, depthBufferSize + 4*ditherTableSize + screenPatchSize + rayCastXSize + rayCastYSize);
+		NewArena(&engine.rendererArena, depthBufferSize + 4*ditherTableSize + screenPatchSize + rayCastXSize + rayCastYSize);
 
 
 		engine.renderer.depthBuffer = (UBYTE *)AllocateFromArena(&engine.rendererArena, depthBufferSize);

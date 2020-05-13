@@ -189,7 +189,7 @@ void RunMenuState()
                     
                     UnuseSystem();
                     InitAudio();
-                    PlaySample(6);
+                    PlaySample(5);
                     
                 } break;
             }

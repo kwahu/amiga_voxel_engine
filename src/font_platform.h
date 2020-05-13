@@ -383,16 +383,16 @@ Font * InitFont(char *FontName)
 
         FontFile = fopen(FontName, "r");
 
-        font = (Font *) AllocateFromArena(&engine.persistentArena, sizeof(Font));
+        font = (Font *) AllocateFromArena(&engine.fontArena, sizeof(Font));
 
         fread(&font->Width, sizeof(UWORD), 1, FontFile);
         fread(&font->Height, sizeof(UWORD), 1, FontFile);
         fread(&font->Chars, sizeof(UBYTE), 1, FontFile);
 
-        font->CharOffsets = (UWORD *)AllocateFromArena(&engine.persistentArena, sizeof(UWORD) * font->Chars);
+        font->CharOffsets = (UWORD *)AllocateFromArena(&engine.fontArena, sizeof(UWORD) * font->Chars);
         fread(font->CharOffsets, sizeof(UWORD) * font->Chars, 1, FontFile);
 
-        font->RawData = (UWORD *)AllocateFromArena(&engine.persistentArena, sizeof(UWORD)*((font->Width+15)>>4)*font->Height);
+        font->RawData = (UWORD *)AllocateFromArena(&engine.fontArena, sizeof(UWORD)*((font->Width+15)>>4)*font->Height);
 
         UWORD PlaneByteSize = ((font->Width+15)>>4) * 2 * font->Height;
         fread(font->RawData, PlaneByteSize, 1, FontFile);

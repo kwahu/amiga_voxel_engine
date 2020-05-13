@@ -34,9 +34,7 @@ void InitializeGameChipMemory()
 
     ULONG fileSize = fileGetSize("data/verge.mod");
 	
-    ULONG screenPlaneSize = PLANEWIDTHWORD*PLANEHEIGHT*sizeof(UWORD);
-
-	NewChipArena(&engine.chipArena, fileSize + 4*screenPlaneSize);
+	NewChipArena(&engine.chipArena, fileSize);
 
 
 	engine.music = (UBYTE *)AllocateFromArena(&engine.chipArena, fileSize);
@@ -44,10 +42,6 @@ void InitializeGameChipMemory()
     fileRead(file, engine.music, fileSize);
     fileClose(file);
 
-	engine.renderer.plane1W = (UWORD *)AllocateFromArena(&engine.chipArena, screenPlaneSize);
-	engine.renderer.plane2W = (UWORD *)AllocateFromArena(&engine.chipArena, screenPlaneSize);
-	engine.renderer.plane3W = (UWORD *)AllocateFromArena(&engine.chipArena, screenPlaneSize);
-	engine.renderer.plane4W = (UWORD *)AllocateFromArena(&engine.chipArena, screenPlaneSize);
 	
 }
 
@@ -62,14 +56,25 @@ void InitEngine(void)
 	InitScreen();
 	InitInput();
 	
-    ULONG fontSize = fileGetSize("data/ss.fnt") + sizeof(Font);
+
+    ULONG fontSize = GetFileSize("data/ss.fnt") + sizeof(Font);
 	
-	NewArena(&engine.memArena, fontSize + 11*MAPSIZE*MAPSIZE*sizeof(UWORD) + 100*1024);
-	NewSubArena(&engine.memArena, &engine.persistentArena, fontSize + 11*MAPSIZE*MAPSIZE*sizeof(UWORD));
+    ULONG screenPlaneSize = PLANEWIDTHWORD*PLANEHEIGHT*sizeof(UWORD);
 
-	NewSubArena(&engine.memArena, &engine.temporaryArena, 100*1024);
-
+	
+	NewArena(&engine.fontArena, fontSize + 4*screenPlaneSize);
+	
+	
 	engine.font = InitFont("data/ss.fnt");
+
+	engine.renderer.plane1W = (UWORD *)AllocateFromArena(&engine.fontArena, screenPlaneSize);
+	engine.renderer.plane2W = (UWORD *)AllocateFromArena(&engine.fontArena, screenPlaneSize);
+	engine.renderer.plane3W = (UWORD *)AllocateFromArena(&engine.fontArena, screenPlaneSize);
+	engine.renderer.plane4W = (UWORD *)AllocateFromArena(&engine.fontArena, screenPlaneSize);
+
+	NewArena(&engine.temporaryArena, 100*1024);
+
+	MakeArenasForMaps(MAPSIZE*MAPSIZE, 11);	
 	SetupMaps();
 
 
@@ -198,8 +203,11 @@ void EngineDestroy(void)
 	DestroyAudio();
 
 	DestroyArena(&engine.chipArena);
-	DestroyArena(&engine.memArena);
+	DestroyArena(&engine.fontArena);
 	DestroyArena(&engine.rendererArena);
+	DestroyArena(&engine.temporaryArena);
+	DestroyArena(&engine.firstMapArena);
+	DestroyArena(&engine.secondMapArena);
 
 }
 

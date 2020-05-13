@@ -1,4 +1,27 @@
 
+void MakeArenasForMaps(ULONG mapSize, ULONG mapCount)
+{
+	UWORD secondCount = 0;
+	
+	NewArena(&engine.firstMapArena, mapSize*(mapCount)*sizeof(UWORD));
+
+	while(engine.firstMapArena.Memory == 0)
+	{
+		++secondCount;
+		NewArena(&engine.firstMapArena, mapSize*(mapCount+1-secondCount)*sizeof(UWORD));
+
+	}
+
+
+	engine.firstMapLength = (mapCount-secondCount)*MAPSIZE;
+	
+	if(secondCount > 0)
+	{
+		NewArena(&engine.secondMapArena, mapSize*(secondCount+1)*sizeof(UWORD));
+	}
+	engine.secondMapLength = (secondCount)*MAPSIZE;
+}
+
 void LoadNoiseMap(const char *noiseName)
 {
 	BITMAPINFOHEADER tempHeader;
@@ -605,30 +628,212 @@ void SetupMaps()
 	
 	//LoadNoiseMap("data/skaly.bmp");
 
-	engine.renderer.mapSource = (UWORD *)AllocateFromArena(&engine.persistentArena, 11*MAPSIZE*MAPSIZE*sizeof(UWORD));
-	LoadMap("data/h11", "data/c11", engine.renderer.mapSource);
-	engine.renderer.mapLoaded0 = 1;
-	LoadMap("data/h10", "data/c10", engine.renderer.mapSource + MAPSIZE);
-	engine.renderer.mapLoaded1=1;
-	LoadMap("data/h9", "data/c9", engine.renderer.mapSource + 2*MAPSIZE);
-	engine.renderer.mapLoaded2=1;
-	LoadMap("data/h8", "data/c8", engine.renderer.mapSource + 3*MAPSIZE);
-	engine.renderer.mapLoaded3=1;
-	LoadMap("data/h7", "data/c7", engine.renderer.mapSource + 4*MAPSIZE);
-	engine.renderer.mapLoaded4=1;
-	LoadMap("data/h6", "data/c6", engine.renderer.mapSource + 5*MAPSIZE);
-	engine.renderer.mapLoaded5=1;
-	LoadMap("data/h5", "data/c5", engine.renderer.mapSource + 6*MAPSIZE);
-	engine.renderer.mapLoaded6=1;
-	LoadMap("data/h4", "data/c4", engine.renderer.mapSource + 7*MAPSIZE);
-	engine.renderer.mapLoaded7=1;
-	LoadMap("data/h3", "data/c3", engine.renderer.mapSource + 8*MAPSIZE);
-	engine.renderer.mapLoaded8=1;
-	LoadMap("data/h7", "data/c7", engine.renderer.mapSource + 9*MAPSIZE);
-	engine.renderer.mapLoaded9=1;
-	LoadMap("data/h1", "data/c1", engine.renderer.mapSource + 10*MAPSIZE);
-	engine.renderer.mapLoaded10=1;
+	UWORD currentMapsLength = engine.firstMapLength/MAPSIZE;
+
+	if(engine.secondMapLength > 0)
+	{
+		engine.renderer.firstMap = (UWORD *)AllocateFromArena(&engine.firstMapArena, (currentMapsLength+1)*MAPSIZE*MAPSIZE*sizeof(UWORD));
+		engine.renderer.secondMap = (UWORD *)AllocateFromArena(&engine.secondMapArena, ((engine.secondMapLength/MAPSIZE)+1)*MAPSIZE*MAPSIZE*sizeof(UWORD));
+	}
+	else
+	{
+		engine.renderer.firstMap = (UWORD *)AllocateFromArena(&engine.firstMapArena, (currentMapsLength)*MAPSIZE*MAPSIZE*sizeof(UWORD));
 	
+	}
+	
+	
+	UWORD *currentMap = engine.renderer.firstMap;
+	
+
+	LoadMap("data/h11", "data/c11", engine.renderer.firstMap);
+
+	currentMap += MAPSIZE;
+
+	if((--currentMapsLength) == 0)
+	{
+		LoadMap("data/h10", "data/c10", currentMap);
+	
+		currentMap = engine.renderer.secondMap;
+		LoadMap("data/h10", "data/c10", currentMap);
+
+	}
+	else
+	{
+		LoadMap("data/h10", "data/c10", engine.renderer.firstMap + MAPSIZE);
+		
+	}
+
+
+
+
+
+	currentMap += MAPSIZE;
+
+	if((--currentMapsLength) == 0)
+	{
+		LoadMap("data/h9", "data/c9", currentMap);
+		
+		currentMap = engine.renderer.secondMap;
+		LoadMap("data/h9", "data/c9", currentMap);
+
+	}
+	else
+	{
+		LoadMap("data/h9", "data/c9", engine.renderer.firstMap + 2*MAPSIZE);
+		
+	}
+
+
+	
+	currentMap += MAPSIZE;
+
+	if((--currentMapsLength) == 0)
+	{
+		LoadMap("data/h8", "data/c8", currentMap);
+		
+		currentMap = engine.renderer.secondMap;
+		LoadMap("data/h8", "data/c8", currentMap);
+
+	}
+	else
+	{
+		LoadMap("data/h8", "data/c8", engine.renderer.firstMap + 3*MAPSIZE);
+		
+	}
+
+
+
+
+	currentMap += MAPSIZE;
+
+	if((--currentMapsLength) == 0)
+	{
+		LoadMap("data/h7", "data/c7", currentMap);
+		
+		currentMap = engine.renderer.secondMap;
+		LoadMap("data/h7", "data/c7", currentMap);
+
+	}
+	else
+	{
+		LoadMap("data/h7", "data/c7", engine.renderer.firstMap + 4*MAPSIZE);
+		
+	}
+
+
+
+
+	currentMap += MAPSIZE;
+
+	if((--currentMapsLength) == 0)
+	{
+		LoadMap("data/h6", "data/c6", currentMap);
+		
+		currentMap = engine.renderer.secondMap;
+		LoadMap("data/h6", "data/c6", currentMap);
+
+	}
+	else
+	{
+		LoadMap("data/h6", "data/c6", engine.renderer.firstMap + 5*MAPSIZE);
+		
+	}
+
+
+
+
+
+	currentMap += MAPSIZE;
+
+	if((--currentMapsLength) == 0)
+	{
+		LoadMap("data/h5", "data/c5", currentMap);
+		
+		currentMap = engine.renderer.secondMap;
+		LoadMap("data/h5", "data/c5", currentMap);
+
+	}
+	else
+	{
+		LoadMap("data/h5", "data/c5", engine.renderer.firstMap + 6*MAPSIZE);
+		
+	}
+
+
+
+
+
+	currentMap += MAPSIZE;
+
+	if((--currentMapsLength) == 0)
+	{
+		LoadMap("data/h4", "data/c4", currentMap);
+		
+		currentMap = engine.renderer.secondMap;
+		LoadMap("data/h4", "data/c4", currentMap);
+
+	}
+	else
+	{
+		LoadMap("data/h4", "data/c4", engine.renderer.firstMap + 7*MAPSIZE);
+		
+	}
+
+
+
+
+
+	currentMap += MAPSIZE;
+
+	if((--currentMapsLength) == 0)
+	{
+		LoadMap("data/h3", "data/c3", currentMap);
+		
+		currentMap = engine.renderer.secondMap;
+		LoadMap("data/h3", "data/c3", currentMap);
+
+	}
+	else
+	{
+		LoadMap("data/h3", "data/c3", engine.renderer.firstMap + 8*MAPSIZE);
+		
+	}
+
+
+
+
+
+	currentMap += MAPSIZE;
+
+	if((--currentMapsLength) == 0)
+	{
+		LoadMap("data/h7", "data/c7", currentMap);
+		
+		currentMap = engine.renderer.secondMap;
+		LoadMap("data/h7", "data/c7", currentMap);
+
+	}
+	else
+	{
+		LoadMap("data/h7", "data/c7", engine.renderer.firstMap + 9*MAPSIZE);
+		
+	}
+
+
+
+
+
+	currentMap += MAPSIZE;
+
+	LoadMap("data/h1", "data/c1", engine.renderer.firstMap + 10*MAPSIZE);
+
+
+	if(engine.secondMapLength > 0)
+	{
+		
+		LoadMap("data/h11", "data/c11", currentMap);
+	}
+
 
 	// MakeMap3(bezier3, engine.renderer.mapSource, 17, 177);
 	// MakeMap3(bezier2, engine.renderer.mapSource, 17, 17);
@@ -644,7 +849,8 @@ void SetupMaps()
 	// MakeMap3(bezier2, engine.renderer.mapSource + 10*MAPSIZE*MAPSIZE, 17, 17);
 	
 	//prepare starting map
-	engine.renderer.mapHigh = engine.renderer.mapSource;
+	engine.renderer.currentMap = engine.renderer.firstMap;
+	engine.renderer.mapHigh = engine.renderer.currentMap;
 	//CopyMapWord(engine.renderer.mapSource, engine.renderer.mapHigh);
 	//CopyMapWord(mapMed0, mapMed);
 	//CopyMapWord(mapLow0, mapLow);
