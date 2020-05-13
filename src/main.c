@@ -57,7 +57,7 @@ void InitEngine(void)
 	InitInput();
 	
 
-    ULONG fontSize = GetFileSize("data/ss.fnt") + sizeof(Font);
+    ULONG fontSize = fileGetSize("data/ss.fnt") + sizeof(Font);
 	
     ULONG screenPlaneSize = PLANEWIDTHWORD*PLANEHEIGHT*sizeof(UWORD);
 
