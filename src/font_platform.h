@@ -376,6 +376,33 @@ ULONG GetFontSize(char *FontName)
 
 }
 
+#ifdef AMIGA
+
+Font * InitFont(char *FontName)
+{
+        BPTR FontFile;
+        Font *font;
+
+        FontFile = Open(FontName, 1005);
+
+        font = (Font *) AllocateFromArena(&engine.fontArena, sizeof(Font));
+
+        Read(FontFile, &font->Width, sizeof(UWORD));
+        Read(FontFile, &font->Height, sizeof(UWORD));
+        Read(FontFile, &font->Chars, sizeof(UBYTE));
+
+        font->CharOffsets = (UWORD *)AllocateFromArena(&engine.fontArena, sizeof(UWORD) * font->Chars);
+        Read(FontFile, font->CharOffsets, sizeof(UWORD) * font->Chars);
+
+        font->RawData = (UWORD *)AllocateFromArena(&engine.fontArena, sizeof(UWORD)*((font->Width+15)>>4)*font->Height);
+
+        UWORD PlaneByteSize = ((font->Width+15)>>4) * 2 * font->Height;
+        Read(FontFile, font->RawData, PlaneByteSize);
+
+        Close(FontFile);
+        return font;
+}
+#else
 Font * InitFont(char *FontName)
 {
         FILE *FontFile;
@@ -400,3 +427,4 @@ Font * InitFont(char *FontName)
         fclose(FontFile);
         return font;
 }
+#endif

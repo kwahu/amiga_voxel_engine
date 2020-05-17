@@ -11,6 +11,12 @@ void InitGameState()
     engine.gameState.shipParams.pX = engine.gameState.shipParams.precX >> 5;
     engine.gameState.shipParams.pZ = 0;
 
+    engine.renderer.lastOverwrittenLine = 0;
+    engine.renderer.currentMap = engine.renderer.firstMap;
+    engine.renderer.currentMapLength = engine.firstMapLength;
+    engine.renderer.mapLengthRemainder = 0;
+    engine.renderer.mapHigh = engine.renderer.firstMap;
+
     OverwriteMap();
 
     UWORD terrainHeight = getTerrainHeight(engine.gameState.shipParams, engine.renderer.mapHigh);
@@ -30,10 +36,6 @@ void InitGameState()
     engine.gameState.runOver = 0;
     engine.gameState.playerDeath = 0;
     engine.gameState.takeoff = 1;
-    engine.renderer.lastOverwrittenLine = 0;
-    engine.renderer.currentMap = engine.renderer.firstMap;
-    engine.renderer.currentMapLength = engine.firstMapLength;
-    engine.renderer.mapLengthRemainder = 0;
 
     UWORD depthBufferSize = (UWORD)engine.renderer.depthBufferHeight*(UWORD)engine.renderer.depthBufferWidth;
 
@@ -43,10 +45,10 @@ void InitGameState()
     }
  
 
-    engine.renderer.mapHigh = engine.renderer.firstMap;
     
     ClearBuffor();
-   
+	//CopyMapWord(engine.renderer.mapSource, engine.renderer.mapHigh);
+    
 }
 
 void UpdatePlayerPosition()
@@ -60,7 +62,7 @@ void UpdatePlayerPosition()
     updateShipParams(lowerDelta, terrainHeight);
 
     LONG addedpoints = (lowerDelta)*(110 - engine.gameState.shipParams.relHeight);
-    if(addedpoints > 0 && engine.gameState.shipParams.pZ < 2816)
+    if(addedpoints > 0 && (engine.gameState.shipParams.pZ + (engine.renderer.mapLengthRemainder)) < 2816)
     {
         engine.gameState.points += addedpoints;
     }
@@ -73,7 +75,13 @@ BYTE CheckPlayerCollision()
     UBYTE shipCollisionY = (engine.gameState.shipParams.pY - 2);
     UWORD shipCollisionX = engine.gameState.shipParams.pX;
 
-    return shipCollisionY < (UBYTE)(engine.renderer.mapHigh[(((UBYTE)(shipCollisionX)) >> 1)*11*MAPSIZE + (((UBYTE)(2*engine.renderer.zStart)) >> 1)]);
+    ULONG length = engine.renderer.currentMapLength;
+    if(engine.secondMapLength > 0)
+    {
+        length += MAPSIZE;
+    }
+
+    return shipCollisionY < (UBYTE)(engine.renderer.mapHigh[(((UBYTE)(shipCollisionX)) >> 1)*length + (((UBYTE)(2*engine.renderer.zStart)) >> 1)]);
     
     //return shipCollisionY < (UBYTE)(engine.renderer.mapHigh[((UBYTE)(shipCollisionX)) >>1][((UBYTE)(engine.gameState.shipParams.pZ + engine.renderer.zStart + 8)) >>1]);
 }
@@ -98,11 +106,11 @@ void RenderShipAndCrossHair()
     }
     if(engine.gameState.crossHairY > 4000)
     {
-        spriteIndexY = 2;
+        spriteIndexY = 0;
     }
     else if(engine.gameState.crossHairY < -4000)
     {
-        spriteIndexY = 0;
+        spriteIndexY = 2;
     }
 
                 
@@ -182,7 +190,7 @@ void RunGameState()
     
     
     
-    if(engine.gameState.shipParams.pZ > 2816)
+    if(engine.gameState.shipParams.pZ + (engine.renderer.mapLengthRemainder) > 2816)
     {
         engine.gameState.crossHairX = 0;
 
@@ -259,7 +267,7 @@ void RunGameState()
             engine.gameState.animDuration += addedTime;
             ULONG currentIndex = (ULONG)(engine.gameState.animDuration/100);
             WORD currentX = (WORD)(currentIndex%4);
-            WORD currentY = (WORD)((currentIndex/4));
+            WORD currentY = (WORD)(2 - (currentIndex/4));
             
             UWORD takeoffX = 160 + engine.renderer.xTurnOffset;
             UWORD takeoffY = GAME_SHIP_POS + (engine.gameState.crossHairY/1600);
@@ -297,7 +305,7 @@ void RunGameState()
             engine.gameState.animDuration += addedTime;
             ULONG currentIndex = (ULONG)(engine.gameState.animDuration/75);
             WORD currentX = (WORD)(currentIndex%3);
-            WORD currentY = (WORD)((currentIndex/3));
+            WORD currentY = (WORD)(2 - (currentIndex/3));
             
             UWORD explosionX = 160 + engine.renderer.xTurnOffset;
             UWORD explosionY = GAME_SHIP_POS + (engine.gameState.crossHairY/1600);
@@ -357,7 +365,7 @@ void RunGameState()
             engine.gameState.animDuration += addedTime;
             ULONG currentIndex = (ULONG)(engine.gameState.animDuration/100);
             WORD currentX = (WORD)(currentIndex%4);
-            WORD currentY = (WORD)((currentIndex/4));
+            WORD currentY = (WORD)(3 - (currentIndex/4));
             
             UWORD landingX = 160 + engine.renderer.xTurnOffset;
             UWORD landingY = GAME_SHIP_POS + (engine.gameState.crossHairY/1600);

@@ -45,7 +45,7 @@ void LoadNoiseMap(const char *noiseName)
 }
 
 void LoadMap(const char *heightName, const char *colorName,
-			 UWORD (*high))
+			 UWORD (*high), ULONG rawLength)
 {
 	BITMAPINFOHEADER tempHeader;
 	unsigned char tempColorTable[16 * 4];
@@ -54,7 +54,7 @@ void LoadMap(const char *heightName, const char *colorName,
 	heightMap = LoadBitmapFile(heightName, &tempHeader, tempColorTable, 0, 0);
 	colorMap = LoadBitmapFile(colorName, &tempHeader, tempColorTable, 0, 0);
 
-	CombineMapsHigh(heightMap, colorMap,high);
+	CombineMapsHigh(heightMap, colorMap,high, rawLength);
 						//GenerateMap(high);
 						
 	ClearArena(&engine.temporaryArena);
@@ -629,11 +629,13 @@ void SetupMaps()
 	//LoadNoiseMap("data/skaly.bmp");
 
 	UWORD currentMapsLength = engine.firstMapLength/MAPSIZE;
+	ULONG currentRawLength = engine.firstMapLength;
 
 	if(engine.secondMapLength > 0)
 	{
 		engine.renderer.firstMap = (UWORD *)AllocateFromArena(&engine.firstMapArena, (currentMapsLength+1)*MAPSIZE*MAPSIZE*sizeof(UWORD));
 		engine.renderer.secondMap = (UWORD *)AllocateFromArena(&engine.secondMapArena, ((engine.secondMapLength/MAPSIZE)+1)*MAPSIZE*MAPSIZE*sizeof(UWORD));
+		currentRawLength += MAPSIZE;
 	}
 	else
 	{
@@ -645,21 +647,23 @@ void SetupMaps()
 	UWORD *currentMap = engine.renderer.firstMap;
 	
 
-	LoadMap("data/h11", "data/c11", engine.renderer.firstMap);
+	LoadMap("data/h11", "data/c11", engine.renderer.firstMap, currentRawLength);
 
 	currentMap += MAPSIZE;
 
 	if((--currentMapsLength) == 0)
 	{
-		LoadMap("data/h10", "data/c10", currentMap);
+		LoadMap("data/h10", "data/c10", currentMap, currentRawLength);
 	
 		currentMap = engine.renderer.secondMap;
-		LoadMap("data/h10", "data/c10", currentMap);
+		currentRawLength = engine.secondMapLength + MAPSIZE;
+		currentMapsLength = 11;
+		LoadMap("data/h10", "data/c10", currentMap, currentRawLength);
 
 	}
 	else
 	{
-		LoadMap("data/h10", "data/c10", engine.renderer.firstMap + MAPSIZE);
+		LoadMap("data/h10", "data/c10", currentMap, currentRawLength);
 		
 	}
 
@@ -671,15 +675,17 @@ void SetupMaps()
 
 	if((--currentMapsLength) == 0)
 	{
-		LoadMap("data/h9", "data/c9", currentMap);
+		LoadMap("data/h9", "data/c9", currentMap, currentRawLength);
 		
 		currentMap = engine.renderer.secondMap;
-		LoadMap("data/h9", "data/c9", currentMap);
+		currentRawLength = engine.secondMapLength + MAPSIZE;
+		currentMapsLength = 11;
+		LoadMap("data/h9", "data/c9", currentMap, currentRawLength);
 
 	}
 	else
 	{
-		LoadMap("data/h9", "data/c9", engine.renderer.firstMap + 2*MAPSIZE);
+		LoadMap("data/h9", "data/c9", currentMap, currentRawLength);
 		
 	}
 
@@ -689,15 +695,17 @@ void SetupMaps()
 
 	if((--currentMapsLength) == 0)
 	{
-		LoadMap("data/h8", "data/c8", currentMap);
+		LoadMap("data/h8", "data/c8", currentMap, currentRawLength);
 		
 		currentMap = engine.renderer.secondMap;
-		LoadMap("data/h8", "data/c8", currentMap);
+		currentRawLength = engine.secondMapLength + MAPSIZE;
+		currentMapsLength = 11;
+		LoadMap("data/h8", "data/c8", currentMap, currentRawLength);
 
 	}
 	else
 	{
-		LoadMap("data/h8", "data/c8", engine.renderer.firstMap + 3*MAPSIZE);
+		LoadMap("data/h8", "data/c8", currentMap, currentRawLength);
 		
 	}
 
@@ -708,15 +716,17 @@ void SetupMaps()
 
 	if((--currentMapsLength) == 0)
 	{
-		LoadMap("data/h7", "data/c7", currentMap);
+		LoadMap("data/h7", "data/c7", currentMap, currentRawLength);
 		
 		currentMap = engine.renderer.secondMap;
-		LoadMap("data/h7", "data/c7", currentMap);
+		currentRawLength = engine.secondMapLength + MAPSIZE;
+		currentMapsLength = 11;
+		LoadMap("data/h7", "data/c7", currentMap, currentRawLength);
 
 	}
 	else
 	{
-		LoadMap("data/h7", "data/c7", engine.renderer.firstMap + 4*MAPSIZE);
+		LoadMap("data/h7", "data/c7", currentMap, currentRawLength);
 		
 	}
 
@@ -727,35 +737,17 @@ void SetupMaps()
 
 	if((--currentMapsLength) == 0)
 	{
-		LoadMap("data/h6", "data/c6", currentMap);
+		LoadMap("data/h6", "data/c6", currentMap, currentRawLength);
 		
 		currentMap = engine.renderer.secondMap;
-		LoadMap("data/h6", "data/c6", currentMap);
+		currentRawLength = engine.secondMapLength + MAPSIZE;
+		currentMapsLength = 11;
+		LoadMap("data/h6", "data/c6", currentMap, currentRawLength);
 
 	}
 	else
 	{
-		LoadMap("data/h6", "data/c6", engine.renderer.firstMap + 5*MAPSIZE);
-		
-	}
-
-
-
-
-
-	currentMap += MAPSIZE;
-
-	if((--currentMapsLength) == 0)
-	{
-		LoadMap("data/h5", "data/c5", currentMap);
-		
-		currentMap = engine.renderer.secondMap;
-		LoadMap("data/h5", "data/c5", currentMap);
-
-	}
-	else
-	{
-		LoadMap("data/h5", "data/c5", engine.renderer.firstMap + 6*MAPSIZE);
+		LoadMap("data/h6", "data/c6", currentMap, currentRawLength);
 		
 	}
 
@@ -767,15 +759,17 @@ void SetupMaps()
 
 	if((--currentMapsLength) == 0)
 	{
-		LoadMap("data/h4", "data/c4", currentMap);
+		LoadMap("data/h5", "data/c5", currentMap, currentRawLength);
 		
 		currentMap = engine.renderer.secondMap;
-		LoadMap("data/h4", "data/c4", currentMap);
+		currentRawLength = engine.secondMapLength + MAPSIZE;
+		currentMapsLength = 11;
+		LoadMap("data/h5", "data/c5", currentMap, currentRawLength);
 
 	}
 	else
 	{
-		LoadMap("data/h4", "data/c4", engine.renderer.firstMap + 7*MAPSIZE);
+		LoadMap("data/h5", "data/c5", currentMap, currentRawLength);
 		
 	}
 
@@ -787,15 +781,17 @@ void SetupMaps()
 
 	if((--currentMapsLength) == 0)
 	{
-		LoadMap("data/h3", "data/c3", currentMap);
+		LoadMap("data/h4", "data/c4", currentMap, currentRawLength);
 		
 		currentMap = engine.renderer.secondMap;
-		LoadMap("data/h3", "data/c3", currentMap);
+		currentRawLength = engine.secondMapLength + MAPSIZE;
+		currentMapsLength = 11;
+		LoadMap("data/h4", "data/c4", currentMap, currentRawLength);
 
 	}
 	else
 	{
-		LoadMap("data/h3", "data/c3", engine.renderer.firstMap + 8*MAPSIZE);
+		LoadMap("data/h4", "data/c4", currentMap, currentRawLength);
 		
 	}
 
@@ -807,15 +803,39 @@ void SetupMaps()
 
 	if((--currentMapsLength) == 0)
 	{
-		LoadMap("data/h7", "data/c7", currentMap);
+		LoadMap("data/h3", "data/c3", currentMap, currentRawLength);
 		
 		currentMap = engine.renderer.secondMap;
-		LoadMap("data/h7", "data/c7", currentMap);
+		currentRawLength = engine.secondMapLength + MAPSIZE;
+		currentMapsLength = 11;
+		LoadMap("data/h3", "data/c3", currentMap, currentRawLength);
 
 	}
 	else
 	{
-		LoadMap("data/h7", "data/c7", engine.renderer.firstMap + 9*MAPSIZE);
+		LoadMap("data/h3", "data/c3", currentMap, currentRawLength);
+		
+	}
+
+
+
+	currentMap += MAPSIZE;
+
+		
+
+	if((--currentMapsLength) == 0)
+	{
+		LoadMap("data/h7", "data/c7", currentMap, currentRawLength);
+		
+		currentMap = engine.renderer.secondMap;
+		currentRawLength = engine.secondMapLength + MAPSIZE;
+		currentMapsLength = 11;
+		LoadMap("data/h7", "data/c7", currentMap, currentRawLength);
+
+	}
+	else
+	{
+		LoadMap("data/h7", "data/c7", currentMap, currentRawLength);
 		
 	}
 
@@ -825,13 +845,14 @@ void SetupMaps()
 
 	currentMap += MAPSIZE;
 
-	LoadMap("data/h1", "data/c1", engine.renderer.firstMap + 10*MAPSIZE);
+	LoadMap("data/h1", "data/c1", currentMap, currentRawLength);
 
+	currentMap += MAPSIZE;
 
 	if(engine.secondMapLength > 0)
 	{
 		
-		LoadMap("data/h11", "data/c11", currentMap);
+		LoadMap("data/h11", "data/c11", currentMap, currentRawLength);
 	}
 
 

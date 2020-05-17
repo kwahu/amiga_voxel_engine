@@ -30,17 +30,22 @@ docker run --rm \
 void InitializeGameChipMemory()
 {
 	
-    tFile *file = fileOpen("data/verge.mod", "rb");
+    //tFile *file = fileOpen("data/verge.mod", "rb");
+	BPTR file = Open("data/verge.mod", 1005);
 
     ULONG fileSize = fileGetSize("data/verge.mod");
+	//ULONG fileSize = GetFileSize("data/verge.mod");
 	
 	NewChipArena(&engine.chipArena, fileSize);
 
 
 	engine.music = (UBYTE *)AllocateFromArena(&engine.chipArena, fileSize);
 	
-    fileRead(file, engine.music, fileSize);
-    fileClose(file);
+    //fileRead(file, engine.music, fileSize);
+    Read(file, engine.music, fileSize);
+    
+	//fileClose(file);
+	Close(file);
 
 	
 }

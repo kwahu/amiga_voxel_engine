@@ -29,6 +29,8 @@ void genericDestroy(void)
 }
 #else
 
+typedef FILE* BPTR;
+
 void main_supervisor() 
 {
 	InitEngine();

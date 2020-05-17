@@ -128,6 +128,11 @@ void ProcessInput()
 
 UWORD getTerrainHeight(ShipParams shipParams, UWORD *map)
 {
-	return ((UBYTE)map[(((UBYTE)(shipParams.pX)) >> 1)*11*MAPSIZE + (((UBYTE)(2*engine.renderer.zStart)) >> 1)]);
+	ULONG length = engine.renderer.currentMapLength;
+	if(engine.secondMapLength > 0)
+	{
+		length += MAPSIZE;
+	}
+	return ((UBYTE)map[(((UBYTE)(shipParams.pX)) >> 1)*length + (((UBYTE)(2*engine.renderer.zStart)) >> 1)]);
     //return ((UBYTE)(map[((UBYTE)(shipParams.pX)) >> 1][((UBYTE)(shipParams.pZ + engine.renderer.zStart + 8)) >> 1]));
 }

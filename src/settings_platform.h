@@ -2,6 +2,7 @@
 
 #ifdef AMIGA
 
+#include <libraries/dos.h>
 #include <ace/managers/viewport/simplebuffer.h>
 
 #define PLANEWIDTH 40

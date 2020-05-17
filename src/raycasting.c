@@ -1072,7 +1072,7 @@ UBYTE px, UBYTE py, UBYTE ph, UBYTE screenStart, UBYTE screenEnd)
 	//for each vertical line
     
 
-    UWORD offset = 11*MAPSIZE;
+    UWORD offset = engine.renderer.currentMapLength;
     UWORD depth = engine.renderer.renderingDepth - engine.renderer.zStart;
     UWORD *baseRayX = rayCastX + baseX*TERRAINDEPTH + engine.renderer.zStart;
         
@@ -1246,8 +1246,11 @@ UBYTE px, UBYTE py, UBYTE ph, UBYTE screenStart, UBYTE screenEnd)
 
 	//for each vertical line
     
-
-    UWORD offset = 11*MAPSIZE;
+    UWORD offset = engine.renderer.currentMapLength;
+    if(engine.secondMapLength > 0)
+    {
+        offset += MAPSIZE;
+    }
     UWORD depth = engine.renderer.renderingDepth - engine.renderer.zStart;
     UWORD *baseRayX = rayCastX + baseX*TERRAINDEPTH + engine.renderer.zStart;
         
