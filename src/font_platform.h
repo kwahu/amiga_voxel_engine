@@ -405,26 +405,28 @@ Font * InitFont(char *FontName)
 #else
 Font * InitFont(char *FontName)
 {
-        FILE *FontFile;
+        long FontFile;
         Font *font;
+        FontFile = Fopen ( FontName, 0 );
+        Fseek ( 0,FontFile, 0 );
 
-        FontFile = fopen(FontName, "r");
 
         font = (Font *) AllocateFromArena(&engine.fontArena, sizeof(Font));
 
-        fread(&font->Width, sizeof(UWORD), 1, FontFile);
-        fread(&font->Height, sizeof(UWORD), 1, FontFile);
-        fread(&font->Chars, sizeof(UBYTE), 1, FontFile);
+        Fread ( FontFile, sizeof(UWORD), &font->Width );
+        Fread ( FontFile, sizeof(UWORD), &font->Height );
+        Fread ( FontFile, sizeof(UBYTE), &font->Chars );
 
         font->CharOffsets = (UWORD *)AllocateFromArena(&engine.fontArena, sizeof(UWORD) * font->Chars);
-        fread(font->CharOffsets, sizeof(UWORD) * font->Chars, 1, FontFile);
+        Fread ( FontFile, sizeof(UWORD) * font->Chars, font->CharOffsets );
 
         font->RawData = (UWORD *)AllocateFromArena(&engine.fontArena, sizeof(UWORD)*((font->Width+15)>>4)*font->Height);
 
         UWORD PlaneByteSize = ((font->Width+15)>>4) * 2 * font->Height;
-        fread(font->RawData, PlaneByteSize, 1, FontFile);
+        Fread ( FontFile, PlaneByteSize, font->RawData );
+        
+        Fclose ( FontFile );
 
-        fclose(FontFile);
         return font;
 }
 #endif

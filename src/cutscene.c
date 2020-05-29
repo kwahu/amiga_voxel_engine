@@ -1,21 +1,19 @@
 
 
-void ShowDeathCutscene()
+void ShowDeathCutscene(ULONG seed)
 {
     
     //StopSample();
     
     
-    //InitAudio();
-    PlaySample(16);
+    InitAudio();
+    PlaySample(12);
 
-    ClearBuffor();
     DrawBitmap4bCenter(engine.menu[2], &engine.headers[2]);
-    VSyncAndDraw();
 
     UBYTE lines = 0;
 
-    if(engine.accTime & 1)
+    if(seed & 1)
     {
         FillTextBitmap(engine.font, engine.pBitmapInfo[0], "You are dead!");
         FillTextBitmap(engine.font, engine.pBitmapInfo[1], "The Revolt won't have any use of");
@@ -24,32 +22,32 @@ void ShowDeathCutscene()
     }
     else
     {
-        switch((engine.accTime >> 1) % 10)
+        switch((seed >> 1) % 10)
         {
             case 0:
             {
-                FillTextBitmap(engine.font, engine.pBitmapInfo[0], "Whoops");
-                FillTextBitmap(engine.font, engine.pBitmapInfo[1], "This had to hurt");
+                FillTextBitmap(engine.font, engine.pBitmapInfo[0], "Whoops.");
+                FillTextBitmap(engine.font, engine.pBitmapInfo[1], "This had to hurt.");
                 lines = 2;
         
             } break;
             case 1:
             {
                 FillTextBitmap(engine.font, engine.pBitmapInfo[0], "Maybe piloting the aircraft");
-                FillTextBitmap(engine.font, engine.pBitmapInfo[1], "wasn't your strongest trait");
+                FillTextBitmap(engine.font, engine.pBitmapInfo[1], "wasn't your strongest trait.");
                 lines = 2;
             } break;
             case 2:
             {
                 FillTextBitmap(engine.font, engine.pBitmapInfo[0], "Hope you had your");
-                FillTextBitmap(engine.font, engine.pBitmapInfo[1], "seatbelts fastened");
+                FillTextBitmap(engine.font, engine.pBitmapInfo[1], "seatbelts fastened.");
                 lines = 2;
             } break;
             case 3:
             {
                 FillTextBitmap(engine.font, engine.pBitmapInfo[0], "You died.");
                 FillTextBitmap(engine.font, engine.pBitmapInfo[1], "But don't worry, your problems");
-                FillTextBitmap(engine.font, engine.pBitmapInfo[2], "are over, forever");
+                FillTextBitmap(engine.font, engine.pBitmapInfo[2], "are over, forever.");
                 lines = 3;
             } break;
             case 4:
@@ -60,7 +58,7 @@ void ShowDeathCutscene()
             case 5:
             {
                 FillTextBitmap(engine.font, engine.pBitmapInfo[0], "Here lies Nix.");
-                FillTextBitmap(engine.font, engine.pBitmapInfo[1], "Good friend, but a terrible pilot");
+                FillTextBitmap(engine.font, engine.pBitmapInfo[1], "Good friend, but a terrible pilot.");
                 lines = 2;
             } break;
             case 6:
@@ -76,12 +74,12 @@ void ShowDeathCutscene()
             case 8:
             {
                 FillTextBitmap(engine.font, engine.pBitmapInfo[0], "This is the best you can do?");
-                FillTextBitmap(engine.font, engine.pBitmapInfo[1], "I've seen better");
+                FillTextBitmap(engine.font, engine.pBitmapInfo[1], "I've seen better.");
                 lines = 2;
             } break;
             case 9:
             {
-                FillTextBitmap(engine.font, engine.pBitmapInfo[0], "Rest in peace, Nix");
+                FillTextBitmap(engine.font, engine.pBitmapInfo[0], "Rest in peace, Nix.");
                 lines = 1;
             } break;
         }
@@ -95,24 +93,23 @@ void ShowDeathCutscene()
         y += 6;
     }
     VSyncAndDraw();
+    ClearBuffor();
     
 
 }
 
-void ShowTooLateCutscene()
+void ShowTooLateCutscene(ULONG seed)
 {
     //StopSample();
     //ContinueSample();
-    PlaySample(16);
-    ClearBuffor();
+    PlaySample(12);
  
     DrawBitmap4bCenter(engine.menu[2], &engine.headers[2]);
-    VSyncAndDraw();
 
     UBYTE lines = 0;
 
 
-    switch((engine.accTime) % 4)
+    switch((seed) % 4)
     {
         case 0:
         {
@@ -151,10 +148,11 @@ void ShowTooLateCutscene()
         y += 6;
     }
     VSyncAndDraw();
+    ClearBuffor();
 
 }
 
-void ShowWinCutscene()
+void ShowWinCutscene(ULONG seed)
 {
 
     StopSample();
@@ -163,18 +161,16 @@ void ShowWinCutscene()
     {
         engine.pBitmapInfo[i] = CreateFontBitmap(engine.font);
     }
-    LoadBitmapToMemory("data/fin");
+    LoadBitmapToMemory(DATA_DIR(fin));
     InitAudio();
-    PlaySample(18);
-    ClearBuffor();
+    PlaySample(13);
     DrawBitmap4bCenter(engine.activeBitmap, &engine.activeBitmapHeader);
-    VSyncAndDraw();
 
 
     UBYTE lines = 0;
 
     
-    switch((engine.accTime) % 12)
+    switch((seed) % 12)
     {
         case 0:
         {
@@ -276,10 +272,12 @@ void ShowWinCutscene()
     }
 
     VSyncAndDraw();
+    ClearBuffor();
 }
 
 void ShowCutscene(Cutscene cutsceneType, ULONG duration)
 {
+    ULONG t = engine.accTime;
     ResetTime();
 
     engine.cutsceneDuration = duration;
@@ -287,15 +285,15 @@ void ShowCutscene(Cutscene cutsceneType, ULONG duration)
     {
         case Cutscene_Death:
         {
-            ShowDeathCutscene();
+            ShowDeathCutscene(t);
         } break;
         case Cutscene_TooLate:
         {
-            ShowTooLateCutscene();
+            ShowTooLateCutscene(t);
         } break;
         case Cutscene_Win:
         {
-            ShowWinCutscene();
+            ShowWinCutscene(t);
         } break;
         
     }
@@ -338,12 +336,12 @@ void ShowCutscene(Cutscene cutsceneType, ULONG duration)
         case Cutscene_Death:
         {
             InitGameState();
-            nextPattern = 6;
+            nextPattern = 5;
         } break;
         case Cutscene_TooLate:
         {
             InitGameState();
-            nextPattern = 6;
+            nextPattern = 5;
         } break;
         case Cutscene_Win:
         {
@@ -353,6 +351,9 @@ void ShowCutscene(Cutscene cutsceneType, ULONG duration)
         
     }
     UnuseSystem();
+    
+    VSyncAndDraw();
+    ClearBuffor();
     InitAudio();
     PlaySample(nextPattern);
     //ContinueSample();

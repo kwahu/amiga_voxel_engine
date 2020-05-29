@@ -27,7 +27,7 @@ void updateShipParams(LONG deltaTime, ULONG terrainHeight)
 {
     ShipParams shipParams = engine.gameState.shipParams;
 	shipParams.relHeight = ((shipParams.pY - 2) - terrainHeight);
-	shipParams.ddP = (((200 - shipParams.relHeight) - (shipParams.dP>>3)) << 1);
+	shipParams.ddP = (((240 - shipParams.relHeight) - (shipParams.dP>>3)) << 1);
 	
 	LONG addedVelocity = (shipParams.ddP>>3);
 	if(addedVelocity > 1500)
@@ -49,7 +49,7 @@ void updateShipParams(LONG deltaTime, ULONG terrainHeight)
 	shipParams.precZ += deltaTime*shipParams.dP>>8;///shipParams.dPDenom;
 
 
-	shipParams.precX += ((LONG)deltaTime * engine.gameState.crossHairX) >> 12;
+	shipParams.precX += ((LONG)deltaTime * engine.gameState.crossHairX) >> 11;
 	shipParams.precY -= ((LONG)deltaTime * engine.gameState.crossHairY) >> 10;
 
 	if (shipParams.precY > 7000)
@@ -85,8 +85,8 @@ void ProcessInput()
 	}	
 
 
+	LONG crossHairHorizontalComeback = - ((engine.gameState.crossHairX * (lowerDelta)) >> 9);
 	engine.gameState.crossHairX += turnHorizontal*((LONG)engine.deltaTime >> 6);
-	LONG crossHairHorizontalComeback = - ((engine.gameState.crossHairX / (lowerDelta)) << 3);
 	
 	if (crossHairHorizontalComeback * turnHorizontal > 0 || turnHorizontal == 0)
 	{
@@ -115,8 +115,8 @@ void ProcessInput()
 	}	
 
 	
+	LONG crossHairVerticalComeback = - ((engine.gameState.crossHairY * (lowerDelta)) >> 9);
 	engine.gameState.crossHairY += turnVertical*engine.yAxis*(LONG)(engine.deltaTime >> 6);
-	LONG crossHairVerticalComeback = - ((engine.gameState.crossHairY / (lowerDelta)) << 3);
 	
 	if (crossHairVerticalComeback * turnVertical*engine.yAxis > 0 || turnVertical == 0)
 	{

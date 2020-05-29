@@ -13,16 +13,16 @@ void InitLogoState()
 	engine.logoState.screenDuration = LOGORUNTIME;
 	UseSystem();
 	
-	engine.logoState.logo[0] = LoadBitmapFile("data/l1", &engine.logoState.headers[0], engine.activePalette, 1, 0);
-	engine.logoState.logo[1] = LoadBitmapFile("data/l2", &engine.logoState.headers[1], engine.activePalette, 1, 0);
-	engine.logoState.logo[2] = LoadBitmapFile("data/l3", &engine.logoState.headers[2], engine.activePalette, 1, 0);
+	engine.logoState.logo[0] = LoadBitmapFile(DATA_DIR(l1), &engine.logoState.headers[0], engine.activePalette, 1, 0);
+	engine.logoState.logo[1] = LoadBitmapFile(DATA_DIR(l2), &engine.logoState.headers[1], engine.activePalette, 1, 0);
+	engine.logoState.logo[2] = LoadBitmapFile(DATA_DIR(l3), &engine.logoState.headers[2], engine.activePalette, 1, 0);
 	UnuseSystem();
 
-	ClearBuffor();
 	DrawBitmap4bCenter(engine.logoState.logo[0], &engine.logoState.headers[0]);
 	
 	VSyncAndDraw();
-	
+
+	ClearBuffor();	
 	
 }
 
@@ -51,11 +51,11 @@ void switchIntroScreen()
 	case 2:
 	{
 		
-		ClearBuffor();
 		DrawBitmap4bCenter(engine.logoState.logo[1], &engine.logoState.headers[1]);
 		
         VSyncAndDraw();
-
+		ClearBuffor();
+		
 		for(int i = 0; i < 4; i++)
 		{
 			engine.logoState.fadeInStatus[i] = 0;
@@ -66,11 +66,11 @@ void switchIntroScreen()
 	case 3:
 	{
 
-		ClearBuffor();
 		DrawBitmap4bCenter(engine.logoState.logo[2], &engine.logoState.headers[2]);
 		
         VSyncAndDraw();
-
+		ClearBuffor();
+		
 		for(int i = 0; i < 4; i++)
 		{
 			engine.logoState.fadeInStatus[i] = 0;

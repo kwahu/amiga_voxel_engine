@@ -11,7 +11,7 @@ void ClearBuffor()
 #else
 void ClearBuffor()
 {
-	memset(engine.renderer.planes, 0, PLANEWIDTH*PLANEHEIGHT);
+	memset(engine.renderer.planes, 0, PLANEWIDTHWORD*PLANEHEIGHT*sizeof(WORD));
 }
 #endif
 

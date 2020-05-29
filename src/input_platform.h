@@ -70,33 +70,7 @@ void GetPlayerRendererSetting()
 		}
 		
 	}
-	if (getKey(4)) //A1200
-	{
-		engine.renderer.renderingDepth = 32;
-		engine.renderer.calculationDepthDivider = 2;
-		engine.renderer.calculationDepthStep = 3;
-		engine.renderer.renderingDepthStep = 1;
-		engine.renderer.lastOverwrittenLine = 0;
-
-		engine.renderer.stepModifier = 16;
-		if(engine.renderer.highMemory)
-		{
-		engine.renderer.turnDenom = 3000;
-			engine.renderer.xFOV = 12;
-			engine.renderer.yFOV = 20;
-			engine.renderer.renderingType = 5;
-		RecalculateOdd();
-		}
-		else
-		{
-		engine.renderer.turnDenom = 4500;
-			engine.renderer.xFOV = 18;
-			engine.renderer.yFOV = 12;
-			engine.renderer.renderingType = 2;
-			RecalculateEven();
-		}
-	}
-	if (getKey(5)) //A3000
+	if (getKey(4)) //25 MHZ
 	{
 		engine.renderer.renderingDepth = 64;
 		engine.renderer.calculationDepthDivider = 2;
@@ -271,7 +245,7 @@ void GetPlayerRendererSetting()
 {
 	engine.renderer.zStart = 12;
 	if (getKey(3))
-	{
+	{	
 		engine.renderer.renderingDepth = TERRAINDEPTH;
 		engine.renderer.calculationDepthDivider = 2;
 		engine.renderer.calculationDepthStep = 2;
@@ -425,7 +399,6 @@ void GetYAxisSetting()
 	
 }
 
-#ifdef AMIGA
 void GetPlayerMemorySetting()
 {
 	if(getKey(1))
@@ -488,50 +461,4 @@ void GetPlayerMemorySetting()
 		GenerateColorBytesDither3x2();
 	}
 }
-#else
-void GetPlayerMemorySetting()
-{
-	if(getKey(1))
-	{
-		engine.renderer.depthBufferHeight = YSIZEEVEN;
-		engine.renderer.depthBufferWidth = 20;
-		#ifdef AMIGA
-		engine.renderer.shadowStep = 4;
-		#else
-		engine.renderer.shadowStep = 8;
-		#endif
-		engine.renderer.depthBuffer = (UBYTE *)malloc(engine.renderer.depthBufferWidth*YSIZEEVEN*sizeof(UBYTE));
-		engine.renderer.ditherTable1 = (UBYTE *)malloc(4*COLORS*COLORS*sizeof(UBYTE));
-		engine.renderer.ditherTable2 = engine.renderer.ditherTable1 + COLORS*COLORS;
-		engine.renderer.ditherTable3 = engine.renderer.ditherTable1 + 2*COLORS*COLORS;
-		engine.renderer.ditherTable4 = engine.renderer.ditherTable1 + 3*COLORS*COLORS;
-		engine.renderer.screenPatch = (UBYTE *)malloc(4*45*sizeof(UBYTE));
-		engine.renderer.rayCastX = (WORD *)malloc(XSIZEEVEN*TERRAINDEPTH*sizeof(WORD));
-		engine.renderer.rayCastY = (WORD *)malloc(YSIZEEVEN*TERRAINDEPTH*sizeof(WORD));
-		engine.renderer.highMemory = 0;
-		GenerateColorBytesNoDither4x4();
-	}
-	if(getKey(2))
-	{	
-		engine.renderer.depthBufferHeight = YSIZEODD;
-		engine.renderer.depthBufferWidth = 20;
-		#ifdef AMIGA
-		engine.renderer.shadowStep = 2;
-		#else
-		engine.renderer.shadowStep = 4;
-		#endif
-		engine.renderer.depthBuffer = (UBYTE *)malloc(engine.renderer.depthBufferWidth*YSIZEODD*sizeof(UBYTE));
-		engine.renderer.ditherTable1 = (UBYTE *)malloc(4*COLORS*COLORS*COLORS*sizeof(UBYTE));
-		engine.renderer.ditherTable2 = engine.renderer.ditherTable1 + COLORS*COLORS*COLORS;
-		engine.renderer.ditherTable3 = engine.renderer.ditherTable1 + 2*COLORS*COLORS*COLORS;
-		engine.renderer.ditherTable4 = engine.renderer.ditherTable1 + 3*COLORS*COLORS*COLORS;
-		engine.renderer.screenPatch = (UBYTE *)malloc(6*90*sizeof(UBYTE));
-		engine.renderer.rayCastX = (WORD *)malloc(XSIZEODD*TERRAINDEPTH*sizeof(WORD));
-		engine.renderer.rayCastY = (WORD *)malloc(YSIZEODD*TERRAINDEPTH*sizeof(WORD));
-		engine.renderer.highMemory = 1;
-		GenerateColorBytesDither3x2();
-	}
-}
-#endif
-
 #define getCurrentTime() timerGetPrec()

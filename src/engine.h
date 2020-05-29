@@ -8,6 +8,7 @@
 #include "settings_platform.h"
 #include "memory_platform.h"
 
+
 #define ULONG 	uint32_t
 #define LONG	int32_t
 #define UWORD 	uint16_t
@@ -125,6 +126,8 @@ typedef struct Renderer
     tBitMap buffer;
     #else
     uint16_t *planes;
+    uint16_t *secondPlanes;
+    uint16_t *swapPlanes;
     #endif
 
 
@@ -216,7 +219,7 @@ typedef struct Engine
     UBYTE *music;
 
     Font *font;
-    TextBitMap *pBitmapHeightLabel, *pBitmapHeight, *pBitmapTime, *pBitmapTimeLabel, *informationText;
+    TextBitMap *pBitmapHeightLabel, *pBitmapHeight, *pBitmapTime, *pBitmapTimeLabel, *informationText, *versionText;
     TextBitMap *pBitmapVelocityLabel, *pBitmapVelocity, *pBitmapScore, *pBitmapScoreLabel, *pBitmapInfo[10];
 
     UBYTE musicOn;
@@ -230,9 +233,9 @@ Engine engine;
 
 
 
-#include "sound_platform.h"
 #include "font_platform.h"
 #include "input_platform.h"
 #include "screen_platform.h"
+#include "sound_platform.h"
 
 #endif // _ENGINE_H_

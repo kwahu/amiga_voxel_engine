@@ -1,8 +1,8 @@
 
 #include "engine.h"
 #include "platform.h"
-#include "bitmap.c"
 #include "file_platform.h"
+#include "bitmap.c"
 
 #include "raycasting.c"
 //#include "mipmaps.c"
@@ -27,28 +27,29 @@ docker run --rm \
 -it amigadev/crosstools:m68k-amigaos bash
 */
 
+#ifdef AMIGA
 void InitializeGameChipMemory()
 {
+	UBYTE fileName []= DATA_DIR(verge.mod); 
 	
-    //tFile *file = fileOpen("data/verge.mod", "rb");
-	BPTR file = Open("data/verge.mod", 1005);
+	
+    File file = OpenFile(fileName);
 
-    ULONG fileSize = fileGetSize("data/verge.mod");
-	//ULONG fileSize = GetFileSize("data/verge.mod");
+
+    ULONG fileSize = FileGetSize(fileName);
 	
 	NewChipArena(&engine.chipArena, fileSize);
 
 
 	engine.music = (UBYTE *)AllocateFromArena(&engine.chipArena, fileSize);
 	
-    //fileRead(file, engine.music, fileSize);
-    Read(file, engine.music, fileSize);
+    ReadFile(file, engine.music, fileSize);
     
-	//fileClose(file);
-	Close(file);
+	CloseFile(file);
 
 	
 }
+#endif
 
 
 //****************************** CREATE
@@ -57,36 +58,46 @@ void InitEngine(void)
 	engine.exitFlag = 0;
 
 	engine.musicOn = 0;
+	#ifdef AMIGA
 	InitializeGameChipMemory();
+	#endif
 	InitScreen();
+
+	NewArena(&engine.temporaryArena, 100*1024);
+
+	engine.paletteBitmap = LoadBitmapFile(DATA_DIR(plt), &engine.paletteHeader, engine.activePalette, 1, 0);
+	
+
+	//process paletter from an image
+	SetBitmapPalette(engine.activePalette);
+
 	InitInput();
 	
 
-    ULONG fontSize = fileGetSize("data/ss.fnt") + sizeof(Font);
+    ULONG fontSize = 4096;//FileGetSize("\\data\\ss.fnt") + sizeof(Font);
 	
     ULONG screenPlaneSize = PLANEWIDTHWORD*PLANEHEIGHT*sizeof(UWORD);
 
-	
+	#ifdef AMIGA
 	NewArena(&engine.fontArena, fontSize + 4*screenPlaneSize);
-	
-	
-	engine.font = InitFont("data/ss.fnt");
+	#else
+	NewArena(&engine.fontArena, fontSize);
+	#endif
 
+	//TODO: This won't work on Amiga, make file directories platform-agnostic!
+	engine.font = InitFont(DATA_DIR(ss.fnt));
+
+	#ifdef AMIGA
 	engine.renderer.plane1W = (UWORD *)AllocateFromArena(&engine.fontArena, screenPlaneSize);
 	engine.renderer.plane2W = (UWORD *)AllocateFromArena(&engine.fontArena, screenPlaneSize);
 	engine.renderer.plane3W = (UWORD *)AllocateFromArena(&engine.fontArena, screenPlaneSize);
 	engine.renderer.plane4W = (UWORD *)AllocateFromArena(&engine.fontArena, screenPlaneSize);
-
-	NewArena(&engine.temporaryArena, 100*1024);
+	#endif
 
 	MakeArenasForMaps(MAPSIZE*MAPSIZE, 11);	
 	SetupMaps();
 
 
-	engine.paletteBitmap = LoadBitmapFile("data/plt", &engine.paletteHeader, engine.activePalette, 1, 0);
-
-	//process paletter from an image
-	SetBitmapPalette(engine.activePalette);
 	// Load font
 
 
@@ -98,53 +109,68 @@ void InitEngine(void)
 
 	UnuseSystem();
 
+
+	ClearBuffor();
 	// //*********************************** SELECT HARDWARE ***********************************************
 	engine.informationText = CreateBitmapFromText(engine.font, 
 	"KEY 1 = 1 MB RAM   KEY 2 = MORE THAN 1 MB RAM"
 	);
-	DrawTextBitmap(engine.informationText, 50, PLANEHEIGHT/2, 3);
 	
-	VSyncAndDraw();
-
+	engine.versionText = CreateBitmapFromText(engine.font, 
+	"VERSION 1.01"
+	);
+	
 	engine.renderer.ditherTable1 = 0;
 
 	while(engine.renderer.ditherTable1 == 0)
 	{
+		DrawTextBitmap(engine.informationText, 50, PLANEHEIGHT/2, 3);
+		DrawTextBitmap(engine.versionText, 0, PLANEHEIGHT - 6, 3);
+		
+
+		VSyncAndDraw();
+		ClearBuffor();
+
 		GetPlayerMemorySetting();
 		
 	}
 
-	ClearBuffor();
 	
 	FillTextBitmap(engine.font, engine.informationText, 
-	#ifdef AMIGA
-	"KEY 3 = A500   KEY 4 = A1200   KEY 5 = A3000"
-	#else
-	"KEY 3 = ATARI ST   KEY 4 = ATARI FALCON OR TT"
-	#endif
+	"KEY 3 = 14 MHz   KEY 4 = 25 MHz"
 	);
-	DrawTextBitmap(engine.informationText, 50, PLANEHEIGHT/2, 3);
-	VSyncAndDraw();
 
 	while(engine.renderer.renderingType == 0)
 	{
+		DrawTextBitmap(engine.informationText, 82, PLANEHEIGHT/2, 3);
+	
+		DrawTextBitmap(engine.versionText, 0, PLANEHEIGHT - 6, 3);
+	
+		VSyncAndDraw();
+		ClearBuffor();
+
 		GetPlayerRendererSetting();
 		
 	}
-
 	ClearBuffor();
+	
+
 	
 	FillTextBitmap(engine.font, engine.informationText, 
 	"INVERT Y AXIS?   KEY 9 = YES   KEY 0 = NO"
 	);
-	DrawTextBitmap(engine.informationText, 50, PLANEHEIGHT/2, 3);
 
-	VSyncAndDraw();
-	
 	engine.yAxis = 0;
 
 	while(engine.yAxis == 0)
 	{
+		DrawTextBitmap(engine.informationText, 50, PLANEHEIGHT/2, 3);
+		DrawTextBitmap(engine.versionText, 0, PLANEHEIGHT - 6, 3);
+		
+
+		VSyncAndDraw();
+		ClearBuffor();
+
 		GetYAxisSetting();
 		
 	}

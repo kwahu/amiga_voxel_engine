@@ -46,7 +46,7 @@ void InitGameState()
  
 
     
-    ClearBuffor();
+    //ClearBuffor();
 	//CopyMapWord(engine.renderer.mapSource, engine.renderer.mapHigh);
     
 }
@@ -61,7 +61,7 @@ void UpdatePlayerPosition()
     ULONG lowerDelta = (engine.deltaTime/10000);
     updateShipParams(lowerDelta, terrainHeight);
 
-    LONG addedpoints = (lowerDelta)*(110 - engine.gameState.shipParams.relHeight);
+    LONG addedpoints = (lowerDelta)*(125 - engine.gameState.shipParams.relHeight);
     if(addedpoints > 0 && (engine.gameState.shipParams.pZ + (engine.renderer.mapLengthRemainder)) < 2816)
     {
         engine.gameState.points += addedpoints;

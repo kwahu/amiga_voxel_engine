@@ -18,6 +18,8 @@ void DrawPanelsToScreen()
 	CopyFastToChipW(engine.platformScreen.s_pBuffer->pBack);
 }
 
+#define SwapBuffer()
+
 #define VSyncAndDraw() \
     vPortWaitForEnd(engine.platformScreen.s_pVPort);	\
     DrawPanelsToScreen();
@@ -91,19 +93,28 @@ void FreeView()
 
 void DrawPanelsToScreen()
 {
-	
-    // uint16_t *tmp;
-    // tmp=engine.platformScreen.physBase;
-    // engine.platformScreen.physBase=engine.platformScreen.logBase;
-    // engine.platformScreen.logBase=tmp;
-	// engine.renderer.planes = engine.platformScreen.physBase;
-    //Setscreen(engine.platformScreen.logBase,engine.platformScreen.physBase,-1);
-	//memcpy(engine.platformScreen.planesAtari, engine.renderer.planes, PLANEWIDTH*PLANEHEIGHT);
+	uint16_t *tmp = engine.renderer.planes;
+	engine.renderer.planes = engine.renderer.secondPlanes;
+	engine.renderer.secondPlanes = tmp;
+
+	Setscreen(engine.platformScreen.logBase, engine.renderer.secondPlanes, -1);
+
+}
+
+void SwapBuffers()
+{
+	uint16_t *tmp = engine.renderer.planes;
+	engine.renderer.planes = engine.renderer.secondPlanes;
+	engine.renderer.secondPlanes = tmp;
+
 }
 
 #define VSyncAndDraw() \
-	Vsync();	\
-	DrawPanelsToScreen();
+	DrawPanelsToScreen(); \
+	Vsync();	
+
+#define SwapBuffer() \
+	SwapBuffers();
 
 #define VSyncWait() \
 	Vsync();	
@@ -125,8 +136,8 @@ void SetGamePaletter()
 {
 	for (int i = 0; i < 16; i++)	
 	{	
-		engine.renderer.bitmapPalette[i] = ((engine.palettePalette[i*4+2]>>5) << 8) +	
-		 ((engine.palettePalette[i*4+1]>>5) << 4) + (engine.palettePalette[i*4+0]>>5);	
+		engine.renderer.bitmapPalette[i] = ((engine.activePalette[i*4+2]>>5) << 8) +	
+		 ((engine.activePalette[i*4+1]>>5) << 4) + (engine.activePalette[i*4+0]>>5);	
 	}	
 	SetPalette();	
 }
@@ -143,22 +154,29 @@ void InitScreen()
     engine.platformScreen.logBase=Logbase();
     memset(engine.platformScreen.logBase,0,32000);
     memset(engine.platformScreen.physBase,0,32000);
-    VsetMode(0x80|2|0x30);
-	VsetSync(1);
+    //VsetMode(0x80|2|0x30);
+	//VsetSync(1);
 	
 	for(int i=0;i<16;i++)
 	{
 		engine.platformScreen.systemPalette[i] = *(uint16_t *)(0xffff8240+(i*2));
 	}
 	SetPalette();
+	ULONG bufferSize = PLANEWIDTHWORD*PLANEHEIGHT*sizeof(UWORD);
 
-	//engine.platformScreen.planesAtari = engine.platformScreen.logBase;
-	engine.renderer.planes = (uint16_t *)engine.platformScreen.physBase;
+	engine.renderer.secondPlanes = (uint16_t *)engine.platformScreen.physBase;
+	
+	engine.renderer.planes = (uint16_t *)malloc(bufferSize + 256);
+	if((((ULONG)engine.renderer.planes) & 0xFF) > 0)
+	{
+		engine.renderer.planes += ((256 - (((ULONG)engine.renderer.planes) & 0xFF)) >> 1);
+	}
+	Setscreen(engine.platformScreen.logBase, engine.platformScreen.physBase, -1);
 }
 
 void ViewOff()
 {
-
+	Setscreen(engine.platformScreen.logBase, engine.platformScreen.physBase, -1);
 	Setpalette(engine.platformScreen.systemPalette);	
 	Cursconf(1, 0);
 }

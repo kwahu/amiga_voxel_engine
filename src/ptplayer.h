@@ -130,6 +130,8 @@ void ASM mt_mastervol(REG(a6, void *custom),
 
 void ASM mt_music(REG(a6, void *custom));
 
+void ASM mt_end(REG(a6, void *custom));
+
 /*
   mt_Enable
     Set this byte to non-zero to play music, zero to pause playing.

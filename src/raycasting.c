@@ -12,6 +12,7 @@ void RecalculateOdd()
 void CalculateRayCasts(WORD (*rayCastX), WORD (*rayCastY), 
                         UBYTE xSize, UBYTE ySize, int stepSize)
 {
+    SwapBuffer();
 	WORD sxx;
 	WORD syy;
 	WORD tzz; //depth step value
@@ -35,8 +36,8 @@ void CalculateRayCasts(WORD (*rayCastX), WORD (*rayCastY),
 		DrawPixelWord((offsetTZ), PLANEHEIGHT-2,(offsetTZ));
 		DrawPixelWord((offsetTZ), PLANEHEIGHT-1,(offsetTZ));
 		
-        DrawPanelsToScreen();
-		
+        VSyncAndDraw();
+        SwapBuffer();
 		//high - 2 - 8
 		tzz += engine.renderer.calculationDepthStep + tz / engine.renderer.calculationDepthDivider; //+tz/16; //increase step with the distance from camera
 		WORD *rayXPtr = rayCastX + tz;
@@ -1150,11 +1151,12 @@ UBYTE px, UBYTE py, UBYTE ph, UBYTE screenStart, UBYTE screenEnd)
                 else
                 {	
                     ++tz;//go step in depth if no height hit
+                 
+                    firstDepth = 1;
                     ++mapSmpPtr;
                     ++rayYPtr;
                     ++offsetz;
                 }
-                firstDepth = 1;
             }
             
             while(sy < YSIZEODD)
@@ -1325,12 +1327,13 @@ UBYTE px, UBYTE py, UBYTE ph, UBYTE screenStart, UBYTE screenEnd)
                 else
                 {	
                     ++tz;//go step in depth if no height hit
+
+                    firstDepth = 1;
                     ++mapSmpPtr;
                     ++rayYPtr;
                     ++offsetz;
                 }
 
-                firstDepth = 1;
             }
             
             while(sy < YSIZEEVEN)

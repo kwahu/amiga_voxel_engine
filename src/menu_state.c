@@ -11,15 +11,14 @@ void InitMenuState()
     {
         engine.pBitmapInfo[i] = CreateFontBitmap(engine.font);
     }
-    engine.menu[0] = LoadBitmapFile("data/m0", &engine.headers[0], engine.activePalette, 1, 0);
-    engine.menu[1] = LoadBitmapFile("data/m1", &engine.headers[1], engine.activePalette, 1, 0);
-    engine.menu[2] = LoadBitmapFile("data/msg", &engine.headers[2], engine.activePalette, 1, 0);
+    engine.menu[0] = LoadBitmapFile(DATA_DIR(m0), &engine.headers[0], engine.activePalette, 1, 0);
+    engine.menu[1] = LoadBitmapFile(DATA_DIR(m1), &engine.headers[1], engine.activePalette, 1, 0);
+    engine.menu[2] = LoadBitmapFile(DATA_DIR(msg), &engine.headers[2], engine.activePalette, 1, 0);
     
 }
 
 void RunMenuState()
 {
-    ClearBuffor();
     DrawBitmap4bCenter(engine.menu[0], &engine.headers[0]);
 
                  
@@ -27,11 +26,11 @@ void RunMenuState()
     FillTextBitmap(engine.font, engine.pBitmapInfo[1], "inhospitable planet. Mankind engages in one");
     FillTextBitmap(engine.font, engine.pBitmapInfo[2], "thing it knows well - war.");
     FillTextBitmap(engine.font, engine.pBitmapInfo[3], "The tyrannical corporate regime wants to");
-    FillTextBitmap(engine.font, engine.pBitmapInfo[4], "enslave all inhabitants of the Kingdom");
+    FillTextBitmap(engine.font, engine.pBitmapInfo[4], "enslave all inhabitants of \"The Kingdom\".");
     FillTextBitmap(engine.font, engine.pBitmapInfo[5], "Humanity's new home.");
     FillTextBitmap(engine.font, engine.pBitmapInfo[6], "As a young smuggler aboard the aircraft Icarus");
     FillTextBitmap(engine.font, engine.pBitmapInfo[7], "you want to help the oppressed by joining the");
-    FillTextBitmap(engine.font, engine.pBitmapInfo[8], "Revolt, but you need to prove your worth first");
+    FillTextBitmap(engine.font, engine.pBitmapInfo[8], "Revolt, but you need to prove your worth first,");
     FillTextBitmap(engine.font, engine.pBitmapInfo[9], "by completing the infamous Death Run challenge.");
 
     DrawTextBitmap(engine.pBitmapInfo[0], 50, BASELINE+2, 7);
@@ -48,6 +47,7 @@ void RunMenuState()
     SetGamePaletter();
     
     VSyncAndDraw();
+    ClearBuffor();
 
     UBYTE infoIndex = 0;
     UBYTE FireDown = 0;
@@ -65,17 +65,16 @@ void RunMenuState()
             {
                 case 1:
                 {
-                    ClearBuffor();   
                     
                     DrawBitmap4bCenter(engine.menu[1], &engine.headers[1]);
                  
                     FillTextBitmap(engine.font, engine.pBitmapInfo[0], "After setting off the Earth in enormous");
                     FillTextBitmap(engine.font, engine.pBitmapInfo[1], "Generation ships, humanity reached the nearest");
                     FillTextBitmap(engine.font, engine.pBitmapInfo[2], "star system and colonized it's only suitable");
-                    FillTextBitmap(engine.font, engine.pBitmapInfo[3], "planet, renaming it The Kingdom.");
+                    FillTextBitmap(engine.font, engine.pBitmapInfo[3], "planet, renaming it \"The Kingdom\".");
                     FillTextBitmap(engine.font, engine.pBitmapInfo[4], "The harsh evironment was one problem, the");
                     FillTextBitmap(engine.font, engine.pBitmapInfo[5], "ideological differences were the other.");
-                    FillTextBitmap(engine.font, engine.pBitmapInfo[6], "People of The Kingdom fell prey to their nature");
+                    FillTextBitmap(engine.font, engine.pBitmapInfo[6], "People of The Kingdom fell prey to their nature,");
                     FillTextBitmap(engine.font, engine.pBitmapInfo[7], "which pushed them to the open conflict");
                     FillTextBitmap(engine.font, engine.pBitmapInfo[8], "between The Reign, and The Revolt.");
 
@@ -91,11 +90,11 @@ void RunMenuState()
                     
                     
                     VSyncAndDraw();
+                    ClearBuffor();
                     FireDown = 1;
                 } break;
                 case 2:
                 {
-                    ClearBuffor();
                     DrawBitmap4bCenter(engine.menu[1], &engine.headers[1]);
                     
 
@@ -106,7 +105,7 @@ void RunMenuState()
                     FillTextBitmap(engine.font, engine.pBitmapInfo[4], "the military units of The Revolt.");
                     FillTextBitmap(engine.font, engine.pBitmapInfo[5], "As Carriers can move freely only in the deep");
                     FillTextBitmap(engine.font, engine.pBitmapInfo[6], "canyons covering the planet, The Revolt wants");
-                    FillTextBitmap(engine.font, engine.pBitmapInfo[7], "you to prove your abilities and loyalty");
+                    FillTextBitmap(engine.font, engine.pBitmapInfo[7], "you to prove your abilities and loyalty,");
                     FillTextBitmap(engine.font, engine.pBitmapInfo[8], "by beating the route leading through");
                     FillTextBitmap(engine.font, engine.pBitmapInfo[9], "narrow valleys as fast as possible.");
 
@@ -121,6 +120,7 @@ void RunMenuState()
                     DrawTextBitmap(engine.pBitmapInfo[8], 2, BASELINE+50, 13);
                     DrawTextBitmap(engine.pBitmapInfo[9], 2, BASELINE+56, 13);
                     VSyncAndDraw();
+                    ClearBuffor();
                     
                         
 
@@ -128,7 +128,6 @@ void RunMenuState()
                 } break;
                 case 3:
                 {
-                    ClearBuffor();
                     DrawBitmap4bCenter(engine.menu[2], &engine.headers[2]);
                     
                     FillTextBitmap(engine.font, engine.pBitmapInfo[0], "The ship's Anti-G engine uses the");
@@ -153,6 +152,8 @@ void RunMenuState()
                     DrawTextBitmap(engine.pBitmapInfo[8], 100, BASELINE+90, 4);
                     DrawTextBitmap(engine.pBitmapInfo[9], 100, BASELINE+96, 4);
                     VSyncAndDraw();
+                    ClearBuffor();
+
                         
 
                     FireDown = 1;
@@ -162,20 +163,21 @@ void RunMenuState()
                     StopSample();
                     UseSystem();
 
+
                     
                     ClearArena(&engine.temporaryArena);
                     for(int i = 0; i < 3; ++i)
                     {
                         engine.pBitmapInfo[i] = CreateFontBitmap(engine.font);
                     }
-                    engine.menu[2] = LoadBitmapFile("data/msg", &engine.headers[2], engine.activePalette, 1, 0);
+                    engine.menu[2] = LoadBitmapFile(DATA_DIR(msg), &engine.headers[2], engine.activePalette, 1, 0);
                     engine.menuState.infoScreen = 1;
                     
                     
-                    engine.explosionBitmap = LoadBitmapFile("data/iexpl", &engine.explosionHeader, engine.activePalette, 2, 14);
-                    engine.landingBitmap = LoadBitmapFile("data/land", &engine.landingHeader, engine.activePalette, 2, 14);
-                    engine.takeoffBitmap = LoadBitmapFile("data/take", &engine.takeoffHeader, engine.activePalette, 2, 14);
-                    engine.shipBitmap = LoadBitmapFile("data/icar48", &engine.shipHeader, engine.activePalette, 2, 14);
+                    engine.explosionBitmap = LoadBitmapFile(DATA_DIR(iexpl), &engine.explosionHeader, engine.activePalette, 2, 14);
+                    engine.landingBitmap = LoadBitmapFile(DATA_DIR(land), &engine.landingHeader, engine.activePalette, 2, 14);
+                    engine.takeoffBitmap = LoadBitmapFile(DATA_DIR(take), &engine.takeoffHeader, engine.activePalette, 2, 14);
+                    engine.shipBitmap = LoadBitmapFile(DATA_DIR(icar48), &engine.shipHeader, engine.activePalette, 2, 14);
 
                     
                     engine.pBitmapVelocity = CreateBitmapFromText(engine.font, "1234");
@@ -188,6 +190,9 @@ void RunMenuState()
                     engine.pBitmapHeightLabel = CreateBitmapFromText(engine.font, "RELATIVE ALTITUDE");
                     
                     UnuseSystem();
+                    VSyncAndDraw();
+                    ClearBuffor();
+
                     InitAudio();
                     PlaySample(5);
                     

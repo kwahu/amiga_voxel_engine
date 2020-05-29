@@ -7,6 +7,9 @@ void EngineLoop(void);
 void EngineDestroy(void);
 
 #ifdef AMIGA
+
+#define DATA_DIR(file) "data/" #file
+
 #include "SDI_compiler.h"
 #include "SDI_hook.h"
 #include "SDI_interrupt.h"
@@ -29,6 +32,7 @@ void genericDestroy(void)
 }
 #else
 
+#define DATA_DIR(file) "\\data\\" #file
 typedef FILE* BPTR;
 
 void main_supervisor() 

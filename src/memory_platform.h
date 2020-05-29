@@ -1,4 +1,4 @@
-
+#ifdef AMIGA
 #include <ace/managers/memory.h>
 
 
@@ -102,3 +102,68 @@ void NewSubArena(MemoryArena *Arena, MemoryArena *SubArena, ULONG ArenaSize)
     }
     
 }
+
+#else
+
+
+typedef struct MemoryArena
+{
+    UBYTE tag[5];
+    ULONG Size;
+    ULONG Used;
+    UBYTE *Memory;
+    UBYTE *CurrentPointer;
+    ULONG Available;
+} MemoryArena;
+
+void NewArena(MemoryArena *Arena, ULONG ArenaSize)
+{
+    Arena->tag[0] = 'a';
+    Arena->tag[1] = 'r';
+    Arena->tag[2] = 'e';
+    Arena->tag[3] = 'n';
+    Arena->tag[4] = 'a';
+    Arena->Memory = (UBYTE *)malloc(ArenaSize);
+    if(Arena->Memory != 0)
+    {
+        Arena->CurrentPointer = Arena->Memory;
+        Arena->Size = ArenaSize;
+        Arena->Used = 0;
+    }
+    
+}
+
+
+void NewChipArena(MemoryArena *Arena, ULONG ArenaSize)
+{
+    NewArena(Arena, ArenaSize);
+}
+
+void DestroyArena(MemoryArena *Arena)
+{
+    free(Arena->Memory);
+}
+
+
+void ClearArena(MemoryArena *Arena)
+{
+    Arena->CurrentPointer = Arena->Memory;
+    Arena->Used = 0;
+}
+
+UBYTE *AllocateFromArena(MemoryArena *Arena, ULONG spaceSize)
+{
+    UBYTE *Result = 0;
+    if((Arena->Used + spaceSize) <= Arena->Size)
+    {
+        Result = Arena->CurrentPointer;
+        Arena->CurrentPointer += spaceSize;
+        Arena->Used += spaceSize;
+    }
+
+    return Result;
+}
+
+
+
+#endif
