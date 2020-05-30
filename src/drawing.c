@@ -15,6 +15,75 @@ void ClearBuffor()
 }
 #endif
 
+void DrawBar(UWORD posX, UWORD posY, UBYTE length)
+{
+	UWORD position;
+	posX = posX >> 4; 
+	length &= 0xF;
+
+	UWORD mask1;
+	UWORD mask2;
+	if(length & 0x8)
+	{
+		mask1 = 0b1111111111111111;
+		mask2 = 0b1111111111111111 << (16 - (length & 0x7)*2);
+
+	}
+	else
+	{
+		mask1 = 0b1111111111111111 << (16 - (length & 0x7)*2);
+
+		mask2 = 0;
+	}
+	
+
+
+	UWORD mask = 0b1111111111111111 << (16 - (length));
+	UWORD leftStamp4 = 0b0000000000000000 & mask1;
+	UWORD leftStamp3 = 0b1111111111111111 & mask1;
+	UWORD leftStamp2 = 0b0000000011111111 & mask1;
+	UWORD leftStamp1 = 0b0000111100001111 & mask1;
+
+
+	UWORD rightStamp4 = 0b1111111111111111 & mask2;
+	UWORD rightStamp3 = 0b0000000000000000 & mask2;
+	UWORD rightStamp2 = 0b0000000011111111 & mask2;
+	UWORD rightStamp1 = 0b0000111100001111 & mask2;
+	
+#ifdef AMIGA
+	position = (posY) * PLANEWIDTHWORD + posX;
+    UWORD *firstCol = engine.renderer.plane1W + position;
+    UWORD *secondCol = engine.renderer.plane2W + position;
+    UWORD *thirdCol = engine.renderer.plane3W + position;
+    UWORD *fourthCol = engine.renderer.plane4W + position;
+#else
+	position = (posY) * PLANEWIDTHWORD + posX*4;
+    UWORD *firstCol = engine.renderer.planes + position;
+    UWORD *secondCol = engine.renderer.planes + position + 1;
+    UWORD *thirdCol = engine.renderer.planes + position + 2;
+    UWORD *fourthCol = engine.renderer.planes + position + 3;
+#endif
+
+	int y;
+	for(y = 0; y < 5; ++y)
+	{
+		*firstCol = leftStamp1;
+		*secondCol = leftStamp2;
+		*thirdCol = leftStamp3;
+		*fourthCol = leftStamp4;
+		*(firstCol + 1) = rightStamp1;
+		*(secondCol + 1) = rightStamp2;
+		*(thirdCol + 1) = rightStamp3;
+		*(fourthCol + 1) = rightStamp4;
+		
+        firstCol += PLANEWIDTHWORD;
+        secondCol += PLANEWIDTHWORD;
+        thirdCol += PLANEWIDTHWORD;
+        fourthCol += PLANEWIDTHWORD;
+	}
+
+}
+
 void DrawSprite4b(unsigned char *bLogo, BITMAPINFOHEADER *bhLogo, 
 					UWORD posX, UWORD posY, WORD spriteIndexX, WORD spriteIndexY,
 					UWORD spriteSizeX, UWORD spriteSizeY)

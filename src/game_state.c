@@ -158,26 +158,31 @@ void RenderShipAndCrossHair()
      
 }
 
+
 void DrawGameStats()
 {
     ConvertIntToChar(engine.gameState.points, engine.gameState.sScore, 8);
-    ConvertIntToChar(engine.gameState.shipParams.dP, engine.gameState.sVelocity, 5);
+    //ConvertIntToChar(engine.gameState.shipParams.dP, engine.gameState.sVelocity, 5);
+    
     ConvertIntToChar(engine.accTime/2500, engine.gameState.sTime, 8);
     ConvertIntToChar(engine.gameState.shipParams.relHeight, engine.gameState.sPlayerY, 5);
     
 
     FillTextBitmap(engine.font, engine.pBitmapScore, engine.gameState.sScore);
-    FillTextBitmap(engine.font, engine.pBitmapVelocity, engine.gameState.sVelocity);
+    //FillTextBitmap(engine.font, engine.pBitmapVelocity, engine.gameState.sVelocity);
     FillTextBitmap(engine.font, engine.pBitmapTime, engine.gameState.sTime);
-    FillTextBitmap(engine.font, engine.pBitmapHeight, engine.gameState.sPlayerY);
+    //FillTextBitmap(engine.font, engine.pBitmapHeight, engine.gameState.sPlayerY);
 
-    DrawTextBitmapOverwrite(engine.pBitmapVelocity, 115, PLANEHEIGHT-6, 12);
+    //DrawTextBitmapOverwrite(engine.pBitmapVelocity, 115, PLANEHEIGHT-6, 12);
+    DrawBar(192, PLANEHEIGHT-6, (engine.gameState.shipParams.dP >> 7) + 4);
     DrawTextBitmapOverwrite(engine.pBitmapScore, 30, PLANEHEIGHT-6, 12);
-    DrawTextBitmapOverwrite(engine.pBitmapHeight, 215, PLANEHEIGHT-6, 12);
+    //DrawTextBitmapOverwrite(engine.pBitmapHeight, 215, PLANEHEIGHT-6, 12);
+    DrawBar(112, PLANEHEIGHT-6, ((240 - engine.gameState.shipParams.relHeight) >> 4));
     DrawTextBitmapOverwrite(engine.pBitmapTime, 255, PLANEHEIGHT-6, 12);
-    DrawTextBitmap(engine.pBitmapVelocityLabel, 70, PLANEHEIGHT-6, 12);
+    DrawTextBitmap(engine.pBitmapVelocityLabel, 150, PLANEHEIGHT-6, 12);
+    
     DrawTextBitmap(engine.pBitmapScoreLabel, 0, PLANEHEIGHT-6, 12);
-    DrawTextBitmap(engine.pBitmapHeightLabel, 140, PLANEHEIGHT-6, 12);
+    DrawTextBitmap(engine.pBitmapHeightLabel, 80, PLANEHEIGHT-6, 12);
     DrawTextBitmap(engine.pBitmapTimeLabel, 240, PLANEHEIGHT-6, 12);
 
 }

@@ -187,7 +187,7 @@ void RunMenuState()
                     engine.pBitmapVelocityLabel = CreateBitmapFromText(engine.font, "AIR SPEED");
                     engine.pBitmapScoreLabel = CreateBitmapFromText(engine.font, "SCORE");
                     engine.pBitmapTimeLabel = CreateBitmapFromText(engine.font, "TIME");
-                    engine.pBitmapHeightLabel = CreateBitmapFromText(engine.font, "RELATIVE ALTITUDE");
+                    engine.pBitmapHeightLabel = CreateBitmapFromText(engine.font, "ENERGY");
                     
                     UnuseSystem();
                     VSyncAndDraw();
