@@ -12,7 +12,10 @@ void TimeStep()
 	engine.startTime = getCurrentTime();
 	engine.deltaTime = engine.startTime - engine.endTime;
 	engine.endTime = engine.startTime;
-	engine.accTime += engine.deltaTime;
+	if(!engine.gamePaused)
+	{
+		engine.accTime += engine.deltaTime;
+	}
 }
 
 ULONG getDeltaTime(ULONG *refTime)

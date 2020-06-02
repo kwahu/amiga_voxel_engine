@@ -56,6 +56,7 @@ void InitializeGameChipMemory()
 void InitEngine(void)
 {
 	engine.exitFlag = 0;
+	engine.gamePaused = 0;
 
 	engine.musicOn = 0;
 	#ifdef AMIGA
@@ -117,15 +118,15 @@ void InitEngine(void)
 	);
 	
 	engine.versionText = CreateBitmapFromText(engine.font, 
-	"VERSION 1.01"
+	"VERSION 1.02"
 	);
 	
 	engine.renderer.ditherTable1 = 0;
 
 	while(engine.renderer.ditherTable1 == 0)
 	{
-		DrawTextBitmap(engine.informationText, 50, PLANEHEIGHT/2, 3);
-		DrawTextBitmap(engine.versionText, 0, PLANEHEIGHT - 6, 3);
+		DrawTextBitmap(engine.informationText, 50, PLANEHEIGHT/2, 13);
+		DrawTextBitmap(engine.versionText, 0, PLANEHEIGHT - 6, 13);
 		
 
 		VSyncAndDraw();
@@ -142,9 +143,9 @@ void InitEngine(void)
 
 	while(engine.renderer.renderingType == 0)
 	{
-		DrawTextBitmap(engine.informationText, 82, PLANEHEIGHT/2, 3);
+		DrawTextBitmap(engine.informationText, 82, PLANEHEIGHT/2, 13);
 	
-		DrawTextBitmap(engine.versionText, 0, PLANEHEIGHT - 6, 3);
+		DrawTextBitmap(engine.versionText, 0, PLANEHEIGHT - 6, 13);
 	
 		VSyncAndDraw();
 		ClearBuffor();
@@ -164,8 +165,8 @@ void InitEngine(void)
 
 	while(engine.yAxis == 0)
 	{
-		DrawTextBitmap(engine.informationText, 50, PLANEHEIGHT/2, 3);
-		DrawTextBitmap(engine.versionText, 0, PLANEHEIGHT - 6, 3);
+		DrawTextBitmap(engine.informationText, 50, PLANEHEIGHT/2, 13);
+		DrawTextBitmap(engine.versionText, 0, PLANEHEIGHT - 6, 13);
 		
 
 		VSyncAndDraw();
@@ -184,6 +185,8 @@ void InitEngine(void)
 
 }
 
+UBYTE pauseHeld = 0;
+
 //****************************** LOOP
 void EngineLoop(void)
 {
@@ -192,25 +195,29 @@ void EngineLoop(void)
 	ProcessJoystick();
 	
 	TimeStep();
-	if (engine.currentState == State_Logo)   //turned off
+
+	if(!engine.gamePaused)
 	{
-		RunLogoState();
-		
-		if (getKey(ESCAPE))
+		if (engine.currentState == State_Logo)   //turned off
 		{
-			engine.exitFlag = 1;
-			ExitGame();
+			RunLogoState();
+			
+			if (getKey(ESCAPE))
+			{
+				engine.exitFlag = 1;
+				ExitGame();
+			}
+				
 		}
-			
-	}
-	else if(engine.currentState == State_Menu)
-	{
-		RunMenuState();
-	}
-	else if(engine.currentState == State_Game)
-	{
-			
-		RunGameState();
+		else if(engine.currentState == State_Menu)
+		{
+			RunMenuState();
+		}
+		else if(engine.currentState == State_Game)
+		{
+				
+			RunGameState();
+		}
 	}
 
 	if (getKey(ESCAPE) || engine.exitFlag)
@@ -219,6 +226,17 @@ void EngineLoop(void)
 		engine.exitFlag = 1;
 	}
 
+	if (getKey(P) && !pauseHeld)
+	{
+		
+		pauseHeld = 1;
+		engine.gamePaused = !engine.gamePaused;
+	}
+	else if(!getKey(P))
+	{
+		pauseHeld = 0;
+	}
+	
 
 	engine.loopEndTime = getCurrentTime();
 }

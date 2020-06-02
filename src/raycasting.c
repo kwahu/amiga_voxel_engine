@@ -1161,7 +1161,7 @@ UBYTE px, UBYTE py, UBYTE ph, UBYTE screenStart, UBYTE screenEnd)
             
             while(sy < YSIZEODD)
             {
-                *depthBufferPtr = (UBYTE)tz;
+                *depthBufferPtr = (UBYTE)offsetz;
                 UWORD val = 32 - (ph>>5) -(sy>>3);
                 *screenPtr = (val << 5) + val;
                 sy+=1;
@@ -1338,7 +1338,7 @@ UBYTE px, UBYTE py, UBYTE ph, UBYTE screenStart, UBYTE screenEnd)
             
             while(sy < YSIZEEVEN)
             {
-                *depthBufferPtr = (UBYTE)tz;
+                *depthBufferPtr = (UBYTE)offsetz;
                 UWORD val = 32 - (ph>>5) -(sy>>3);
                 *screenPtr = (val << 5) + val;
                 sy+=1;

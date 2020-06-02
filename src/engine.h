@@ -94,6 +94,7 @@ typedef struct GameState
     UWORD startHeight;
     char sPlayerY[5];
     char sTime[8], sVelocity[5], sScore[8];
+    UBYTE hudBlink;
 } GameState;
 
 typedef enum State
@@ -226,6 +227,7 @@ typedef struct Engine
     LONG yAxis;
 
     UBYTE exitFlag;
+    UBYTE gamePaused;
 
 } Engine;
 
