@@ -1,53 +1,91 @@
-keys.o: ikbd/keys.c \
- /opt/cross-mint/lib/gcc/m68k-atari-mint/4.6.4/../../../../m68k-atari-mint/include/stdint.h \
- /opt/cross-mint/lib/gcc/m68k-atari-mint/4.6.4/../../../../m68k-atari-mint/include/features.h \
- /opt/cross-mint/lib/gcc/m68k-atari-mint/4.6.4/../../../../m68k-atari-mint/include/compiler.h \
- /opt/cross-mint/lib/gcc/m68k-atari-mint/4.6.4/../../../../m68k-atari-mint/include/linker.h \
- /opt/cross-mint/lib/gcc/m68k-atari-mint/4.6.4/../../../../m68k-atari-mint/include/sys/cdefs.h \
- /opt/cross-mint/lib/gcc/m68k-atari-mint/4.6.4/include/stddef.h \
- ikbd/ikbd.h \
- /opt/cross-mint/lib/gcc/m68k-atari-mint/4.6.4/../../../../m68k-atari-mint/include/osbind.h \
- /opt/cross-mint/lib/gcc/m68k-atari-mint/4.6.4/../../../../m68k-atari-mint/include/mint/osbind.h \
- /opt/cross-mint/lib/gcc/m68k-atari-mint/4.6.4/../../../../m68k-atari-mint/include/mint/ostruct.h \
- /opt/cross-mint/lib/gcc/m68k-atari-mint/4.6.4/../../../../m68k-atari-mint/include/mint/basepage.h
-mouse.o: ikbd/mouse.c ikbd/ikbd.h \
- /opt/cross-mint/lib/gcc/m68k-atari-mint/4.6.4/../../../../m68k-atari-mint/include/stdint.h \
- /opt/cross-mint/lib/gcc/m68k-atari-mint/4.6.4/../../../../m68k-atari-mint/include/features.h \
- /opt/cross-mint/lib/gcc/m68k-atari-mint/4.6.4/../../../../m68k-atari-mint/include/compiler.h \
- /opt/cross-mint/lib/gcc/m68k-atari-mint/4.6.4/../../../../m68k-atari-mint/include/linker.h \
- /opt/cross-mint/lib/gcc/m68k-atari-mint/4.6.4/../../../../m68k-atari-mint/include/sys/cdefs.h \
- /opt/cross-mint/lib/gcc/m68k-atari-mint/4.6.4/include/stddef.h
-main_atari.o: src_atari/main_atari.c \
- /opt/cross-mint/lib/gcc/m68k-atari-mint/4.6.4/../../../../m68k-atari-mint/include/string.h \
- /opt/cross-mint/lib/gcc/m68k-atari-mint/4.6.4/../../../../m68k-atari-mint/include/features.h \
- /opt/cross-mint/lib/gcc/m68k-atari-mint/4.6.4/../../../../m68k-atari-mint/include/compiler.h \
- /opt/cross-mint/lib/gcc/m68k-atari-mint/4.6.4/../../../../m68k-atari-mint/include/linker.h \
- /opt/cross-mint/lib/gcc/m68k-atari-mint/4.6.4/../../../../m68k-atari-mint/include/sys/cdefs.h \
- /opt/cross-mint/lib/gcc/m68k-atari-mint/4.6.4/include/stddef.h \
- /opt/cross-mint/lib/gcc/m68k-atari-mint/4.6.4/../../../../m68k-atari-mint/include/stdio.h \
- /opt/cross-mint/lib/gcc/m68k-atari-mint/4.6.4/include/stdarg.h \
- /opt/cross-mint/lib/gcc/m68k-atari-mint/4.6.4/../../../../m68k-atari-mint/include/bits/types.h \
- /opt/cross-mint/lib/gcc/m68k-atari-mint/4.6.4/../../../../m68k-atari-mint/include/bits/stdio_lim.h \
- /opt/cross-mint/lib/gcc/m68k-atari-mint/4.6.4/../../../../m68k-atari-mint/include/bits/mint_stdio.h \
- /opt/cross-mint/lib/gcc/m68k-atari-mint/4.6.4/../../../../m68k-atari-mint/include/osbind.h \
- /opt/cross-mint/lib/gcc/m68k-atari-mint/4.6.4/../../../../m68k-atari-mint/include/mint/osbind.h \
- /opt/cross-mint/lib/gcc/m68k-atari-mint/4.6.4/../../../../m68k-atari-mint/include/mint/ostruct.h \
- /opt/cross-mint/lib/gcc/m68k-atari-mint/4.6.4/../../../../m68k-atari-mint/include/mint/basepage.h \
- /opt/cross-mint/lib/gcc/m68k-atari-mint/4.6.4/../../../../m68k-atari-mint/include/mint/sysbind.h \
- /opt/cross-mint/lib/gcc/m68k-atari-mint/4.6.4/../../../../m68k-atari-mint/include/mint/trap1.h \
- /opt/cross-mint/lib/gcc/m68k-atari-mint/4.6.4/../../../../m68k-atari-mint/include/mint/trap13.h \
- /opt/cross-mint/lib/gcc/m68k-atari-mint/4.6.4/../../../../m68k-atari-mint/include/mint/trap14.h \
- src_atari/time_atari.c \
- /opt/cross-mint/lib/gcc/m68k-atari-mint/4.6.4/../../../../m68k-atari-mint/include/stdint.h \
- src_atari/settings_atari.h src_atari/../src/bitmap.c \
- src_atari/../src/engine.h \
- /opt/cross-mint/lib/gcc/m68k-atari-mint/4.6.4/../../../../m68k-atari-mint/include/stdlib.h \
- src_atari/../src/file_read.c src_atari/../src/engine.h \
- src_atari/draw_maps_atari.c src_atari/draw_sprite_atari.c \
- src_atari/../src/ray_cast_calculate.c src_atari/../src/bitmap_filters.c \
- src_atari/../src/setup_maps.c src_atari/../src/dithering.c \
- src_atari/../src/ray_casting_progressive.c \
- src_atari/../src/../src/engine.h src_atari/ray_casting_atari_falcon.c \
- src_atari/draw_screen_atari.c src_atari/rendering_quality_atari.c \
- src_atari/../src/map_streaming.c src_atari/input_handling_atari.c \
- src_atari/key_map_atari.h src_atari/../ikbd/ikbd.h
+main.o: src/main.c src/engine.h \
+ /opt/amiga/m68k-amigaos/libnix/include/stdlib.h \
+ /opt/amiga/m68k-amigaos/libnix/include/stdio.h \
+ /opt/amiga/m68k-amigaos/libnix/include/string.h \
+ /opt/amiga/m68k-amigaos/sys-include/sys/cdefs.h \
+ /opt/amiga/m68k-amigaos/sys-include/machine/_default_types.h \
+ /opt/amiga/m68k-amigaos/sys-include/sys/features.h \
+ /opt/amiga/m68k-amigaos/libnix/include/_newlib_version.h \
+ /opt/amiga/lib/gcc/m68k-amigaos/6.5.0b/include/stddef.h \
+ /opt/amiga/m68k-amigaos/sys-include/sys/types.h \
+ /opt/amiga/m68k-amigaos/sys-include/_ansi.h \
+ /opt/amiga/m68k-amigaos/sys-include/newlib.h \
+ /opt/amiga/m68k-amigaos/sys-include/sys/config.h \
+ /opt/amiga/m68k-amigaos/sys-include/machine/ieeefp.h \
+ /opt/amiga/m68k-amigaos/sys-include/machine/_types.h \
+ /opt/amiga/m68k-amigaos/sys-include/sys/_types.h \
+ /opt/amiga/m68k-amigaos/sys-include/sys/lock.h \
+ /opt/amiga/m68k-amigaos/sys-include/sys/_stdint.h \
+ /opt/amiga/m68k-amigaos/sys-include/sys/_pthreadtypes.h \
+ /opt/amiga/m68k-amigaos/sys-include/machine/types.h \
+ /opt/amiga/m68k-amigaos/libnix/include/strsup.h \
+ /opt/amiga/lib/gcc/m68k-amigaos/6.5.0b/include/stdarg.h \
+ /opt/amiga/m68k-amigaos/sys-include/stdlib.h \
+ /opt/amiga/m68k-amigaos/sys-include/_ansi.h \
+ /opt/amiga/m68k-amigaos/libnix/include/errno.h \
+ /opt/amiga/m68k-amigaos/libnix/include/sys/errno.h \
+ /opt/amiga/m68k-amigaos/sys-include/sys/errno.h \
+ /opt/amiga/m68k-amigaos/libnix/include/sys/reent.h \
+ /opt/amiga/m68k-amigaos/sys-include/machine/stdlib.h \
+ /opt/amiga/m68k-amigaos/sys-include/stdint.h \
+ /opt/amiga/m68k-amigaos/sys-include/sys/_intsup.h \
+ src/settings_platform.h \
+ /opt/amiga/m68k-amigaos/ndk-include/libraries/dos.h \
+ /opt/amiga/m68k-amigaos/ndk-include/dos/dos.h \
+ /opt/amiga/m68k-amigaos/ndk-include/exec/types.h \
+ deps/ace/include/ace/managers/viewport/simplebuffer.h \
+ deps/ace/include/ace/types.h \
+ deps/ace/include/ace/managers/viewport/camera.h \
+ deps/ace/include/ace/utils/extview.h deps/ace/include/ace/utils/tag.h \
+ deps/ace/include/ace/managers/log.h \
+ deps/ace/include/ace/managers/timer.h \
+ /opt/amiga/m68k-amigaos/ndk-include/clib/exec_protos.h \
+ /opt/amiga/m68k-amigaos/ndk-include/exec/tasks.h \
+ /opt/amiga/m68k-amigaos/ndk-include/exec/nodes.h \
+ /opt/amiga/m68k-amigaos/ndk-include/exec/lists.h \
+ /opt/amiga/m68k-amigaos/ndk-include/exec/memory.h \
+ /opt/amiga/m68k-amigaos/ndk-include/exec/ports.h \
+ /opt/amiga/m68k-amigaos/ndk-include/exec/devices.h \
+ /opt/amiga/m68k-amigaos/ndk-include/exec/libraries.h \
+ /opt/amiga/m68k-amigaos/ndk-include/exec/io.h \
+ /opt/amiga/m68k-amigaos/ndk-include/exec/semaphores.h \
+ /opt/amiga/m68k-amigaos/ndk-include/exec/avl.h \
+ /opt/amiga/m68k-amigaos/ndk-include/exec/interrupts.h \
+ /opt/amiga/m68k-amigaos/ndk-include/hardware/intbits.h \
+ deps/ace/include/ace/managers/memory.h \
+ deps/ace/include/ace/utils/custom.h deps/ace/include/ace/macros.h \
+ /opt/amiga/m68k-amigaos/ndk-include/hardware/custom.h \
+ deps/ace/include/ace/utils/file.h deps/ace/include/ace/managers/copper.h \
+ /opt/amiga/m68k-amigaos/ndk-include/hardware/dmabits.h \
+ deps/ace/include/ace/utils/bitmap.h \
+ /opt/amiga/m68k-amigaos/ndk-include/clib/graphics_protos.h \
+ /opt/amiga/m68k-amigaos/ndk-include/graphics/gfx.h \
+ /opt/amiga/m68k-amigaos/ndk-include/graphics/displayinfo.h \
+ /opt/amiga/m68k-amigaos/ndk-include/graphics/monitor.h \
+ /opt/amiga/m68k-amigaos/ndk-include/graphics/gfxnodes.h \
+ /opt/amiga/m68k-amigaos/ndk-include/graphics/modeid.h \
+ /opt/amiga/m68k-amigaos/ndk-include/utility/tagitem.h \
+ /opt/amiga/m68k-amigaos/ndk-include/graphics/gels.h \
+ /opt/amiga/m68k-amigaos/ndk-include/graphics/rastport.h \
+ /opt/amiga/m68k-amigaos/ndk-include/graphics/view.h \
+ /opt/amiga/m68k-amigaos/ndk-include/graphics/copper.h \
+ /opt/amiga/m68k-amigaos/ndk-include/graphics/clip.h \
+ /opt/amiga/m68k-amigaos/ndk-include/utility/hooks.h \
+ /opt/amiga/m68k-amigaos/ndk-include/graphics/regions.h \
+ /opt/amiga/m68k-amigaos/ndk-include/graphics/sprite.h \
+ /opt/amiga/m68k-amigaos/ndk-include/graphics/text.h \
+ /opt/amiga/m68k-amigaos/ndk-include/graphics/scale.h \
+ /opt/amiga/m68k-amigaos/ndk-include/hardware/blit.h \
+ src/memory_platform.h src/font_platform.h src/input_platform.h \
+ deps/ace/include/ace/managers/joy.h deps/ace/include/ace/managers/key.h \
+ src/screen_platform.h deps/ace/include/ace/managers/blit.h \
+ src/sound_platform.h src/ptplayer.h src/SDI_compiler.h src/platform.h \
+ src/SDI_hook.h src/SDI_interrupt.h src/SDI_lib.h src/SDI_misc.h \
+ src/SDI_stdarg.h deps/ace/include/ace/generic/main.h \
+ deps/ace/include/ace/managers/system.h \
+ /opt/amiga/m68k-amigaos/ndk-include/graphics/gfxbase.h \
+ deps/ace/include/ace/managers/game.h src/file_platform.h src/bitmap.c \
+ src/raycasting.c src/file_read.c src/physics.c src/dithering.c \
+ src/drawing.c src/map_streaming.c src/setup_maps.c \
+ src/rendering_quality.c src/logo_state.c src/menu_state.c \
+ src/game_state.c src/cutscene.c

@@ -42,7 +42,7 @@ all: $(LIB) $(APP)
 
 INC = -Ideps/ace/include
 
-OBJECTS=#src/music_ptr_linkable.o
+OBJECTS=src/music_ptr_linkable.o
 
 
 $(APP): src/main.c depend

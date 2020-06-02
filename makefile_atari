@@ -5,6 +5,7 @@
 TOOLCHAIN_PREFIX=m68k-atari-mint-
 CC=$(TOOLCHAIN_PREFIX)gcc
 AR=$(TOOLCHAIN_PREFIX)ar
+ASM=m68k-atari-mint-as
 
 UNAME := $(shell uname)
 ifeq ($(UNAME),Linux)
@@ -26,10 +27,13 @@ CFLAGS=-m68000\
 	#-Wall\
 	#-mshort\
 	
-ASFLAGS=$(CFLAGS)	
 	
+ASMFLAGS= -Fhunk\
+	-quiet\
+	-esc\
+
 ICARUS=icarus
-APP=$(ICARUS).tos
+APP=$(ICARUS).prg
 LIB=libikbd.a 
 SNDHLIB=libsndh.a
 
@@ -39,7 +43,7 @@ INC = -Iikbd -Isndh
 
 CSOURCES=ikbd/keys.c ikbd/mouse.c sndh/sndh.c
 		
-OBJECTS=ikbd/keys.o ikbd/mouse.o ikbd/ikbd.o
+OBJECTS=ikbd/keys.o  ikbd/ikbd.o #ikbd/mouse.o
 
 $(APP): $(OBJECTS) ikbd/startup.o src/main.c depend
 	$(CC) $(CFLAGS) ikbd/startup.o src/main.c $(INC) $(LIB) $(SNDHLIB) libcmini.a -o $(APP)  -s -L$LIBCMINI -lgcc
