@@ -178,6 +178,8 @@ void RunMenuState()
                     engine.landingBitmap = LoadBitmapFile(DATA_DIR(land), &engine.landingHeader, engine.activePalette, 2, 14);
                     engine.takeoffBitmap = LoadBitmapFile(DATA_DIR(take), &engine.takeoffHeader, engine.activePalette, 2, 14);
                     engine.shipBitmap = LoadBitmapFile(DATA_DIR(icar48), &engine.shipHeader, engine.activePalette, 2, 14);
+                    engine.dustLeftBitmap = LoadBitmapFile(DATA_DIR(dustl), &engine.dustLeftHeader, engine.activePalette, 2, 14);
+                    engine.dustRightBitmap = LoadBitmapFile(DATA_DIR(dustr), &engine.dustRightHeader, engine.activePalette, 2, 14);
 
                     
                     engine.pBitmapVelocity = CreateBitmapFromText(engine.font, "1234");

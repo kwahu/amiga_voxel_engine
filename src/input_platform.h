@@ -46,15 +46,19 @@ void GetPlayerRendererSetting()
 	if (getKey(3))
 	{
 		engine.renderer.renderingDepth = 24;
+		engine.renderer.fogShift = 0;
+		engine.renderer.dustStep = 4;
 		engine.renderer.calculationDepthDivider = 2;
 		engine.renderer.calculationDepthStep = 4;
 		engine.renderer.renderingDepthStep = 1;
 		engine.renderer.lastOverwrittenLine = 0;
 
 		engine.renderer.stepModifier = 16;
+		
+		engine.renderer.collisionWarningStep = 2;
 		if(engine.renderer.highMemory)
 		{
-		engine.renderer.turnDenom = 3000;
+		engine.renderer.turnDenom = 10;
 			engine.renderer.xFOV = 20;
 			engine.renderer.yFOV = 30;
 			engine.renderer.renderingType = 4;
@@ -62,7 +66,7 @@ void GetPlayerRendererSetting()
 		}
 		else
 		{
-		engine.renderer.turnDenom = 4500;
+		engine.renderer.turnDenom = 10;
 			engine.renderer.xFOV = 23;
 			engine.renderer.yFOV = 15;
 			engine.renderer.renderingType = 1;
@@ -73,15 +77,19 @@ void GetPlayerRendererSetting()
 	if (getKey(4)) //25 MHZ
 	{
 		engine.renderer.renderingDepth = 64;
+		engine.renderer.fogShift = 2;
+		engine.renderer.dustStep = 8;
 		engine.renderer.calculationDepthDivider = 2;
 		engine.renderer.calculationDepthStep = 2;
 		engine.renderer.renderingDepthStep = 1;
 		engine.renderer.lastOverwrittenLine = 0;
 
 		engine.renderer.stepModifier = 16;
+		
+		engine.renderer.collisionWarningStep = 4;
 		if(engine.renderer.highMemory)
 		{
-		engine.renderer.turnDenom = 3000;
+		engine.renderer.turnDenom = 10;
 		engine.renderer.xFOV = 8;
 		engine.renderer.yFOV = 18;
 			engine.renderer.renderingType = 6;
@@ -89,13 +97,27 @@ void GetPlayerRendererSetting()
 		}
 		else
 		{
-		engine.renderer.turnDenom = 4500;
+		engine.renderer.turnDenom = 10;
 			engine.renderer.xFOV = 18;
 			engine.renderer.yFOV = 10;
 			engine.renderer.renderingType = 3;
 			RecalculateEven();	
 		}
 	}
+}
+
+void ProcessSettingsInput()
+{
+	if(getKey(1))
+	{
+		engine.renderer.turnDenom = 10;
+	}
+	
+	if(getKey(2))
+	{
+		engine.renderer.turnDenom = 9;
+	}
+	
 }
 
 // void ProcessQualityInput()
@@ -247,6 +269,8 @@ void GetPlayerRendererSetting()
 	if (getKey(3))
 	{	
 		engine.renderer.renderingDepth = TERRAINDEPTH;
+		
+		engine.renderer.fogShift = 3;
 		engine.renderer.calculationDepthDivider = 2;
 		engine.renderer.calculationDepthStep = 2;
 		engine.renderer.renderingDepthStep = 1;
@@ -273,6 +297,8 @@ void GetPlayerRendererSetting()
 	if (getKey(4)) 
 	{
 		engine.renderer.renderingDepth = TERRAINDEPTH;
+		
+		engine.renderer.fogShift = 3;
 		engine.renderer.calculationDepthDivider = 2;
 		engine.renderer.calculationDepthStep = 2;
 		engine.renderer.renderingDepthStep = 1;

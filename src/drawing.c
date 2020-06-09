@@ -8,6 +8,36 @@ void ClearBuffor()
 	memset(engine.renderer.plane4W, 0, PLANEWIDTH*PLANEHEIGHT);
 	
 }
+
+void ZeroScreen(UBYTE left, UBYTE right)
+{
+	UWORD *screen1 = engine.renderer.plane1W + left;
+	UWORD *screen2 = engine.renderer.plane2W + left;
+	UWORD *screen3 = engine.renderer.plane3W + left;
+	UWORD *screen4 = engine.renderer.plane4W + left;
+	UBYTE i;
+	UWORD j;
+	for(j = 0; j < PLANEHEIGHT; ++j)
+	{
+		UWORD *s1 = screen1;
+		UWORD *s2 = screen2;
+		UWORD *s3 = screen3;
+		UWORD *s4 = screen4;
+		
+		for(i = left; i < right; ++i)
+		{
+			*s1++ = 0;
+			*s2++ = 0;
+			*s3++ = 0;
+			*s4++ = 0;
+		}
+
+		screen1 += PLANEWIDTHWORD;
+		screen2 += PLANEWIDTHWORD;
+		screen3 += PLANEWIDTHWORD;
+		screen4 += PLANEWIDTHWORD;
+	}
+}
 #else
 void ClearBuffor()
 {
@@ -84,12 +114,27 @@ void DrawBar(UWORD posX, UWORD posY, UBYTE length)
 
 }
 
+UBYTE flippedBytes[256];
+
+
+UWORD FlipWord(UWORD word)
+{
+	UWORD result = flippedBytes[(word & 0xFF00) >> 8];
+	result |= flippedBytes[(word & 0x00FF)] << 8;
+	return result;
+}
+
 void DrawSprite4b(unsigned char *bLogo, BITMAPINFOHEADER *bhLogo, 
 					UWORD posX, UWORD posY, WORD spriteIndexX, WORD spriteIndexY,
-					UWORD spriteSizeX, UWORD spriteSizeY)
+					UWORD spriteSizeX, UWORD spriteSizeY, UWORD horizontalFlip)
 {
 	UWORD position;
 	UWORD word1, word2, word3, word4, mask;
+
+	if(horizontalFlip)
+	{
+		spriteIndexX = -spriteIndexX;
+	}
 
 	WORD planePosX = posX>>4;
 	BYTE leftGap = posX - (planePosX<<4);
@@ -122,8 +167,14 @@ void DrawSprite4b(unsigned char *bLogo, BITMAPINFOHEADER *bhLogo,
 	UWORD upStride = (wordWidth << 2) + (xSteps << 2);
 
 	UWORD offset = (baseY + spriteSizeY - 1)*wordWidth*4 + baseX*4;
+	
 	UWORD maskOffset = (baseY + spriteSizeY - 1)*wordWidth + baseX;
-
+	if(horizontalFlip)
+	{
+		offset += (xSteps-1)*4;
+		maskOffset += xSteps-1;
+		upStride = (wordWidth << 2) - (xSteps << 2);
+	}
 	UWORD *bmpRowPtr1 = (UWORD *)bLogo + offset;
 	UWORD *bmpRowPtr2 = bmpRowPtr1 + 1;
 	UWORD *bmpRowPtr3 = bmpRowPtr2 + 1;
@@ -158,7 +209,24 @@ void DrawSprite4b(unsigned char *bLogo, BITMAPINFOHEADER *bhLogo,
 			currValue2 = *(bmpRowPtr2);
 			currValue3 = *(bmpRowPtr3);
 			currValue4 = *(bmpRowPtr4);
-			currMask = *(maskPtr+x);
+			
+			if(horizontalFlip)
+			{
+				currMask = *(maskPtr-x);
+			
+				currValue1 = FlipWord(currValue1);
+				currValue2 = FlipWord(currValue2);
+				currValue3 = FlipWord(currValue3);
+				currValue4 = FlipWord(currValue4);
+				currMask = FlipWord(currMask);
+			}
+			else
+			{
+				
+				currMask = *(maskPtr+x);
+			
+			}
+			
 
 			word1 = (prevValue1 << rightGap) + (currValue1 >> leftGap);
 			word2 = (prevValue2 << rightGap) + (currValue2 >> leftGap);
@@ -191,11 +259,22 @@ void DrawSprite4b(unsigned char *bLogo, BITMAPINFOHEADER *bhLogo,
             fourthPos+=4;
 			#endif
 
-			bmpRowPtr1 += 4;
-			bmpRowPtr2 += 4;
-			bmpRowPtr3 += 4;
-			bmpRowPtr4 += 4;
-		
+
+			if(horizontalFlip)
+			{
+				bmpRowPtr1 -= 4;
+				bmpRowPtr2 -= 4;
+				bmpRowPtr3 -= 4;
+				bmpRowPtr4 -= 4;
+			}
+			else
+			{		
+				bmpRowPtr1 += 4;
+				bmpRowPtr2 += 4;
+				bmpRowPtr3 += 4;
+				bmpRowPtr4 += 4;
+			}
+			
 		}
 
 		word1 = prevValue1 << rightGap;

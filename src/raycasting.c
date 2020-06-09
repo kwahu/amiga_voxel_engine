@@ -1066,7 +1066,7 @@ UBYTE px, UBYTE py, UBYTE ph, UBYTE screenStart, UBYTE screenEnd)
 
     
 	UWORD yOffset = (128 - (YSIZEODD)) * PLANEWIDTHWORD;
-    WORD baseX = XTURNBUFFOR + engine.renderer.xTurnOffset + screenStart*6;
+    WORD baseX = XTURNBUFFOR + screenStart*6;// + engine.renderer.xTurnOffset;
 
 	//for each vertical line
 
@@ -1093,12 +1093,14 @@ UBYTE px, UBYTE py, UBYTE ph, UBYTE screenStart, UBYTE screenEnd)
 
         for(UWORD j = 0; j < depth; ++j)
         {
-            UBYTE mx = px + *(rayXPtr++);
-            UBYTE mx2 = px + *(rayXPtr2++);
-            UBYTE mx3 = px + *(rayXPtr3++);
+            UBYTE mx = px + *(rayXPtr++) + engine.renderer.xTurnOffset;
+            UBYTE mx2 = px + *(rayXPtr2++) + engine.renderer.xTurnOffset;
+            UBYTE mx3 = px + *(rayXPtr3++) + engine.renderer.xTurnOffset;
+            
             mapSamples[j] = mapPtr[(mx >> 1)*offset];
             mapSamples[depth+j] = mapPtr[(mx2 >> 1)*offset];
             mapSamples[depth+depth+j] = mapPtr[(mx3 >> 1)*offset];
+            
             ++mapPtr;
         }
         baseRayX += (TERRAINDEPTH*6);
@@ -1128,16 +1130,46 @@ UBYTE px, UBYTE py, UBYTE ph, UBYTE screenStart, UBYTE screenEnd)
                 if(slope > 0)
                 {
                     UWORD val;
-                    if(slope > offsetz>>2)
+                    
+                    UWORD diff = ( 17 - (mapValue >> 8) );
+                    
+                    if(diff > 32)
                     {
-
-                        val = ((mapValue >> 8) + firstDepth*((((slope)) >> 2) & 1));
+                        diff -= 2*diff; 
+                        diff = ( diff - ((depth-tz) >> engine.renderer.fogShift) );
+                        if(diff > 32)
+                        {
+                            diff = 0;
+                        }
+                        else
+                        {
+                            diff = -diff;
+                        }
+                        
                     }
                     else
                     {
-                        val = ((mapValue >> 8) + firstDepth*2);
+                        diff = ( diff - ((depth-tz) >> engine.renderer.fogShift) );
+                        if(diff > 32)
+                        {
+                            diff = 0;
+                        }
                         
                     }
+                    
+                    
+
+                    if(slope > offsetz>>2)
+                    {
+
+                        val = diff + (mapValue >> 8) + firstDepth*(((slope) >> 2) & 1);//((mapValue >> 8) + firstDepth*((((slope)) >> 2) & 1));
+                    }
+                    else
+                    {
+                        val = diff + (mapValue >> 8) + firstDepth*2;//((mapValue >> 8) + firstDepth*2);
+                        
+                    }
+                    
                     
                     *screenPtr = (val << 5) + val;
                     *depthBufferPtr = (UBYTE)(offsetz);
@@ -1146,7 +1178,7 @@ UBYTE px, UBYTE py, UBYTE ph, UBYTE screenStart, UBYTE screenEnd)
                     rayYPtr += TERRAINDEPTH;
                     screenPtr-=3;//go step higher on screen
                     depthBufferPtr += 20;
-                    if(sy == YSIZEODD) tz=engine.renderer.renderingDepth; //break if end of screen
+                    if(sy == YSIZEODD) tz=depth; //break if end of screen
                 }
                 else
                 {	
@@ -1244,7 +1276,7 @@ UBYTE px, UBYTE py, UBYTE ph, UBYTE screenStart, UBYTE screenEnd)
 
     
 	UWORD yOffset = (128 - (YSIZEEVEN<<1)) * PLANEWIDTHWORD;
-    UBYTE baseX = XTURNBUFFOR + engine.renderer.xTurnOffset + (screenStart<<2);
+    UBYTE baseX = XTURNBUFFOR + (screenStart<<2);// + engine.renderer.xTurnOffset;
 
 	//for each vertical line
     
@@ -1271,8 +1303,8 @@ UBYTE px, UBYTE py, UBYTE ph, UBYTE screenStart, UBYTE screenEnd)
 
         for(UWORD j = 0; j < depth; ++j)
         {
-            UBYTE mx = px + *(rayXPtr++);
-            UBYTE mx2 = px + *(rayXPtr2++);
+            UBYTE mx = px + *(rayXPtr++) + engine.renderer.xTurnOffset;
+            UBYTE mx2 = px + *(rayXPtr2++) + engine.renderer.xTurnOffset;
             mapSamples[j] = mapPtr[(mx >> 1)*offset];
             mapSamples[depth+j] = mapPtr[(mx2 >> 1)*offset];
             ++mapPtr;
@@ -1285,6 +1317,7 @@ UBYTE px, UBYTE py, UBYTE ph, UBYTE screenStart, UBYTE screenEnd)
             
             UBYTE *depthBufferPtr = baseDepth; 
             UWORD tz = 0;
+            UWORD mist = 0;
             
             UWORD *rayYPtr = baseRayY;
             UWORD *screenPtr = screenBase + i;
@@ -1304,17 +1337,45 @@ UBYTE px, UBYTE py, UBYTE ph, UBYTE screenStart, UBYTE screenEnd)
                 if(slope > 0)
                 {   
                     UWORD val;
-                    if(slope > offsetz>>2)
-                    {
 
-                        val = ((mapValue >> 8) + firstDepth*((((slope)) >> 2) & 1));
+                    UWORD diff = ( 17 - (mapValue >> 8) );
+                    
+                    if(diff > 32)
+                    {
+                        diff -= 2*diff; 
+                        diff = ( diff - ((depth-tz) >> engine.renderer.fogShift) );
+                        if(diff > 32)
+                        {
+                            diff = 0;
+                        }
+                        else
+                        {
+                            diff = -diff;
+                        }
+                        
                     }
                     else
                     {
-                        val = ((mapValue >> 8) + firstDepth*2);
+                        diff = ( diff - ((depth-tz) >> engine.renderer.fogShift) );
+                        if(diff > 32)
+                        {
+                            diff = 0;
+                        }
                         
                     }
                     
+                    
+
+                    if(slope > offsetz>>2)
+                    {
+
+                        val = diff + (mapValue >> 8) + firstDepth*(((slope) >> 2) & 1);//((mapValue >> 8) + firstDepth*((((slope)) >> 2) & 1));
+                    }
+                    else
+                    {
+                        val = diff + (mapValue >> 8) + firstDepth*2;//((mapValue >> 8) + firstDepth*2);
+                        
+                    }
                     *screenPtr = (val << 5) + val;
                     *depthBufferPtr = (UBYTE)(offsetz);
 
@@ -1322,7 +1383,7 @@ UBYTE px, UBYTE py, UBYTE ph, UBYTE screenStart, UBYTE screenEnd)
                     rayYPtr += TERRAINDEPTH;
                     screenPtr-=2;//go step higher on screen
                     depthBufferPtr += 20;
-                    if(sy == YSIZEEVEN) tz=engine.renderer.renderingDepth; //break if end of screen
+                    if(sy == YSIZEEVEN) tz=depth; //break if end of screen
                 }
                 else
                 {	
@@ -1332,6 +1393,7 @@ UBYTE px, UBYTE py, UBYTE ph, UBYTE screenStart, UBYTE screenEnd)
                     ++mapSmpPtr;
                     ++rayYPtr;
                     ++offsetz;
+                    ++mist;
                 }
 
             }

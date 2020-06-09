@@ -7,6 +7,8 @@ void RenderQuality()
 	if(engine.renderer.renderingType == 1)
 	{
 		ProcessRayCastsFull4x4(engine.renderer.rayCastX, engine.renderer.rayCastY, engine.renderer.mapHigh, engine.gameState.shipParams.pX,engine.gameState.shipParams.pZ,engine.gameState.shipParams.pY, 4, 16);
+		ZeroScreen(0, 4);
+		ZeroScreen(16, 20);
 	}
 	else if(engine.renderer.renderingType == 2)
 	{
@@ -19,6 +21,8 @@ void RenderQuality()
 	else if(engine.renderer.renderingType == 4)
 	{
 		ProcessRayCastsFull3x2(engine.renderer.rayCastX, engine.renderer.rayCastY, engine.renderer.mapHigh, engine.gameState.shipParams.pX,engine.gameState.shipParams.pZ,engine.gameState.shipParams.pY, 4, 16);
+		ZeroScreen(0, 4);
+		ZeroScreen(16, 20);
 	}
 	else if(engine.renderer.renderingType == 5)
 	{

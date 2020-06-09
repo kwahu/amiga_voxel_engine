@@ -1,20 +1,17 @@
 #ifndef _ENGINE_H_
 #define _ENGINE_H_
 
+#ifndef GENESIS
 #include <stdlib.h>
 #include <stdint.h>
 #include <stdio.h>
 #include <stddef.h>
+#endif
+
 #include "settings_platform.h"
 #include "memory_platform.h"
 
 
-#define ULONG 	uint32_t
-#define LONG	int32_t
-#define UWORD 	uint16_t
-#define WORD 	int16_t
-#define UBYTE  unsigned char
-#define BYTE	signed char
 
 #define DEPTH 4
 #define COLORS 32
@@ -148,6 +145,8 @@ typedef struct Renderer
 
     UBYTE renderingType, calculationDepthDivider, calculationDepthStep, renderingDepthStep, stepModifier, xFOV, yFOV;
     UBYTE renderingDepth;
+    UBYTE fogShift;
+    UBYTE collisionWarningStep;
     UBYTE shadowStep;
     UBYTE highMemory;
     UBYTE zStart;
@@ -174,6 +173,7 @@ typedef struct Renderer
     
     BYTE xTurnOffset; //camera rotation offsett when turning
     WORD turnDenom;
+    UBYTE dustStep;
 
 
 } Renderer;
@@ -215,8 +215,8 @@ typedef struct Engine
     
 
     UBYTE activePalette[16 * 4];
-    BITMAPINFOHEADER activeBitmapHeader, paletteHeader, shipHeader, explosionHeader, landingHeader, takeoffHeader;
-    UBYTE *activeBitmap, *paletteBitmap, *shipBitmap, *explosionBitmap, *landingBitmap, *takeoffBitmap;
+    BITMAPINFOHEADER activeBitmapHeader, paletteHeader, shipHeader, explosionHeader, landingHeader, takeoffHeader, dustLeftHeader, dustRightHeader;
+    UBYTE *activeBitmap, *paletteBitmap, *shipBitmap, *explosionBitmap, *landingBitmap, *takeoffBitmap, *dustLeftBitmap, *dustRightBitmap;
     UBYTE *music;
 
     Font *font;

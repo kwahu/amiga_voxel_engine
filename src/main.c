@@ -58,13 +58,20 @@ void InitEngine(void)
 	engine.exitFlag = 0;
 	engine.gamePaused = 0;
 
+	UWORD i;
+	for(i = 0; i < 256; ++i)
+	{
+		UBYTE j = i;
+		flippedBytes[i] = (((j&1) << 7)|((j&2) << 5)|((j&4) << 3)|((j&8) << 1)|((j&16) >> 1)|((j&32) >> 3)|((j&64) >> 5)|((j&128) >> 7));
+	}
+
 	engine.musicOn = 0;
 	#ifdef AMIGA
 	InitializeGameChipMemory();
 	#endif
 	InitScreen();
 
-	NewArena(&engine.temporaryArena, 100*1024);
+	NewArena(&engine.temporaryArena, 109*1024);
 
 	engine.paletteBitmap = LoadBitmapFile(DATA_DIR(plt), &engine.paletteHeader, engine.activePalette, 1, 0);
 	
@@ -118,7 +125,7 @@ void InitEngine(void)
 	);
 	
 	engine.versionText = CreateBitmapFromText(engine.font, 
-	"VERSION 1.02"
+	"VERSION 1.03"
 	);
 	
 	engine.renderer.ditherTable1 = 0;
@@ -236,6 +243,8 @@ void EngineLoop(void)
 	{
 		pauseHeld = 0;
 	}
+
+	ProcessSettingsInput();
 	
 
 	engine.loopEndTime = getCurrentTime();

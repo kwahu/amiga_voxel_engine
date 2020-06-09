@@ -5,19 +5,52 @@
 #include <libraries/dos.h>
 #include <ace/managers/viewport/simplebuffer.h>
 
+
+#define ULONG 	uint32_t
+#define LONG	int32_t
+#define UWORD 	uint16_t
+#define WORD 	int16_t
+#define UBYTE  unsigned char
+#define BYTE	signed char
+
 #define PLANEWIDTH 40
 #define PLANEWIDTHWORD 20
 #define TERRAINDEPTH 64
 #define PLANEHEIGHT 256
-#define XTURNBUFFOR 25
+#define XTURNBUFFOR 0
 #define GAME_SCREEN_BASELINE 218
-#define GAME_SHIP_POS 135
+#define GAME_SHIP_POS 155
 
 
 #define XSIZEODD (120 + XTURNBUFFOR * 2)
 #define XSIZEEVEN (80 + XTURNBUFFOR * 2)
 
 #define YSIZEODD 90
+#define YSIZEEVEN (YSIZEODD / 2)
+#endif
+#ifdef GENESIS
+
+#include <genesis.h>
+
+#define ULONG 	u32
+#define LONG	s32
+#define UWORD 	u16
+#define WORD 	s16
+#define UBYTE  unsigned char
+#define BYTE	signed char
+
+#define PLANEWIDTH 160
+#define PLANEWIDTHWORD 80
+#define TERRAINDEPTH 32
+#define PLANEHEIGHT 200
+#define XTURNBUFFOR 25
+#define XSIZEODD (120 + XTURNBUFFOR * 2)
+#define XSIZEEVEN (80 + XTURNBUFFOR * 2)
+#define GAME_SCREEN_BASELINE 164
+#define GAME_SHIP_POS 82
+
+
+#define YSIZEODD 40
 #define YSIZEEVEN (YSIZEODD / 2)
 
 
@@ -61,10 +94,10 @@ typedef struct PlatformScreen
 	tVPort *s_pVPort;
 	tSimpleBufferManager *s_pBuffer;
 	#else
-    uint16_t *physBase;
-    uint16_t *logBase;
-	uint16_t *planesAtari;
-	uint16_t systemPalette[16];
+    UWORD *physBase;
+    UWORD *logBase;
+	UWORD *planesAtari;
+	UWORD systemPalette[16];
 	#endif
 
 } PlatformScreen;

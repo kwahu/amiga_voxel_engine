@@ -29,7 +29,7 @@ ULONG getDeltaTime(ULONG *refTime)
 void updateShipParams(LONG deltaTime, ULONG terrainHeight)
 {
     ShipParams shipParams = engine.gameState.shipParams;
-	shipParams.relHeight = ((shipParams.pY - 2) - terrainHeight);
+	shipParams.relHeight = ((shipParams.pY - 16) - terrainHeight);
 	shipParams.ddP = (((240 - shipParams.relHeight) - (shipParams.dP>>3)) << 1);
 	
 	LONG addedVelocity = (shipParams.ddP>>3);
@@ -49,10 +49,10 @@ void updateShipParams(LONG deltaTime, ULONG terrainHeight)
 		shipParams.dP = 0;
 	}
 
-	shipParams.precZ += deltaTime*shipParams.dP>>8;///shipParams.dPDenom;
+	UWORD forwardStep = shipParams.dP>>8;
+	shipParams.precZ += deltaTime*forwardStep;///shipParams.dPDenom;
 
-
-	shipParams.precX += ((LONG)deltaTime * engine.gameState.crossHairX) >> 11;
+	shipParams.precX += (forwardStep*((LONG)deltaTime * engine.gameState.crossHairX)) >> 14;
 	shipParams.precY -= ((LONG)deltaTime * engine.gameState.crossHairY) >> 10;
 
 	if (shipParams.precY > 7000)
