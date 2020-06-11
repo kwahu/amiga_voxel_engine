@@ -430,15 +430,15 @@ void DrawPixel(UWORD x, UWORD y, UBYTE shape, UBYTE color)
 	engine.renderer.plane3W[secondPos] = (rightPixelPattern3) | (engine.renderer.plane3W[secondPos] & (rightScreenPattern));
 	engine.renderer.plane4W[secondPos] = (rightPixelPattern4) | (engine.renderer.plane4W[secondPos] & (rightScreenPattern));
 	#else
-	engine.renderer.planes[firstPos] = (col1&leftPixelPattern) | (engine.renderer.planes[firstPos] & (leftScreenPattern));
-	engine.renderer.planes[firstPos+1] = (col2&leftPixelPattern) | (engine.renderer.planes[firstPos+1] & (leftScreenPattern));
-	engine.renderer.planes[firstPos+2] = (col3&leftPixelPattern) | (engine.renderer.planes[firstPos+2] & (leftScreenPattern));
-	engine.renderer.planes[firstPos+3] = (col4&leftPixelPattern) | (engine.renderer.planes[firstPos+3] & (leftScreenPattern));
+	engine.renderer.planes[firstPos] = (col1&leftPixelPattern1) | (engine.renderer.planes[firstPos] & (leftScreenPattern));
+	engine.renderer.planes[firstPos+1] = (col2&leftPixelPattern2) | (engine.renderer.planes[firstPos+1] & (leftScreenPattern));
+	engine.renderer.planes[firstPos+2] = (col3&leftPixelPattern3) | (engine.renderer.planes[firstPos+2] & (leftScreenPattern));
+	engine.renderer.planes[firstPos+3] = (col4&leftPixelPattern4) | (engine.renderer.planes[firstPos+3] & (leftScreenPattern));
 	
-	engine.renderer.planes[secondPos] = (col1&rightPixelPattern) | (engine.renderer.planes[secondPos] & (rightScreenPattern));
-	engine.renderer.planes[secondPos+1] = (col2&rightPixelPattern) | (engine.renderer.planes[secondPos+1] & (rightScreenPattern));
-	engine.renderer.planes[secondPos+2] = (col3&rightPixelPattern) | (engine.renderer.planes[secondPos+2] & (rightScreenPattern));
-	engine.renderer.planes[secondPos+3] = (col4&rightPixelPattern) | (engine.renderer.planes[secondPos+3] & (rightScreenPattern));
+	engine.renderer.planes[secondPos] = (col1&rightPixelPattern1) | (engine.renderer.planes[secondPos] & (rightScreenPattern));
+	engine.renderer.planes[secondPos+1] = (col2&rightPixelPattern2) | (engine.renderer.planes[secondPos+1] & (rightScreenPattern));
+	engine.renderer.planes[secondPos+2] = (col3&rightPixelPattern3) | (engine.renderer.planes[secondPos+2] & (rightScreenPattern));
+	engine.renderer.planes[secondPos+3] = (col4&rightPixelPattern4) | (engine.renderer.planes[secondPos+3] & (rightScreenPattern));
 	#endif
 }
 
