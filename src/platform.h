@@ -30,14 +30,6 @@ void genericProcess(void)
 void genericDestroy(void)
 {
 }
-#endif
-#ifdef GENESIS
-
-
-int main(UWORD hard)
-{
-	return 0;
-}
 #else
 
 #define DATA_DIR(file) "\\data\\" #file

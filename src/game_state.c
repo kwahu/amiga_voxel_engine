@@ -291,7 +291,7 @@ void RunGameState()
     
     
     
-    if(engine.gameState.shipParams.pZ + (engine.renderer.mapLengthRemainder) > 2816)
+    if(engine.gameState.shipParams.pZ + (engine.renderer.mapLengthRemainder) > MAPLENGTH*MAPSIZE*2)
     {
         engine.gameState.crossHairX = 0;
 

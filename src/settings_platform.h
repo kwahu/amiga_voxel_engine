@@ -27,37 +27,7 @@
 
 #define YSIZEODD 90
 #define YSIZEEVEN (YSIZEODD / 2)
-#endif
-#ifdef GENESIS
-
-#include <genesis.h>
-
-#define ULONG 	u32
-#define LONG	s32
-#define UWORD 	u16
-#define WORD 	s16
-#define UBYTE  unsigned char
-#define BYTE	signed char
-
-#define PLANEWIDTH 160
-#define PLANEWIDTHWORD 80
-#define TERRAINDEPTH 32
-#define PLANEHEIGHT 200
-#define XTURNBUFFOR 25
-#define XSIZEODD (120 + XTURNBUFFOR * 2)
-#define XSIZEEVEN (80 + XTURNBUFFOR * 2)
-#define GAME_SCREEN_BASELINE 164
-#define GAME_SHIP_POS 82
-
-
-#define YSIZEODD 40
-#define YSIZEEVEN (YSIZEODD / 2)
-
-
-
-
 #else
-
 #include "key_map_atari.h"
 #include <osbind.h>
 #include <mint/sysbind.h>

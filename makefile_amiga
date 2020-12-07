@@ -14,8 +14,8 @@ else
 PREFIX=/opt/amiga/bin/m68k-amigaos
 endif
 
-CFLAGS=-m68000\
-	-msoft-float\
+CFLAGS=-m68020\
+	-mhard-float\
 	-fomit-frame-pointer \
 	-O2\
 	-std=c11\

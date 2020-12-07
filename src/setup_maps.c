@@ -51,9 +51,18 @@ void LoadMap(const char *heightName, const char *colorName,
 	unsigned char tempColorTable[16 * 4];
 	unsigned char *heightMap, *colorMap;
 
-	heightMap = LoadBitmapFile(heightName, &tempHeader, tempColorTable, 0, 0);
-	colorMap = LoadBitmapFile(colorName, &tempHeader, tempColorTable, 0, 0);
+	File filePtr = OpenFile(heightName);
 
+    //read the bitmap file header
+    heightMap = (unsigned char *)AllocateFromArena(&engine.temporaryArena, 128*128);
+	colorMap = (unsigned char *)AllocateFromArena(&engine.temporaryArena, 128*128);
+		
+	ReadFile(filePtr, heightMap, MAPSIZE*MAPSIZE);
+	CloseFile(filePtr);
+	filePtr = OpenFile(heightName);
+	ReadFile(filePtr, colorMap, MAPSIZE*MAPSIZE);
+	CloseFile(filePtr);
+	
 	CombineMapsHigh(heightMap, colorMap,high, rawLength);
 						//GenerateMap(high);
 						
@@ -645,215 +654,222 @@ void SetupMaps()
 	
 	
 	UWORD *currentMap = engine.renderer.firstMap;
+
+	LoadMap(DATA_DIR(h1), DATA_DIR(c1), engine.renderer.firstMap, currentRawLength);
+
+	currentMap += MAPSIZE;
+	LoadMap(DATA_DIR(h2), DATA_DIR(c2), currentMap, currentRawLength);
+
+	currentMap += MAPSIZE;
 	
 
-	LoadMap(DATA_DIR(h11), DATA_DIR(c11), engine.renderer.firstMap, currentRawLength);
+	// LoadMap(DATA_DIR(h11), DATA_DIR(c11), engine.renderer.firstMap, currentRawLength);
 
-	currentMap += MAPSIZE;
+	// currentMap += MAPSIZE;
 
-	if((--currentMapsLength) == 0)
-	{
-		LoadMap(DATA_DIR(h10), DATA_DIR(c10), currentMap, currentRawLength);
+	// if((--currentMapsLength) == 0)
+	// {
+	// 	LoadMap(DATA_DIR(h10), DATA_DIR(c10), currentMap, currentRawLength);
 	
-		currentMap = engine.renderer.secondMap;
-		currentRawLength = engine.secondMapLength + MAPSIZE;
-		currentMapsLength = 11;
-		LoadMap(DATA_DIR(h10), DATA_DIR(c10), currentMap, currentRawLength);
+	// 	currentMap = engine.renderer.secondMap;
+	// 	currentRawLength = engine.secondMapLength + MAPSIZE;
+	// 	currentMapsLength = 11;
+	// 	LoadMap(DATA_DIR(h10), DATA_DIR(c10), currentMap, currentRawLength);
 
-	}
-	else
-	{
-		LoadMap(DATA_DIR(h10), DATA_DIR(c10), currentMap, currentRawLength);
+	// }
+	// else
+	// {
+	// 	LoadMap(DATA_DIR(h10), DATA_DIR(c10), currentMap, currentRawLength);
 		
-	}
+	// }
 
 
 
 
 
-	currentMap += MAPSIZE;
+	// currentMap += MAPSIZE;
 
-	if((--currentMapsLength) == 0)
-	{
-		LoadMap(DATA_DIR(h9), DATA_DIR(c9), currentMap, currentRawLength);
+	// if((--currentMapsLength) == 0)
+	// {
+	// 	LoadMap(DATA_DIR(h9), DATA_DIR(c9), currentMap, currentRawLength);
 		
-		currentMap = engine.renderer.secondMap;
-		currentRawLength = engine.secondMapLength + MAPSIZE;
-		currentMapsLength = 11;
-		LoadMap(DATA_DIR(h9), DATA_DIR(c9), currentMap, currentRawLength);
+	// 	currentMap = engine.renderer.secondMap;
+	// 	currentRawLength = engine.secondMapLength + MAPSIZE;
+	// 	currentMapsLength = 11;
+	// 	LoadMap(DATA_DIR(h9), DATA_DIR(c9), currentMap, currentRawLength);
 
-	}
-	else
-	{
-		LoadMap(DATA_DIR(h9), DATA_DIR(c9), currentMap, currentRawLength);
+	// }
+	// else
+	// {
+	// 	LoadMap(DATA_DIR(h9), DATA_DIR(c9), currentMap, currentRawLength);
 		
-	}
+	// }
 
 
 	
-	currentMap += MAPSIZE;
+	// currentMap += MAPSIZE;
 
-	if((--currentMapsLength) == 0)
-	{
-		LoadMap(DATA_DIR(h8), DATA_DIR(c8), currentMap, currentRawLength);
+	// if((--currentMapsLength) == 0)
+	// {
+	// 	LoadMap(DATA_DIR(h8), DATA_DIR(c8), currentMap, currentRawLength);
 		
-		currentMap = engine.renderer.secondMap;
-		currentRawLength = engine.secondMapLength + MAPSIZE;
-		currentMapsLength = 11;
-		LoadMap(DATA_DIR(h8), DATA_DIR(c8), currentMap, currentRawLength);
+	// 	currentMap = engine.renderer.secondMap;
+	// 	currentRawLength = engine.secondMapLength + MAPSIZE;
+	// 	currentMapsLength = 11;
+	// 	LoadMap(DATA_DIR(h8), DATA_DIR(c8), currentMap, currentRawLength);
 
-	}
-	else
-	{
-		LoadMap(DATA_DIR(h8), DATA_DIR(c8), currentMap, currentRawLength);
+	// }
+	// else
+	// {
+	// 	LoadMap(DATA_DIR(h8), DATA_DIR(c8), currentMap, currentRawLength);
 		
-	}
+	// }
 
 
 
 
-	currentMap += MAPSIZE;
+	// currentMap += MAPSIZE;
 
-	if((--currentMapsLength) == 0)
-	{
-		LoadMap(DATA_DIR(h7), DATA_DIR(c7), currentMap, currentRawLength);
+	// if((--currentMapsLength) == 0)
+	// {
+	// 	LoadMap(DATA_DIR(h7), DATA_DIR(c7), currentMap, currentRawLength);
 		
-		currentMap = engine.renderer.secondMap;
-		currentRawLength = engine.secondMapLength + MAPSIZE;
-		currentMapsLength = 11;
-		LoadMap(DATA_DIR(h7), DATA_DIR(c7), currentMap, currentRawLength);
+	// 	currentMap = engine.renderer.secondMap;
+	// 	currentRawLength = engine.secondMapLength + MAPSIZE;
+	// 	currentMapsLength = 11;
+	// 	LoadMap(DATA_DIR(h7), DATA_DIR(c7), currentMap, currentRawLength);
 
-	}
-	else
-	{
-		LoadMap(DATA_DIR(h7), DATA_DIR(c7), currentMap, currentRawLength);
+	// }
+	// else
+	// {
+	// 	LoadMap(DATA_DIR(h7), DATA_DIR(c7), currentMap, currentRawLength);
 		
-	}
+	// }
 
 
 
 
-	currentMap += MAPSIZE;
+	// currentMap += MAPSIZE;
 
-	if((--currentMapsLength) == 0)
-	{
-		LoadMap(DATA_DIR(h6), DATA_DIR(c6), currentMap, currentRawLength);
+	// if((--currentMapsLength) == 0)
+	// {
+	// 	LoadMap(DATA_DIR(h6), DATA_DIR(c6), currentMap, currentRawLength);
 		
-		currentMap = engine.renderer.secondMap;
-		currentRawLength = engine.secondMapLength + MAPSIZE;
-		currentMapsLength = 11;
-		LoadMap(DATA_DIR(h6), DATA_DIR(c6), currentMap, currentRawLength);
+	// 	currentMap = engine.renderer.secondMap;
+	// 	currentRawLength = engine.secondMapLength + MAPSIZE;
+	// 	currentMapsLength = 11;
+	// 	LoadMap(DATA_DIR(h6), DATA_DIR(c6), currentMap, currentRawLength);
 
-	}
-	else
-	{
-		LoadMap(DATA_DIR(h6), DATA_DIR(c6), currentMap, currentRawLength);
+	// }
+	// else
+	// {
+	// 	LoadMap(DATA_DIR(h6), DATA_DIR(c6), currentMap, currentRawLength);
 		
-	}
+	// }
 
 
 
 
 
-	currentMap += MAPSIZE;
+	// currentMap += MAPSIZE;
 
-	if((--currentMapsLength) == 0)
-	{
-		LoadMap(DATA_DIR(h5), DATA_DIR(c5), currentMap, currentRawLength);
+	// if((--currentMapsLength) == 0)
+	// {
+	// 	LoadMap(DATA_DIR(h5), DATA_DIR(c5), currentMap, currentRawLength);
 		
-		currentMap = engine.renderer.secondMap;
-		currentRawLength = engine.secondMapLength + MAPSIZE;
-		currentMapsLength = 11;
-		LoadMap(DATA_DIR(h5), DATA_DIR(c5), currentMap, currentRawLength);
+	// 	currentMap = engine.renderer.secondMap;
+	// 	currentRawLength = engine.secondMapLength + MAPSIZE;
+	// 	currentMapsLength = 11;
+	// 	LoadMap(DATA_DIR(h5), DATA_DIR(c5), currentMap, currentRawLength);
 
-	}
-	else
-	{
-		LoadMap(DATA_DIR(h5), DATA_DIR(c5), currentMap, currentRawLength);
+	// }
+	// else
+	// {
+	// 	LoadMap(DATA_DIR(h5), DATA_DIR(c5), currentMap, currentRawLength);
 		
-	}
+	// }
 
 
 
 
 
-	currentMap += MAPSIZE;
+	// currentMap += MAPSIZE;
 
-	if((--currentMapsLength) == 0)
-	{
-		LoadMap(DATA_DIR(h4), DATA_DIR(c4), currentMap, currentRawLength);
+	// if((--currentMapsLength) == 0)
+	// {
+	// 	LoadMap(DATA_DIR(h4), DATA_DIR(c4), currentMap, currentRawLength);
 		
-		currentMap = engine.renderer.secondMap;
-		currentRawLength = engine.secondMapLength + MAPSIZE;
-		currentMapsLength = 11;
-		LoadMap(DATA_DIR(h4), DATA_DIR(c4), currentMap, currentRawLength);
+	// 	currentMap = engine.renderer.secondMap;
+	// 	currentRawLength = engine.secondMapLength + MAPSIZE;
+	// 	currentMapsLength = 11;
+	// 	LoadMap(DATA_DIR(h4), DATA_DIR(c4), currentMap, currentRawLength);
 
-	}
-	else
-	{
-		LoadMap(DATA_DIR(h4), DATA_DIR(c4), currentMap, currentRawLength);
+	// }
+	// else
+	// {
+	// 	LoadMap(DATA_DIR(h4), DATA_DIR(c4), currentMap, currentRawLength);
 		
-	}
+	// }
 
 
 
 
 
-	currentMap += MAPSIZE;
+	// currentMap += MAPSIZE;
 
-	if((--currentMapsLength) == 0)
-	{
-		LoadMap(DATA_DIR(h3), DATA_DIR(c3), currentMap, currentRawLength);
+	// if((--currentMapsLength) == 0)
+	// {
+	// 	LoadMap(DATA_DIR(h3), DATA_DIR(c3), currentMap, currentRawLength);
 		
-		currentMap = engine.renderer.secondMap;
-		currentRawLength = engine.secondMapLength + MAPSIZE;
-		currentMapsLength = 11;
-		LoadMap(DATA_DIR(h3), DATA_DIR(c3), currentMap, currentRawLength);
+	// 	currentMap = engine.renderer.secondMap;
+	// 	currentRawLength = engine.secondMapLength + MAPSIZE;
+	// 	currentMapsLength = 11;
+	// 	LoadMap(DATA_DIR(h3), DATA_DIR(c3), currentMap, currentRawLength);
 
-	}
-	else
-	{
-		LoadMap(DATA_DIR(h3), DATA_DIR(c3), currentMap, currentRawLength);
+	// }
+	// else
+	// {
+	// 	LoadMap(DATA_DIR(h3), DATA_DIR(c3), currentMap, currentRawLength);
 		
-	}
+	// }
 
 
 
-	currentMap += MAPSIZE;
+	// currentMap += MAPSIZE;
 
 		
 
-	if((--currentMapsLength) == 0)
-	{
-		LoadMap(DATA_DIR(h7), DATA_DIR(c7), currentMap, currentRawLength);
+	// if((--currentMapsLength) == 0)
+	// {
+	// 	LoadMap(DATA_DIR(h7), DATA_DIR(c7), currentMap, currentRawLength);
 		
-		currentMap = engine.renderer.secondMap;
-		currentRawLength = engine.secondMapLength + MAPSIZE;
-		currentMapsLength = 11;
-		LoadMap(DATA_DIR(h7), DATA_DIR(c7), currentMap, currentRawLength);
+	// 	currentMap = engine.renderer.secondMap;
+	// 	currentRawLength = engine.secondMapLength + MAPSIZE;
+	// 	currentMapsLength = 11;
+	// 	LoadMap(DATA_DIR(h7), DATA_DIR(c7), currentMap, currentRawLength);
 
-	}
-	else
-	{
-		LoadMap(DATA_DIR(h7), DATA_DIR(c7), currentMap, currentRawLength);
+	// }
+	// else
+	// {
+	// 	LoadMap(DATA_DIR(h7), DATA_DIR(c7), currentMap, currentRawLength);
 		
-	}
+	// }
 
 
 
 
 
-	currentMap += MAPSIZE;
+	// currentMap += MAPSIZE;
 
-	LoadMap(DATA_DIR(h1), DATA_DIR(c1), currentMap, currentRawLength);
+	// LoadMap(DATA_DIR(h1), DATA_DIR(c1), currentMap, currentRawLength);
 
-	currentMap += MAPSIZE;
+	// currentMap += MAPSIZE;
 
-	if(engine.secondMapLength > 0)
-	{
+	// if(engine.secondMapLength > 0)
+	// {
 		
-		LoadMap(DATA_DIR(h11), DATA_DIR(c11), currentMap, currentRawLength);
-	}
+	// 	LoadMap(DATA_DIR(h11), DATA_DIR(c11), currentMap, currentRawLength);
+	// }
 
 
 	// MakeMap3(bezier3, engine.renderer.mapSource, 17, 177);

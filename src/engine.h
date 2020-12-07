@@ -1,12 +1,10 @@
 #ifndef _ENGINE_H_
 #define _ENGINE_H_
 
-#ifndef GENESIS
 #include <stdlib.h>
 #include <stdint.h>
 #include <stdio.h>
 #include <stddef.h>
-#endif
 
 #include "settings_platform.h"
 #include "memory_platform.h"
@@ -17,7 +15,7 @@
 #define COLORS 32
 
 #define MAPSIZE 128
-#define MAPLENGTH 11
+#define MAPLENGTH 2
 
 #define LOGORUNTIME 7500000
 #define SKY_COLOR 33

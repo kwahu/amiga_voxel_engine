@@ -102,7 +102,7 @@ void InitEngine(void)
 	engine.renderer.plane4W = (UWORD *)AllocateFromArena(&engine.fontArena, screenPlaneSize);
 	#endif
 
-	MakeArenasForMaps(MAPSIZE*MAPSIZE, 11);	
+	MakeArenasForMaps(MAPSIZE*MAPSIZE, MAPLENGTH);	
 	SetupMaps();
 
 
