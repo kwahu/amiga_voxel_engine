@@ -1,7 +1,54 @@
 #include "engine.h"
 
+void LoadGameResources()
+{
+
+
+
+    ClearArena(&engine.temporaryArena);
+    for(int i = 0; i < 3; ++i)
+    {
+        engine.pBitmapInfo[i] = CreateFontBitmap(engine.font);
+    }
+
+    UseSystem();
+    //engine.menu[2] = LoadBitmapFile("data/msg", &engine.headers[2], engine.activePalette, 1, 0);
+
+//UBYTE *LoadBitmapFile(BYTE *filename, BITMAPINFOHEADER *bitmapInfoHeader, UBYTE *bitmapColorTable, 
+//BitmapType type, UBYTE maskBit)
+    engine.shipBitmap = LoadBitmapFile("data/iexpl", &engine.shipHeader, engine.activePalette, 2, 14);
+    //engine.explosionBitmap = LoadBitmapFile("data/iexpl", &engine.explosionHeader, engine.activePalette, 2, 14);
+    //engine.landingBitmap = LoadBitmapFile("data/land", &engine.landingHeader, engine.activePalette, 2, 14);
+    //engine.takeoffBitmap = LoadBitmapFile("data/take", &engine.takeoffHeader, engine.activePalette, 2, 14);
+    
+    UnuseSystem();
+
+    engine.pBitmapVelocity = CreateBitmapFromText(engine.font, "1234");
+    engine.pBitmapScore = CreateBitmapFromText(engine.font, "1234567");
+    engine.pBitmapTime = CreateBitmapFromText(engine.font, "1234567");
+    engine.pBitmapHeight = CreateBitmapFromText(engine.font, "1234");
+    engine.pBitmapVelocityLabel = CreateBitmapFromText(engine.font, "AIR SPEED");
+    engine.pBitmapScoreLabel = CreateBitmapFromText(engine.font, "SCORE");
+    engine.pBitmapTimeLabel = CreateBitmapFromText(engine.font, "TIME");
+    engine.pBitmapHeightLabel = CreateBitmapFromText(engine.font, "RELATIVE ALTITUDE");
+
+    
+   // InitAudio();
+   // PlaySample(0);
+
+
+}
+
 void InitGameState()
 {
+    //if this is the first time we are in the game state, load the resources
+    if(engine.gameState.resourcesLoaded == 0)
+    {
+        LoadGameResources();
+        engine.gameState.resourcesLoaded = 1;
+   
+    }
+
     ResetTime();
 
     engine.currentState = State_Game;
@@ -14,7 +61,9 @@ void InitGameState()
     OverwriteMap();
 
     UWORD terrainHeight = getTerrainHeight(engine.gameState.shipParams, engine.renderer.mapHigh);
-    engine.gameState.startHeight = terrainHeight + 2;
+
+    //======================= define starting height
+    engine.gameState.startHeight = terrainHeight + 50;
     engine.gameState.shipParams.pY = engine.gameState.startHeight;
     
     engine.gameState.shipParams.precY = engine.gameState.shipParams.pY << 5;
@@ -155,7 +204,7 @@ void DrawGameStats()
 {
     ConvertIntToChar(engine.gameState.points, engine.gameState.sScore, 8);
     ConvertIntToChar(engine.gameState.shipParams.dP, engine.gameState.sVelocity, 5);
-    ConvertIntToChar(engine.accTime/2500, engine.gameState.sTime, 8);
+    ConvertIntToChar(engine.accTime/2500000, engine.gameState.sTime, 8);
     ConvertIntToChar(engine.gameState.shipParams.relHeight, engine.gameState.sPlayerY, 5);
     
 
@@ -177,12 +226,9 @@ void DrawGameStats()
 
 void RunGameState()
 {
-
-
     //ProcessQualityInput();
-    
-    
-    
+
+    //check if player managed to reach the end of the run
     if(engine.gameState.shipParams.pZ > 2816)
     {
         engine.gameState.crossHairX = 0;
@@ -200,28 +246,24 @@ void RunGameState()
         {
             engine.gameState.crossHairY = 0;
         }
-        
-
+    
         UWORD terrainHeight = getTerrainHeight(engine.gameState.shipParams, engine.renderer.mapHigh);
 
         ULONG lowerDelta = (engine.deltaTime/10000);
         updateShipParams(lowerDelta, engine.gameState.shipParams.pY - 200);
 
-        
-        
-
         engine.gameState.shipParams.dPDenom = engine.gameState.shipParams.dPDenom + 8;
 	    engine.gameState.shipParams.relHeight = ((engine.gameState.shipParams.pY - 2) - terrainHeight);
 
-        
+        //set the run over flag to positive
         if(engine.gameState.shipParams.relHeight <= 4 && engine.gameState.shipParams.dPDenom > 256)
         {
             engine.gameState.runOver = 1;
         }
     }
-    else
+    //continue flight
+    else 
     {
-        
         if(!engine.gameState.playerDeath && !engine.gameState.takeoff)
         {
             UpdatePlayerPosition(); 
@@ -230,27 +272,15 @@ void RunGameState()
                 engine.gameState.playerDeath = 1;
             }
         }
-        
-        
-        
     }
-    
-
-//draw crosshair
-
-    
-            //draw only even lines 
-    
-                        
+ 
     OverwriteMap(); //this is how we go through many different maps, we just overwrite the main array with new content
-
-
 
     engine.renderer.xTurnOffset = engine.gameState.crossHairX / engine.renderer.turnDenom;
     
     RenderQuality();  
 
-
+    //============================= play takeoff animation
     if(engine.gameState.takeoff)
     {
          ULONG addedTime = engine.deltaTime/2500;
@@ -266,8 +296,7 @@ void RunGameState()
             UWORD takeoffY = GAME_SHIP_POS + (engine.gameState.crossHairY/1600);
 
 
-            DrawSprite4b(engine.takeoffBitmap, &engine.takeoffHeader, takeoffX, takeoffY,
-                     currentX, currentY, 48, 48);
+           // DrawSprite4b(engine.takeoffBitmap, &engine.takeoffHeader, takeoffX, takeoffY,currentX, currentY, 48, 48);
 
             engine.gameState.shipParams.pY = engine.gameState.startHeight + currentIndex;
             engine.gameState.shipParams.precY = engine.gameState.shipParams.pY << 5;
@@ -281,14 +310,16 @@ void RunGameState()
     }
        
 
-
+    //============================= RenderShipAndCrossHair
     if(!engine.gameState.playerDeath && !engine.gameState.runOver && !engine.gameState.takeoff)
     {
         RenderShipAndCrossHair();
     }
 
+    //============================= draw stats
     DrawGameStats();
 
+    //============================= process player death animation
     if(engine.gameState.playerDeath == 1)
     {
         ULONG addedTime = engine.deltaTime/2500;
@@ -303,12 +334,14 @@ void RunGameState()
             UWORD explosionX = 160 + engine.renderer.xTurnOffset;
             UWORD explosionY = GAME_SHIP_POS + (engine.gameState.crossHairY/1600);
 
-
-            DrawSprite4b(engine.explosionBitmap, &engine.explosionHeader, explosionX, explosionY,
+//shipBitmap
+//explosionBitmap
+            DrawSprite4b(engine.shipBitmap, &engine.explosionHeader, explosionX, explosionY,
                      currentX, currentY, 48, 48);
         }
         else
         {
+            //go to game over screen after death animation ends
             ShowCutscene(Cutscene_Death, PATTERN_DURATION);
             
         }
@@ -349,6 +382,7 @@ void RunGameState()
     // if(keyCheck(KEY_PERIOD)){renderingDepthStep=9;}
     // if(keyCheck(KEY_SLASH)){renderingDepthStep=10;}
 
+    //play animation for player success win
     if(engine.gameState.runOver)
     {
          ULONG addedTime = engine.deltaTime/2500;
@@ -364,29 +398,22 @@ void RunGameState()
             UWORD landingY = GAME_SHIP_POS + (engine.gameState.crossHairY/1600);
 
 
-            DrawSprite4b(engine.landingBitmap, &engine.landingHeader, landingX, landingY,
-                     currentX, currentY, 48, 48);
+          //  DrawSprite4b(engine.landingBitmap, &engine.landingHeader, landingX, landingY,currentX, currentY, 48, 48);
         }
         else
         {
-       
+            //go to game over screen after death animation ends - if not on time
             if(engine.gameState.points < 1000000)
             {
                 ShowCutscene(Cutscene_TooLate, PATTERN_DURATION);
             }
+            //if on time
             else
             {
                 ShowCutscene(Cutscene_Win, 11000);
-
             }     
         }
        
     }
-
-    
-    VSyncAndDraw();    
-    
-    
-
-
+    VSyncAndDraw();
 }

@@ -21,16 +21,13 @@
 
 
 /*
-docker run --rm \
--v ${PWD}:/work \
--v /path/to/extra/m68k-amigaos/lib:/tools/usr/lib \
--v /path/to/extra/m68k-amigaos/include:/tools/usr/include \
--it amigadev/crosstools:m68k-amigaos bash
+docker run --rm -v ${PWD}:/work -v /path/to/extra/m68k-amigaos/lib:/tools/usr/lib -v /path/to/extra/m68k-amigaos/include:/tools/usr/include -it amigadev/crosstools:m68k-amigaos bash
+make -f makefile_amiga
 */
 
 void InitializeGameChipMemory()
 {
-	
+
     FILE *file = OpenFile("data/verge.mod", "rb");
 
     ULONG fileSize = GetFileSize("data/verge.mod");
@@ -39,11 +36,11 @@ void InitializeGameChipMemory()
 
 
 	engine.music = (UBYTE *)AllocateFromArena(&engine.chipArena, fileSize);
-	
+
     ReadFile(file, engine.music, fileSize);
     CloseFile(file);
 
-	
+
 
 }
 
@@ -54,20 +51,24 @@ void InitEngine(void)
 	engine.exitFlag = 0;
 
 	engine.musicOn = 0;
-	InitializeGameChipMemory();
+
+	engine.gameState.resourcesLoaded = 0;
+	
+	//InitializeGameChipMemory();
 	InitScreen();
 	InitInput();
-
-
 	
+
+
+
     ULONG fontSize = GetFileSize("data/ss.fnt") + sizeof(Font);
-	
+
     ULONG screenPlaneSize = PLANEWIDTHWORD*PLANEHEIGHT*sizeof(UWORD);
 
-	
+
 	NewArena(&engine.fontArena, fontSize + 4*screenPlaneSize);
-	
-	
+
+
 	engine.font = InitFont("data/ss.fnt");
 
 	engine.renderer.plane1W = (UWORD *)AllocateFromArena(&engine.fontArena, screenPlaneSize);
@@ -77,12 +78,12 @@ void InitEngine(void)
 
 
 
-	NewArena(&engine.temporaryArena, 100*1024);
+	NewArena(&engine.temporaryArena, 32*1024);
 
-	MakeArenasForMaps(MAPSIZE*MAPSIZE, 11);	
+	MakeArenasForMaps(MAPSIZE*MAPSIZE, 11);
 
 	SetupMaps();
-	
+
 	engine.paletteBitmap = LoadBitmapFile("data/plt", &engine.paletteHeader, engine.activePalette, 1, 0);
 
 	//process paletter from an image
@@ -97,12 +98,14 @@ void InitEngine(void)
 
 	UnuseSystem();
 
+	ClearBuffor();
+
 	// //*********************************** SELECT HARDWARE ***********************************************
-	engine.informationText = CreateBitmapFromText(engine.font, 
+	engine.informationText = CreateBitmapFromText(engine.font,
 	"KEY 1 = 1 MB RAM   KEY 2 = MORE THAN 1 MB RAM"
 	);
 	DrawTextBitmap(engine.informationText, 50, PLANEHEIGHT/2, 3);
-	
+
 	VSyncAndDraw();
 
 	engine.renderer.ditherTable1 = 0;
@@ -110,15 +113,15 @@ void InitEngine(void)
 	while(engine.renderer.ditherTable1 == 0)
 	{
 		GetPlayerMemorySetting();
-		
+
 	}
 
 
 
 
 	ClearBuffor();
-	
-	FillTextBitmap(engine.font, engine.informationText, 
+
+	FillTextBitmap(engine.font, engine.informationText,
 	#ifdef AMIGA
 	"KEY 3 = A500   KEY 4 = A1200   KEY 5 = A3000"
 	#else
@@ -127,34 +130,34 @@ void InitEngine(void)
 	);
 	DrawTextBitmap(engine.informationText, 50, PLANEHEIGHT/2, 3);
 	VSyncAndDraw();
-	
+
 	while(engine.renderer.renderingType == 0)
 	{
 		GetPlayerRendererSetting();
-		
+
 	}
 
 	ClearBuffor();
-	
-	FillTextBitmap(engine.font, engine.informationText, 
+
+	FillTextBitmap(engine.font, engine.informationText,
 	"INVERT Y AXIS?   KEY 9 = YES   KEY 0 = NO"
 	);
 	DrawTextBitmap(engine.informationText, 50, PLANEHEIGHT/2, 3);
 
 	VSyncAndDraw();
-	
+
 	engine.yAxis = 0;
 
 	while(engine.yAxis == 0)
 	{
 		GetYAxisSetting();
-		
+
 	}
 
 	ClearArena(&engine.temporaryArena);
-	InitLogoState();
+	//InitLogoState();
 
-	
+	InitGameState();
 
 
 
@@ -166,18 +169,32 @@ void EngineLoop(void)
 
 
 	ProcessJoystick();
-	
+
+  if(getJoy(1, FIRE))
+  {
+    engine.platformScreen.vPort->palette[0] = 0x0fff;
+
+  }
+  else
+  {
+    engine.platformScreen.vPort->palette[0] = 0x0000;
+
+  }
+
+
+  LoadGameView(engine.platformScreen.view);
+
 	TimeStep();
 	if (engine.currentState == State_Logo)   //turned off
 	{
 		RunLogoState();
-		
+
 		if (getKey(ESCAPE))
 		{
 			exitFlag = 1;
 			ExitGame();
 		}
-			
+
 	}
 	else if(engine.currentState == State_Menu)
 	{
@@ -185,7 +202,7 @@ void EngineLoop(void)
 	}
 	else if(engine.currentState == State_Game)
 	{
-			
+
 		RunGameState();
 	}
 
@@ -220,8 +237,3 @@ void EngineDestroy(void)
 	DestroyArena(&engine.rendererArena);
 
 }
-
-
-
-	
-	

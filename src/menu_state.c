@@ -1,11 +1,17 @@
 
 void InitMenuState()
 {
+    UseSystem();
+
+
+
+		
+		
     ClearArena(&engine.temporaryArena);
     ResetTime();
 	engine.currentState = State_Menu;
-    
- 
+
+
     engine.menuState.infoScreen = 0;
     for(int i = 0; i < 10; ++i)
     {
@@ -14,7 +20,11 @@ void InitMenuState()
     engine.menu[0] = LoadBitmapFile("data/m0", &engine.headers[0], engine.activePalette, 1, 0);
     engine.menu[1] = LoadBitmapFile("data/m1", &engine.headers[1], engine.activePalette, 1, 0);
     engine.menu[2] = LoadBitmapFile("data/msg", &engine.headers[2], engine.activePalette, 1, 0);
-    
+
+    UnuseSystem();
+	//InitAudio();
+	//PlaySample(0);
+
 }
 
 void RunMenuState()
@@ -22,8 +32,8 @@ void RunMenuState()
     ClearBuffor();
     DrawBitmap4bCenter(engine.menu[0], &engine.headers[0]);
 
-                 
-    FillTextBitmap(engine.font, engine.pBitmapInfo[0], "In the distant future, on the distant");
+
+ /*   FillTextBitmap(engine.font, engine.pBitmapInfo[0], "In the distant future, on the distant");
     FillTextBitmap(engine.font, engine.pBitmapInfo[1], "inhospitable planet. Mankind engages in one");
     FillTextBitmap(engine.font, engine.pBitmapInfo[2], "thing it knows well - war.");
     FillTextBitmap(engine.font, engine.pBitmapInfo[3], "The tyrannical corporate regime wants to");
@@ -43,10 +53,10 @@ void RunMenuState()
     DrawTextBitmap(engine.pBitmapInfo[6], 50, BASELINE+38, 7);
     DrawTextBitmap(engine.pBitmapInfo[7], 50, BASELINE+44, 7);
     DrawTextBitmap(engine.pBitmapInfo[8], 50, BASELINE+50, 7);
-    DrawTextBitmap(engine.pBitmapInfo[9], 50, BASELINE+56, 7);
-    
+    DrawTextBitmap(engine.pBitmapInfo[9], 50, BASELINE+56, 7);*/
+
     SetGamePaletter();
-    
+
     VSyncAndDraw();
 
     UBYTE infoIndex = 0;
@@ -55,21 +65,37 @@ void RunMenuState()
 
     while(!engine.menuState.infoScreen)
     {
-        
+
         ProcessJoystick();
+
+        //reset the fire button
+        if(!getJoy(1, FIRE) && FireDown)
+        {
+            FireDown = 0;
+
+          //  SetGamePaletter();
+          //  LoadGameView(engine.platformScreen.view);
+        }
+
+        //fresh fire press
         if(getJoy(1, FIRE) && !FireDown)
         {
+            FireDown = 1;
             infoIndex += 1;
-            
+
+            //flash screen background
+          //  engine.platformScreen.vPort->palette[0] = 0x00f0;
+          //  LoadGameView(engine.platformScreen.view);
+
             switch(infoIndex)
             {
                 case 1:
                 {
-                    ClearBuffor();   
-                    
+                    ClearBuffor();
+
                     DrawBitmap4bCenter(engine.menu[1], &engine.headers[1]);
-                 
-                    FillTextBitmap(engine.font, engine.pBitmapInfo[0], "After setting off the Earth in enormous");
+
+                /*    FillTextBitmap(engine.font, engine.pBitmapInfo[0], "After setting off the Earth in enormous");
                     FillTextBitmap(engine.font, engine.pBitmapInfo[1], "Generation ships, humanity reached the nearest");
                     FillTextBitmap(engine.font, engine.pBitmapInfo[2], "star system and colonized it's only suitable");
                     FillTextBitmap(engine.font, engine.pBitmapInfo[3], "planet, renaming it The Kingdom.");
@@ -87,19 +113,18 @@ void RunMenuState()
                     DrawTextBitmap(engine.pBitmapInfo[5], 2, BASELINE+32, 13);
                     DrawTextBitmap(engine.pBitmapInfo[6], 2, BASELINE+38, 13);
                     DrawTextBitmap(engine.pBitmapInfo[7], 2, BASELINE+44, 13);
-                    DrawTextBitmap(engine.pBitmapInfo[8], 2, BASELINE+50, 13);
-                    
-                    
+                    DrawTextBitmap(engine.pBitmapInfo[8], 2, BASELINE+50, 13);*/
+                            
+                    //LoadGameView(engine.platformScreen.view);
                     VSyncAndDraw();
-                    FireDown = 1;
                 } break;
                 case 2:
                 {
                     ClearBuffor();
                     DrawBitmap4bCenter(engine.menu[1], &engine.headers[1]);
-                    
 
-                    FillTextBitmap(engine.font, engine.pBitmapInfo[0], "You are Nix, the pilot of Icarus, who feels");
+
+                 /*   FillTextBitmap(engine.font, engine.pBitmapInfo[0], "You are Nix, the pilot of Icarus, who feels");
                     FillTextBitmap(engine.font, engine.pBitmapInfo[1], "the urge to help The Revolt in overthrowing");
                     FillTextBitmap(engine.font, engine.pBitmapInfo[2], "The Reign.");
                     FillTextBitmap(engine.font, engine.pBitmapInfo[3], "You want to become The Carrier, who supplies");
@@ -119,19 +144,16 @@ void RunMenuState()
                     DrawTextBitmap(engine.pBitmapInfo[6], 2, BASELINE+38, 13);
                     DrawTextBitmap(engine.pBitmapInfo[7], 2, BASELINE+44, 13);
                     DrawTextBitmap(engine.pBitmapInfo[8], 2, BASELINE+50, 13);
-                    DrawTextBitmap(engine.pBitmapInfo[9], 2, BASELINE+56, 13);
+                    DrawTextBitmap(engine.pBitmapInfo[9], 2, BASELINE+56, 13);*/
+                    //LoadGameView(engine.platformScreen.view);
                     VSyncAndDraw();
-                    
-                        
-
-                    FireDown = 1;
                 } break;
                 case 3:
                 {
                     ClearBuffor();
                     DrawBitmap4bCenter(engine.menu[2], &engine.headers[2]);
-                    
-                    FillTextBitmap(engine.font, engine.pBitmapInfo[0], "The ship's Anti-G engine uses the");
+
+                 /*   FillTextBitmap(engine.font, engine.pBitmapInfo[0], "The ship's Anti-G engine uses the");
                     FillTextBitmap(engine.font, engine.pBitmapInfo[1], "planet's magnetic field to move");
                     FillTextBitmap(engine.font, engine.pBitmapInfo[2], "vertically.");
                     FillTextBitmap(engine.font, engine.pBitmapInfo[3], "The closer you get to the surface,");
@@ -151,60 +173,40 @@ void RunMenuState()
                     DrawTextBitmap(engine.pBitmapInfo[6], 100, BASELINE+78, 4);
                     DrawTextBitmap(engine.pBitmapInfo[7], 100, BASELINE+84, 4);
                     DrawTextBitmap(engine.pBitmapInfo[8], 100, BASELINE+90, 4);
-                    DrawTextBitmap(engine.pBitmapInfo[9], 100, BASELINE+96, 4);
+                    DrawTextBitmap(engine.pBitmapInfo[9], 100, BASELINE+96, 4);*/
+                    //LoadGameView(engine.platformScreen.view);
                     VSyncAndDraw();
-                        
-
-                    FireDown = 1;
                 } break;
                 case 4:
                 {
                     StopSample();
-                    UseSystem();
-
                     
-                    ClearArena(&engine.temporaryArena);
-                    for(int i = 0; i < 3; ++i)
-                    {
-                        engine.pBitmapInfo[i] = CreateFontBitmap(engine.font);
-                    }
-                    engine.menu[2] = LoadBitmapFile("data/msg", &engine.headers[2], engine.activePalette, 1, 0);
                     engine.menuState.infoScreen = 1;
-                    
-                    
-                    engine.explosionBitmap = LoadBitmapFile("data/iexpl", &engine.explosionHeader, engine.activePalette, 2, 14);
-                    engine.landingBitmap = LoadBitmapFile("data/land", &engine.landingHeader, engine.activePalette, 2, 14);
-                    engine.takeoffBitmap = LoadBitmapFile("data/take", &engine.takeoffHeader, engine.activePalette, 2, 14);
-                    engine.shipBitmap = LoadBitmapFile("data/icar48", &engine.shipHeader, engine.activePalette, 2, 14);
-
-                    
-                    engine.pBitmapVelocity = CreateBitmapFromText(engine.font, "1234");
-                    engine.pBitmapScore = CreateBitmapFromText(engine.font, "1234567");
-                    engine.pBitmapTime = CreateBitmapFromText(engine.font, "1234567");
-                    engine.pBitmapHeight = CreateBitmapFromText(engine.font, "1234");
-                    engine.pBitmapVelocityLabel = CreateBitmapFromText(engine.font, "AIR SPEED");
-                    engine.pBitmapScoreLabel = CreateBitmapFromText(engine.font, "SCORE");
-                    engine.pBitmapTimeLabel = CreateBitmapFromText(engine.font, "TIME");
-                    engine.pBitmapHeightLabel = CreateBitmapFromText(engine.font, "RELATIVE ALTITUDE");
-                    
-                    UnuseSystem();
-                    InitAudio();
-                    PlaySample(5);
-                    
                 } break;
             }
         }
-        else if(FireDown && !getJoy(1, FIRE))
-        {
-            FireDown = 0;
-        }
-        
+
+
         if (getKey(ESCAPE))
         {
             engine.menuState.infoScreen = 1;
             engine.exitFlag = 1;
         }
-        VSyncWait();
+
+/*
+        if(getJoy(1, FIRE))
+        {
+          engine.platformScreen.vPort->palette[0] = 0x0fff;
+
+        }
+        else
+        {
+          engine.platformScreen.vPort->palette[0] = 0x0000;
+
+        }
+*/
+
+        //VSyncWait();
     }
 
     InitGameState();

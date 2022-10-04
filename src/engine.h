@@ -10,7 +10,7 @@
 #define MAPSIZE 128
 #define MAPLENGTH 11
 
-#define LOGORUNTIME 7500000
+#define LOGORUNTIME 800000
 #define SKY_COLOR 33
 
 #define PATTERN_DURATION 9000
@@ -72,6 +72,7 @@ typedef struct LogoState
 
 typedef struct GameState
 {
+    BYTE resourcesLoaded;
     WORD crossHairX, crossHairY;
     ShipParams shipParams;
     ULONG points;

@@ -80,14 +80,8 @@ void switchIntroScreen()
 	break;
 	default:
 	{
-		UseSystem();
-
-
-
 		InitMenuState();
-		UnuseSystem();
-		InitAudio();
-		PlaySample(0);
+		
 	} break;
 	}
 }
@@ -108,7 +102,7 @@ void animateIntro()
 		engine.activePalette[2]
 	};
 
-	if(engine.logoState.screenDuration < 7400000 && !engine.logoState.fadeInStatus[3])
+	if(engine.logoState.screenDuration < 800000 && !engine.logoState.fadeInStatus[3])
 	{
 		for (int i = 1; i < 16; i++)
 		{
@@ -122,7 +116,7 @@ void animateIntro()
 		SetPalette();
 		engine.logoState.fadeInStatus[3] = 1;
 	}
-	if(engine.logoState.screenDuration < 7300000 && !engine.logoState.fadeInStatus[2])
+	if(engine.logoState.screenDuration < 700000 && !engine.logoState.fadeInStatus[2])
 	{
 		for (int i = 1; i < 16; i++)
 		{
@@ -136,7 +130,7 @@ void animateIntro()
 		SetPalette();
 		engine.logoState.fadeInStatus[2] = 1;
 	}
-	if(engine.logoState.screenDuration < 7200000 && !engine.logoState.fadeInStatus[1])
+	if(engine.logoState.screenDuration < 600000 && !engine.logoState.fadeInStatus[1])
 	{
 		for (int i = 1; i < 16; i++)
 		{
@@ -150,7 +144,7 @@ void animateIntro()
 		SetPalette();
 		engine.logoState.fadeInStatus[1] = 1;
 	}
-	if(engine.logoState.screenDuration < 7100000 && !engine.logoState.fadeInStatus[0])
+	if(engine.logoState.screenDuration < 500000 && !engine.logoState.fadeInStatus[0])
 	{
 		for (int i = 1; i < 16; i++)
 		{

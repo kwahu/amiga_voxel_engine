@@ -7,10 +7,10 @@ void ShowDeathCutscene()
     
     
     //InitAudio();
-    PlaySample(12);
+    //PlaySample(12);
 
     ClearBuffor();
-    DrawBitmap4bCenter(engine.menu[2], &engine.headers[2]);
+    //DrawBitmap4bCenter(engine.menu[2], &engine.headers[2]);
     VSyncAndDraw();
 
     UBYTE lines = 0;
@@ -103,10 +103,10 @@ void ShowTooLateCutscene()
 {
     //StopSample();
     //ContinueSample();
-    PlaySample(12);
+    //PlaySample(12);
     ClearBuffor();
  
-    DrawBitmap4bCenter(engine.menu[2], &engine.headers[2]);
+    //DrawBitmap4bCenter(engine.menu[2], &engine.headers[2]);
     VSyncAndDraw();
 
     UBYTE lines = 0;
@@ -157,15 +157,15 @@ void ShowTooLateCutscene()
 void ShowWinCutscene()
 {
 
-    StopSample();
+    //StopSample();
     ClearArena(&engine.temporaryArena);
     for(int i = 0; i < 6; ++i)
     {
         engine.pBitmapInfo[i] = CreateFontBitmap(engine.font);
     }
     LoadBitmapToMemory("data/fin");
-    InitAudio();
-    PlaySample(13);
+    //InitAudio();
+    //PlaySample(13);
     ClearBuffor();
     DrawBitmap4bCenter(engine.activeBitmap, &engine.activeBitmapHeader);
     VSyncAndDraw();
@@ -328,8 +328,8 @@ void ShowCutscene(Cutscene cutsceneType, ULONG duration)
         }
     }
 
-    StopSample();
-    UseSystem();
+    //StopSample();
+    //UseSystem();
     volatile UBYTE nextPattern = 0;
     
     
@@ -352,9 +352,9 @@ void ShowCutscene(Cutscene cutsceneType, ULONG duration)
         } break;
         
     }
-    UnuseSystem();
-    InitAudio();
-    PlaySample(nextPattern);
+    //UnuseSystem();
+   // InitAudio();
+   // PlaySample(nextPattern);
     //ContinueSample();
     ResetTime();
 
