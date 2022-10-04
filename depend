@@ -26,11 +26,12 @@ main.o: src/main.c src/memory_platform.h \
  /opt/m68k-amigaos/m68k-amigaos/ndk-include/graphics/modeid.h \
  /opt/m68k-amigaos/m68k-amigaos/ndk-include/utility/tagitem.h \
  /opt/m68k-amigaos/m68k-amigaos/ndk-include/libraries/commodities.h \
- ace/include/ace/managers/memory.h ace/include/ace/types.h src/platform.h \
- ace/include/ace/utils/custom.h ace/include/ace/macros.h \
+ deps/ace/include/ace/managers/memory.h deps/ace/include/ace/types.h \
+ src/platform.h deps/ace/include/ace/utils/custom.h \
+ deps/ace/include/ace/macros.h \
  /opt/m68k-amigaos/m68k-amigaos/ndk-include/hardware/custom.h \
- ace/include/../src/ace/managers/system.c \
- ace/include/ace/managers/system.h \
+ deps/ace/include/../src/ace/managers/system.c \
+ deps/ace/include/ace/managers/system.h \
  /opt/m68k-amigaos/m68k-amigaos/ndk-include/graphics/gfxbase.h \
  /opt/m68k-amigaos/m68k-amigaos/ndk-include/exec/interrupts.h \
  /opt/m68k-amigaos/m68k-amigaos/libnix/include/stdlib.h \
@@ -60,7 +61,6 @@ main.o: src/main.c src/memory_platform.h \
  /opt/m68k-amigaos/m68k-amigaos/sys-include/sys/_pthreadtypes.h \
  /opt/m68k-amigaos/m68k-amigaos/sys-include/sys/sched.h \
  /opt/m68k-amigaos/m68k-amigaos/sys-include/machine/types.h \
- /opt/m68k-amigaos/m68k-amigaos/libnix/include/strsup.h \
  /opt/m68k-amigaos/lib/gcc/m68k-amigaos/6.5.0b/include/stdarg.h \
  /opt/m68k-amigaos/m68k-amigaos/sys-include/stdlib.h \
  /opt/m68k-amigaos/m68k-amigaos/sys-include/_ansi.h \
@@ -93,21 +93,13 @@ main.o: src/main.c src/memory_platform.h \
  /opt/m68k-amigaos/m68k-amigaos/ndk-include/dos/exall.h \
  /opt/m68k-amigaos/m68k-amigaos/ndk-include/hardware/intbits.h \
  /opt/m68k-amigaos/m68k-amigaos/ndk-include/hardware/dmabits.h \
- /opt/m68k-amigaos/m68k-amigaos/ndk-include/devices/audio.h \
- ace/include/ace/managers/log.h ace/include/ace/managers/timer.h \
- ace/include/ace/utils/file.h ace/include/ace/managers/key.h \
- /opt/m68k-amigaos/m68k-amigaos/ndk-include/exec/execbase.h \
- /opt/m68k-amigaos/m68k-amigaos/ndk-include/resources/cia.h \
- /opt/m68k-amigaos/m68k-amigaos/ndk-include/proto/dos.h \
- /opt/m68k-amigaos/m68k-amigaos/ndk-include/inline/dos.h \
- /opt/m68k-amigaos/m68k-amigaos/ndk-include/proto/graphics.h \
- /opt/m68k-amigaos/m68k-amigaos/ndk-include/inline/graphics.h \
- /opt/m68k-amigaos/m68k-amigaos/ndk-include/proto/cia.h \
- /opt/m68k-amigaos/m68k-amigaos/ndk-include/clib/cia_protos.h \
- /opt/m68k-amigaos/m68k-amigaos/ndk-include/inline/cia.h src/engine.h \
+ deps/ace/include/ace/managers/log.h \
+ deps/ace/include/ace/managers/timer.h deps/ace/include/ace/utils/file.h \
+ /opt/m68k-amigaos/m68k-amigaos/ndk-include/exec/execbase.h src/engine.h \
  src/settings_platform.h src/sound_platform.h src/ptplayer.h \
  /opt/m68k-amigaos/m68k-amigaos/include/SDI_compiler.h \
- src/font_platform.h src/input_platform.h src/screen_platform.h \
+ src/font_platform.h src/input_platform.h \
+ deps/ace/include/ace/managers/key.h src/screen_platform.h \
  src/file_platform.h src/bitmap.c src/raycasting.c src/file_read.c \
  src/physics.c src/dithering.c src/drawing.c src/map_streaming.c \
  src/setup_maps.c src/rendering_quality.c src/logo_state.c \
